@@ -1,0 +1,11 @@
+"cd0d4cc32346750408f7d4f5e78ec9a6e5b79a0d"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil (#1=[nil nil (("    {
+        \"group\": \"news\",
+        \"name\": \"cnn\",
+        \"tags\": [
+            \"#cnn\"
+        ],
+        \"url\": \"www.cnn.com\"
+    }
+]
+" . 4) 5 (undo-tree-id0 . -1) (undo-tree-id1 . -2) (undo-tree-id2 . 137) (undo-tree-id3 . -1) (undo-tree-id4 . -1) (undo-tree-id5 . -1) (undo-tree-id6 . -1) (undo-tree-id7 . -1)) nil (21488 60903 840128 110000) 0 nil]) ((2 . 3)) nil (21488 60903 840135 930000) 0 nil]) (("\\" . -2) (undo-tree-id8 . -1)) nil (21488 60903 840143 382000) 0 nil]) ((2 . 3)) nil (21488 60903 840147 246000) 0 nil]) (("}" . -2) (undo-tree-id9 . -1) (undo-tree-id10 . -1) (undo-tree-id11 . 1) (undo-tree-id12 . -1)) nil (21488 60903 840170 626000) 0 nil]) ((2 . 3) (t 21488 29849 266842 901000)) nil (21488 60903 840175 76000) 0 nil]) nil nil (21488 60903 840177 369000) 0 nil] #1# 309 6 nil]

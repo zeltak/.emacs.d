@@ -1,0 +1,32 @@
+"cedb4bf8308d59cb85bb69931d2a73aa728de123"
+[cl-struct-undo-tree [nil (#1=[nil nil ((1312 . 1320) (1287 . 1295) (1208 . 1304) (268 . 320) (230 . 238) (160 . 260) (1040 . 1048) (1034 . 1035) (729 . 1039) (723 . 724) (160 . 728) (#("
+;;;### (autoloads nil \"edit-server-htmlize\" \"edit-server-htmlize.el\"
+;;;;;;  (21642 57739 681975 822000))
+;;; Generated autoloads from edit-server-htmlize.el
+
+(defvar edit-server-htmlize-url-regexp (concat \"^\" (regexp-quote \"mail.google.com/mail/\")) \"\\
+*Regexp matching `edit-server-url' in a buffer that should be HTMLized.
+See `edit-server-maybe-htmlize-buffer'.\")
+
+(custom-autoload 'edit-server-htmlize-url-regexp \"edit-server-htmlize\" t)
+
+(autoload 'edit-server-maybe-htmlize-buffer \"edit-server-htmlize\" \"\\
+Possibly HTMLize the current buffer of plain text.
+This calls `edit-server-htmlize-buffer' if `edit-server-url'
+matches `edit-server-htmlize-url-regexp'.
+
+This is intended for use on `edit-server-done-hook'.
+
+\\(fn)\" t nil)
+
+(autoload 'edit-server-maybe-dehtmlize-buffer \"edit-server-htmlize\" \"\\
+Possibly deHTMLize the current buffer into plain text.
+This calls `edit-server-dehtmlize-buffer-function' if `edit-server-url'
+matches `edit-server-htmlize-url-regexp'.
+
+This is intended for use on `edit-server-start-hook'.
+
+\\(fn)\" t nil)
+
+;;;***
+" 0 1056 (fontified nil)) . -160) (undo-tree-id0 . -1056) 1 (t 21642 57739 955311 219000)) nil (21642 57748 791437 7000) 0 nil]) nil nil (21642 57748 791446 258000) 0 nil] #1# 1176 1 nil]

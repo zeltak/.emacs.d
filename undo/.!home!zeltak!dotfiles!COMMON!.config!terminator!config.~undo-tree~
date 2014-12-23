@@ -1,0 +1,8 @@
+"8221bcfe881391b9f1ccf347eb9371d64eb54b24"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil (#1=[nil nil ((#(">>>>>>> 5598d610992bf3895641672e758d00836939b617
+" 0 49 (fontified t)) . 374) (undo-tree-id0 . 49) (undo-tree-id1 . -48) (undo-tree-id2 . 49)) nil (21646 31033 138977 530000) 0 nil]) ((#(">>>>>>> 06fe653d35b1dd3f4125e2d00dc74fc7687d0699
+" 0 49 (fontified t)) . 374) (undo-tree-id3 . 47) 376) nil (21646 31033 138991 813000) 0 nil]) ((#("=======
+" 0 1 (fontified t face font-lock-variable-name-face) 1 8 (fontified t)) . 344) (undo-tree-id4 . 6) 346) nil (21646 31033 139003 225000) 0 nil]) ((#("<<<<<<< HEAD
+" 0 13 (fontified t)) . 314) (undo-tree-id5 . 13) (undo-tree-id6 . -12) (undo-tree-id7 . 13)) nil (21646 31033 139016 140000) 0 nil]) ((#("=======
+" 0 1 (fontified t face font-lock-variable-name-face) 1 8 (fontified t)) . 314) (undo-tree-id8 . 6) 316) nil (21646 31033 139023 161000) 0 nil]) ((#("<<<<<<< HEAD
+" 0 13 (fontified t)) . 283) (undo-tree-id9 . 13) (t 21645 12334 779585 199000)) nil (21646 31033 139031 478000) 0 nil]) nil nil (21646 31033 139035 946000) 0 nil] #1# 300 6 nil]

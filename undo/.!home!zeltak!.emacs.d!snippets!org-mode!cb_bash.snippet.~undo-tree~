@@ -1,0 +1,3 @@
+"ce5127c26d641bf9b5481c3dddde4cae571012a1"
+[cl-struct-undo-tree [nil (#1=[nil nil ((#("#+NAME: $1
+" 0 9 (fontified t face font-lock-comment-face) 9 10 (fontified t face font-lock-string-face) 10 11 (fontified t)) . 56) (undo-tree-id0 . 11) (undo-tree-id1 . 11) (undo-tree-id2 . 11) (undo-tree-id3 . 11) (undo-tree-id4 . 11) (t 20952 30726 0 0)) nil (21642 40703 816570 721000) 0 nil]) nil nil (21642 40703 816578 918000) 0 nil] #1# 67 1 nil]

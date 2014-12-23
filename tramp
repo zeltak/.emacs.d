@@ -1,0 +1,42 @@
+;; -*- emacs-lisp -*- <14/12/10 16:52:29 /home/zeltak/.emacs.d/tramp>
+;; Tramp connection history.  Don't change this file.
+;; You can delete it, forcing Tramp to reapply the checks.
+
+((["sudo" "root" "voices" nil nil]
+  ("uname" "Linux 3.13.4-1-ARCH")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("busybox" nil)
+  ("readlink" "\\readlink")
+  ("stat" "\\stat")
+  ("file-exists" "test -e")
+  ("id" "/bin/id")
+  ("gid-integer" 0)
+  ("uid-integer" 0)
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl"))
+ (["ssh" "zeltak" "uni" nil nil]
+  ("uname" "Linux 3.12-1-amd64")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("locale" "LC_ALL=en_US.utf8")
+  ("~" "/home/zeltak")
+  ("file-exists" "test -e")
+  ("ls" "/bin/ls --color=never")
+  ("ls-dired" t)
+  ("stat" "\\stat")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 1000)
+  ("readlink" "\\readlink")
+  ("gid-string" "zeltak")
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl")
+  ("uid-integer" 1000))
+ (["ssh" nil "192.168.0.2" nil nil]
+  nil))

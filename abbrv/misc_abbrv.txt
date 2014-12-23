@@ -1,0 +1,14 @@
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("8bash" "#!/bin/bash" nil 0)
+    ("8emi" "ikloog@gmail.com" nil 0)
+    ("8emu" "ikloog@bgu.ac.il" nil 0)
+    ("8emz" "zeltak@gmail.com" nil 0)
+    ("8fl" "file:~/" nil 0)
+    ("8tst" "this is a mfm test" nil 0)
+    ("8wr" "@Warning@" nil 0)
+    ("8c" "#-------------->" nil 0)
+    ("Note" "$Note$" nil 0)
+    ("Tip" "%Tip%" nil 0)
+    ("Warning" "@Warning@" nil 0)
+))

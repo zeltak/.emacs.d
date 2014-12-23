@@ -1,0 +1,38 @@
+"1d93bd5d584970582af46c5cbee92c55f6961497"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#2=[nil nil ((20 . 23)) nil (21643 53013 695029 247000) 0 nil]) (("o" . -20)) nil (21643 53013 695036 89000) 0 nil]) (("n" . -21)) nil (21643 53013 695040 975000) 0 nil]) ((" " . -22)) nil (21643 53013 695048 74000) 0 nil]) (("G" . -23)) nil (21643 53013 695052 842000) 0 nil]) (("r" . -24)) nil (21643 53013 695058 77000) 0 nil]) (("e" . -25)) nil (21643 53013 695063 287000) 0 nil]) (("e" . -26)) nil (21643 53013 695068 548000) 0 nil]) (("n" . -27) (undo-tree-id0 . 1)) nil (21643 53013 695088 756000) 0 nil]) ((" " . -28) (undo-tree-id1 . 1) (undo-tree-id2 . 1) (undo-tree-id3 . 1) (undo-tree-id4 . 1) (undo-tree-id5 . 1) (undo-tree-id6 . 1) (undo-tree-id7 . 1) (undo-tree-id8 . 1) (undo-tree-id9 . 1) (undo-tree-id10 . 1) (undo-tree-id11 . 1) (undo-tree-id12 . 1) (undo-tree-id13 . 1) (undo-tree-id14 . 1) (undo-tree-id15 . 1) (undo-tree-id16 . 1) (undo-tree-id17 . 1) (undo-tree-id18 . 1) (undo-tree-id19 . 1) (undo-tree-id20 . 1) (undo-tree-id21 . 1) (undo-tree-id22 . 1)) nil (21643 53013 695165 458000) 0 nil]) (("
+" . 30) (undo-tree-id23 . 1) (undo-tree-id24 . 1) (undo-tree-id25 . 1) (undo-tree-id26 . 1) (undo-tree-id27 . 1)) nil (21643 53013 695232 197000) 0 nil]) (("
+" . 30) (undo-tree-id28 . -1) (undo-tree-id29 . 1) (undo-tree-id30 . 1)) nil (21643 53013 695246 24000) 0 nil]) ((18 . 28)) nil (21643 53013 695254 901000) 0 nil]) ((17 . 18) ("8c" . 17) (1 . 17) 3) nil (21643 53013 695263 53000) 0 nil]) ((1 . 3)) nil (21643 53013 695270 588000) 0 nil]) (("i" . -1)) nil (21643 53013 695274 762000) 0 nil]) ((1 . 2)) nil (21643 53013 695281 745000) 0 nil]) ((1 . 2)) nil (21643 53013 695285 335000) 0 nil]) (("#" . -1) (undo-tree-id31 . 1)) nil (21643 53013 695294 756000) 0 nil]) (("#" . -2)) nil (21643 53013 695301 878000) 0 nil]) (("#" . -3)) nil (21643 53013 695307 800000) 0 nil]) ((" " . -4)) nil (21643 53013 695313 873000) 0 nil]) (("H" . -5)) nil (21643 53013 695319 18000) 0 nil]) (("o" . -6)) nil (21643 53013 695323 159000) 0 nil]) (("l" . -7)) nil (21643 53013 695329 836000) 0 nil]) (("o" . -8) (undo-tree-id32 . 1) (undo-tree-id33 . 1)) nil (21643 53013 695347 474000) 0 nil]) ((#("###########THEME############################
+" 0 1 (face font-lock-comment-delimiter-face) 1 11 (syntax-table #1=(3) face font-lock-comment-delimiter-face) 11 16 (face font-lock-comment-face) 16 44 (syntax-table #1# face font-lock-comment-face) 44 45 (face font-lock-comment-face)) . 11) (undo-tree-id34 . 45)) nil (21643 53013 695360 111000) 0 nil]) (("
+" . -1964) (10 . 1965)) nil (21643 53013 695366 92000) 0 nil]) (("
+#split panes  border colours
+
+#non active
+#set -g  pane-border-fg default
+#set -g  pane-border-bg default
+#active
+#set -g  pane-active-border-bg default #comment out to make pane thinner
+#set -g   pane-active-border-fg '#006F95'
+
+
+#clear annoying window flags
+setw -g window-status-format \" #I$ #W \"
+setw -g window-status-current-format \" #I$ #W\"
+
+#Status-Bar
+set -g status-bg \"#DDDDDD\"
+set -g status-fg \"#777777\"
+set -g status-justify centre # center align window list
+
+# Current or active window in status bar
+set-window-option -g window-status-current-attr bold
+set-window-option -g window-status-current-fg white
+set-window-option -g window-status-current-bg '#0099CC'
+ 
+# Non active window in status bar
+set-window-option -g window-status-attr bold
+set-window-option -g window-status-fg 'white'
+set-window-option -g window-status-bg '#828282'
+ 
+" . 10) (undo-tree-id35 . -849) (undo-tree-id36 . -849) (undo-tree-id37 . -849) 859) nil (21643 53013 695379 86000) 0 nil]) (("
+" . 1)) nil (21643 53013 695384 371000) 0 nil]) (("######################################  THEMES  ########################################### 
+" . 1) (t 21596 39681 0 0)) nil (21643 53013 695389 111000) 0 nil]) nil nil (21643 53013 695392 552000) 0 nil] #2# 1613 31 nil]

@@ -1,0 +1,35 @@
+"703f78b88cc4f3f38870c05c9ae20f262dbdd45b"
+[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((24 . 966)) nil (21643 53637 461387 344000) 0 nil]) (("
+# --- colors (solarized dark)                                      
+# default statusbar colors                                         
+set -g status-bg black                                             
+set -g status-fg yellow                                            
+set -g status-attr default                                         
+                                                                   
+# default window title colors                                      
+setw -g window-status-fg brightblue                                
+setw -g window-status-bg default                                   
+                                                                   
+# active window title colors                                       
+setw -g window-status-current-fg yellow                            
+setw -g window-status-current-bg default                           
+setw -g window-status-current-attr dim                             
+                                                                   
+# pane border                                                      
+set -g pane-border-fg black                                        
+set -g pane-border-bg default                                      
+set -g pane-active-border-fg yellow                                
+set -g pane-active-border-bg default                               
+                                                                   
+# command line/message text                                        
+set -g message-bg black                                            
+set -g message-fg yellow                                           
+                                                                   
+# pane number display                                              
+set -g display-panes-active-colour yellow                          
+set -g display-panes-colour brightblue                             
+                                                                   
+# clock                                                            
+setw -g clock-mode-colour yellow                                   
+# --- end colors
+" . -24) (undo-tree-id0 . -2125) (undo-tree-id1 . -2126) (t 21643 53538 385290 622000)) nil (21643 53637 461420 506000) 0 nil]) nil nil (21643 53637 461428 971000) 0 nil] #1# 2166 2 nil]

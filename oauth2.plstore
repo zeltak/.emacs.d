@@ -1,0 +1,15 @@
+;;; public entries -*- mode: plstore -*- 
+(("c5a55b05226b829d6a3e2637cc4c01d1" :secret-access-token t :secret-refresh-token t :secret-access-response t))
+;;; secret entries
+"-----BEGIN PGP MESSAGE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+jA0EAwMCqViBwVz5wGTpycBNczcRI6PHd7DdEbklVcUJ/7BWFpjiyauRKuIGh3jk
+tFAjPeh7phe5QOAL55qDLFZwV2tzMfn05lW4GUafBkEtKFnYrkiFhpUd0nirKYcI
+ou1dHx1Lp2u4rwwqRxaj06/QPCrsy+zQoYffhOvidnnUXhccIsitetlAokpBLasv
+Ra6Ns0sj8qrFS5XQ2vvxnX1ol8ONIr/L+yTACXcXD1BG9DsTPIYRfgPTZ9/IQE1S
+Qt2Ba0J3NLJRNJmxEuybCMTl9TPeX9Heii1lvoK0tFbrvW4jAoaYOrm5gl3dvBsi
+yevO62z9FD+MzDW/tlyfTM/Nj6kT4GFRfG4xBy80h3z4wUACCR9hKNfwp6eU1ek=
+=RDXP
+-----END PGP MESSAGE-----
+"

@@ -1,0 +1,11 @@
+"1bf135df59e027352d3fa86873d22ef844d3d27c"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil (#1=[nil nil (("
+" . 388) (undo-tree-id0 . -1)) nil (21454 2154 318624 969000) 0 nil]) (("
+" . 338) (undo-tree-id1 . -1) (undo-tree-id2 . -1) (undo-tree-id3 . -1) (undo-tree-id4 . -1) (undo-tree-id5 . -1) (undo-tree-id6 . -1)) nil (21454 2154 318648 856000) 0 nil]) (("
+" . -388) (339 . 389)) nil (21454 2154 318653 470000) 0 nil]) ((338 . 341)) nil (21454 2154 318656 62000) 0 nil]) (("
+# $BROWSER is used by default
+#browser = firefox
+browser = /usr/bin/chromium 
+#browser = dwb
+
+" . 520) 614 (t 21454 1814 293072 912000) (undo-tree-id7 . -94) (undo-tree-id8 . -42) (undo-tree-id9 . -42) (undo-tree-id10 . -42) (undo-tree-id11 . -42) (undo-tree-id12 . -50) (undo-tree-id13 . -80) (undo-tree-id14 . -4) (undo-tree-id15 . -32) (undo-tree-id16 . -50) (undo-tree-id17 . -80) (undo-tree-id18 . -94)) nil (21454 2154 318687 764000) 0 nil]) nil nil (21454 2154 318692 838000) 0 nil] #1# 314 5 nil]

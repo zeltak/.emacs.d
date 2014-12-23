@@ -1,0 +1,39 @@
+"8ef24bfcce9c5928e6b4d5ea10d079ca54dd9552"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#2=[nil nil ((#("
+" 0 1 (org-category #1="tmux_keys" fontified t)) . 653)) nil (21647 3593 783327 838000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 383)) nil (21647 3593 783335 397000) 0 nil]) ((#("# I'll navigate more than resize, so I put the latter under is under Shift-arrows
+" 0 81 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 81 82 (org-category #1# fontified t)) . 384)) nil (21647 3593 783338 864000) 0 nil]) ((#("# using arrow-key combinations for both is easy for me to remember
+" 0 66 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 66 67 (org-category #1# fontified t)) . 384)) nil (21647 3593 783341 972000) 0 nil]) ((#("# Both navigating and resizing panes is useful. 
+" 0 48 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 48 49 (org-category #1# fontified t)) . 384)) nil (21647 3593 783345 416000) 0 nil]) ((#("# Pane navigation 
+" 0 18 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 18 19 (org-category #1# fontified t)) . 384)) nil (21647 3593 783348 574000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 384)) nil (21647 3593 783351 704000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 362)) nil (21647 3593 783354 860000) 0 nil]) ((#("# use vim motion keys while in copy mode
+" 0 40 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 40 41 (org-category #1# fontified t)) . 363)) nil (21647 3593 783358 229000) 0 nil]) ((#("# use the vim motion keys to move between panes
+" 0 47 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 47 48 (org-category #1# fontified t)) . 274)) nil (21647 3593 783361 385000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 274)) nil (21647 3593 783364 319000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 225) (undo-tree-id0 . -1) (undo-tree-id1 . -1) (undo-tree-id2 . -1) (undo-tree-id3 . -1) (undo-tree-id4 . -1) (undo-tree-id5 . -1)) nil (21647 3593 783393 319000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 131)) nil (21647 3593 783398 193000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 103)) nil (21647 3593 783401 401000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 228) (229 . 233) 228) nil (21647 3593 783405 564000) 0 nil]) ((#("unbind % # Remove default binding since we’re replacing
+" 0 56 (org-category #1# fontified t)) . 228) (undo-tree-id6 . 56)) nil (21647 3593 783411 762000) 0 nil]) ((#("# use \"v\" and \"s\" to do vertical/horizontal splits, like vim
+" 0 60 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 60 61 (org-category #1# fontified t)) . 228) (undo-tree-id7 . 61)) nil (21647 3593 783417 497000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 228) (undo-tree-id8 . 1)) nil (21647 3593 783423 0) 0 nil]) ((#("setw -g mode-keys vi
+" 0 21 (org-category #1# fontified t)) . 228) (undo-tree-id9 . 21)) nil (21647 3593 783428 695000) 0 nil]) ((#("bind F1 send-keys F1
+bind F2 send-keys F2
+bind F3 send-keys F3
+bind F4 send-keys F4
+bind F5 send-keys F5
+bind F6 send-keys F6
+bind F7 send-keys F7
+bind F8 send-keys F8
+bind F9 send-keys F9
+bind F10 send-keys F10
+bind F11 send-keys F11
+bind F12 send-keys F12
+
+###Vim type cuts
+" 0 21 (org-category #1# fontified t) 21 42 (org-category #1# fontified t) 42 276 (org-category #1# fontified t)) . 228) (undo-tree-id10 . -259) (undo-tree-id11 . -259) (undo-tree-id12 . -259) 487) nil (21647 3593 783438 727000) 0 nil]) ((#("#to still use F keys (use with prefix first so C-a F1 etc)
+" 0 59 (org-category #1# fontified t)) . 228)) nil (21647 3593 783442 864000) 0 nil]) ((#("
+" 0 1 (org-category #1# fontified t)) . 133)) nil (21647 3593 783446 233000) 0 nil]) ((#("#  (The way I use it, C-a C-a is good for most of my window switching needs)
+" 0 76 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 76 77 (org-category #1# fontified t)) . 133) (undo-tree-id13 . -77)) nil (21647 3593 783451 517000) 0 nil]) ((#("# Cycle through windows, or panes.   I prefer using it for panes
+" 0 64 (org-category #1# fontified t font-lock-fontified t face font-lock-comment-face) 64 65 (org-category #1# fontified t)) . 133)) nil (21647 3593 783455 242000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-3)) . 104) (undo-tree-id14 . 1) (undo-tree-id15 . 1) (undo-tree-id16 . 1)) nil (21647 3593 783464 380000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-3)) . 343)) nil (21647 3593 783468 342000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-4)) . 343)) nil (21647 3593 783471 987000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-5)) . 343)) nil (21647 3593 783475 791000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-6)) . 343)) nil (21647 3593 783478 968000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-3)) . 311)) nil (21647 3593 783482 92000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-4)) . 311)) nil (21647 3593 783485 266000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-5)) . 311)) nil (21647 3593 783488 131000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-3)) . 277) (undo-tree-id17 . 1)) nil (21647 3593 783493 357000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-4)) . 277) (undo-tree-id18 . 1)) nil (21647 3593 783499 523000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 348) (349 . 357) 362) nil (21647 3593 783503 831000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 313) (314 . 321) 321) nil (21647 3593 783508 458000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 277) (278 . 284) 280) nil (21647 3593 783512 872000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 104) (105 . 110) 104) nil (21647 3593 783517 150000) 0 nil]) ((#("#make ctrl-a ctrl s work like alt-tab (last window)
+" 0 52 (org-category #1# fontified t)) . 104) (undo-tree-id19 . 52) (undo-tree-id20 . 52) (undo-tree-id21 . 52)) nil (21647 3593 783527 472000) 0 nil]) ((#("b" 0 1 (org-category #1# fontified t)) . 45) (t 21642 56152 880358 275000) (46 . 50) 45 (t 21642 56152 880358 275000)) nil (21647 3593 783533 313000) 0 nil]) nil nil (21647 3593 783536 412000) 0 nil] #2# 1617 40 nil]

@@ -1,0 +1,5 @@
+"30d987e30909a92e38d1b96d27c146c46e1219b7"
+[cl-struct-undo-tree [nil ([nil ([nil (#1=[nil nil ((#("#jarvis
+" 0 1 (fontified t face font-lock-comment-delimiter-face) 1 8 (fontified t face font-lock-comment-face)) . 6780)) nil (21652 5065 291465 478000) 0 nil]) ((#("#source /home/zeltak/.jrc
+" 0 1 (fontified t face font-lock-comment-delimiter-face) 1 26 (fontified t face font-lock-comment-face)) . 6788)) nil (21652 5065 291474 136000) 0 nil]) ((#(". /home/zeltak/.jrc
+" 0 20 (fontified t)) . 6814) (t 21650 64401 505727 663000)) nil (21652 5065 291480 89000) 0 nil]) nil nil (21652 5065 291483 765000) 0 nil] #1# 86 3 nil]

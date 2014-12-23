@@ -1,0 +1,4 @@
+"d4a93e27b8306ea44f2125faa83523f35a2a15d5"
+[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((1311 . 1346) ("(put 'upcase-region 'disabled nil)
+" . -1274) (t 21476 51340 58367 778000)) nil (21476 51377 702144 921000) 0 nil]) ((1309 . 1346) (#("(put 'downcase-region 'disabled nil)
+" 0 37 (fontified nil)) . -1227) 1 (t 21476 27094 329617 991000)) nil (21476 51339 948390 149000) 0 nil]) nil nil (21476 51339 948400 9000) 0 nil] #1# 128 2 nil]

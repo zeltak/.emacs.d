@@ -1,0 +1,19 @@
+"4596a2e4ad424fdb33581a53f077b14558f62c4b"
+[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((549 . 590) 548) nil (21466 37452 248226 37000) 0 nil] [nil ([nil nil ((659 . 660)) ((#("`" 0 1 (fontified t face sh-quoted-exec)) . 659) (undo-tree-id0 . -1)) (21466 37420 353657 946000) 0 nil]) ((nil rear-nonsticky nil 658 . 659) (nil fontified nil 549 . 659) (549 . 659)) ((#("core
+core.*
+*.html
+*~
+.#*
+\\#*\\#
+*.txt
+*.tex
+*.aux
+*.dvi
+*.log
+*.out
+*.ics
+*.pdf
+*.xml
+*.org-source
+*.png
+*.toc" 0 22 (fontified nil) 22 23 (fontified nil face font-lock-builtin-face) 23 24 (fontified nil syntax-table (3)) 24 26 (fontified nil) 26 28 (fontified nil face font-lock-string-face) 28 29 (fontified nil) 29 31 (fontified nil face font-lock-string-face) 31 105 (fontified nil) 105 109 (fontified nil) 109 110 (fontified nil rear-nonsticky nil)) . 549) (undo-tree-id1 . -12) (undo-tree-id2 . -110) (undo-tree-id3 . -110) (undo-tree-id4 . -12) (undo-tree-id5 . -110) (undo-tree-id6 . -12) (undo-tree-id7 . -109) (undo-tree-id8 . -12) (undo-tree-id9 . -109) (undo-tree-id10 . -12) (undo-tree-id11 . -109) (undo-tree-id12 . -12) (nil fontified t 580 . 654) (nil fontified t 578 . 580) (nil fontified t 577 . 578) (nil fontified t 575 . 577) (nil fontified t 573 . 575) (nil fontified t 572 . 573) (nil fontified t 571 . 572) (nil fontified t 549 . 571) (nil rear-nonsticky t 658 . 659)) (21466 37420 353791 572000) 0 nil]) ((547 . 549) (t 21466 37147 159265 557000)) nil (21466 37421 305309 64000) 0 nil]) nil nil (21466 37420 353678 740000) 0 nil] #1# 367 4 nil]

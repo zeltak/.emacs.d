@@ -1,0 +1,284 @@
+"b106ef4fd348397c15711d1c1c2731dda4339c0a"
+[cl-struct-undo-tree [nil (#1=[nil nil ((8674 . 8682) (8613 . 8621) (8547 . 8555) (8463 . 8658) (#("
+;;;### (autoloads nil nil (\"company-capf.el\" \"company-clang.el\" \"company-cmake.el\"
+;;;;;;  \"company-eclim.el\" \"company-pkg.el\" \"company-ropemacs.el\"
+;;;;;;  \"company-template.el\") (21577 60760 718093 674000))
+
+;;;***
+" 0 219 (fontified nil)) . -8463) (undo-tree-id0 . -219) (8455 . 8463) (7529 . 7579) (7492 . 7500) (7426 . 7521) (8294 . 8302) (8253 . 8254) (7426 . 8293) (#("
+;;;### (autoloads nil \"company-yasnippet\" \"company-yasnippet.el\"
+;;;;;;  (21577 60760 247367 259000))
+;;; Generated autoloads from company-yasnippet.el
+
+(autoload 'company-yasnippet \"company-yasnippet\" \"\\
+`company-mode' back-end for `yasnippet'.
+
+This back-end should be used with care, because as long as there are
+snippets defined for the current major mode, this back-end will always
+shadow back-ends that come after it.  Recommended usages:
+
+* In a buffer-local value of `company-backends', grouped with a back-end or
+  several that provide actual text completions.
+
+  (add-hook 'js-mode-hook
+            (lambda ()
+              (set (make-local-variable 'company-backends)
+                   '((company-dabbrev-code company-yasnippet)))))
+
+* After keyword `:with', grouped with other back-ends.
+
+  (push '(company-semantic :with company-yasnippet) company-backends)
+
+* Not in `company-backends', just bound to a key.
+
+  (global-set-key (kbd \\\"C-c y\\\") 'company-yasnippet)
+
+\\(fn COMMAND &optional ARG &rest IGNORE)\" t nil)
+
+;;;***
+" 0 1038 (fontified nil)) . -7426) (7418 . 7426) (7221 . 7267) (7196 . 7204) (7125 . 7213) (7268 . 7276) (7226 . 7227) (7125 . 7267) (#("
+;;;### (autoloads nil \"company-xcode\" \"company-xcode.el\" (21577 60760
+;;;;;;  324034 575000))
+;;; Generated autoloads from company-xcode.el
+
+(autoload 'company-xcode \"company-xcode\" \"\\
+`company-mode' completion back-end for Xcode projects.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 301 (fontified nil)) . -7125) (7117 . 7125) (6929 . 6975) (6905 . 6913) (6834 . 6921) (6968 . 6976) (6926 . 6927) (6834 . 6967) (#("
+;;;### (autoloads nil \"company-tempo\" \"company-tempo.el\" (21577 60759
+;;;;;;  420693 589000))
+;;; Generated autoloads from company-tempo.el
+
+(autoload 'company-tempo \"company-tempo\" \"\\
+`company-mode' completion back-end for tempo.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 292 (fontified nil)) . -6834) (6826 . 6834) (6618 . 6667) (6587 . 6595) (6516 . 6610) (6667 . 6675) (6625 . 6626) (6516 . 6666) (#("
+;;;### (autoloads nil \"company-semantic\" \"company-semantic.el\" (21577
+;;;;;;  60758 660687 152000))
+;;; Generated autoloads from company-semantic.el
+
+(autoload 'company-semantic \"company-semantic\" \"\\
+`company-mode' completion back-end using CEDET Semantic.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 318 (fontified nil)) . -6516) (6508 . 6516) (6272 . 6320) (6241 . 6249) (6172 . 6264) (6352 . 6360) (6310 . 6311) (6172 . 6351) (#("
+;;;### (autoloads nil \"company-pysmell\" \"company-pysmell.el\" (21577
+;;;;;;  60759 777363 277000))
+;;; Generated autoloads from company-pysmell.el
+
+(autoload 'company-pysmell \"company-pysmell\" \"\\
+`company-mode' completion back-end for pysmell.
+This requires pysmell.el and pymacs.el.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 344 (fontified nil)) . -6172) (6164 . 6172) (5961 . 6009) (5930 . 5938) (5861 . 5953) (6008 . 6016) (5966 . 5967) (5861 . 6007) (#("
+;;;### (autoloads nil \"company-oddmuse\" \"company-oddmuse.el\" (21577
+;;;;;;  60758 814021 785000))
+;;; Generated autoloads from company-oddmuse.el
+
+(autoload 'company-oddmuse \"company-oddmuse\" \"\\
+`company-mode' completion back-end for `oddmuse-mode'.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 311 (fontified nil)) . -5861) (5853 . 5861) (5662 . 5707) (5637 . 5645) (5568 . 5654) (5706 . 5714) (5664 . 5665) (5568 . 5705) (#("
+;;;### (autoloads nil \"company-nxml\" \"company-nxml.el\" (21577 60760
+;;;;;;  167366 581000))
+;;; Generated autoloads from company-nxml.el
+
+(autoload 'company-nxml \"company-nxml\" \"\\
+`company-mode' completion back-end for `nxml-mode'.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 293 (fontified nil)) . -5568) (5560 . 5568) (5350 . 5399) (5319 . 5327) (5248 . 5342) (5401 . 5409) (5359 . 5360) (5248 . 5400) (#("
+;;;### (autoloads nil \"company-keywords\" \"company-keywords.el\" (21577
+;;;;;;  60759 934031 270000))
+;;; Generated autoloads from company-keywords.el
+
+(autoload 'company-keywords \"company-keywords\" \"\\
+`company-mode' back-end for programming language keywords.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 320 (fontified nil)) . -5248) (5240 . 5248) (5046 . 5093) (5015 . 5023) (4948 . 5038) (5087 . 5095) (5045 . 5046) (4948 . 5086) (#("
+;;;### (autoloads nil \"company-ispell\" \"company-ispell.el\" (21577
+;;;;;;  60760 480702 569000))
+;;; Generated autoloads from company-ispell.el
+
+(autoload 'company-ispell \"company-ispell\" \"\\
+`company-mode' completion back-end using Ispell.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 300 (fontified nil)) . -4948) (4940 . 4948) (4747 . 4793) (4722 . 4730) (4651 . 4739) (4790 . 4798) (4748 . 4749) (4651 . 4789) (#("
+;;;### (autoloads nil \"company-gtags\" \"company-gtags.el\" (21577 60758
+;;;;;;  580686 475000))
+;;; Generated autoloads from company-gtags.el
+
+(autoload 'company-gtags \"company-gtags\" \"\\
+`company-mode' completion back-end for GNU Global.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 297 (fontified nil)) . -4651) (4643 . 4651) (4323 . 4369) (4298 . 4306) (4227 . 4315) (4493 . 4501) (4451 . 4452) (4227 . 4492) (#("
+;;;### (autoloads nil \"company-files\" \"company-files.el\" (21577 60759
+;;;;;;  700695 960000))
+;;; Generated autoloads from company-files.el
+
+(autoload 'company-files \"company-files\" \"\\
+`company-mode' completion back-end existing file names.
+Completions works for proper absolute and relative files paths.
+File paths with spaces are only supported inside strings.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 424 (fontified nil)) . -4227) (4219 . 4227) (4031 . 4077) (4006 . 4014) (3935 . 4023) (4069 . 4077) (4027 . 4028) (3935 . 4068) (#("
+;;;### (autoloads nil \"company-etags\" \"company-etags.el\" (21577 60759
+;;;;;;  150691 302000))
+;;; Generated autoloads from company-etags.el
+
+(autoload 'company-etags \"company-etags\" \"\\
+`company-mode' completion back-end for etags.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 292 (fontified nil)) . -3935) (3927 . 3935) (3734 . 3780) (3709 . 3717) (3638 . 3726) (3777 . 3785) (3735 . 3736) (3638 . 3776) (#("
+;;;### (autoloads nil \"company-elisp\" \"company-elisp.el\" (21577 60760
+;;;;;;  560703 248000))
+;;; Generated autoloads from company-elisp.el
+
+(autoload 'company-elisp \"company-elisp\" \"\\
+`company-mode' completion back-end for Emacs Lisp.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 297 (fontified nil)) . -3638) (3630 . 3638) (3327 . 3380) (3289 . 3297) (3217 . 3319) (3459 . 3467) (3417 . 3418) (3217 . 3458) (#("
+;;;### (autoloads nil \"company-dabbrev-code\" \"company-dabbrev-code.el\"
+;;;;;;  (21577 60759 330692 826000))
+;;; Generated autoloads from company-dabbrev-code.el
+
+(autoload 'company-dabbrev-code \"company-dabbrev-code\" \"\\
+dabbrev-like `company-mode' back-end for code.
+The back-end looks for all symbols in the current buffer that aren't in
+comments or strings.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 421 (fontified nil)) . -3217) (3209 . 3217) (3012 . 3060) (2981 . 2989) (2912 . 3004) (3053 . 3061) (3011 . 3012) (2912 . 3052) (#("
+;;;### (autoloads nil \"company-dabbrev\" \"company-dabbrev.el\" (21577
+;;;;;;  60759 544027 967000))
+;;; Generated autoloads from company-dabbrev.el
+
+(autoload 'company-dabbrev \"company-dabbrev\" \"\\
+dabbrev-like `company-mode' completion back-end.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 305 (fontified nil)) . -2912) (2904 . 2912) (2717 . 2761) (2692 . 2700) (2625 . 2709) (2760 . 2768) (2718 . 2719) (2625 . 2759) (#("
+;;;### (autoloads nil \"company-css\" \"company-css.el\" (21577 60758
+;;;;;;  984023 224000))
+;;; Generated autoloads from company-css.el
+
+(autoload 'company-css \"company-css\" \"\\
+`company-mode' completion back-end for `css-mode'.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 287 (fontified nil)) . -2625) (2617 . 2625) (2432 . 2477) (2407 . 2415) (2338 . 2424) (2470 . 2478) (2429 . 2430) (2338 . 2469) (#("
+;;;### (autoloads nil \"company-bbdb\" \"company-bbdb.el\" (21577 60760
+;;;;;;  90699 264000))
+;;; Generated autoloads from company-bbdb.el
+
+(autoload 'company-bbdb \"company-bbdb\" \"\\
+`company-mode' completion back-end for `bbdb'.
+
+\\(fn COMMAND &optional ARG &rest IGNORE)\" t nil)
+
+;;;***
+" 0 286 (fontified nil)) . -2338) (2330 . 2338) (2138 . 2185) (2107 . 2115) (2040 . 2130) (2177 . 2185) (2135 . 2136) (2040 . 2176) (#("
+;;;### (autoloads nil \"company-abbrev\" \"company-abbrev.el\" (21577
+;;;;;;  60760 404035 253000))
+;;; Generated autoloads from company-abbrev.el
+
+(autoload 'company-abbrev \"company-abbrev\" \"\\
+`company-mode' completion back-end for abbrev.
+
+\\(fn COMMAND &optional ARG &rest IGNORED)\" t nil)
+
+;;;***
+" 0 298 (fontified nil)) . -2040) (2032 . 2040) (232 . 272) (214 . 222) (148 . 224) (1900 . 1908) (1880 . 1881) (1136 . 1899) (1116 . 1117) (148 . 1135) (#("
+;;;### (autoloads nil \"company\" \"company.el\" (21577 60759 60690 540000))
+;;; Generated autoloads from company.el
+
+(autoload 'company-mode \"company\" \"\\
+\\\"complete anything\\\"; is an in-buffer completion framework.
+Completion starts automatically, depending on the values
+`company-idle-delay' and `company-minimum-prefix-length'.
+
+Completion can be controlled with the commands:
+`company-complete-common', `company-complete-selection', `company-complete',
+`company-select-next', `company-select-previous'.  If these commands are
+called before `company-idle-delay', completion will also start.
+
+Completions can be searched with `company-search-candidates' or
+`company-filter-candidates'.  These can be used while completion is
+inactive, as well.
+
+The completion data is retrieved using `company-backends' and displayed
+using `company-frontends'.  If you want to start a specific back-end, call
+it interactively or use `company-begin-backend'.
+
+regular keymap (`company-mode-map'):
+
+\\\\{company-mode-map}
+keymap during active completions (`company-active-map'):
+
+\\\\{company-active-map}
+
+\\(fn &optional ARG)\" t nil)
+
+(defvar global-company-mode nil \"\\
+Non-nil if Global-Company mode is enabled.
+See the command `global-company-mode' for a description of this minor mode.
+Setting this variable directly does not take effect;
+either customize it (see the info node `Easy Customization')
+or call the function `global-company-mode'.\")
+
+(custom-autoload 'global-company-mode \"company\" nil)
+
+(autoload 'global-company-mode \"company\" \"\\
+Toggle Company mode in all buffers.
+With prefix ARG, enable Global-Company mode if ARG is positive;
+otherwise, disable it.  If called from Lisp, enable the mode if
+ARG is omitted or nil.
+
+Company mode is enabled in all buffers where
+`company-mode-on' would do it.
+See `company-mode' for more information on Company mode.
+
+\\(fn &optional ARG)\" t nil)
+
+;;;***
+" 0 1883 (fontified nil)) . -148) 1 (t 21577 60761 84041 16000)) nil (21577 61712 718007 21000) 0 nil]) nil nil (21577 61712 718035 833000) 0 nil] #1# 9822 1 nil]

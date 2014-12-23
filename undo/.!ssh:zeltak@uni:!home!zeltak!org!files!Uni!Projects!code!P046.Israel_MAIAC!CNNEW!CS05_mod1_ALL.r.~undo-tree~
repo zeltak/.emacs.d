@@ -1,0 +1,1062 @@
+"e00654410b51cf680e60dd7dbb169eb291cbb3b4"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil (#1=[nil nil (("
+" . 1) (undo-tree-id0 . 1) (undo-tree-id1 . 1) (undo-tree-id2 . 1) (undo-tree-id3 . 1)) nil (21640 4086 154467 589000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1) (undo-tree-id4 . 1) (undo-tree-id5 . 1) (undo-tree-id6 . 1)) nil (21640 4086 154477 453000) 0 nil]) ((#("
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(dplyr)
+library(ggmap)
+library(broom)
+library(splines)
+#sourcing
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/CV_splits.r\")
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/rmspe.r\")
+
+
+#-------------------->> RES TABLE
+res <- matrix(nrow=9, ncol=45)
+res <- data.frame(res)
+colnames(res) <- c(
+          \"year\"
+          ,\"m1.R2\",\"m1.PE\",\"m1.R2.s\",\"m1.R2.t\",\"m1.PE.s\" #full model
+          ,\"m1cv.R2\",\"m1cv.I\",\"m1cv.I.se\",\"m1cv.S\",\"m1cv.S.se\",\"m1cv.PE\",\"m1cv.R2.s\",\"m1cv.R2.t\",\"m1cv.PE.s\" #mod1 CV
+          ,\"m1cv.loc.R2\",\"m1cv.loc.I\",\"m1cv.loc.I.se\",\"m1cv.loc.S\",\"m1cv.loc.S.se\",\"m1cv.loc.PE\",\"m1cv.loc.PE.s\",\"m1cv.loc.R2.s\",\"m1cv.loc.R2.t\"#loc m1
+          ,\"mod2_R2\" #mod2
+          ,\"m3.t31\",\"m3.t33\" #mod3 tests
+          ,\"mod3_pm_mod3\",\"mod3_int\"
+          ,\"mod3_int_SE\",\"mod3_Slope\",\"mod3_Slope SE\",\"mod3_RMSPE\"
+          ,\"mod3_spatial\",\"mod3_temporal\",\"mod3_RMSPE_spatial\",
+          \"mod3LPM_pm_mod3LPM\",\"mod3LPM_int\",\"mod3LPM_int_SE\",\"mod3LPM_Slope\",
+                   \"mod3LPM_Slope SE\",\"mod3LPM_RMSPE\",\"mod3LPM_spatial\",\"mod3LPM_temporal\",\"mod3LPM_RMSPE_spatial\"
+                   )
+res$year <- c(2003:2011); 
+
+
+
+### import data
+m1.2000 <-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.AQ.2000.rds\")
+
+### subset to aqua and apply alexei cleaning methods
+m1.2000<-m1.2000[MaskAdjacency == \"000\" & UN > 0 & UN < 0.04] 
+
+################# clean BAD STN PM25 and check if improved model?
+rawdf <- ddply(m1.2000, c( \"stn\"), 
+      function(x) {
+        mod1 <- lm(PM25 ~ aod, data=x)
+        data.frame(R2 = round(summary(mod1)$r.squared, 5), 
+                   nsamps = length(summary(mod1)$resid))
+})
+rawdf
+rawdf<-as.data.table(rawdf)
+bad<- rawdf[R2< 0.05]
+bad[,badid := paste(stn,sep=\"-\")]
+#################BAD STN
+m1.2000[,badid := paste(stn,sep=\"-\")]
+####Take out bad stations
+m1.2000 <- m1.2000[!(m1.2000$badid %in% bad$badid), ] 
+
+#check it does better
+m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+x<-  lmer(m1.formula,data=m1.2000)
+m1.2000$predicted <- predict(x)
+glance(lm(PM25~predicted,data=m1.2000))#0.74
+#get rid of missing
+m1.2000 <- na.omit(m1.2000)
+m1.2000[,elev.s:= scale(elev)]
+m1.2000[,tden.s:= scale(tden)]
+m1.2000[,pden.s:= scale(pden)]
+m1.2000[,dist2A1.s:= scale(dist2A1)]
+m1.2000[,dist2water.s:= scale(dist2water)]
+m1.2000[,dist2rail.s:= scale(dist2rail)]
+m1.2000[,Dist2road.s:= scale(Dist2road)]
+m1.2000[,ndvi.s:= scale(ndvi)]
+m1.2000[,MeanPbl.s:= scale(MeanPbl)]
+m1.2000[,p_ind.s:= scale(p_ind)]
+m1.2000[,p_for.s:= scale(p_for)]
+m1.2000[,p_farm.s:= scale(p_farm)]
+m1.2000[,p_dos.s:= scale(p_dos)]
+m1.2000[,p_dev.s:= scale(p_dev)]
+m1.2000[,p_os.s:= scale(p_os)]
+m1.2000[,Temp.s:= scale(Temp)]
+m1.2000[,WD.s:= scale(WD)]
+m1.2000[,WS.s:= scale(WS)]
+m1.2000[,RH.s:= scale(RH)]
+m1.2000[,Rain.s:= scale(Rain)]
+
+
+
+#lme mixed model
+#m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+# m1.formula <- as.formula(PM25~ aod+
+#                         Temp+WD+RH+WS+Dust+Rain+MeanPbl.s #temporal
+#                         +elev.s+tden.s+pden.s+dist2rail.s+dist2A1.s+Dist2road.s+dist2water.s+ndvi.s+season #spatial
+#                         +p_os.s+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+#                          +(1+aod|day/reg_num) +(1|stn))
+
+m1.formula <- as.formula(PM25~ aod
+                        +Temp.s+WD.s+RH.s+WS.s+Dust+Rain.s+MeanPbl.s #temporal
+                        +elev.s+tden.s+pden.s+Dist2road.s+ndvi.s #spatial
+                        +p_os.s #+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+                         #+aod*Dust #interactions
+                         +(1+aod|day/reg_num)+(1|stn)) #0.812
+
+#full fit
+m1.fit.2000 <-  lmer(m1.formula,data=m1.2000,weights=normwt)
+m1.2000$pred.m1 <- predict(m1.fit.2000)
+res[res$year==\"2000\", 'm1.R2'] <- print(summary(lm(PM25~pred.m1,data=m1.2000))$r.squared)
+#RMSPE
+res[res$year==\"2000\", 'm1.PE'] <- print(rmse(residuals(m1.fit.2000)))
+
+#spatial
+###to check
+spatial2000<-m1.2000 %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2000.spat<- lm(barpm ~ barpred, data=spatial2000)
+res[res$year==\"2000\", 'm1.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2000))$r.squared)
+res[res$year==\"2000\", 'm1.PE.s'] <- print(rmse(residuals(m1.fit.2000.spat)))
+       
+#temporal
+tempo2000<-left_join(m1.2000,spatial2000)
+tempo2000$delpm <-tempo2000$PM25-tempo2000$barpm
+tempo2000$delpred <-tempo2000$pred.m1-tempo2000$barpred
+mod_temporal <- lm(delpm ~ delpred, data=tempo2000)
+res[res$year==\"2000\", 'm1.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2000))$r.squared)
+
+
+#---------------->>>> CV
+#s1
+splits_s1 <- splitdf(m1.2000)
+test_s1 <- splits_s1$testset
+train_s1 <- splits_s1$trainset
+out_train_s1 <- lmer(m1.formula,data =  train_s1,weights=normwt)
+test_s1$pred.m1.cv <- predict(object=out_train_s1 ,newdata=test_s1,allow.new.levels=TRUE,re.form=NULL )
+test_s1$iter<-\"s1\"
+#s2
+splits_s2 <- splitdf(m1.2000)
+test_s2 <- splits_s2$testset
+train_s2 <- splits_s2$trainset
+out_train_s2 <- lmer(m1.formula,data =  train_s2,weights=normwt)
+test_s2$pred.m1.cv <- predict(object=out_train_s2 ,newdata=test_s2,allow.new.levels=TRUE,re.form=NULL )
+test_s2$iter<-\"s2\"
+#s3
+splits_s3 <- splitdf(m1.2000)
+test_s3 <- splits_s3$testset
+train_s3 <- splits_s3$trainset
+out_train_s3 <- lmer(m1.formula,data =  train_s3,weights=normwt)
+test_s3$pred.m1.cv <- predict(object=out_train_s3 ,newdata=test_s3,allow.new.levels=TRUE,re.form=NULL )
+test_s3$iter<-\"s3\"
+#s4
+splits_s4 <- splitdf(m1.2000)
+test_s4 <- splits_s4$testset
+train_s4 <- splits_s4$trainset
+out_train_s4 <- lmer(m1.formula,data =  train_s4,weights=normwt)
+test_s4$pred.m1.cv <- predict(object=out_train_s4 ,newdata=test_s4,allow.new.levels=TRUE,re.form=NULL )
+test_s4$iter<-\"s4\"
+#s5
+splits_s5 <- splitdf(m1.2000)
+test_s5 <- splits_s5$testset
+train_s5 <- splits_s5$trainset
+out_train_s5 <- lmer(m1.formula,data =  train_s5,weights=normwt)
+test_s5$pred.m1.cv <- predict(object=out_train_s5 ,newdata=test_s5,allow.new.levels=TRUE,re.form=NULL )
+test_s5$iter<-\"s5\"
+#s6
+splits_s6 <- splitdf(m1.2000)
+test_s6 <- splits_s6$testset
+train_s6 <- splits_s6$trainset
+out_train_s6 <- lmer(m1.formula,data =  train_s6,weights=normwt)
+test_s6$pred.m1.cv <- predict(object=out_train_s6 ,newdata=test_s6,allow.new.levels=TRUE,re.form=NULL )
+test_s6$iter<-\"s6\"
+#s7
+splits_s7 <- splitdf(m1.2000)
+test_s7 <- splits_s7$testset
+train_s7 <- splits_s7$trainset
+out_train_s7 <- lmer(m1.formula,data =  train_s7,weights=normwt)
+test_s7$pred.m1.cv <- predict(object=out_train_s7 ,newdata=test_s7,allow.new.levels=TRUE,re.form=NULL )
+test_s7$iter<-\"s7\"
+#s8
+splits_s8 <- splitdf(m1.2000)
+test_s8 <- splits_s8$testset
+train_s8 <- splits_s8$trainset
+out_train_s8 <- lmer(m1.formula,data =  train_s8,weights=normwt)
+test_s8$pred.m1.cv <- predict(object=out_train_s8 ,newdata=test_s8,allow.new.levels=TRUE,re.form=NULL )
+test_s8$iter<-\"s8\"
+#s9
+splits_s9 <- splitdf(m1.2000)
+test_s9 <- splits_s9$testset
+train_s9 <- splits_s9$trainset
+out_train_s9 <- lmer(m1.formula,data =  train_s9,weights=normwt)
+test_s9$pred.m1.cv <- predict(object=out_train_s9 ,newdata=test_s9,allow.new.levels=TRUE,re.form=NULL )
+test_s9$iter<-\"s9\"
+#s10
+splits_s10 <- splitdf(m1.2000)
+test_s10 <- splits_s10$testset
+train_s10 <- splits_s10$trainset
+out_train_s10 <- lmer(m1.formula,data =  train_s10,weights=normwt)
+test_s10$pred.m1.cv <- predict(object=out_train_s10 ,newdata=test_s10,allow.new.levels=TRUE,re.form=NULL )
+test_s10$iter<-\"s10\"
+
+#BIND 1 dataset
+m1.2000.cv<- data.table(rbind(test_s1,test_s2,test_s3,test_s4,test_s5,test_s6,test_s7,test_s8,test_s9, test_s10))
+# cleanup (remove from WS) objects from CV
+rm(list = ls(pattern = \"train_|test_\"))
+#table updates
+m1.fit.2000.cv<-lm(PM25~pred.m1.cv,data=m1.2000.cv)
+res[res$year==\"2000\", 'm1cv.R2'] <- print(summary(lm(PM25~pred.m1.cv,data=m1.2000.cv))$r.squared)
+res[res$year==\"2000\", 'm1cv.I'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2000.cv))$coef[1,1])
+res[res$year==\"2000\", 'm1cv.I.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2000.cv))$coef[1,2])
+res[res$year==\"2000\", 'm1cv.S'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2000.cv))$coef[2,1])
+res[res$year==\"2000\", 'm1cv.S.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2000.cv))$coef[2,2])
+#RMSPE
+res[res$year==\"2000\", 'm1cv.PE'] <- print(rmse(residuals(m1.fit.2000.cv)))
+
+#spatial
+spatial2000.cv<-m1.2000.cv %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2000.cv.s <- lm(barpm ~ barpred, data=spatial2000.cv)
+res[res$year==\"2000\", 'm1cv.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2000.cv))$r.squared)
+res[res$year==\"2000\", 'm1cv.PE.s'] <- print(rmse(residuals(m1.fit.2000.cv.s)))
+       
+#temporal
+tempo2000.cv<-left_join(m1.2000.cv,spatial2000.cv)
+tempo2000.cv$delpm <-tempo2000.cv$PM25-tempo2000.cv$barpm
+tempo2000.cv$delpred <-tempo2000.cv$pred.m1.cv-tempo2000.cv$barpred
+mod_temporal.cv <- lm(delpm ~ delpred, data=tempo2000.cv)
+res[res$year==\"2000\", 'm1cv.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2000.cv))$r.squared)
+
+
+
+#-------->>> loc stage
+luf<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/local.csv\")
+setnames(luf,\"tden\",\"loc.tden\")
+setnames(luf,\"elev50\",\"loc.elev\")
+
+#add 50m LU to CV data
+setkey(m1.2000.cv,stn)
+setkey(luf,stn)
+m1.2000.cv.loc <- merge(m1.2000.cv, luf, all.x = T)
+m1.2000.cv.loc<-na.omit(m1.2000.cv.loc)
+
+#create residual mp3 variable
+m1.2000.cv.loc$res.m1<-m1.2000.cv.loc$PM25-m1.2000.cv.loc$pred.m1.cv
+
+#The GAM model
+gam.out<-gam(res.m1~s(loc.tden)+s(tden,MeanPbl)+s(loc.tden,WS)+s(loc_p_os,fx=FALSE,k=4,bs='cr')+s(loc.elev,fx=FALSE,k=4,bs='cr')+s(dA1,fx=FALSE,k=4,bs='cr')+s(dsea,fx=FALSE,k=4,bs='cr'),data=m1.2000.cv.loc)
+#plot(bp.model.ps)
+#summary(bp.model.ps)
+## reg
+m1.2000.cv.loc$pred.m1.loc <-predict(gam.out)
+m1.2000.cv.loc$pred.m1.both <- m1.2000.cv.loc$pred.m1.cv + m1.2000.cv.loc$pred.m1.loc
+res[res$year==\"2000\", 'm1cv.loc.R2'] <- print(summary(lm(PM25~pred.m1.both,data=m1.2000.cv.loc))$r.squared)
+res[res$year==\"2000\", 'm1cv.loc.I'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2000.cv.loc))$coef[1,1])
+res[res$year==\"2000\", 'm1cv.loc.I.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2000.cv.loc))$coef[1,2])
+res[res$year==\"2000\", 'm1cv.loc.S'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2000.cv.loc))$coef[2,1])
+res[res$year==\"2000\", 'm1cv.loc.S.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2000.cv.loc))$coef[2,2])
+#RMSPE
+res[res$year==\"2000\", 'm1cv.loc.PE'] <- print(rmse(residuals(m1.fit.2000.cv)))
+
+#spatial
+spatial2000.cv.loc<-m1.2000.cv.loc %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2000.cv.loc.s <- lm(barpm ~ barpred, data=spatial2000.cv.loc)
+res[res$year==\"2000\", 'm1cv.loc.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2000.cv.loc))$r.squared)
+res[res$year==\"2000\", 'm1cv.loc.PE.s'] <- print(rmse(residuals(m1.fit.2000.cv.loc.s)))
+       
+#temporal
+tempo2000.loc.cv<-left_join(m1.2000.cv.loc,spatial2000.cv.loc)
+tempo2000.loc.cv$delpm <-tempo2000.loc.cv$PM25-tempo2000.loc.cv$barpm
+tempo2000.loc.cv$delpred <-tempo2000.loc.cv$pred.m1.both-tempo2000.loc.cv$barpred
+mod_temporal.loc.cv <- lm(delpm ~ delpred, data=tempo2000.loc.cv)
+res[res$year==\"2000\", 'm1cv.loc.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2000.loc.cv))$r.squared)
+
+#############save midpoint
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/res2000.m1.rds\")
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/resALL.rds\")
+
+###############
+#MOD2
+###############
+m2.2000<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2000.rds\")
+
+
+m2.2000[,elev.s:= scale(elev)]
+m2.2000[,tden.s:= scale(tden)]
+m2.2000[,pden.s:= scale(pden)]
+m2.2000[,dist2A1.s:= scale(dist2A1)]
+m2.2000[,dist2water.s:= scale(dist2water)]
+m2.2000[,dist2rail.s:= scale(dist2rail)]
+m2.2000[,Dist2road.s:= scale(Dist2road)]
+m2.2000[,ndvi.s:= scale(ndvi)]
+m2.2000[,MeanPbl.s:= scale(MeanPbl)]
+m2.2000[,p_ind.s:= scale(p_ind)]
+m2.2000[,p_for.s:= scale(p_for)]
+m2.2000[,p_farm.s:= scale(p_farm)]
+m2.2000[,p_dos.s:= scale(p_dos)]
+m2.2000[,p_dev.s:= scale(p_dev)]
+m2.2000[,p_os.s:= scale(p_os)]
+m2.2000[,Temp.s:= scale(Temp)]
+m2.2000[,WD.s:= scale(WD)]
+m2.2000[,WS.s:= scale(WS)]
+m2.2000[,RH.s:= scale(RH)]
+m2.2000[,Rain.s:= scale(Rain)]
+
+#generate predictions
+m2.2000[, pred.m2 := predict(object=m1.fit.2000,newdata=m2.2000,allow.new.levels=TRUE,re.form=NULL)]
+describe(m2.2000$pred.m2)
+#delete implossible values
+m2.2000 <- m2.2000[pred.m2 > 0.00000000000001 , ]
+m2.2000 <- m2.2000[pred.m2 < 500   , ]
+
+saveRDS(m2.2000,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2000.rds\")
+
+#test
+# describe(m2.2000$pred.m2)
+# hist(m2.2000$pred.m2)
+
+#######
+#M2 R2
+######
+# m1.2000[,aodid:= paste(m1.2000$long_aod,m1.2000$lat_aod,sep=\"-\")]
+# #merge co located mod1 and mod2 grids
+# setkey(m1.2000,aodid,day)
+# setkey(m2.2000,aodid,day)
+# m.1.2.pred <- merge(m1.2000, m2.2000[, list(aodid, day, pred.m2)], all.x = T)
+# mod2_reg<-lm(m.1.2.pred$predicted~m.1.2.pred$pred.m2)
+# #cleanup and save current stages (workspace)
+# summary(mod2_reg)$r.squared
+
+#map the predictions
+#aggregate by guid
+m2_agg <- m2.2000[, list(LTPM.m2 = mean(pred.m2, na.rm = TRUE), lat_aod = lat_aod[1], long_aod = long_aod[1]), by = aodid]
+#saveRDS(m2_agg, \"/media/NAS/Uni/Projects/P046.Israel_MAIAC/3.Work/2.Gather_data/FN008_model_prep/m2_agg_2000.rds\")
+#map the predictions
+write.csv(m2_agg, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/m2.2000.LTPM.csv\")
+ggplot(m2_agg, aes(long_aod,lat_aod, color = LTPM.m2)) + 
+  geom_point(size = 3, shape = 15) +  xlab(\"longitude\") + ylab(\"latitude\") + 
+  scale_colour_gradientn(\"long term PM2.5 prediction\", colours = rainbow(5)) + theme_bw() + ggtitle(\"Long term predictions\")
+ggsave(file=\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/LTPM.m2.png\")
+keep(res , sure=TRUE) 
+gc()
+
+
+
+
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(dplyr)
+library(ggmap)
+library(broom)
+library(splines)
+#sourcing
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/CV_splits.r\")
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/rmspe.r\")
+
+
+#-------------------->> RES TABLE
+res <- matrix(nrow=9, ncol=45)
+res <- data.frame(res)
+colnames(res) <- c(
+          \"year\"
+          ,\"m1.R2\",\"m1.PE\",\"m1.R2.s\",\"m1.R2.t\",\"m1.PE.s\" #full model
+          ,\"m1cv.R2\",\"m1cv.I\",\"m1cv.I.se\",\"m1cv.S\",\"m1cv.S.se\",\"m1cv.PE\",\"m1cv.R2.s\",\"m1cv.R2.t\",\"m1cv.PE.s\" #mod1 CV
+          ,\"m1cv.loc.R2\",\"m1cv.loc.I\",\"m1cv.loc.I.se\",\"m1cv.loc.S\",\"m1cv.loc.S.se\",\"m1cv.loc.PE\",\"m1cv.loc.PE.s\",\"m1cv.loc.R2.s\",\"m1cv.loc.R2.t\"#loc m1
+          ,\"mod2_R2\" #mod2
+          ,\"m3.t31\",\"m3.t33\" #mod3 tests
+          ,\"mod3_pm_mod3\",\"mod3_int\"
+          ,\"mod3_int_SE\",\"mod3_Slope\",\"mod3_Slope SE\",\"mod3_RMSPE\"
+          ,\"mod3_spatial\",\"mod3_temporal\",\"mod3_RMSPE_spatial\",
+          \"mod3LPM_pm_mod3LPM\",\"mod3LPM_int\",\"mod3LPM_int_SE\",\"mod3LPM_Slope\",
+                   \"mod3LPM_Slope SE\",\"mod3LPM_RMSPE\",\"mod3LPM_spatial\",\"mod3LPM_temporal\",\"mod3LPM_RMSPE_spatial\"
+                   )
+res$year <- c(2003:2011); 
+
+
+
+### import data
+m1.2001 <-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.AQ.2001.rds\")
+
+### subset to aqua and apply alexei cleaning methods
+m1.2001<-m1.2001[MaskAdjacency == \"000\" & UN > 0 & UN < 0.04] 
+
+################# clean BAD STN PM25 and check if improved model?
+rawdf <- ddply(m1.2001, c( \"stn\"), 
+      function(x) {
+        mod1 <- lm(PM25 ~ aod, data=x)
+        data.frame(R2 = round(summary(mod1)$r.squared, 5), 
+                   nsamps = length(summary(mod1)$resid))
+})
+rawdf
+rawdf<-as.data.table(rawdf)
+bad<- rawdf[R2< 0.05]
+bad[,badid := paste(stn,sep=\"-\")]
+#################BAD STN
+m1.2001[,badid := paste(stn,sep=\"-\")]
+####Take out bad stations
+m1.2001 <- m1.2001[!(m1.2001$badid %in% bad$badid), ] 
+
+#check it does better
+m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+x<-  lmer(m1.formula,data=m1.2001)
+m1.2001$predicted <- predict(x)
+glance(lm(PM25~predicted,data=m1.2001))#0.74
+#get rid of missing
+m1.2001 <- na.omit(m1.2001)
+m1.2001[,elev.s:= scale(elev)]
+m1.2001[,tden.s:= scale(tden)]
+m1.2001[,pden.s:= scale(pden)]
+m1.2001[,dist2A1.s:= scale(dist2A1)]
+m1.2001[,dist2water.s:= scale(dist2water)]
+m1.2001[,dist2rail.s:= scale(dist2rail)]
+m1.2001[,Dist2road.s:= scale(Dist2road)]
+m1.2001[,ndvi.s:= scale(ndvi)]
+m1.2001[,MeanPbl.s:= scale(MeanPbl)]
+m1.2001[,p_ind.s:= scale(p_ind)]
+m1.2001[,p_for.s:= scale(p_for)]
+m1.2001[,p_farm.s:= scale(p_farm)]
+m1.2001[,p_dos.s:= scale(p_dos)]
+m1.2001[,p_dev.s:= scale(p_dev)]
+m1.2001[,p_os.s:= scale(p_os)]
+m1.2001[,Temp.s:= scale(Temp)]
+m1.2001[,WD.s:= scale(WD)]
+m1.2001[,WS.s:= scale(WS)]
+m1.2001[,RH.s:= scale(RH)]
+m1.2001[,Rain.s:= scale(Rain)]
+
+
+
+#lme mixed model
+#m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+# m1.formula <- as.formula(PM25~ aod+
+#                         Temp+WD+RH+WS+Dust+Rain+MeanPbl.s #temporal
+#                         +elev.s+tden.s+pden.s+dist2rail.s+dist2A1.s+Dist2road.s+dist2water.s+ndvi.s+season #spatial
+#                         +p_os.s+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+#                          +(1+aod|day/reg_num) +(1|stn))
+
+m1.formula <- as.formula(PM25~ aod
+                        +Temp.s+WD.s+RH.s+WS.s+Dust+Rain.s+MeanPbl.s #temporal
+                        +elev.s+tden.s+pden.s+Dist2road.s+ndvi.s #spatial
+                        +p_os.s #+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+                         #+aod*Dust #interactions
+                         +(1+aod|day/reg_num)+(1|stn)) #0.812
+
+#full fit
+m1.fit.2001 <-  lmer(m1.formula,data=m1.2001,weights=normwt)
+m1.2001$pred.m1 <- predict(m1.fit.2001)
+res[res$year==\"2001\", 'm1.R2'] <- print(summary(lm(PM25~pred.m1,data=m1.2001))$r.squared)
+#RMSPE
+res[res$year==\"2001\", 'm1.PE'] <- print(rmse(residuals(m1.fit.2001)))
+
+#spatial
+###to check
+spatial2001<-m1.2001 %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2001.spat<- lm(barpm ~ barpred, data=spatial2001)
+res[res$year==\"2001\", 'm1.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2001))$r.squared)
+res[res$year==\"2001\", 'm1.PE.s'] <- print(rmse(residuals(m1.fit.2001.spat)))
+       
+#temporal
+tempo2001<-left_join(m1.2001,spatial2001)
+tempo2001$delpm <-tempo2001$PM25-tempo2001$barpm
+tempo2001$delpred <-tempo2001$pred.m1-tempo2001$barpred
+mod_temporal <- lm(delpm ~ delpred, data=tempo2001)
+res[res$year==\"2001\", 'm1.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2001))$r.squared)
+
+
+#---------------->>>> CV
+#s1
+splits_s1 <- splitdf(m1.2001)
+test_s1 <- splits_s1$testset
+train_s1 <- splits_s1$trainset
+out_train_s1 <- lmer(m1.formula,data =  train_s1,weights=normwt)
+test_s1$pred.m1.cv <- predict(object=out_train_s1 ,newdata=test_s1,allow.new.levels=TRUE,re.form=NULL )
+test_s1$iter<-\"s1\"
+#s2
+splits_s2 <- splitdf(m1.2001)
+test_s2 <- splits_s2$testset
+train_s2 <- splits_s2$trainset
+out_train_s2 <- lmer(m1.formula,data =  train_s2,weights=normwt)
+test_s2$pred.m1.cv <- predict(object=out_train_s2 ,newdata=test_s2,allow.new.levels=TRUE,re.form=NULL )
+test_s2$iter<-\"s2\"
+#s3
+splits_s3 <- splitdf(m1.2001)
+test_s3 <- splits_s3$testset
+train_s3 <- splits_s3$trainset
+out_train_s3 <- lmer(m1.formula,data =  train_s3,weights=normwt)
+test_s3$pred.m1.cv <- predict(object=out_train_s3 ,newdata=test_s3,allow.new.levels=TRUE,re.form=NULL )
+test_s3$iter<-\"s3\"
+#s4
+splits_s4 <- splitdf(m1.2001)
+test_s4 <- splits_s4$testset
+train_s4 <- splits_s4$trainset
+out_train_s4 <- lmer(m1.formula,data =  train_s4,weights=normwt)
+test_s4$pred.m1.cv <- predict(object=out_train_s4 ,newdata=test_s4,allow.new.levels=TRUE,re.form=NULL )
+test_s4$iter<-\"s4\"
+#s5
+splits_s5 <- splitdf(m1.2001)
+test_s5 <- splits_s5$testset
+train_s5 <- splits_s5$trainset
+out_train_s5 <- lmer(m1.formula,data =  train_s5,weights=normwt)
+test_s5$pred.m1.cv <- predict(object=out_train_s5 ,newdata=test_s5,allow.new.levels=TRUE,re.form=NULL )
+test_s5$iter<-\"s5\"
+#s6
+splits_s6 <- splitdf(m1.2001)
+test_s6 <- splits_s6$testset
+train_s6 <- splits_s6$trainset
+out_train_s6 <- lmer(m1.formula,data =  train_s6,weights=normwt)
+test_s6$pred.m1.cv <- predict(object=out_train_s6 ,newdata=test_s6,allow.new.levels=TRUE,re.form=NULL )
+test_s6$iter<-\"s6\"
+#s7
+splits_s7 <- splitdf(m1.2001)
+test_s7 <- splits_s7$testset
+train_s7 <- splits_s7$trainset
+out_train_s7 <- lmer(m1.formula,data =  train_s7,weights=normwt)
+test_s7$pred.m1.cv <- predict(object=out_train_s7 ,newdata=test_s7,allow.new.levels=TRUE,re.form=NULL )
+test_s7$iter<-\"s7\"
+#s8
+splits_s8 <- splitdf(m1.2001)
+test_s8 <- splits_s8$testset
+train_s8 <- splits_s8$trainset
+out_train_s8 <- lmer(m1.formula,data =  train_s8,weights=normwt)
+test_s8$pred.m1.cv <- predict(object=out_train_s8 ,newdata=test_s8,allow.new.levels=TRUE,re.form=NULL )
+test_s8$iter<-\"s8\"
+#s9
+splits_s9 <- splitdf(m1.2001)
+test_s9 <- splits_s9$testset
+train_s9 <- splits_s9$trainset
+out_train_s9 <- lmer(m1.formula,data =  train_s9,weights=normwt)
+test_s9$pred.m1.cv <- predict(object=out_train_s9 ,newdata=test_s9,allow.new.levels=TRUE,re.form=NULL )
+test_s9$iter<-\"s9\"
+#s10
+splits_s10 <- splitdf(m1.2001)
+test_s10 <- splits_s10$testset
+train_s10 <- splits_s10$trainset
+out_train_s10 <- lmer(m1.formula,data =  train_s10,weights=normwt)
+test_s10$pred.m1.cv <- predict(object=out_train_s10 ,newdata=test_s10,allow.new.levels=TRUE,re.form=NULL )
+test_s10$iter<-\"s10\"
+
+#BIND 1 dataset
+m1.2001.cv<- data.table(rbind(test_s1,test_s2,test_s3,test_s4,test_s5,test_s6,test_s7,test_s8,test_s9, test_s10))
+# cleanup (remove from WS) objects from CV
+rm(list = ls(pattern = \"train_|test_\"))
+#table updates
+m1.fit.2001.cv<-lm(PM25~pred.m1.cv,data=m1.2001.cv)
+res[res$year==\"2001\", 'm1cv.R2'] <- print(summary(lm(PM25~pred.m1.cv,data=m1.2001.cv))$r.squared)
+res[res$year==\"2001\", 'm1cv.I'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2001.cv))$coef[1,1])
+res[res$year==\"2001\", 'm1cv.I.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2001.cv))$coef[1,2])
+res[res$year==\"2001\", 'm1cv.S'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2001.cv))$coef[2,1])
+res[res$year==\"2001\", 'm1cv.S.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2001.cv))$coef[2,2])
+#RMSPE
+res[res$year==\"2001\", 'm1cv.PE'] <- print(rmse(residuals(m1.fit.2001.cv)))
+
+#spatial
+spatial2001.cv<-m1.2001.cv %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2001.cv.s <- lm(barpm ~ barpred, data=spatial2001.cv)
+res[res$year==\"2001\", 'm1cv.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2001.cv))$r.squared)
+res[res$year==\"2001\", 'm1cv.PE.s'] <- print(rmse(residuals(m1.fit.2001.cv.s)))
+       
+#temporal
+tempo2001.cv<-left_join(m1.2001.cv,spatial2001.cv)
+tempo2001.cv$delpm <-tempo2001.cv$PM25-tempo2001.cv$barpm
+tempo2001.cv$delpred <-tempo2001.cv$pred.m1.cv-tempo2001.cv$barpred
+mod_temporal.cv <- lm(delpm ~ delpred, data=tempo2001.cv)
+res[res$year==\"2001\", 'm1cv.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2001.cv))$r.squared)
+
+
+
+#-------->>> loc stage
+luf<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/local.csv\")
+setnames(luf,\"tden\",\"loc.tden\")
+setnames(luf,\"elev50\",\"loc.elev\")
+
+#add 50m LU to CV data
+setkey(m1.2001.cv,stn)
+setkey(luf,stn)
+m1.2001.cv.loc <- merge(m1.2001.cv, luf, all.x = T)
+m1.2001.cv.loc<-na.omit(m1.2001.cv.loc)
+
+#create residual mp3 variable
+m1.2001.cv.loc$res.m1<-m1.2001.cv.loc$PM25-m1.2001.cv.loc$pred.m1.cv
+
+#The GAM model
+gam.out<-gam(res.m1~s(loc.tden)+s(tden,MeanPbl)+s(loc.tden,WS)+s(loc_p_os,fx=FALSE,k=4,bs='cr')+s(loc.elev,fx=FALSE,k=4,bs='cr')+s(dA1,fx=FALSE,k=4,bs='cr')+s(dsea,fx=FALSE,k=4,bs='cr'),data=m1.2001.cv.loc)
+#plot(bp.model.ps)
+#summary(bp.model.ps)
+## reg
+m1.2001.cv.loc$pred.m1.loc <-predict(gam.out)
+m1.2001.cv.loc$pred.m1.both <- m1.2001.cv.loc$pred.m1.cv + m1.2001.cv.loc$pred.m1.loc
+res[res$year==\"2001\", 'm1cv.loc.R2'] <- print(summary(lm(PM25~pred.m1.both,data=m1.2001.cv.loc))$r.squared)
+res[res$year==\"2001\", 'm1cv.loc.I'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2001.cv.loc))$coef[1,1])
+res[res$year==\"2001\", 'm1cv.loc.I.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2001.cv.loc))$coef[1,2])
+res[res$year==\"2001\", 'm1cv.loc.S'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2001.cv.loc))$coef[2,1])
+res[res$year==\"2001\", 'm1cv.loc.S.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2001.cv.loc))$coef[2,2])
+#RMSPE
+res[res$year==\"2001\", 'm1cv.loc.PE'] <- print(rmse(residuals(m1.fit.2001.cv)))
+
+#spatial
+spatial2001.cv.loc<-m1.2001.cv.loc %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2001.cv.loc.s <- lm(barpm ~ barpred, data=spatial2001.cv.loc)
+res[res$year==\"2001\", 'm1cv.loc.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2001.cv.loc))$r.squared)
+res[res$year==\"2001\", 'm1cv.loc.PE.s'] <- print(rmse(residuals(m1.fit.2001.cv.loc.s)))
+       
+#temporal
+tempo2001.loc.cv<-left_join(m1.2001.cv.loc,spatial2001.cv.loc)
+tempo2001.loc.cv$delpm <-tempo2001.loc.cv$PM25-tempo2001.loc.cv$barpm
+tempo2001.loc.cv$delpred <-tempo2001.loc.cv$pred.m1.both-tempo2001.loc.cv$barpred
+mod_temporal.loc.cv <- lm(delpm ~ delpred, data=tempo2001.loc.cv)
+res[res$year==\"2001\", 'm1cv.loc.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2001.loc.cv))$r.squared)
+
+#############save midpoint
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/res2001.m1.rds\")
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/resALL.rds\")
+
+###############
+#MOD2
+###############
+m2.2001<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2001.rds\")
+
+
+m2.2001[,elev.s:= scale(elev)]
+m2.2001[,tden.s:= scale(tden)]
+m2.2001[,pden.s:= scale(pden)]
+m2.2001[,dist2A1.s:= scale(dist2A1)]
+m2.2001[,dist2water.s:= scale(dist2water)]
+m2.2001[,dist2rail.s:= scale(dist2rail)]
+m2.2001[,Dist2road.s:= scale(Dist2road)]
+m2.2001[,ndvi.s:= scale(ndvi)]
+m2.2001[,MeanPbl.s:= scale(MeanPbl)]
+m2.2001[,p_ind.s:= scale(p_ind)]
+m2.2001[,p_for.s:= scale(p_for)]
+m2.2001[,p_farm.s:= scale(p_farm)]
+m2.2001[,p_dos.s:= scale(p_dos)]
+m2.2001[,p_dev.s:= scale(p_dev)]
+m2.2001[,p_os.s:= scale(p_os)]
+m2.2001[,Temp.s:= scale(Temp)]
+m2.2001[,WD.s:= scale(WD)]
+m2.2001[,WS.s:= scale(WS)]
+m2.2001[,RH.s:= scale(RH)]
+m2.2001[,Rain.s:= scale(Rain)]
+
+#generate predictions
+m2.2001[, pred.m2 := predict(object=m1.fit.2001,newdata=m2.2001,allow.new.levels=TRUE,re.form=NULL)]
+describe(m2.2001$pred.m2)
+#delete implossible values
+m2.2001 <- m2.2001[pred.m2 > 0.00000000000001 , ]
+m2.2001 <- m2.2001[pred.m2 < 500   , ]
+
+saveRDS(m2.2001,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2001.rds\")
+
+#test
+# describe(m2.2001$pred.m2)
+# hist(m2.2001$pred.m2)
+
+#######
+#M2 R2
+######
+# m1.2001[,aodid:= paste(m1.2001$long_aod,m1.2001$lat_aod,sep=\"-\")]
+# #merge co located mod1 and mod2 grids
+# setkey(m1.2001,aodid,day)
+# setkey(m2.2001,aodid,day)
+# m.1.2.pred <- merge(m1.2001, m2.2001[, list(aodid, day, pred.m2)], all.x = T)
+# mod2_reg<-lm(m.1.2.pred$predicted~m.1.2.pred$pred.m2)
+# #cleanup and save current stages (workspace)
+# summary(mod2_reg)$r.squared
+
+#map the predictions
+#aggregate by guid
+m2_agg <- m2.2001[, list(LTPM.m2 = mean(pred.m2, na.rm = TRUE), lat_aod = lat_aod[1], long_aod = long_aod[1]), by = aodid]
+#saveRDS(m2_agg, \"/media/NAS/Uni/Projects/P046.Israel_MAIAC/3.Work/2.Gather_data/FN008_model_prep/m2_agg_2001.rds\")
+#map the predictions
+write.csv(m2_agg, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/m2.2001.LTPM.csv\")
+ggplot(m2_agg, aes(long_aod,lat_aod, color = LTPM.m2)) + 
+  geom_point(size = 3, shape = 15) +  xlab(\"longitude\") + ylab(\"latitude\") + 
+  scale_colour_gradientn(\"long term PM2.5 prediction\", colours = rainbow(5)) + theme_bw() + ggtitle(\"Long term predictions\")
+ggsave(file=\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/LTPM.m2.png\")
+keep(res , sure=TRUE) 
+gc()
+
+
+
+
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(dplyr)
+library(ggmap)
+library(broom)
+library(splines)
+#sourcing
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/CV_splits.r\")
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/rmspe.r\")
+
+
+#-------------------->> RES TABLE
+res <- matrix(nrow=9, ncol=45)
+res <- data.frame(res)
+colnames(res) <- c(
+          \"year\"
+          ,\"m1.R2\",\"m1.PE\",\"m1.R2.s\",\"m1.R2.t\",\"m1.PE.s\" #full model
+          ,\"m1cv.R2\",\"m1cv.I\",\"m1cv.I.se\",\"m1cv.S\",\"m1cv.S.se\",\"m1cv.PE\",\"m1cv.R2.s\",\"m1cv.R2.t\",\"m1cv.PE.s\" #mod1 CV
+          ,\"m1cv.loc.R2\",\"m1cv.loc.I\",\"m1cv.loc.I.se\",\"m1cv.loc.S\",\"m1cv.loc.S.se\",\"m1cv.loc.PE\",\"m1cv.loc.PE.s\",\"m1cv.loc.R2.s\",\"m1cv.loc.R2.t\"#loc m1
+          ,\"mod2_R2\" #mod2
+          ,\"m3.t31\",\"m3.t33\" #mod3 tests
+          ,\"mod3_pm_mod3\",\"mod3_int\"
+          ,\"mod3_int_SE\",\"mod3_Slope\",\"mod3_Slope SE\",\"mod3_RMSPE\"
+          ,\"mod3_spatial\",\"mod3_temporal\",\"mod3_RMSPE_spatial\",
+          \"mod3LPM_pm_mod3LPM\",\"mod3LPM_int\",\"mod3LPM_int_SE\",\"mod3LPM_Slope\",
+                   \"mod3LPM_Slope SE\",\"mod3LPM_RMSPE\",\"mod3LPM_spatial\",\"mod3LPM_temporal\",\"mod3LPM_RMSPE_spatial\"
+                   )
+res$year <- c(2003:2011); 
+
+
+
+### import data
+m1.2002 <-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.AQ.2002.rds\")
+
+### subset to aqua and apply alexei cleaning methods
+m1.2002<-m1.2002[MaskAdjacency == \"000\" & UN > 0 & UN < 0.04] 
+
+################# clean BAD STN PM25 and check if improved model?
+rawdf <- ddply(m1.2002, c( \"stn\"), 
+      function(x) {
+        mod1 <- lm(PM25 ~ aod, data=x)
+        data.frame(R2 = round(summary(mod1)$r.squared, 5), 
+                   nsamps = length(summary(mod1)$resid))
+})
+rawdf
+rawdf<-as.data.table(rawdf)
+bad<- rawdf[R2< 0.05]
+bad[,badid := paste(stn,sep=\"-\")]
+#################BAD STN
+m1.2002[,badid := paste(stn,sep=\"-\")]
+####Take out bad stations
+m1.2002 <- m1.2002[!(m1.2002$badid %in% bad$badid), ] 
+
+#check it does better
+m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+x<-  lmer(m1.formula,data=m1.2002)
+m1.2002$predicted <- predict(x)
+glance(lm(PM25~predicted,data=m1.2002))#0.74
+#get rid of missing
+m1.2002 <- na.omit(m1.2002)
+m1.2002[,elev.s:= scale(elev)]
+m1.2002[,tden.s:= scale(tden)]
+m1.2002[,pden.s:= scale(pden)]
+m1.2002[,dist2A1.s:= scale(dist2A1)]
+m1.2002[,dist2water.s:= scale(dist2water)]
+m1.2002[,dist2rail.s:= scale(dist2rail)]
+m1.2002[,Dist2road.s:= scale(Dist2road)]
+m1.2002[,ndvi.s:= scale(ndvi)]
+m1.2002[,MeanPbl.s:= scale(MeanPbl)]
+m1.2002[,p_ind.s:= scale(p_ind)]
+m1.2002[,p_for.s:= scale(p_for)]
+m1.2002[,p_farm.s:= scale(p_farm)]
+m1.2002[,p_dos.s:= scale(p_dos)]
+m1.2002[,p_dev.s:= scale(p_dev)]
+m1.2002[,p_os.s:= scale(p_os)]
+m1.2002[,Temp.s:= scale(Temp)]
+m1.2002[,WD.s:= scale(WD)]
+m1.2002[,WS.s:= scale(WS)]
+m1.2002[,RH.s:= scale(RH)]
+m1.2002[,Rain.s:= scale(Rain)]
+
+
+
+#lme mixed model
+#m1.formula <- as.formula(PM25~ aod+(1+aod|day))
+# m1.formula <- as.formula(PM25~ aod+
+#                         Temp+WD+RH+WS+Dust+Rain+MeanPbl.s #temporal
+#                         +elev.s+tden.s+pden.s+dist2rail.s+dist2A1.s+Dist2road.s+dist2water.s+ndvi.s+season #spatial
+#                         +p_os.s+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+#                          +(1+aod|day/reg_num) +(1|stn))
+
+m1.formula <- as.formula(PM25~ aod
+                        +Temp.s+WD.s+RH.s+WS.s+Dust+Rain.s+MeanPbl.s #temporal
+                        +elev.s+tden.s+pden.s+Dist2road.s+ndvi.s #spatial
+                        +p_os.s #+p_dev.s+p_dos.s+p_farm.s+p_for.s+p_ind.s  #land use
+                         #+aod*Dust #interactions
+                         +(1+aod|day/reg_num)+(1|stn)) #0.812
+
+#full fit
+m1.fit.2002 <-  lmer(m1.formula,data=m1.2002,weights=normwt)
+m1.2002$pred.m1 <- predict(m1.fit.2002)
+res[res$year==\"2002\", 'm1.R2'] <- print(summary(lm(PM25~pred.m1,data=m1.2002))$r.squared)
+#RMSPE
+res[res$year==\"2002\", 'm1.PE'] <- print(rmse(residuals(m1.fit.2002)))
+
+#spatial
+###to check
+spatial2002<-m1.2002 %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2002.spat<- lm(barpm ~ barpred, data=spatial2002)
+res[res$year==\"2002\", 'm1.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2002))$r.squared)
+res[res$year==\"2002\", 'm1.PE.s'] <- print(rmse(residuals(m1.fit.2002.spat)))
+       
+#temporal
+tempo2002<-left_join(m1.2002,spatial2002)
+tempo2002$delpm <-tempo2002$PM25-tempo2002$barpm
+tempo2002$delpred <-tempo2002$pred.m1-tempo2002$barpred
+mod_temporal <- lm(delpm ~ delpred, data=tempo2002)
+res[res$year==\"2002\", 'm1.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2002))$r.squared)
+
+
+#---------------->>>> CV
+#s1
+splits_s1 <- splitdf(m1.2002)
+test_s1 <- splits_s1$testset
+train_s1 <- splits_s1$trainset
+out_train_s1 <- lmer(m1.formula,data =  train_s1,weights=normwt)
+test_s1$pred.m1.cv <- predict(object=out_train_s1 ,newdata=test_s1,allow.new.levels=TRUE,re.form=NULL )
+test_s1$iter<-\"s1\"
+#s2
+splits_s2 <- splitdf(m1.2002)
+test_s2 <- splits_s2$testset
+train_s2 <- splits_s2$trainset
+out_train_s2 <- lmer(m1.formula,data =  train_s2,weights=normwt)
+test_s2$pred.m1.cv <- predict(object=out_train_s2 ,newdata=test_s2,allow.new.levels=TRUE,re.form=NULL )
+test_s2$iter<-\"s2\"
+#s3
+splits_s3 <- splitdf(m1.2002)
+test_s3 <- splits_s3$testset
+train_s3 <- splits_s3$trainset
+out_train_s3 <- lmer(m1.formula,data =  train_s3,weights=normwt)
+test_s3$pred.m1.cv <- predict(object=out_train_s3 ,newdata=test_s3,allow.new.levels=TRUE,re.form=NULL )
+test_s3$iter<-\"s3\"
+#s4
+splits_s4 <- splitdf(m1.2002)
+test_s4 <- splits_s4$testset
+train_s4 <- splits_s4$trainset
+out_train_s4 <- lmer(m1.formula,data =  train_s4,weights=normwt)
+test_s4$pred.m1.cv <- predict(object=out_train_s4 ,newdata=test_s4,allow.new.levels=TRUE,re.form=NULL )
+test_s4$iter<-\"s4\"
+#s5
+splits_s5 <- splitdf(m1.2002)
+test_s5 <- splits_s5$testset
+train_s5 <- splits_s5$trainset
+out_train_s5 <- lmer(m1.formula,data =  train_s5,weights=normwt)
+test_s5$pred.m1.cv <- predict(object=out_train_s5 ,newdata=test_s5,allow.new.levels=TRUE,re.form=NULL )
+test_s5$iter<-\"s5\"
+#s6
+splits_s6 <- splitdf(m1.2002)
+test_s6 <- splits_s6$testset
+train_s6 <- splits_s6$trainset
+out_train_s6 <- lmer(m1.formula,data =  train_s6,weights=normwt)
+test_s6$pred.m1.cv <- predict(object=out_train_s6 ,newdata=test_s6,allow.new.levels=TRUE,re.form=NULL )
+test_s6$iter<-\"s6\"
+#s7
+splits_s7 <- splitdf(m1.2002)
+test_s7 <- splits_s7$testset
+train_s7 <- splits_s7$trainset
+out_train_s7 <- lmer(m1.formula,data =  train_s7,weights=normwt)
+test_s7$pred.m1.cv <- predict(object=out_train_s7 ,newdata=test_s7,allow.new.levels=TRUE,re.form=NULL )
+test_s7$iter<-\"s7\"
+#s8
+splits_s8 <- splitdf(m1.2002)
+test_s8 <- splits_s8$testset
+train_s8 <- splits_s8$trainset
+out_train_s8 <- lmer(m1.formula,data =  train_s8,weights=normwt)
+test_s8$pred.m1.cv <- predict(object=out_train_s8 ,newdata=test_s8,allow.new.levels=TRUE,re.form=NULL )
+test_s8$iter<-\"s8\"
+#s9
+splits_s9 <- splitdf(m1.2002)
+test_s9 <- splits_s9$testset
+train_s9 <- splits_s9$trainset
+out_train_s9 <- lmer(m1.formula,data =  train_s9,weights=normwt)
+test_s9$pred.m1.cv <- predict(object=out_train_s9 ,newdata=test_s9,allow.new.levels=TRUE,re.form=NULL )
+test_s9$iter<-\"s9\"
+#s10
+splits_s10 <- splitdf(m1.2002)
+test_s10 <- splits_s10$testset
+train_s10 <- splits_s10$trainset
+out_train_s10 <- lmer(m1.formula,data =  train_s10,weights=normwt)
+test_s10$pred.m1.cv <- predict(object=out_train_s10 ,newdata=test_s10,allow.new.levels=TRUE,re.form=NULL )
+test_s10$iter<-\"s10\"
+
+#BIND 1 dataset
+m1.2002.cv<- data.table(rbind(test_s1,test_s2,test_s3,test_s4,test_s5,test_s6,test_s7,test_s8,test_s9, test_s10))
+# cleanup (remove from WS) objects from CV
+rm(list = ls(pattern = \"train_|test_\"))
+#table updates
+m1.fit.2002.cv<-lm(PM25~pred.m1.cv,data=m1.2002.cv)
+res[res$year==\"2002\", 'm1cv.R2'] <- print(summary(lm(PM25~pred.m1.cv,data=m1.2002.cv))$r.squared)
+res[res$year==\"2002\", 'm1cv.I'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2002.cv))$coef[1,1])
+res[res$year==\"2002\", 'm1cv.I.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2002.cv))$coef[1,2])
+res[res$year==\"2002\", 'm1cv.S'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2002.cv))$coef[2,1])
+res[res$year==\"2002\", 'm1cv.S.se'] <-print(summary(lm(PM25~pred.m1.cv,data=m1.2002.cv))$coef[2,2])
+#RMSPE
+res[res$year==\"2002\", 'm1cv.PE'] <- print(rmse(residuals(m1.fit.2002.cv)))
+
+#spatial
+spatial2002.cv<-m1.2002.cv %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2002.cv.s <- lm(barpm ~ barpred, data=spatial2002.cv)
+res[res$year==\"2002\", 'm1cv.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2002.cv))$r.squared)
+res[res$year==\"2002\", 'm1cv.PE.s'] <- print(rmse(residuals(m1.fit.2002.cv.s)))
+       
+#temporal
+tempo2002.cv<-left_join(m1.2002.cv,spatial2002.cv)
+tempo2002.cv$delpm <-tempo2002.cv$PM25-tempo2002.cv$barpm
+tempo2002.cv$delpred <-tempo2002.cv$pred.m1.cv-tempo2002.cv$barpred
+mod_temporal.cv <- lm(delpm ~ delpred, data=tempo2002.cv)
+res[res$year==\"2002\", 'm1cv.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2002.cv))$r.squared)
+
+
+
+#-------->>> loc stage
+luf<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/local.csv\")
+setnames(luf,\"tden\",\"loc.tden\")
+setnames(luf,\"elev50\",\"loc.elev\")
+
+#add 50m LU to CV data
+setkey(m1.2002.cv,stn)
+setkey(luf,stn)
+m1.2002.cv.loc <- merge(m1.2002.cv, luf, all.x = T)
+m1.2002.cv.loc<-na.omit(m1.2002.cv.loc)
+
+#create residual mp3 variable
+m1.2002.cv.loc$res.m1<-m1.2002.cv.loc$PM25-m1.2002.cv.loc$pred.m1.cv
+
+#The GAM model
+gam.out<-gam(res.m1~s(loc.tden)+s(tden,MeanPbl)+s(loc.tden,WS)+s(loc_p_os,fx=FALSE,k=4,bs='cr')+s(loc.elev,fx=FALSE,k=4,bs='cr')+s(dA1,fx=FALSE,k=4,bs='cr')+s(dsea,fx=FALSE,k=4,bs='cr'),data=m1.2002.cv.loc)
+#plot(bp.model.ps)
+#summary(bp.model.ps)
+## reg
+m1.2002.cv.loc$pred.m1.loc <-predict(gam.out)
+m1.2002.cv.loc$pred.m1.both <- m1.2002.cv.loc$pred.m1.cv + m1.2002.cv.loc$pred.m1.loc
+res[res$year==\"2002\", 'm1cv.loc.R2'] <- print(summary(lm(PM25~pred.m1.both,data=m1.2002.cv.loc))$r.squared)
+res[res$year==\"2002\", 'm1cv.loc.I'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2002.cv.loc))$coef[1,1])
+res[res$year==\"2002\", 'm1cv.loc.I.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2002.cv.loc))$coef[1,2])
+res[res$year==\"2002\", 'm1cv.loc.S'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2002.cv.loc))$coef[2,1])
+res[res$year==\"2002\", 'm1cv.loc.S.se'] <-print(summary(lm(PM25~pred.m1.both,data=m1.2002.cv.loc))$coef[2,2])
+#RMSPE
+res[res$year==\"2002\", 'm1cv.loc.PE'] <- print(rmse(residuals(m1.fit.2002.cv)))
+
+#spatial
+spatial2002.cv.loc<-m1.2002.cv.loc %>%
+    group_by(stn) %>%
+    summarise(barpm = mean(PM25, na.rm=TRUE), barpred = mean(pred.m1, na.rm=TRUE)) 
+m1.fit.2002.cv.loc.s <- lm(barpm ~ barpred, data=spatial2002.cv.loc)
+res[res$year==\"2002\", 'm1cv.loc.R2.s'] <-  print(summary(lm(barpm ~ barpred, data=spatial2002.cv.loc))$r.squared)
+res[res$year==\"2002\", 'm1cv.loc.PE.s'] <- print(rmse(residuals(m1.fit.2002.cv.loc.s)))
+       
+#temporal
+tempo2002.loc.cv<-left_join(m1.2002.cv.loc,spatial2002.cv.loc)
+tempo2002.loc.cv$delpm <-tempo2002.loc.cv$PM25-tempo2002.loc.cv$barpm
+tempo2002.loc.cv$delpred <-tempo2002.loc.cv$pred.m1.both-tempo2002.loc.cv$barpred
+mod_temporal.loc.cv <- lm(delpm ~ delpred, data=tempo2002.loc.cv)
+res[res$year==\"2002\", 'm1cv.loc.R2.t'] <-  print(summary(lm(delpm ~ delpred, data=tempo2002.loc.cv))$r.squared)
+
+#############save midpoint
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/res2002.m1.rds\")
+saveRDS(res, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/resALL.rds\")
+
+###############
+#MOD2
+###############
+m2.2002<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2002.rds\")
+
+
+m2.2002[,elev.s:= scale(elev)]
+m2.2002[,tden.s:= scale(tden)]
+m2.2002[,pden.s:= scale(pden)]
+m2.2002[,dist2A1.s:= scale(dist2A1)]
+m2.2002[,dist2water.s:= scale(dist2water)]
+m2.2002[,dist2rail.s:= scale(dist2rail)]
+m2.2002[,Dist2road.s:= scale(Dist2road)]
+m2.2002[,ndvi.s:= scale(ndvi)]
+m2.2002[,MeanPbl.s:= scale(MeanPbl)]
+m2.2002[,p_ind.s:= scale(p_ind)]
+m2.2002[,p_for.s:= scale(p_for)]
+m2.2002[,p_farm.s:= scale(p_farm)]
+m2.2002[,p_dos.s:= scale(p_dos)]
+m2.2002[,p_dev.s:= scale(p_dev)]
+m2.2002[,p_os.s:= scale(p_os)]
+m2.2002[,Temp.s:= scale(Temp)]
+m2.2002[,WD.s:= scale(WD)]
+m2.2002[,WS.s:= scale(WS)]
+m2.2002[,RH.s:= scale(RH)]
+m2.2002[,Rain.s:= scale(Rain)]
+
+#generate predictions
+m2.2002[, pred.m2 := predict(object=m1.fit.2002,newdata=m2.2002,allow.new.levels=TRUE,re.form=NULL)]
+describe(m2.2002$pred.m2)
+#delete implossible values
+m2.2002 <- m2.2002[pred.m2 > 0.00000000000001 , ]
+m2.2002 <- m2.2002[pred.m2 < 500   , ]
+
+saveRDS(m2.2002,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.AQ.2002.rds\")
+
+#test
+# describe(m2.2002$pred.m2)
+# hist(m2.2002$pred.m2)
+
+#######
+#M2 R2
+######
+# m1.2002[,aodid:= paste(m1.2002$long_aod,m1.2002$lat_aod,sep=\"-\")]
+# #merge co located mod1 and mod2 grids
+# setkey(m1.2002,aodid,day)
+# setkey(m2.2002,aodid,day)
+# m.1.2.pred <- merge(m1.2002, m2.2002[, list(aodid, day, pred.m2)], all.x = T)
+# mod2_reg<-lm(m.1.2.pred$predicted~m.1.2.pred$pred.m2)
+# #cleanup and save current stages (workspace)
+# summary(mod2_reg)$r.squared
+
+#map the predictions
+#aggregate by guid
+m2_agg <- m2.2002[, list(LTPM.m2 = mean(pred.m2, na.rm = TRUE), lat_aod = lat_aod[1], long_aod = long_aod[1]), by = aodid]
+#saveRDS(m2_agg, \"/media/NAS/Uni/Projects/P046.Israel_MAIAC/3.Work/2.Gather_data/FN008_model_prep/m2_agg_2002.rds\")
+#map the predictions
+write.csv(m2_agg, \"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/m2.2002.LTPM.csv\")
+ggplot(m2_agg, aes(long_aod,lat_aod, color = LTPM.m2)) + 
+  geom_point(size = 3, shape = 15) +  xlab(\"longitude\") + ylab(\"latitude\") + 
+  scale_colour_gradientn(\"long term PM2.5 prediction\", colours = rainbow(5)) + theme_bw() + ggtitle(\"Long term predictions\")
+ggsave(file=\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/LTPM.m2.png\")
+keep(res , sure=TRUE) 
+gc()
+
+
+" 1 16 (fontified t face font-lock-comment-delimiter-face) 16 17 (fontified t face font-lock-comment-face) 17 18 (fontified t face font-lock-comment-delimiter-face) 18 23 (fontified t face font-lock-comment-face) 23 38 (fontified t face font-lock-comment-delimiter-face) 38 39 (fontified t face font-lock-comment-face) 39 46 (fontified t face font-lock-constant-face) 46 53 (fontified t) 53 60 (fontified t face font-lock-constant-face) 60 70 (fontified t) 70 77 (fontified t face font-lock-constant-face) 77 88 (fontified t) 88 95 (fontified t face font-lock-constant-face) 95 105 (fontified t) 105 112 (fontified t face font-lock-constant-face) 112 119 (fontified t) 119 126 (fontified t face font-lock-constant-face) 126 139 (fontified t) 139 146 (fontified t face font-lock-constant-face) 146 157 (fontified t) 157 164 (fontified t face font-lock-constant-face) 164 172 (fontified t) 172 179 (fontified t face font-lock-constant-face) 179 186 (fontified t) 186 193 (fontified t face font-lock-constant-face) 193 201 (fontified t) 201 208 (fontified t face font-lock-constant-face) 208 214 (fontified t) 214 221 (fontified t face font-lock-constant-face) 221 229 (fontified t) 229 236 (fontified t face font-lock-constant-face) 236 244 (fontified t) 244 251 (fontified t face font-lock-constant-face) 251 259 (fontified t) 259 266 (fontified t face font-lock-constant-face) 266 276 (fontified t) 276 277 (fontified t face font-lock-comment-delimiter-face) 277 286 (fontified t face font-lock-comment-face) 286 292 (fontified t face font-lock-constant-face) 292 293 (fontified t) 293 357 (fontified t face font-lock-string-face) 357 359 (fontified t) 359 365 (fontified t face font-lock-constant-face) 365 366 (fontified t) 366 426 (fontified t face font-lock-string-face) 426 430 (fontified t) 430 431 (fontified t face font-lock-comment-delimiter-face) 431 464 (fontified t face font-lock-comment-face) 464 468 (fontified t) 468 470 (fontified t face font-lock-constant-face) 470 499 (fontified t) 499 501 (fontified t face font-lock-constant-face) 501 518 (fontified t) 518 532 (fontified t) 532 534 (fontified t face font-lock-constant-face) 534 548 (fontified t) 548 554 (fontified t face font-lock-string-face) 554 566 (fontified t) 566 573 (fontified t face font-lock-string-face) 573 574 (fontified t) 574 581 (fontified t face font-lock-string-face) 581 582 (fontified t) 582 591 (fontified t face font-lock-string-face) 591 592 (fontified t) 592 601 (fontified t face font-lock-string-face) 601 602 (fontified t) 602 611 (fontified t face font-lock-string-face) 611 612 (fontified t) 612 613 (fontified t face font-lock-comment-delimiter-face) 613 624 (fontified t face font-lock-comment-face) 624 635 (fontified t) 635 644 (fontified t face font-lock-string-face) 644 645 (fontified t) 645 653 (fontified t face font-lock-string-face) 653 654 (fontified t) 654 665 (fontified t face font-lock-string-face) 665 666 (fontified t) 666 674 (fontified t face font-lock-string-face) 674 675 (fontified t) 675 686 (fontified t face font-lock-string-face) 686 687 (fontified t) 687 696 (fontified t face font-lock-string-face) 696 697 (fontified t) 697 708 (fontified t face font-lock-string-face) 708 709 (fontified t) 709 720 (fontified t face font-lock-string-face) 720 721 (fontified t) 721 732 (fontified t face font-lock-string-face) 732 733 (fontified t) 733 734 (fontified t face font-lock-comment-delimiter-face) 734 742 (fontified t face font-lock-comment-face) 742 753 (fontified t) 753 766 (fontified t face font-lock-string-face) 766 767 (fontified t) 767 779 (fontified t face font-lock-string-face) 779 780 (fontified t) 780 795 (fontified t face font-lock-string-face) 795 796 (fontified t) 796 808 (fontified t face font-lock-string-face) 808 809 (fontified t) 809 824 (fontified t face font-lock-string-face) 824 825 (fontified t) 825 838 (fontified t face font-lock-string-face) 838 839 (fontified t) 839 854 (fontified t face font-lock-string-face) 854 855 (fontified t) 855 870 (fontified t face font-lock-string-face) 870 871 (fontified t) 871 886 (fontified t face font-lock-string-face) 886 887 (fontified t face font-lock-comment-delimiter-face) 887 894 (fontified t face font-lock-comment-face) 894 905 (fontified t) 905 914 (fontified t face font-lock-string-face) 914 915 (fontified t) 915 916 (fontified t face font-lock-comment-delimiter-face) 916 921 (fontified t face font-lock-comment-face) 921 932 (fontified t) 932 940 (fontified t face font-lock-string-face) 940 941 (fontified t) 941 949 (fontified t face font-lock-string-face) 949 950 (fontified t) 950 951 (fontified t face font-lock-comment-delimiter-face) 951 962 (fontified t face font-lock-comment-face) 962 973 (fontified t) 973 987 (fontified t face font-lock-string-face) 987 988 (fontified t) 988 998 (fontified t face font-lock-string-face) 998 1010 (fontified t) 1010 1023 (fontified t face font-lock-string-face) 1023 1024 (fontified t) 1024 1036 (fontified t face font-lock-string-face) 1036 1037 (fontified t) 1037 1052 (fontified t face font-lock-string-face) 1052 1053 (fontified t) 1053 1065 (fontified t face font-lock-string-face) 1065 1066 (fontified t) 1066 1077 (fontified t) 1077 1091 (fontified t face font-lock-string-face) 1091 1092 (fontified t) 1092 1107 (fontified t face font-lock-string-face) 1107 1108 (fontified t) 1108 1128 (fontified t face font-lock-string-face) 1128 1140 (fontified t) 1140 1160 (fontified t face font-lock-string-face) 1160 1161 (fontified t) 1161 1174 (fontified t face font-lock-string-face) 1174 1175 (fontified t) 1175 1191 (fontified t face font-lock-string-face) 1191 1192 (fontified t) 1192 1207 (fontified t face font-lock-string-face) 1207 1228 (fontified t) 1228 1246 (fontified t face font-lock-string-face) 1246 1247 (fontified t) 1247 1262 (fontified t face font-lock-string-face) 1262 1263 (fontified t) 1263 1280 (fontified t face font-lock-string-face) 1280 1281 (fontified t) 1281 1299 (fontified t face font-lock-string-face) 1299 1300 (fontified t) 1300 1323 (fontified t face font-lock-string-face) 1323 1354 (fontified t) 1354 1356 (fontified t face font-lock-constant-face) 1356 1375 (fontified t) 1375 1379 (fontified t face font-lock-comment-delimiter-face) 1379 1391 (fontified t face font-lock-comment-face) 1391 1394 (fontified t) 1398 1399 (fontified t) 1399 1401 (fontified t face font-lock-constant-face) 1401 1409 (fontified t) 1409 1496 (fontified t face font-lock-string-face) 1500 1505 (fontified t face font-lock-string-face) 1505 1507 (fontified t) 1507 1508 (fontified t) 1508 1512 (face font-lock-comment-delimiter-face) 1512 1561 (face font-lock-comment-face) 1568 1570 (face font-lock-constant-face) 1595 1600 (face font-lock-string-face) 1625 1643 (face font-lock-comment-delimiter-face) 1643 1691 (face font-lock-comment-face) 1697 1699 (face font-lock-constant-face) 1718 1723 (face font-lock-string-face) 1733 1741 (face font-lock-keyword-face) 1760 1762 (face font-lock-constant-face) 1917 1919 (face font-lock-constant-face) 1943 1945 (face font-lock-constant-face) 1990 1993 (face font-lock-string-face) 1996 2013 (face font-lock-comment-delimiter-face) 2013 2021 (face font-lock-comment-face) 2053 2056 (face font-lock-string-face) 2059 2063 (face font-lock-comment-delimiter-face) 2063 2085 (face font-lock-comment-face) 2093 2095 (face font-lock-constant-face) 2121 2123 (face font-lock-keyword-face) 2141 2142 (face font-lock-comment-delimiter-face) 2142 2163 (face font-lock-comment-face) 2174 2176 (face font-lock-constant-face) 2212 2214 (face font-lock-constant-face) 2264 2266 (face font-lock-constant-face) 2317 2318 (face font-lock-comment-delimiter-face) 2318 2323 (face font-lock-comment-face) 2323 2324 (face font-lock-comment-delimiter-face) 2324 2343 (face font-lock-comment-face) 2351 2353 (face font-lock-constant-face) 13126 13127 (fontified t) 13127 13134 (fontified t face font-lock-comment-delimiter-face) 13134 13135 (fontified t face font-lock-comment-face) 13135 13136 (fontified t face font-lock-comment-delimiter-face) 13136 13142 (fontified t face font-lock-comment-face) 13142 13148 (fontified t face font-lock-comment-delimiter-face) 13148 13149 (fontified t face font-lock-comment-face) 13149 13151 (fontified t face font-lock-comment-delimiter-face) 13151 13154 (fontified t face font-lock-comment-face) 13158 13177 (fontified t face font-lock-comment-face) 13181 13194 (fontified t face font-lock-comment-face) 13198 13217 (fontified t face font-lock-comment-face) 13217 13219 (fontified t face font-lock-comment-delimiter-face) 13219 13257 (fontified t face font-lock-comment-face) 13257 13259 (fontified t face font-lock-comment-delimiter-face) 13259 13269 (fontified t face font-lock-comment-face) 13273 13285 (fontified t face font-lock-comment-face) 13285 13287 (fontified t face font-lock-comment-delimiter-face) 13287 13297 (fontified t face font-lock-comment-face) 13301 13313 (fontified t face font-lock-comment-face) 13313 13315 (fontified t face font-lock-comment-delimiter-face) 13315 13338 (fontified t face font-lock-comment-face) 13342 13347 (fontified t face font-lock-comment-face) 13351 13393 (fontified t face font-lock-comment-face) 13393 13395 (fontified t face font-lock-comment-delimiter-face) 13395 13449 (fontified t face font-lock-comment-face) 13449 13451 (fontified t face font-lock-comment-delimiter-face) 13451 13496 (fontified t face font-lock-comment-face) 13496 13498 (fontified t face font-lock-comment-delimiter-face) 13498 13526 (fontified t face font-lock-comment-face) 13526 13527 (fontified t) 13527 13528 (fontified t face font-lock-comment-delimiter-face) 13528 13548 (fontified t face font-lock-comment-face) 13548 13549 (fontified t face font-lock-comment-delimiter-face) 13549 13567 (fontified t face font-lock-comment-face) 13567 13574 (fontified t) 13574 13576 (fontified t face font-lock-constant-face) 13576 13580 (fontified t) 13584 13624 (fontified t) 13624 13628 (fontified t face font-lock-type-face) 13628 13690 (fontified t) 13690 13691 (fontified t face font-lock-comment-delimiter-face) 13691 13795 (fontified t face font-lock-comment-face) 13799 13806 (fontified t face font-lock-comment-face) 13806 13807 (fontified t face font-lock-comment-delimiter-face) 13807 13827 (fontified t face font-lock-comment-face) 13827 13845 (fontified t) 13845 13927 (fontified t face font-lock-string-face) 13931 13941 (fontified t face font-lock-string-face) 13941 14044 (fontified t) 14044 14055 (fontified t face font-lock-string-face) 14055 14064 (fontified t) 14064 14074 (fontified t face font-lock-string-face) 14074 14104 (fontified t) 14104 14132 (fontified t face font-lock-string-face) 14132 14179 (fontified t) 14179 14202 (fontified t face font-lock-string-face) 14202 14204 (fontified t) 14204 14216 (fontified t) 14216 14307 (fontified t face font-lock-string-face) 14307 14325 (fontified t) 14325 14329 (fontified t face font-lock-type-face) 14329 14340 (fontified t) 14341 14356 (fontified t face font-lock-comment-delimiter-face) 14356 14357 (fontified t face font-lock-comment-face) 14357 14358 (fontified t face font-lock-comment-delimiter-face) 14358 14363 (fontified t face font-lock-comment-face) 14363 14378 (fontified t face font-lock-comment-delimiter-face) 14378 14379 (fontified t face font-lock-comment-face) 14379 14386 (fontified t face font-lock-constant-face) 14386 14393 (fontified t) 14393 14400 (fontified t face font-lock-constant-face) 14400 14410 (fontified t) 14410 14417 (fontified t face font-lock-constant-face) 14417 14428 (fontified t) 14428 14435 (fontified t face font-lock-constant-face) 14435 14445 (fontified t) 14445 14452 (fontified t face font-lock-constant-face) 14452 14459 (fontified t) 14459 14466 (fontified t face font-lock-constant-face) 14466 14479 (fontified t) 14479 14486 (fontified t face font-lock-constant-face) 14486 14497 (fontified t) 14497 14504 (fontified t face font-lock-constant-face) 14504 14512 (fontified t) 14512 14519 (fontified t face font-lock-constant-face) 14519 14526 (fontified t) 14526 14533 (fontified t face font-lock-constant-face) 14533 14541 (fontified t) 14541 14548 (fontified t face font-lock-constant-face) 14548 14554 (fontified t) 14554 14561 (fontified t face font-lock-constant-face) 14561 14569 (fontified t) 14569 14576 (fontified t face font-lock-constant-face) 14576 14584 (fontified t) 14584 14591 (fontified t face font-lock-constant-face) 14591 14599 (fontified t) 14599 14606 (fontified t face font-lock-constant-face) 14606 14616 (fontified t) 14616 14617 (fontified t face font-lock-comment-delimiter-face) 14617 14626 (fontified t face font-lock-comment-face) 14626 14632 (fontified t face font-lock-constant-face) 14632 14633 (fontified t) 14633 14697 (fontified t face font-lock-string-face) 14697 14699 (fontified t) 14699 14705 (fontified t face font-lock-constant-face) 14705 14706 (fontified t) 14706 14766 (fontified t face font-lock-string-face) 14766 14770 (fontified t) 14770 14771 (fontified t face font-lock-comment-delimiter-face) 14771 14804 (fontified t face font-lock-comment-face) 14804 14808 (fontified t) 14808 14810 (fontified t face font-lock-constant-face) 14810 14839 (fontified t) 14839 14841 (fontified t face font-lock-constant-face) 14841 14858 (fontified t) 14858 14872 (fontified t) 14872 14874 (fontified t face font-lock-constant-face) 14874 14888 (fontified t) 14888 14894 (fontified t face font-lock-string-face) 14894 14906 (fontified t) 14906 14913 (fontified t face font-lock-string-face) 14913 14914 (fontified t) 14914 14921 (fontified t face font-lock-string-face) 14921 14922 (fontified t) 14922 14931 (fontified t face font-lock-string-face) 14931 14932 (fontified t) 14932 14941 (fontified t face font-lock-string-face) 14941 14942 (fontified t) 14942 14951 (fontified t face font-lock-string-face) 14951 14952 (fontified t) 14952 14953 (fontified t face font-lock-comment-delimiter-face) 14953 14964 (fontified t face font-lock-comment-face) 14964 14975 (fontified t) 14975 14984 (fontified t face font-lock-string-face) 14984 14985 (fontified t) 14985 14993 (fontified t face font-lock-string-face) 14993 14994 (fontified t) 14994 15005 (fontified t face font-lock-string-face) 15005 15006 (fontified t) 15006 15014 (fontified t face font-lock-string-face) 15014 15015 (fontified t) 15015 15026 (fontified t face font-lock-string-face) 15026 15027 (fontified t) 15027 15036 (fontified t face font-lock-string-face) 15036 15037 (fontified t) 15037 15048 (fontified t face font-lock-string-face) 15048 15049 (fontified t) 15049 15060 (fontified t face font-lock-string-face) 15060 15061 (fontified t) 15061 15072 (fontified t face font-lock-string-face) 15072 15073 (fontified t) 15073 15074 (fontified t face font-lock-comment-delimiter-face) 15074 15082 (fontified t face font-lock-comment-face) 15082 15093 (fontified t) 15093 15106 (fontified t face font-lock-string-face) 15106 15107 (fontified t) 15107 15119 (fontified t face font-lock-string-face) 15119 15120 (fontified t) 15120 15135 (fontified t face font-lock-string-face) 15135 15136 (fontified t) 15136 15148 (fontified t face font-lock-string-face) 15148 15149 (fontified t) 15149 15164 (fontified t face font-lock-string-face) 15164 15165 (fontified t) 15165 15178 (fontified t face font-lock-string-face) 15178 15179 (fontified t) 15179 15194 (fontified t face font-lock-string-face) 15194 15195 (fontified t) 15195 15210 (fontified t face font-lock-string-face) 15210 15211 (fontified t) 15211 15226 (fontified t face font-lock-string-face) 15226 15227 (fontified t face font-lock-comment-delimiter-face) 15227 15234 (fontified t face font-lock-comment-face) 15234 15245 (fontified t) 15245 15254 (fontified t face font-lock-string-face) 15254 15255 (fontified t) 15255 15256 (fontified t face font-lock-comment-delimiter-face) 15256 15261 (fontified t face font-lock-comment-face) 15261 15272 (fontified t) 15272 15280 (fontified t face font-lock-string-face) 15280 15281 (fontified t) 15281 15289 (fontified t face font-lock-string-face) 15289 15290 (fontified t) 15290 15291 (fontified t face font-lock-comment-delimiter-face) 15291 15302 (fontified t face font-lock-comment-face) 15302 15313 (fontified t) 15313 15327 (fontified t face font-lock-string-face) 15327 15328 (fontified t) 15328 15338 (fontified t face font-lock-string-face) 15338 15350 (fontified t) 15350 15363 (fontified t face font-lock-string-face) 15363 15364 (fontified t) 15364 15376 (fontified t face font-lock-string-face) 15376 15377 (fontified t) 15377 15392 (fontified t face font-lock-string-face) 15392 15393 (fontified t) 15393 15405 (fontified t face font-lock-string-face) 15405 15406 (fontified t) 15406 15417 (fontified t) 15417 15431 (fontified t face font-lock-string-face) 15431 15432 (fontified t) 15432 15447 (fontified t face font-lock-string-face) 15447 15448 (fontified t) 15448 15468 (fontified t face font-lock-string-face) 15468 15480 (fontified t) 15480 15500 (fontified t face font-lock-string-face) 15500 15501 (fontified t) 15501 15514 (fontified t face font-lock-string-face) 15514 15515 (fontified t) 15515 15531 (fontified t face font-lock-string-face) 15531 15532 (fontified t) 15532 15547 (fontified t face font-lock-string-face) 15547 15568 (fontified t) 15568 15586 (fontified t face font-lock-string-face) 15586 15587 (fontified t) 15587 15602 (fontified t face font-lock-string-face) 15602 15603 (fontified t) 15603 15620 (fontified t face font-lock-string-face) 15620 15621 (fontified t) 15621 15639 (fontified t face font-lock-string-face) 15639 15640 (fontified t) 15640 15663 (fontified t face font-lock-string-face) 15663 15694 (fontified t) 15694 15696 (fontified t face font-lock-constant-face) 15696 15715 (fontified t) 15715 15719 (fontified t face font-lock-comment-delimiter-face) 15719 15731 (fontified t face font-lock-comment-face) 15731 15734 (fontified t) 15738 15739 (fontified t) 15739 15741 (fontified t face font-lock-constant-face) 15741 15749 (fontified t) 15749 15836 (fontified t face font-lock-string-face) 15840 15845 (fontified t face font-lock-string-face) 15845 15847 (fontified t) 15847 15848 (fontified t) 15848 15852 (face font-lock-comment-delimiter-face) 15852 15901 (face font-lock-comment-face) 15908 15910 (face font-lock-constant-face) 15935 15940 (face font-lock-string-face) 15965 15983 (face font-lock-comment-delimiter-face) 15983 16031 (face font-lock-comment-face) 16037 16039 (face font-lock-constant-face) 16058 16063 (face font-lock-string-face) 16073 16081 (face font-lock-keyword-face) 16100 16102 (face font-lock-constant-face) 16257 16259 (face font-lock-constant-face) 16283 16285 (face font-lock-constant-face) 16330 16333 (face font-lock-string-face) 16336 16353 (face font-lock-comment-delimiter-face) 16353 16361 (face font-lock-comment-face) 16393 16396 (face font-lock-string-face) 16399 16403 (face font-lock-comment-delimiter-face) 16403 16425 (face font-lock-comment-face) 16433 16435 (face font-lock-constant-face) 16461 16463 (face font-lock-keyword-face) 16481 16482 (face font-lock-comment-delimiter-face) 16482 16503 (face font-lock-comment-face) 16514 16516 (face font-lock-constant-face) 16552 16554 (face font-lock-constant-face) 16604 16606 (face font-lock-constant-face) 16657 16658 (face font-lock-comment-delimiter-face) 16658 16663 (face font-lock-comment-face) 16663 16664 (face font-lock-comment-delimiter-face) 16664 16683 (face font-lock-comment-face) 16691 16693 (face font-lock-constant-face) 27466 27467 (fontified t) 27467 27474 (fontified t face font-lock-comment-delimiter-face) 27474 27475 (fontified t face font-lock-comment-face) 27475 27476 (fontified t face font-lock-comment-delimiter-face) 27476 27482 (fontified t face font-lock-comment-face) 27482 27488 (fontified t face font-lock-comment-delimiter-face) 27488 27489 (fontified t face font-lock-comment-face) 27489 27491 (fontified t face font-lock-comment-delimiter-face) 27491 27494 (fontified t face font-lock-comment-face) 27498 27517 (fontified t face font-lock-comment-face) 27521 27534 (fontified t face font-lock-comment-face) 27538 27557 (fontified t face font-lock-comment-face) 27557 27559 (fontified t face font-lock-comment-delimiter-face) 27559 27597 (fontified t face font-lock-comment-face) 27597 27599 (fontified t face font-lock-comment-delimiter-face) 27599 27609 (fontified t face font-lock-comment-face) 27613 27625 (fontified t face font-lock-comment-face) 27625 27627 (fontified t face font-lock-comment-delimiter-face) 27627 27637 (fontified t face font-lock-comment-face) 27641 27653 (fontified t face font-lock-comment-face) 27653 27655 (fontified t face font-lock-comment-delimiter-face) 27655 27678 (fontified t face font-lock-comment-face) 27682 27687 (fontified t face font-lock-comment-face) 27691 27733 (fontified t face font-lock-comment-face) 27733 27735 (fontified t face font-lock-comment-delimiter-face) 27735 27789 (fontified t face font-lock-comment-face) 27789 27791 (fontified t face font-lock-comment-delimiter-face) 27791 27836 (fontified t face font-lock-comment-face) 27836 27838 (fontified t face font-lock-comment-delimiter-face) 27838 27866 (fontified t face font-lock-comment-face) 27866 27867 (fontified t) 27867 27868 (fontified t face font-lock-comment-delimiter-face) 27868 27888 (fontified t face font-lock-comment-face) 27888 27889 (fontified t face font-lock-comment-delimiter-face) 27889 27907 (fontified t face font-lock-comment-face) 27907 27914 (fontified t) 27914 27916 (fontified t face font-lock-constant-face) 27916 27920 (fontified t) 27924 27964 (fontified t) 27964 27968 (fontified t face font-lock-type-face) 27968 28030 (fontified t) 28030 28031 (fontified t face font-lock-comment-delimiter-face) 28031 28135 (fontified t face font-lock-comment-face) 28139 28146 (fontified t face font-lock-comment-face) 28146 28147 (fontified t face font-lock-comment-delimiter-face) 28147 28167 (fontified t face font-lock-comment-face) 28167 28185 (fontified t) 28185 28267 (fontified t face font-lock-string-face) 28271 28281 (fontified t face font-lock-string-face) 28281 28384 (fontified t) 28384 28395 (fontified t face font-lock-string-face) 28395 28404 (fontified t) 28404 28414 (fontified t face font-lock-string-face) 28414 28444 (fontified t) 28444 28472 (fontified t face font-lock-string-face) 28472 28519 (fontified t) 28519 28542 (fontified t face font-lock-string-face) 28542 28544 (fontified t) 28544 28556 (fontified t) 28556 28647 (fontified t face font-lock-string-face) 28647 28665 (fontified t) 28665 28669 (fontified t face font-lock-type-face) 28669 28680 (fontified t) 28681 28696 (fontified t face font-lock-comment-delimiter-face) 28696 28697 (fontified t face font-lock-comment-face) 28697 28698 (fontified t face font-lock-comment-delimiter-face) 28698 28703 (fontified t face font-lock-comment-face) 28703 28718 (fontified t face font-lock-comment-delimiter-face) 28718 28719 (fontified t face font-lock-comment-face) 28719 28726 (fontified t face font-lock-constant-face) 28726 28733 (fontified t) 28733 28740 (fontified t face font-lock-constant-face) 28740 28750 (fontified t) 28750 28757 (fontified t face font-lock-constant-face) 28757 28768 (fontified t) 28768 28775 (fontified t face font-lock-constant-face) 28775 28785 (fontified t) 28785 28792 (fontified t face font-lock-constant-face) 28792 28799 (fontified t) 28799 28806 (fontified t face font-lock-constant-face) 28806 28819 (fontified t) 28819 28826 (fontified t face font-lock-constant-face) 28826 28837 (fontified t) 28837 28844 (fontified t face font-lock-constant-face) 28844 28852 (fontified t) 28852 28859 (fontified t face font-lock-constant-face) 28859 28866 (fontified t) 28866 28873 (fontified t face font-lock-constant-face) 28873 28881 (fontified t) 28881 28888 (fontified t face font-lock-constant-face) 28888 28894 (fontified t) 28894 28901 (fontified t face font-lock-constant-face) 28901 28909 (fontified t) 28909 28916 (fontified t face font-lock-constant-face) 28916 28924 (fontified t) 28924 28931 (fontified t face font-lock-constant-face) 28931 28939 (fontified t) 28939 28946 (fontified t face font-lock-constant-face) 28946 28956 (fontified t) 28956 28957 (fontified t face font-lock-comment-delimiter-face) 28957 28966 (fontified t face font-lock-comment-face) 28966 28972 (fontified t face font-lock-constant-face) 28972 28973 (fontified t) 28973 29037 (fontified t face font-lock-string-face) 29037 29039 (fontified t) 29039 29045 (fontified t face font-lock-constant-face) 29045 29046 (fontified t) 29046 29106 (fontified t face font-lock-string-face) 29106 29110 (fontified t) 29110 29111 (fontified t face font-lock-comment-delimiter-face) 29111 29144 (fontified t face font-lock-comment-face) 29144 29148 (fontified t) 29148 29150 (fontified t face font-lock-constant-face) 29150 29179 (fontified t) 29179 29181 (fontified t face font-lock-constant-face) 29181 29198 (fontified t) 29198 29212 (fontified t) 29212 29214 (fontified t face font-lock-constant-face) 29214 29228 (fontified t) 29228 29234 (fontified t face font-lock-string-face) 29234 29246 (fontified t) 29246 29253 (fontified t face font-lock-string-face) 29253 29254 (fontified t) 29254 29261 (fontified t face font-lock-string-face) 29261 29262 (fontified t) 29262 29271 (fontified t face font-lock-string-face) 29271 29272 (fontified t) 29272 29281 (fontified t face font-lock-string-face) 29281 29282 (fontified t) 29282 29291 (fontified t face font-lock-string-face) 29291 29292 (fontified t) 29292 29293 (fontified t face font-lock-comment-delimiter-face) 29293 29304 (fontified t face font-lock-comment-face) 29304 29315 (fontified t) 29315 29324 (fontified t face font-lock-string-face) 29324 29325 (fontified t) 29325 29333 (fontified t face font-lock-string-face) 29333 29334 (fontified t) 29334 29345 (fontified t face font-lock-string-face) 29345 29346 (fontified t) 29346 29354 (fontified t face font-lock-string-face) 29354 29355 (fontified t) 29355 29366 (fontified t face font-lock-string-face) 29366 29367 (fontified t) 29367 29376 (fontified t face font-lock-string-face) 29376 29377 (fontified t) 29377 29388 (fontified t face font-lock-string-face) 29388 29389 (fontified t) 29389 29400 (fontified t face font-lock-string-face) 29400 29401 (fontified t) 29401 29412 (fontified t face font-lock-string-face) 29412 29413 (fontified t) 29413 29414 (fontified t face font-lock-comment-delimiter-face) 29414 29422 (fontified t face font-lock-comment-face) 29422 29433 (fontified t) 29433 29446 (fontified t face font-lock-string-face) 29446 29447 (fontified t) 29447 29459 (fontified t face font-lock-string-face) 29459 29460 (fontified t) 29460 29475 (fontified t face font-lock-string-face) 29475 29476 (fontified t) 29476 29488 (fontified t face font-lock-string-face) 29488 29489 (fontified t) 29489 29504 (fontified t face font-lock-string-face) 29504 29505 (fontified t) 29505 29518 (fontified t face font-lock-string-face) 29518 29519 (fontified t) 29519 29534 (fontified t face font-lock-string-face) 29534 29535 (fontified t) 29535 29550 (fontified t face font-lock-string-face) 29550 29551 (fontified t) 29551 29566 (fontified t face font-lock-string-face) 29566 29567 (fontified t face font-lock-comment-delimiter-face) 29567 29574 (fontified t face font-lock-comment-face) 29574 29585 (fontified t) 29585 29594 (fontified t face font-lock-string-face) 29594 29595 (fontified t) 29595 29596 (fontified t face font-lock-comment-delimiter-face) 29596 29601 (fontified t face font-lock-comment-face) 29601 29612 (fontified t) 29612 29620 (fontified t face font-lock-string-face) 29620 29621 (fontified t) 29621 29629 (fontified t face font-lock-string-face) 29629 29630 (fontified t) 29630 29631 (fontified t face font-lock-comment-delimiter-face) 29631 29642 (fontified t face font-lock-comment-face) 29642 29653 (fontified t) 29653 29667 (fontified t face font-lock-string-face) 29667 29668 (fontified t) 29668 29678 (fontified t face font-lock-string-face) 29678 29690 (fontified t) 29690 29703 (fontified t face font-lock-string-face) 29703 29704 (fontified t) 29704 29716 (fontified t face font-lock-string-face) 29716 29717 (fontified t) 29717 29732 (fontified t face font-lock-string-face) 29732 29733 (fontified t) 29733 29745 (fontified t face font-lock-string-face) 29745 29746 (fontified t) 29746 29757 (fontified t) 29757 29771 (fontified t face font-lock-string-face) 29771 29772 (fontified t) 29772 29787 (fontified t face font-lock-string-face) 29787 29788 (fontified t) 29788 29808 (fontified t face font-lock-string-face) 29808 29820 (fontified t) 29820 29840 (fontified t face font-lock-string-face) 29840 29841 (fontified t) 29841 29854 (fontified t face font-lock-string-face) 29854 29855 (fontified t) 29855 29871 (fontified t face font-lock-string-face) 29871 29872 (fontified t) 29872 29887 (fontified t face font-lock-string-face) 29887 29908 (fontified t) 29908 29926 (fontified t face font-lock-string-face) 29926 29927 (fontified t) 29927 29942 (fontified t face font-lock-string-face) 29942 29943 (fontified t) 29943 29960 (fontified t face font-lock-string-face) 29960 29961 (fontified t) 29961 29979 (fontified t face font-lock-string-face) 29979 29980 (fontified t) 29980 30003 (fontified t face font-lock-string-face) 30003 30034 (fontified t) 30034 30036 (fontified t face font-lock-constant-face) 30036 30055 (fontified t) 30055 30059 (fontified t face font-lock-comment-delimiter-face) 30059 30071 (fontified t face font-lock-comment-face) 30071 30074 (fontified t) 30078 30079 (fontified t) 30079 30081 (fontified t face font-lock-constant-face) 30081 30089 (fontified t) 30089 30176 (fontified t face font-lock-string-face) 30180 30185 (fontified t face font-lock-string-face) 30185 30187 (fontified t) 30187 30188 (fontified t) 30188 30192 (face font-lock-comment-delimiter-face) 30192 30241 (face font-lock-comment-face) 30248 30250 (face font-lock-constant-face) 30275 30280 (face font-lock-string-face) 30305 30323 (face font-lock-comment-delimiter-face) 30323 30371 (face font-lock-comment-face) 30377 30379 (face font-lock-constant-face) 30398 30403 (face font-lock-string-face) 30413 30421 (face font-lock-keyword-face) 30440 30442 (face font-lock-constant-face) 30597 30599 (face font-lock-constant-face) 30623 30625 (face font-lock-constant-face) 30670 30673 (face font-lock-string-face) 30676 30693 (face font-lock-comment-delimiter-face) 30693 30701 (face font-lock-comment-face) 30733 30736 (face font-lock-string-face) 30739 30743 (face font-lock-comment-delimiter-face) 30743 30765 (face font-lock-comment-face) 30773 30775 (face font-lock-constant-face) 30801 30803 (face font-lock-keyword-face) 30821 30822 (face font-lock-comment-delimiter-face) 30822 30843 (face font-lock-comment-face) 30854 30856 (face font-lock-constant-face) 30892 30894 (face font-lock-constant-face) 30944 30946 (face font-lock-constant-face) 30997 30998 (face font-lock-comment-delimiter-face) 30998 31003 (face font-lock-comment-face) 31003 31004 (face font-lock-comment-delimiter-face) 31004 31023 (face font-lock-comment-face) 31031 31033 (face font-lock-constant-face) 41806 41807 (fontified t) 41807 41814 (fontified t face font-lock-comment-delimiter-face) 41814 41815 (fontified t face font-lock-comment-face) 41815 41816 (fontified t face font-lock-comment-delimiter-face) 41816 41822 (fontified t face font-lock-comment-face) 41822 41828 (fontified t face font-lock-comment-delimiter-face) 41828 41829 (fontified t face font-lock-comment-face) 41829 41831 (fontified t face font-lock-comment-delimiter-face) 41831 41834 (fontified t face font-lock-comment-face) 41838 41857 (fontified t face font-lock-comment-face) 41861 41874 (fontified t face font-lock-comment-face) 41878 41897 (fontified t face font-lock-comment-face) 41897 41899 (fontified t face font-lock-comment-delimiter-face) 41899 41937 (fontified t face font-lock-comment-face) 41937 41939 (fontified t face font-lock-comment-delimiter-face) 41939 41949 (fontified t face font-lock-comment-face) 41953 41965 (fontified t face font-lock-comment-face) 41965 41967 (fontified t face font-lock-comment-delimiter-face) 41967 41977 (fontified t face font-lock-comment-face) 41981 41993 (fontified t face font-lock-comment-face) 41993 41995 (fontified t face font-lock-comment-delimiter-face) 41995 42018 (fontified t face font-lock-comment-face) 42022 42027 (fontified t face font-lock-comment-face) 42031 42073 (fontified t face font-lock-comment-face) 42073 42075 (fontified t face font-lock-comment-delimiter-face) 42075 42129 (fontified t face font-lock-comment-face) 42129 42131 (fontified t face font-lock-comment-delimiter-face) 42131 42176 (fontified t face font-lock-comment-face) 42176 42178 (fontified t face font-lock-comment-delimiter-face) 42178 42206 (fontified t face font-lock-comment-face) 42206 42207 (fontified t) 42207 42208 (fontified t face font-lock-comment-delimiter-face) 42208 42228 (fontified t face font-lock-comment-face) 42228 42229 (fontified t face font-lock-comment-delimiter-face) 42229 42247 (fontified t face font-lock-comment-face) 42247 42254 (fontified t) 42254 42256 (fontified t face font-lock-constant-face) 42256 42260 (fontified t) 42264 42304 (fontified t) 42304 42308 (fontified t face font-lock-type-face) 42308 42370 (fontified t) 42370 42371 (fontified t face font-lock-comment-delimiter-face) 42371 42475 (fontified t face font-lock-comment-face) 42479 42486 (fontified t face font-lock-comment-face) 42486 42487 (fontified t face font-lock-comment-delimiter-face) 42487 42507 (fontified t face font-lock-comment-face) 42507 42525 (fontified t) 42525 42607 (fontified t face font-lock-string-face) 42611 42621 (fontified t face font-lock-string-face) 42621 42724 (fontified t) 42724 42735 (fontified t face font-lock-string-face) 42735 42744 (fontified t) 42744 42754 (fontified t face font-lock-string-face) 42754 42784 (fontified t) 42784 42812 (fontified t face font-lock-string-face) 42812 42859 (fontified t) 42859 42882 (fontified t face font-lock-string-face) 42882 42884 (fontified t) 42884 42896 (fontified t) 42896 42987 (fontified t face font-lock-string-face) 42987 43005 (fontified t) 43005 43009 (fontified t face font-lock-type-face) 43009 43019 (fontified t)) . 1) (undo-tree-id7 . -42228) (undo-tree-id8 . -43018) (undo-tree-id9 . -43018) (undo-tree-id10 . -43019) (undo-tree-id11 . -43018) (undo-tree-id12 . 1) (undo-tree-id13 . -42228) 43019) nil (21640 4086 154495 312000) 0 nil]) ((1 . 186421) (t . 0)) nil (21640 4086 154498 518000) 0 nil]) nil nil (21640 4086 154500 29000) 0 nil] #1# 43181 4 nil]

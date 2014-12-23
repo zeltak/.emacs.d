@@ -1,0 +1,18 @@
+"e3bb31784fcb17a46200ec9e31c55eb5b386183b"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil (#1=[nil nil ((#("# Change this, if you have subfolders for multi-disc albums.
+# This should match the name of your subfolders, exluding the number
+cd_divider=CD
+
+# use artist or albumartist for album ratings
+mpd_artist=albumartist
+
+# Fill these if mpdscribble runs on a different host
+# set to 0 if mpdscribble runs locally
+ssh_lastfm=1
+ssh_host=picon~                         
+" 0 2 (fontified t face font-lock-comment-delimiter-face) 2 61 (fontified t face font-lock-comment-face) 61 63 (fontified t face font-lock-comment-delimiter-face) 63 130 (fontified t face font-lock-comment-face) 130 140 (fontified t face font-lock-variable-name-face) 140 145 (fontified t) 145 147 (fontified t face font-lock-comment-delimiter-face) 147 191 (fontified t face font-lock-comment-face) 191 201 (fontified t face font-lock-variable-name-face) 201 215 (fontified t) 215 217 (fontified t face font-lock-comment-delimiter-face) 217 268 (fontified t face font-lock-comment-face) 268 270 (fontified t face font-lock-comment-delimiter-face) 270 307 (fontified t face font-lock-comment-face) 307 317 (fontified t face font-lock-variable-name-face) 317 320 (fontified t) 320 328 (fontified t face font-lock-variable-name-face) 328 361 (fontified t)) . 72) 433 (undo-tree-id0 . -361) (undo-tree-id1 . -361) (undo-tree-id2 . -361) (undo-tree-id3 . -361) (undo-tree-id4 . -61) (undo-tree-id5 . -130) (undo-tree-id6 . -144) (undo-tree-id7 . -145) (undo-tree-id8 . -191) (undo-tree-id9 . -214) (undo-tree-id10 . -215) (undo-tree-id11 . -268) (undo-tree-id12 . -307) (undo-tree-id13 . -320) (undo-tree-id14 . -361) (undo-tree-id15 . -361) (undo-tree-id16 . -361) (undo-tree-id17 . -361) (undo-tree-id18 . -361) (undo-tree-id19 . -320) (undo-tree-id20 . -307) (undo-tree-id21 . -268) (undo-tree-id22 . -307) (undo-tree-id23 . -320) (undo-tree-id24 . -361)) nil (21459 48512 42154 582000) 0 nil]) ((#("# Number of Songs to be added for \"Random Tracks\"
+" 0 2 (fontified t face font-lock-comment-delimiter-face) 2 50 (fontified t face font-lock-comment-face)) . 71) (undo-tree-id25 . 50) (undo-tree-id26 . -50) (undo-tree-id27 . -50)) nil (21459 48512 42170 8000) 0 nil]) ((#("value=60
+" 0 5 (fontified t face font-lock-variable-name-face) 5 9 (fontified t)) . 121)) nil (21459 48512 42174 248000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 71) (undo-tree-id28 . 1)) nil (21459 48512 42179 231000) 0 nil]) ((#("music_path=\"/home/zeltak/music/\"
+" 0 10 (fontified t face font-lock-variable-name-face) 10 11 (fontified t) 11 32 (fontified t face font-lock-string-face) 32 33 (fontified t)) . 71) (undo-tree-id29 . 33)) nil (21459 48512 42185 2000) 0 nil]) ((#("# path to your music
+" 0 2 (fontified t face font-lock-comment-delimiter-face) 2 21 (fontified t face font-lock-comment-face)) . 71) (t 21450 2510 0 0) (undo-tree-id30 . -21) (undo-tree-id31 . -21) (undo-tree-id32 . 21)) nil (21459 48512 42194 519000) 0 nil]) nil nil (21459 48512 42197 572000) 0 nil] #1# 803 6 nil]

@@ -1,0 +1,41 @@
+"227dbb52101fbcda6118e1b1f1a61d02f4d67d54"
+[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((#("			 ━━━━━━━━━━━━━━━━━━━━━
+			  EMACS_ORG_SHORTCUTS
+			 ━━━━━━━━━━━━━━━━━━━━━
+
+
+Table of Contents
+─────────────────
+
+1 org
+.. 1.1 Agenda (F1)
+.. 1.2 Agenda buffer
+.. 1.3 org1 (F9)
+.. 1.4 org-id goto F9-F9
+.. 1.5 Org2 (f10)
+.. 1.6 Sparse tree
+.. 1.7 Movement
+.. 1.8 code blocks
+.. 1.9 Table
+2 Emacs
+.. 2.1 Emacs Plugins (F2)
+.. 2.2 Main (F3)
+.. 2.3 Editing (F4)
+.. 2.4 Gnus (F5)
+.. 2.5 window operations (f11)
+.. 2.6 windows/splits F12
+.. 2.7 babbel
+3 packages
+.. 3.1 bookmark+ (F8)
+.. 3.2 EVIL mode
+.. 3.3 ELPA
+.. 3.4 Helm (F7)
+.. 3.5 Company
+4 File specific
+.. 4.1 org food
+5 EOF settings
+
+
+
+
+" 0 510 (fontified t) 510 593 (fontified t)) . 1) 593 (undo-tree-id0 . -459) (undo-tree-id1 . -592) (undo-tree-id2 . -592) (undo-tree-id3 . -593) (undo-tree-id4 . -574) (undo-tree-id5 . -323) (undo-tree-id6 . -589) (undo-tree-id7 . -340) (undo-tree-id8 . -590) (undo-tree-id9 . -360) (undo-tree-id10 . -591) (undo-tree-id11 . -377) (undo-tree-id12 . -592) (undo-tree-id13 . -408) (undo-tree-id14 . -593) (undo-tree-id15 . -434) (undo-tree-id16 . -448) (undo-tree-id17 . -593) (undo-tree-id18 . -459) (undo-tree-id19 . -592) (undo-tree-id20 . -459)) nil (21470 21255 345998 409000) 0 nil]) ((1 . 33195) (t 0 0 0 -2000)) nil (21470 21255 346009 898000) 0 nil]) nil nil (21470 21255 346013 438000) 0 nil] #1# 911 2 nil]

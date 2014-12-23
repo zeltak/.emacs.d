@@ -1,0 +1,641 @@
+"91237d13839b9b93df0de09c59d1e2867c91f85f"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#1=[nil nil ((nil rear-nonsticky nil 6148 . 6149) (nil fontified nil 1 . 6149) (1 . 6149)) nil (21419 58028 695922 440000) 0 nil]) ((#("Air Pollution Exposure and Abnormal Glucose Tolerance during Pregnancy: The Project Viva Cohort}
+BibliographyType,ISBN,Identifier,Author,Title,Journal,Volume,Number,Month,Pages,Year,Address,Note,URL,Booktitle,Chapter,Edition,Series,Editor,Publisher,ReportType,Howpublished,Institution,Organizations,School,Annote,Custom1,Custom2,Custom3,Custom4,Custom5
+7,\"\",\"Chiu2014\",\"Chiu, Yueh-Hsiu Mathilda; Coull, Brent A; Sternthal, Michelle J; Kloog, Itai; Schwartz, Joel; Cohen, Sheldon & Wright, Rosalind J\",\"Effects of prenatal community violence and ambient air pollution on childhood wheeze in an urban population\",\"Journal of Allergy and Clinical Immunology\",133,3,\"\",\"713--722\",2014,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S0091674913014693\",\"\",\"\",\"\",\"\",\"\",\"Elsevier\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"Chiu2013\",\"Chiu, Yueh-Hsiu Mathilda; Coull, Brent A; Sternthal, Michelle J; Kloog, Itai; Schwartz, Joel; Cohen, Sheldon & Wright, Rosalind J\",\"Effects of prenatal community violence and ambient air pollution on childhood wheeze in an urban population\",\"Journal of Allergy and Clinical Immunology\",,,\"\",\"\",2013,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S0091674913014693\",\"\",\"\",\"\",\"\",\"\",\"Elsevier\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"chudnovsky_fine_2014\",\"Chudnovsky, Alexandra A.; Koutrakis, Petros; Kloog, Itai; Melly, Steven; Nordio, Francesco; Lyapustin, Alexei; Wang, Yujie & Schwartz, Joel\",\"Fine particulate matter predictions using high resolution aerosol optical depth (AOD) retrievals\",\"Atmospheric Environment\",,,\"\",\"\",2014,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S1352231014001150\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"fleisch_air_2014\",\"Fleisch, Abby F.; Gold, Diane R.; Rifas-Shiman, Sheryl L.; Koutrakis, Petros; Schwartz, Joel D.; Kloog, Itai; Melly, Steven; Coull, Brent A.; Zanobetti, Antonella & Gillman, Matthew W.\",\"Air pollution exposure and abnormal glucose tolerance during pregnancy: The project viva cohort\",\"Environ Health Perspect\",,,\"\",\"\",2014,\"\",\"\",\"http://ww.ademloos.be/sites/default/files/gezondheid_docs/Fleisch_Air%2Bpollution%2Band%2Bglucose%2Bpregnancy_2014.pdf\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"kloog_temporal_2012\",\"Kloog, Itai; Chudnovsky, Alexandra; Koutrakis, Petros & Schwartz, Joel\",\"Temporal and spatial assessments of minimum air temperature using satellite surface temperature measurements in Massachusetts, USA\",\"Science of The Total Environment\",432,0,\"August\",\"85--92\",2012,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S0048969712008108\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Although meteorological stations provide accurate air temperature observations, their spatial coverage is limited and thus often insufficient for epidemiological studies. Satellite data expand spatial coverage, enhancing our ability to estimate near surface air temperature (Ta). However, the derivation of Ta from surface temperature (Ts) measured by satellites is far from being straightforward. In this study, we present a novel approach that incorporates land use regression, meteorological variables and spatial smoothing to first calibrate between Ts and Ta on a daily basis and then predict Ta for days when satellite Ts data were not available. We applied mixed regression models with daily random slopes to calibrate Moderate Resolution Imaging Spectroradiometer ({MODIS)} Ts data with monitored Ta measurements for 2003. Then, we used a generalized additive mixed model with spatial smoothing to estimate Ta in days with missing Ts. Out-of-sample tenfold cross-validation was used to quantify the accuracy of our predictions. Our model performance was excellent for both days with available Ts and days without Ts observations (mean out-of-sample R2\\&\\#xa0;=\\&\\#xa0;0.946 and R2\\&\\#xa0;=\\&\\#xa0;0.941 respectively). Furthermore, based on the high quality predictions we investigated the spatial patterns of Ta within the study domain as they relate to urban vs. non-urban land uses.\",\"\",\"Air temperature, Epidemiology, Exposure error, {MODIS}, Surface temperature\",\"\",\"\"
+7,\"\",\"kloog_acute_2012\",\"Kloog, Itai; Coull, Brent A.; Zanobetti, Antonella; Koutrakis, Petros & Schwartz, Joel D.\",\"Acute and Chronic Effects of Particles on Hospital Admissions in New-England\",\"{PLoS} {ONE}\",7,4,\"April\",\"e34664\",2012,\"\",\"\",\"http://dx.doi.org/10.1371/journal.pone.0034664\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"{BackgroundMany} studies have reported significant associations between exposure to {PM2.5} and hospital admissions, but all have focused on the effects of short-term exposure. In addition all these studies have relied on a limited number of {PM2.5} monitors in their study regions, which introduces exposure error, and excludes rural and suburban populations from locations in which monitors are not available, reducing generalizability and potentially creating selection {bias.MethodsUsing} our novel prediction models for exposure combining land use regression with physical measurements (satellite aerosol optical depth) we investigated both the long and short term effects of {PM2.5} exposures on hospital admissions across New-England for all residents aged 65 and older. We performed separate Poisson regression analysis for each admission type: all respiratory, cardiovascular disease ({CVD)}, stroke and diabetes. Daily admission counts in each zip code were regressed against long and short-term {PM2.5} exposure, temperature, socio-economic data and a spline of time to control for seasonal trends in baseline {risk.ResultsWe} observed associations between both short-term and long-term exposure to {PM2.5} and hospitalization for all of the outcomes examined. In example, for respiratory diseases, for every10-����g/m3 increase in short-term {PM2.5} exposure there is a 0.70 percent increase in admissions ({CI}������=������0.35 to 0.52) while concurrently for every10-����g/m3 increase in long-term {PM2.5} exposure there is a 4.22 percent increase in admissions ({CI}������=������1.06 to {4.75).ConclusionsAs} with mortality studies, chronic exposure to particles is associated with substantially larger increases in hospital admissions than acute exposure and both can be detected simultaneously using our exposure models.\",\"\",\"\",\"\",\"\"
+7,\"\",\"kloog_assessing_2011\",\"Kloog, Itai; Koutrakis, Petros; Coull, Brent A.; Lee, Hyung Joo & Schwartz, Joel\",\"Assessing temporally and spatially resolved PM2.5 exposures for epidemiological studies using satellite aerosol optical depth measurements\",\"Atmospheric Environment\",45,35,\"November\",\"6267--6275\",2011,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S1352231011009125\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Land use regression ({LUR)} models provide good estimates of spatially resolved long-term exposures, but are poor at capturing short term exposures. Satellite-derived Aerosol Optical Depth ({AOD)} measurements have the potential to provide spatio-temporally resolved predictions of both long and short term exposures, but previous studies have generally showed relatively low predictive power. Our objective was to extend our previous work on day-specific calibrations of {AOD} data using ground {PM2.5} measurements by incorporating commonly used {LUR} variables and meteorological variables, thus benefiting from both the spatial resolution from the {LUR} models and the spatio-temporal resolution from the satellite models. Later we use spatial smoothing to predict {PM2.5} concentrations for day/locations with missing {AOD} measures. We used mixed models with random slopes for day to calibrate {AOD} data for 2000������2008 across New-England with monitored {PM2.5} measurements. We then used a generalized additive mixed model with spatial smoothing to estimate {PM2.5} in location������day pairs with missing {AOD}, using regional measured {PM2.5}, {AOD} values in neighboring cells, and land use. Finally, local (100����m) land use terms were used to model the difference between grid cell prediction and monitored value to capture very local traffic particles. Out-of-sample ten-fold cross-validation was used to quantify the accuracy of our predictions. For days with available {AOD} data we found high out-of-sample R2 (mean out-of-sample R2����=����0.830, year to year variation 0.725������0.904). For days without {AOD} values, our model performance was also excellent (mean out-of-sample R2����=����0.810, year to year variation 0.692������0.887). Importantly, these R2 are for daily, rather than monthly or yearly, values. Our model allows one to assess short term and long-term human exposures in order to investigate both the acute and chronic effects of ambient particles, respectively.\",\"\",\"Aerosol optical depth, Epidemiology, Exposure error, LAN, air pollution, {PM2.5}\",\"\",\"\"
+7,\"\",\"kloog_using_2012\",\"Kloog, Itai; Melly, Steven J.; Ridgway, William L.; Coull, Brent A. & Schwartz, Joel\",\"Using new satellite based exposure methods to study the association between pregnancy pm2.5 exposure, premature birth and birth weight in Massachusetts\",\"Environmental Health\",11,1,\"June\",\"40\",2012,\"\",\"\",\"http://www.ehjournal.net/content/11/1/40/abstract\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Adverse birth outcomes such as low birth weight and premature birth have been previously linked with exposure to ambient air pollution. Most studies relied on a limited number of monitors in the region of interest, which can introduce exposure error or restrict the analysis to persons living near a monitor, which reduces sample size and generalizability and may create selection bias.\",\"\",\"Aerosol optical depth, air pollution, Birth Weight, Epidemiology, {PM}, Preterm birth\",\"\",\"\"
+7,\"\",\"kloog_incorporating_2012\",\"Kloog, Itai; Nordio, Francesco; Coull, Brent A. & Schwartz, Joel\",\"Incorporating local land use regression and satellite aerosol optical depth in a hybrid model of spatiotemporal PM2. 5 exposures in the Mid-Atlantic states\",\"Environmental science \\& technology\",46,21,\"\",\"11913������11921\",2012,\"\",\"\",\"http://pubs.acs.org/doi/abs/10.1021/es302673e\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"kloog_short_2014\",\"Kloog, Itai; Nordio, Francesco; Zanobetti, Antonella; Coull, Brent A.; Koutrakis, Petros & Schwartz, Joel D.\",\"Short Term Effects of Particle Exposure on Hospital Admissions in the Mid-Atlantic States: A Population Estimate\",\"{PloS} one\",9,2,\"\",\"e88578\",2014,\"\",\"\",\"http://dx.plos.org/10.1371/journal.pone.0088578\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"kloog_detecting_2012\",\"Kloog, I. & Portnov, B.\",\"Detecting the Association between Children Health and Lead Exposure Using Voronoi Polygon Rezoning\",\"Geography Research Forum\",32,,\"\",\"46--61\",2012,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"Kloog2011\",\"Kloog, Itai; Portnov, Boris A; Rennert, Hedy S & Haim, Abraham\",\"Does the modern urbanized sleeping habitat pose a breast cancer risk?\",\"Chronobiology international\",28,1,\"\",\"76--80\",2011,\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Informa Healthcare New York, USA\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"kloog_long-_2013\",\"Kloog, Itai; Ridgway, Bill; Koutrakis, Petros; Coull, Brent A. & Schwartz, Joel D.\",\"Long- and Short-Term Exposure to PM2.5 and Mortality\",\"Epidemiology\",24,4,\"July\",\"555--561\",2013,\"\",\"\",\"http://journals.lww.com/epidem/Abstract/2013/07000/Long__and_Short_Term_Exposure_to_PM2_5_and.11.aspx\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"nordio_estimating_2013\",\"Nordio, Francesco; Kloog, Itai; Coull, Brent A.; Chudnovsky, Alexandra; Grillo, Paolo; Bertazzi, Pier Alberto; Baccarelli, Andrea A. & Schwartz, Joel\",\"Estimating spatio-temporal resolved PM10 aerosol mass concentrations using MODIS satellite data and land use regression over Lombardy, Italy\",\"Atmospheric Environment\",74,,\"August\",\"227--236\",2013,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S1352231013002197\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"Abstract Traditional air pollution epidemiology studies being conducted in large cities can be limited by the availability of monitoring. Satellite Aerosol Optical Depth ({AOD)} measurements offer the possibility of exposure estimates for the entire population. We previously demonstrated that daily calibration substantially increased the predictive power of satellite {AOD} measurements for fine particles ({PM2.5)} in New England, allowing estimation of exposure in locations without monitors. Similar results have not been reported for larger particles ({PM10)}, which are often the only measures that can be used in locations worldwide that do not have comprehensive {PM2.5} monitoring; this also applies to {PM} estimation of historical exposures. Here we extend this methodology by applying it to 2000������2009 {PM10} data from Lombardy, Northern Italy a region with high altitude differences, frequent temperature inversions and stationary fronts. Specifically, by 1) incorporating a model for missing {AOD} data to deal with non-randomness in the missing data; and 2) modeling interactions between land use and meteorological parameters to better capture space������time interactions. We calibrated {AOD} data through mixed-effect models regressing {PM10} measurements using day-specific random intercepts, and fixed and random {AOD} and temperature slopes. We used inverse-probability weighting to account for nonrandom {AOD} missingness, while reducing the dimensionality of spatial and temporal predictors and avoiding selecting different predictors in different locations, as common in land-use regression. We take advantage of associations of grid-cell {AOD} values with {PM10} monitoring located elsewhere and with {AOD} values in neighboring grid cells to develop grid-cell predictions when {AOD} is missing. By using ten-fold cross-validation to test the accuracy of our predictions, we found high out-of-sample R2 (R2����=����0.787, year to year variation 0.738������0.818) for days with available {AOD} data. Even in days with no available {AOD}, our model performance was comparable (R2����=����0.787, year to year variation 0.736������0.841). Our results demonstrate that {PM10} can be reliably predicted using this {AOD-based} prediction model, even in a geographical area with complex geographic and weather patterns.\",\"\",\"Aerosol Optical Depth ({AOD)}, air pollution, Epidemiology, Exposure error, {PM10}\",\"\",\"\"
+7,\"\",\"Wilker2014\",\"Wilker, Elissa H; Ljungman, Petter L; Rice, Mary B; Kloog, Itai; Schwartz, Joel; Gold, Diane R; Koutrakis, Petros; Vita, Joseph A; Mitchell, Gary F; Vasan, Ramachandran S & others\",\"Relation of Long-Term Exposure to Air Pollution to Brachial Artery Flow-Mediated Dilation and Reactive Hyperemia\",\"The American journal of cardiology\",113,12,\"\",\"2057--2063\",2014,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S0002914914008911\",\"\",\"\",\"\",\"\",\"\",\"Elsevier\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+7,\"\",\"Zusman2013\",\"Zusman, Marina; Ben Asher, Josefa; Kloog, Itai & Portnov, Boris A\",\"Estimating multi-annual PM\\textsubscript 2.5 air pollution levels using sVOC soil tests: Ashkelon South, Israel as a case study\",\"Atmospheric Environment\",81,,\"\",\"633--641\",2013,\"\",\"\",\"http://www.sciencedirect.com/science/article/pii/S1352231013007413\",\"\",\"\",\"\",\"\",\"\",\"Elsevier\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\",\"\"
+" 0 94 (fontified t) 94 95 (fontified t rear-nonsticky t) 95 96 (fontified t) 96 97 (rear-nonsticky t fontified t) 97 355 (fontified t) 355 357 (fontified t face font-lock-string-face) 357 358 (fontified t) 358 368 (fontified t face font-lock-string-face) 368 369 (fontified t) 369 500 (fontified t face font-lock-string-face) 500 501 (fontified t) 501 610 (fontified t face font-lock-string-face) 610 611 (fontified t) 611 655 (fontified t face font-lock-string-face) 655 662 (fontified t) 662 664 (fontified t face font-lock-string-face) 664 665 (fontified t) 665 675 (fontified t face font-lock-string-face) 675 681 (fontified t) 681 683 (fontified t face font-lock-string-face) 683 684 (fontified t) 684 686 (fontified t face font-lock-string-face) 686 687 (fontified t) 687 755 (fontified t face font-lock-string-face) 755 756 (fontified t) 756 758 (fontified t face font-lock-string-face) 758 759 (fontified t) 759 761 (fontified t face font-lock-string-face) 761 762 (fontified t) 762 764 (fontified t face font-lock-string-face) 764 765 (fontified t) 765 767 (fontified t face font-lock-string-face) 767 768 (fontified t) 768 770 (fontified t face font-lock-string-face) 770 771 (fontified t) 771 781 (fontified t face font-lock-string-face) 781 782 (fontified t) 782 784 (fontified t face font-lock-string-face) 784 785 (fontified t) 785 787 (fontified t face font-lock-string-face) 787 788 (fontified t) 788 790 (fontified t face font-lock-string-face) 790 791 (fontified t) 791 793 (fontified t face font-lock-string-face) 793 794 (fontified t) 794 796 (fontified t face font-lock-string-face) 796 797 (fontified t) 797 799 (fontified t face font-lock-string-face) 799 800 (fontified t) 800 802 (fontified t face font-lock-string-face) 802 803 (fontified t) 803 805 (fontified t face font-lock-string-face) 805 806 (fontified t) 806 808 (fontified t face font-lock-string-face) 808 809 (fontified t) 809 811 (fontified t face font-lock-string-face) 811 812 (fontified t) 812 814 (fontified t face font-lock-string-face) 814 815 (fontified t) 815 817 (fontified t) 817 819 (fontified t face font-lock-string-face) 819 820 (fontified t) 820 830 (fontified t face font-lock-string-face) 830 831 (fontified t) 831 962 (fontified t face font-lock-string-face) 962 963 (fontified t) 963 1072 (fontified t face font-lock-string-face) 1072 1073 (fontified t) 1073 1117 (fontified t face font-lock-string-face) 1117 1120 (fontified t) 1120 1122 (fontified t face font-lock-string-face) 1122 1123 (fontified t) 1123 1125 (fontified t face font-lock-string-face) 1125 1131 (fontified t) 1131 1133 (fontified t face font-lock-string-face) 1133 1134 (fontified t) 1134 1136 (fontified t face font-lock-string-face) 1136 1137 (fontified t) 1137 1205 (fontified t face font-lock-string-face) 1205 1206 (fontified t) 1206 1208 (fontified t face font-lock-string-face) 1208 1209 (fontified t) 1209 1211 (fontified t face font-lock-string-face) 1211 1212 (fontified t) 1212 1214 (fontified t face font-lock-string-face) 1214 1215 (fontified t) 1215 1217 (fontified t face font-lock-string-face) 1217 1218 (fontified t) 1218 1220 (fontified t face font-lock-string-face) 1220 1221 (fontified t) 1221 1231 (fontified t face font-lock-string-face) 1231 1232 (fontified t) 1232 1234 (fontified t face font-lock-string-face) 1234 1235 (fontified t) 1235 1237 (fontified t face font-lock-string-face) 1237 1238 (fontified t) 1238 1240 (fontified t face font-lock-string-face) 1240 1241 (fontified t) 1241 1243 (fontified t face font-lock-string-face) 1243 1244 (fontified t) 1244 1246 (fontified t face font-lock-string-face) 1246 1247 (fontified t) 1247 1249 (fontified t face font-lock-string-face) 1249 1250 (fontified t) 1250 1252 (fontified t face font-lock-string-face) 1252 1253 (fontified t) 1253 1255 (fontified t face font-lock-string-face) 1255 1256 (fontified t) 1256 1258 (fontified t face font-lock-string-face) 1258 1259 (fontified t) 1259 1261 (fontified t face font-lock-string-face) 1261 1262 (fontified t) 1262 1264 (fontified t face font-lock-string-face) 1264 1267 (fontified t) 1267 1269 (fontified t face font-lock-string-face) 1269 1270 (fontified t) 1270 1292 (fontified t face font-lock-string-face) 1292 1293 (fontified t) 1293 1434 (fontified t face font-lock-string-face) 1434 1435 (fontified t) 1435 1533 (fontified t face font-lock-string-face) 1533 1534 (fontified t) 1534 1559 (fontified t face font-lock-string-face) 1559 1562 (fontified t) 1562 1564 (fontified t face font-lock-string-face) 1564 1565 (fontified t) 1565 1567 (fontified t face font-lock-string-face) 1567 1573 (fontified t) 1573 1575 (fontified t face font-lock-string-face) 1575 1576 (fontified t) 1576 1578 (fontified t face font-lock-string-face) 1578 1579 (fontified t) 1579 1647 (fontified t face font-lock-string-face) 1647 1648 (fontified t) 1648 1650 (fontified t face font-lock-string-face) 1650 1651 (fontified t) 1651 1653 (fontified t face font-lock-string-face) 1653 1654 (fontified t) 1654 1656 (fontified t face font-lock-string-face) 1656 1657 (fontified t) 1657 1659 (fontified t face font-lock-string-face) 1659 1660 (fontified t) 1660 1662 (fontified t face font-lock-string-face) 1662 1663 (fontified t) 1663 1665 (fontified t face font-lock-string-face) 1665 1666 (fontified t) 1666 1668 (fontified t face font-lock-string-face) 1668 1669 (fontified t) 1669 1671 (fontified t face font-lock-string-face) 1671 1672 (fontified t) 1672 1674 (fontified t face font-lock-string-face) 1674 1675 (fontified t) 1675 1677 (fontified t face font-lock-string-face) 1677 1678 (fontified t) 1678 1680 (fontified t face font-lock-string-face) 1680 1681 (fontified t) 1681 1683 (fontified t face font-lock-string-face) 1683 1684 (fontified t) 1684 1686 (fontified t face font-lock-string-face) 1686 1687 (fontified t) 1687 1689 (fontified t face font-lock-string-face) 1689 1690 (fontified t) 1690 1692 (fontified t face font-lock-string-face) 1692 1693 (fontified t) 1693 1695 (fontified t face font-lock-string-face) 1695 1696 (fontified t) 1696 1698 (fontified t face font-lock-string-face) 1698 1699 (fontified t) 1699 1701 (fontified t) 1701 1703 (fontified t face font-lock-string-face) 1703 1704 (fontified t) 1704 1722 (fontified t face font-lock-string-face) 1722 1723 (fontified t) 1723 1909 (fontified t face font-lock-string-face) 1909 1910 (fontified t) 1910 2007 (fontified t face font-lock-string-face) 2007 2008 (fontified t) 2008 2033 (fontified t face font-lock-string-face) 2033 2036 (fontified t) 2036 2038 (fontified t face font-lock-string-face) 2038 2039 (fontified t) 2039 2041 (fontified t face font-lock-string-face) 2041 2047 (fontified t) 2047 2049 (fontified t face font-lock-string-face) 2049 2050 (fontified t) 2050 2052 (fontified t face font-lock-string-face) 2052 2053 (fontified t) 2053 2173 (fontified t face font-lock-string-face) 2173 2174 (fontified t) 2174 2176 (fontified t face font-lock-string-face) 2176 2177 (fontified t) 2177 2179 (fontified t face font-lock-string-face) 2179 2180 (fontified t) 2180 2182 (fontified t face font-lock-string-face) 2182 2183 (fontified t) 2183 2185 (fontified t face font-lock-string-face) 2185 2186 (fontified t) 2186 2188 (fontified t face font-lock-string-face) 2188 2189 (fontified t) 2189 2191 (fontified t face font-lock-string-face) 2191 2192 (fontified t) 2192 2194 (fontified t face font-lock-string-face) 2194 2195 (fontified t) 2195 2197 (fontified t face font-lock-string-face) 2197 2198 (fontified t) 2198 2200 (fontified t face font-lock-string-face) 2200 2201 (fontified t) 2201 2203 (fontified t face font-lock-string-face) 2203 2204 (fontified t) 2204 2206 (fontified t face font-lock-string-face) 2206 2207 (fontified t) 2207 2209 (fontified t face font-lock-string-face) 2209 2210 (fontified t) 2210 2212 (fontified t face font-lock-string-face) 2212 2213 (fontified t) 2213 2215 (fontified t face font-lock-string-face) 2215 2216 (fontified t) 2216 2218 (fontified t face font-lock-string-face) 2218 2219 (fontified t) 2219 2221 (fontified t face font-lock-string-face) 2221 2222 (fontified t) 2222 2224 (fontified t face font-lock-string-face) 2224 2225 (fontified t) 2225 2227 (fontified t) 2227 2229 (fontified t face font-lock-string-face) 2229 2230 (fontified t) 2230 2251 (fontified t face font-lock-string-face) 2251 2252 (fontified t) 2252 2324 (fontified t face font-lock-string-face) 2324 2325 (fontified t) 2325 2457 (fontified t face font-lock-string-face) 2457 2458 (fontified t) 2458 2492 (fontified t face font-lock-string-face) 2492 2499 (fontified t) 2499 2507 (fontified t face font-lock-string-face) 2507 2508 (fontified t) 2508 2516 (fontified t face font-lock-string-face) 2516 2522 (fontified t) 2522 2524 (fontified t face font-lock-string-face) 2524 2525 (fontified t) 2525 2527 (fontified t face font-lock-string-face) 2527 2528 (fontified t) 2528 2596 (fontified t face font-lock-string-face) 2596 2597 (fontified t) 2597 2599 (fontified t face font-lock-string-face) 2599 2600 (fontified t) 2600 2602 (fontified t face font-lock-string-face) 2602 2603 (fontified t) 2603 2605 (fontified t face font-lock-string-face) 2605 2606 (fontified t) 2606 2608 (fontified t face font-lock-string-face) 2608 2609 (fontified t) 2609 2611 (fontified t face font-lock-string-face) 2611 2612 (fontified t) 2612 2614 (fontified t face font-lock-string-face) 2614 2615 (fontified t) 2615 2617 (fontified t face font-lock-string-face) 2617 2618 (fontified t) 2618 2620 (fontified t face font-lock-string-face) 2620 2621 (fontified t) 2621 2623 (fontified t face font-lock-string-face) 2623 2624 (fontified t) 2624 2626 (fontified t face font-lock-string-face) 2626 2627 (fontified t) 2627 2629 (fontified t face font-lock-string-face) 2629 2630 (fontified t) 2630 2632 (fontified t face font-lock-string-face) 2632 2633 (fontified t) 2633 4027 (fontified t face font-lock-string-face) 4027 4028 (fontified t) 4028 4030 (fontified t face font-lock-string-face) 4030 4031 (fontified t) 4031 4108 (fontified t face font-lock-string-face) 4108 4109 (fontified t) 4109 4111 (fontified t face font-lock-string-face) 4111 4112 (fontified t) 4112 4114 (fontified t face font-lock-string-face) 4114 4115 (fontified t) 4115 4117 (fontified t) 4117 4119 (fontified t face font-lock-string-face) 4119 4120 (fontified t) 4120 4138 (fontified t face font-lock-string-face) 4138 4139 (fontified t) 4139 4230 (fontified t face font-lock-string-face) 4230 4231 (fontified t) 4231 4309 (fontified t face font-lock-string-face) 4309 4310 (fontified t) 4310 4324 (fontified t face font-lock-string-face) 4324 4329 (fontified t) 4329 4336 (fontified t face font-lock-string-face) 4336 4337 (fontified t) 4337 4345 (fontified t face font-lock-string-face) 4345 4351 (fontified t) 4351 4353 (fontified t face font-lock-string-face) 4353 4354 (fontified t) 4354 4356 (fontified t face font-lock-string-face) 4356 4357 (fontified t) 4357 4405 (fontified t face font-lock-string-face) 4405 4406 (fontified t) 4406 4408 (fontified t face font-lock-string-face) 4408 4409 (fontified t) 4409 4411 (fontified t face font-lock-string-face) 4411 4412 (fontified t) 4412 4414 (fontified t face font-lock-string-face) 4414 4415 (fontified t) 4415 4417 (fontified t face font-lock-string-face) 4417 4418 (fontified t) 4418 4420 (fontified t face font-lock-string-face) 4420 4421 (fontified t) 4421 4423 (fontified t face font-lock-string-face) 4423 4424 (fontified t) 4424 4426 (fontified t face font-lock-string-face) 4426 4427 (fontified t) 4427 4429 (fontified t face font-lock-string-face) 4429 4430 (fontified t) 4430 4432 (fontified t face font-lock-string-face) 4432 4433 (fontified t) 4433 4435 (fontified t face font-lock-string-face) 4435 4436 (fontified t) 4436 4438 (fontified t face font-lock-string-face) 4438 4439 (fontified t) 4439 4441 (fontified t face font-lock-string-face) 4441 4442 (fontified t) 4442 6281 (fontified t face font-lock-string-face) 6281 6282 (fontified t) 6282 6284 (fontified t face font-lock-string-face) 6284 6285 (fontified t) 6285 6287 (fontified t face font-lock-string-face) 6287 6288 (fontified t) 6288 6290 (fontified t face font-lock-string-face) 6290 6291 (fontified t) 6291 6293 (fontified t face font-lock-string-face) 6293 6294 (fontified t) 6294 6296 (fontified t) 6296 6298 (fontified t face font-lock-string-face) 6298 6299 (fontified t) 6299 6321 (fontified t face font-lock-string-face) 6321 6322 (fontified t) 6322 6404 (fontified t face font-lock-string-face) 6404 6405 (fontified t) 6405 6545 (fontified t face font-lock-string-face) 6545 6546 (fontified t) 6546 6571 (fontified t face font-lock-string-face) 6571 6578 (fontified t) 6578 6588 (fontified t face font-lock-string-face) 6588 6589 (fontified t) 6589 6601 (fontified t face font-lock-string-face) 6601 6607 (fontified t) 6607 6609 (fontified t face font-lock-string-face) 6609 6610 (fontified t) 6610 6612 (fontified t face font-lock-string-face) 6612 6613 (fontified t) 6613 6681 (fontified t face font-lock-string-face) 6681 6682 (fontified t) 6682 6684 (fontified t face font-lock-string-face) 6684 6685 (fontified t) 6685 6687 (fontified t face font-lock-string-face) 6687 6688 (fontified t) 6688 6690 (fontified t face font-lock-string-face) 6690 6691 (fontified t) 6691 6693 (fontified t face font-lock-string-face) 6693 6694 (fontified t) 6694 6696 (fontified t face font-lock-string-face) 6696 6697 (fontified t) 6697 6699 (fontified t face font-lock-string-face) 6699 6700 (fontified t) 6700 6702 (fontified t face font-lock-string-face) 6702 6703 (fontified t) 6703 6705 (fontified t face font-lock-string-face) 6705 6706 (fontified t) 6706 6708 (fontified t face font-lock-string-face) 6708 6709 (fontified t) 6709 6711 (fontified t face font-lock-string-face) 6711 6712 (fontified t) 6712 6714 (fontified t face font-lock-string-face) 6714 6715 (fontified t) 6715 6717 (fontified t face font-lock-string-face) 6717 6718 (fontified t) 6718 8725 (fontified t face font-lock-string-face) 8725 8726 (fontified t) 8726 8728 (fontified t face font-lock-string-face) 8728 8729 (fontified t) 8729 8811 (fontified t face font-lock-string-face) 8811 8812 (fontified t) 8812 8814 (fontified t face font-lock-string-face) 8814 8815 (fontified t) 8815 8817 (fontified t face font-lock-string-face) 8817 8818 (fontified t) 8818 8820 (fontified t) 8820 8822 (fontified t face font-lock-string-face) 8822 8823 (fontified t) 8823 8841 (fontified t face font-lock-string-face) 8841 8842 (fontified t) 8842 8928 (fontified t face font-lock-string-face) 8928 8929 (fontified t) 8929 9082 (fontified t face font-lock-string-face) 9082 9083 (fontified t) 9083 9105 (fontified t face font-lock-string-face) 9105 9111 (fontified t) 9111 9117 (fontified t face font-lock-string-face) 9117 9118 (fontified t) 9118 9122 (fontified t face font-lock-string-face) 9122 9128 (fontified t) 9128 9130 (fontified t face font-lock-string-face) 9130 9131 (fontified t) 9131 9133 (fontified t face font-lock-string-face) 9133 9134 (fontified t) 9134 9185 (fontified t face font-lock-string-face) 9185 9186 (fontified t) 9186 9188 (fontified t face font-lock-string-face) 9188 9189 (fontified t) 9189 9191 (fontified t face font-lock-string-face) 9191 9192 (fontified t) 9192 9194 (fontified t face font-lock-string-face) 9194 9195 (fontified t) 9195 9197 (fontified t face font-lock-string-face) 9197 9198 (fontified t) 9198 9200 (fontified t face font-lock-string-face) 9200 9201 (fontified t) 9201 9203 (fontified t face font-lock-string-face) 9203 9204 (fontified t) 9204 9206 (fontified t face font-lock-string-face) 9206 9207 (fontified t) 9207 9209 (fontified t face font-lock-string-face) 9209 9210 (fontified t) 9210 9212 (fontified t face font-lock-string-face) 9212 9213 (fontified t) 9213 9215 (fontified t face font-lock-string-face) 9215 9216 (fontified t) 9216 9218 (fontified t face font-lock-string-face) 9218 9219 (fontified t) 9219 9221 (fontified t face font-lock-string-face) 9221 9222 (fontified t) 9222 9610 (fontified t face font-lock-string-face) 9610 9611 (fontified t) 9611 9613 (fontified t face font-lock-string-face) 9613 9614 (fontified t) 9614 9701 (fontified t face font-lock-string-face) 9701 9702 (fontified t) 9702 9704 (fontified t face font-lock-string-face) 9704 9705 (fontified t) 9705 9707 (fontified t face font-lock-string-face) 9707 9708 (fontified t) 9708 9710 (fontified t) 9710 9712 (fontified t face font-lock-string-face) 9712 9713 (fontified t) 9713 9739 (fontified t face font-lock-string-face) 9739 9740 (fontified t) 9740 9806 (fontified t face font-lock-string-face) 9806 9807 (fontified t) 9807 9964 (fontified t face font-lock-string-face) 9964 9965 (fontified t) 9965 10002 (fontified t face font-lock-string-face) 10002 10009 (fontified t) 10009 10011 (fontified t face font-lock-string-face) 10011 10012 (fontified t) 10012 10030 (fontified t face font-lock-string-face) 10030 10036 (fontified t) 10036 10038 (fontified t face font-lock-string-face) 10038 10039 (fontified t) 10039 10041 (fontified t face font-lock-string-face) 10041 10042 (fontified t) 10042 10089 (fontified t face font-lock-string-face) 10089 10090 (fontified t) 10090 10092 (fontified t face font-lock-string-face) 10092 10093 (fontified t) 10093 10095 (fontified t face font-lock-string-face) 10095 10096 (fontified t) 10096 10098 (fontified t face font-lock-string-face) 10098 10099 (fontified t) 10099 10101 (fontified t face font-lock-string-face) 10101 10102 (fontified t) 10102 10104 (fontified t face font-lock-string-face) 10104 10105 (fontified t) 10105 10107 (fontified t face font-lock-string-face) 10107 10108 (fontified t) 10108 10110 (fontified t face font-lock-string-face) 10110 10111 (fontified t) 10111 10113 (fontified t face font-lock-string-face) 10113 10114 (fontified t) 10114 10116 (fontified t face font-lock-string-face) 10116 10117 (fontified t) 10117 10119 (fontified t face font-lock-string-face) 10119 10120 (fontified t) 10120 10122 (fontified t face font-lock-string-face) 10122 10123 (fontified t) 10123 10125 (fontified t face font-lock-string-face) 10125 10126 (fontified t) 10126 10128 (fontified t face font-lock-string-face) 10128 10129 (fontified t) 10129 10131 (fontified t face font-lock-string-face) 10131 10132 (fontified t) 10132 10134 (fontified t face font-lock-string-face) 10134 10135 (fontified t) 10135 10137 (fontified t face font-lock-string-face) 10137 10138 (fontified t) 10138 10140 (fontified t face font-lock-string-face) 10140 10143 (fontified t) 10143 10145 (fontified t face font-lock-string-face) 10145 10146 (fontified t) 10146 10164 (fontified t face font-lock-string-face) 10164 10165 (fontified t) 10165 10275 (fontified t face font-lock-string-face) 10275 10276 (fontified t) 10276 10390 (fontified t face font-lock-string-face) 10390 10391 (fontified t) 10391 10403 (fontified t face font-lock-string-face) 10403 10408 (fontified t) 10408 10410 (fontified t face font-lock-string-face) 10410 10411 (fontified t) 10411 10419 (fontified t face font-lock-string-face) 10419 10425 (fontified t) 10425 10427 (fontified t face font-lock-string-face) 10427 10428 (fontified t) 10428 10430 (fontified t face font-lock-string-face) 10430 10431 (fontified t) 10431 10480 (fontified t face font-lock-string-face) 10480 10481 (fontified t) 10481 10483 (fontified t face font-lock-string-face) 10483 10484 (fontified t) 10484 10486 (fontified t face font-lock-string-face) 10486 10487 (fontified t) 10487 10489 (fontified t face font-lock-string-face) 10489 10490 (fontified t) 10490 10492 (fontified t face font-lock-string-face) 10492 10493 (fontified t) 10493 10495 (fontified t face font-lock-string-face) 10495 10496 (fontified t) 10496 10498 (fontified t face font-lock-string-face) 10498 10499 (fontified t) 10499 10501 (fontified t face font-lock-string-face) 10501 10502 (fontified t) 10502 10504 (fontified t face font-lock-string-face) 10504 10505 (fontified t) 10505 10507 (fontified t face font-lock-string-face) 10507 10508 (fontified t) 10508 10510 (fontified t face font-lock-string-face) 10510 10511 (fontified t) 10511 10513 (fontified t face font-lock-string-face) 10513 10514 (fontified t) 10514 10516 (fontified t face font-lock-string-face) 10516 10517 (fontified t) 10517 10519 (fontified t face font-lock-string-face) 10519 10520 (fontified t) 10520 10522 (fontified t face font-lock-string-face) 10522 10523 (fontified t) 10523 10525 (fontified t face font-lock-string-face) 10525 10526 (fontified t) 10526 10528 (fontified t face font-lock-string-face) 10528 10529 (fontified t) 10529 10531 (fontified t face font-lock-string-face) 10531 10532 (fontified t) 10532 10534 (fontified t) 10534 10536 (fontified t face font-lock-string-face) 10536 10537 (fontified t) 10537 10559 (fontified t face font-lock-string-face) 10559 10560 (fontified t) 10560 10585 (fontified t face font-lock-string-face) 10585 10586 (fontified t) 10586 10686 (fontified t face font-lock-string-face) 10686 10687 (fontified t) 10687 10713 (fontified t face font-lock-string-face) 10713 10718 (fontified t) 10718 10720 (fontified t face font-lock-string-face) 10720 10721 (fontified t) 10721 10729 (fontified t face font-lock-string-face) 10729 10735 (fontified t) 10735 10737 (fontified t face font-lock-string-face) 10737 10738 (fontified t) 10738 10740 (fontified t face font-lock-string-face) 10740 10741 (fontified t) 10741 10743 (fontified t face font-lock-string-face) 10743 10744 (fontified t) 10744 10746 (fontified t face font-lock-string-face) 10746 10747 (fontified t) 10747 10749 (fontified t face font-lock-string-face) 10749 10750 (fontified t) 10750 10752 (fontified t face font-lock-string-face) 10752 10753 (fontified t) 10753 10755 (fontified t face font-lock-string-face) 10755 10756 (fontified t) 10756 10758 (fontified t face font-lock-string-face) 10758 10759 (fontified t) 10759 10761 (fontified t face font-lock-string-face) 10761 10762 (fontified t) 10762 10764 (fontified t face font-lock-string-face) 10764 10765 (fontified t) 10765 10767 (fontified t face font-lock-string-face) 10767 10768 (fontified t) 10768 10770 (fontified t face font-lock-string-face) 10770 10771 (fontified t) 10771 10773 (fontified t face font-lock-string-face) 10773 10774 (fontified t) 10774 10776 (fontified t face font-lock-string-face) 10776 10777 (fontified t) 10777 10779 (fontified t face font-lock-string-face) 10779 10780 (fontified t) 10780 10782 (fontified t face font-lock-string-face) 10782 10783 (fontified t) 10783 10785 (fontified t face font-lock-string-face) 10785 10786 (fontified t) 10786 10788 (fontified t face font-lock-string-face) 10788 10789 (fontified t) 10789 10791 (fontified t face font-lock-string-face) 10791 10792 (fontified t) 10792 10794 (fontified t face font-lock-string-face) 10794 10797 (fontified t) 10797 10799 (fontified t face font-lock-string-face) 10799 10800 (fontified t) 10800 10811 (fontified t face font-lock-string-face) 10811 10812 (fontified t) 10812 10876 (fontified t face font-lock-string-face) 10876 10877 (fontified t) 10877 10948 (fontified t face font-lock-string-face) 10948 10949 (fontified t) 10949 10978 (fontified t face font-lock-string-face) 10978 10984 (fontified t) 10984 10986 (fontified t face font-lock-string-face) 10986 10987 (fontified t) 10987 10995 (fontified t face font-lock-string-face) 10995 11001 (fontified t) 11001 11003 (fontified t face font-lock-string-face) 11003 11004 (fontified t) 11004 11006 (fontified t face font-lock-string-face) 11006 11007 (fontified t) 11007 11009 (fontified t face font-lock-string-face) 11009 11010 (fontified t) 11010 11012 (fontified t face font-lock-string-face) 11012 11013 (fontified t) 11013 11015 (fontified t face font-lock-string-face) 11015 11016 (fontified t) 11016 11018 (fontified t face font-lock-string-face) 11018 11019 (fontified t) 11019 11021 (fontified t face font-lock-string-face) 11021 11022 (fontified t) 11022 11024 (fontified t face font-lock-string-face) 11024 11025 (fontified t) 11025 11059 (fontified t face font-lock-string-face) 11059 11060 (fontified t) 11060 11062 (fontified t face font-lock-string-face) 11062 11063 (fontified t) 11063 11065 (fontified t face font-lock-string-face) 11065 11066 (fontified t) 11066 11068 (fontified t face font-lock-string-face) 11068 11069 (fontified t) 11069 11071 (fontified t face font-lock-string-face) 11071 11072 (fontified t) 11072 11074 (fontified t face font-lock-string-face) 11074 11075 (fontified t) 11075 11077 (fontified t face font-lock-string-face) 11077 11078 (fontified t) 11078 11080 (fontified t face font-lock-string-face) 11080 11081 (fontified t) 11081 11083 (fontified t face font-lock-string-face) 11083 11084 (fontified t) 11084 11086 (fontified t face font-lock-string-face) 11086 11087 (fontified t) 11087 11089 (fontified t face font-lock-string-face) 11089 11090 (fontified t) 11090 11092 (fontified t face font-lock-string-face) 11092 11093 (fontified t) 11093 11095 (fontified t) 11095 11097 (fontified t face font-lock-string-face) 11097 11098 (fontified t) 11098 11116 (fontified t face font-lock-string-face) 11116 11117 (fontified t) 11117 11201 (fontified t face font-lock-string-face) 11201 11202 (fontified t) 11202 11256 (fontified t face font-lock-string-face) 11256 11257 (fontified t) 11257 11271 (fontified t face font-lock-string-face) 11271 11277 (fontified t) 11277 11283 (fontified t face font-lock-string-face) 11283 11284 (fontified t) 11284 11294 (fontified t face font-lock-string-face) 11294 11300 (fontified t) 11300 11302 (fontified t face font-lock-string-face) 11302 11303 (fontified t) 11303 11305 (fontified t face font-lock-string-face) 11305 11306 (fontified t) 11306 11409 (fontified t face font-lock-string-face) 11409 11410 (fontified t) 11410 11412 (fontified t face font-lock-string-face) 11412 11413 (fontified t) 11413 11415 (fontified t face font-lock-string-face) 11415 11416 (fontified t) 11416 11418 (fontified t face font-lock-string-face) 11418 11419 (fontified t) 11419 11421 (fontified t face font-lock-string-face) 11421 11422 (fontified t) 11422 11424 (fontified t face font-lock-string-face) 11424 11425 (fontified t) 11425 11427 (fontified t face font-lock-string-face) 11427 11428 (fontified t) 11428 11430 (fontified t face font-lock-string-face) 11430 11431 (fontified t) 11431 11433 (fontified t face font-lock-string-face) 11433 11434 (fontified t) 11434 11436 (fontified t face font-lock-string-face) 11436 11437 (fontified t) 11437 11439 (fontified t face font-lock-string-face) 11439 11440 (fontified t) 11440 11442 (fontified t face font-lock-string-face) 11442 11443 (fontified t) 11443 11445 (fontified t face font-lock-string-face) 11445 11446 (fontified t) 11446 11448 (fontified t face font-lock-string-face) 11448 11449 (fontified t) 11449 11451 (fontified t face font-lock-string-face) 11451 11452 (fontified t) 11452 11454 (fontified t face font-lock-string-face) 11454 11455 (fontified t) 11455 11457 (fontified t face font-lock-string-face) 11457 11458 (fontified t) 11458 11460 (fontified t face font-lock-string-face) 11460 11463 (fontified t) 11463 11465 (fontified t face font-lock-string-face) 11465 11466 (fontified t) 11466 11490 (fontified t face font-lock-string-face) 11490 11491 (fontified t) 11491 11642 (fontified t face font-lock-string-face) 11642 11643 (fontified t) 11643 11785 (fontified t face font-lock-string-face) 11785 11786 (fontified t) 11786 11811 (fontified t face font-lock-string-face) 11811 11816 (fontified t) 11816 11824 (fontified t face font-lock-string-face) 11824 11825 (fontified t) 11825 11835 (fontified t face font-lock-string-face) 11835 11841 (fontified t) 11841 11843 (fontified t face font-lock-string-face) 11843 11844 (fontified t) 11844 11846 (fontified t face font-lock-string-face) 11846 11847 (fontified t) 11847 11915 (fontified t face font-lock-string-face) 11915 11916 (fontified t) 11916 11918 (fontified t face font-lock-string-face) 11918 11919 (fontified t) 11919 11921 (fontified t face font-lock-string-face) 11921 11922 (fontified t) 11922 11924 (fontified t face font-lock-string-face) 11924 11925 (fontified t) 11925 11927 (fontified t face font-lock-string-face) 11927 11928 (fontified t) 11928 11930 (fontified t face font-lock-string-face) 11930 11931 (fontified t) 11931 11933 (fontified t face font-lock-string-face) 11933 11934 (fontified t) 11934 11936 (fontified t face font-lock-string-face) 11936 11937 (fontified t) 11937 11939 (fontified t face font-lock-string-face) 11939 11940 (fontified t) 11940 11942 (fontified t face font-lock-string-face) 11942 11943 (fontified t) 11943 11945 (fontified t face font-lock-string-face) 11945 11946 (fontified t) 11946 11948 (fontified t face font-lock-string-face) 11948 11949 (fontified t) 11949 11951 (fontified t face font-lock-string-face) 11951 11952 (fontified t) 11952 14295 (fontified t face font-lock-string-face) 14295 14296 (fontified t) 14296 14298 (fontified t face font-lock-string-face) 14298 14299 (fontified t) 14299 14383 (fontified t face font-lock-string-face) 14383 14384 (fontified t) 14384 14386 (fontified t face font-lock-string-face) 14386 14387 (fontified t) 14387 14389 (fontified t face font-lock-string-face) 14389 14390 (fontified t) 14390 14392 (fontified t) 14392 14394 (fontified t face font-lock-string-face) 14394 14395 (fontified t) 14395 14407 (fontified t face font-lock-string-face) 14407 14408 (fontified t) 14408 14589 (fontified t face font-lock-string-face) 14589 14590 (fontified t) 14590 14704 (fontified t face font-lock-string-face) 14704 14705 (fontified t) 14705 14741 (fontified t face font-lock-string-face) 14741 14749 (fontified t) 14749 14751 (fontified t face font-lock-string-face) 14751 14752 (fontified t) 14752 14764 (fontified t face font-lock-string-face) 14764 14770 (fontified t) 14770 14772 (fontified t face font-lock-string-face) 14772 14773 (fontified t) 14773 14775 (fontified t face font-lock-string-face) 14775 14776 (fontified t) 14776 14844 (fontified t face font-lock-string-face) 14844 14845 (fontified t) 14845 14847 (fontified t face font-lock-string-face) 14847 14848 (fontified t) 14848 14850 (fontified t face font-lock-string-face) 14850 14851 (fontified t) 14851 14853 (fontified t face font-lock-string-face) 14853 14854 (fontified t) 14854 14856 (fontified t face font-lock-string-face) 14856 14857 (fontified t) 14857 14859 (fontified t face font-lock-string-face) 14859 14860 (fontified t) 14860 14870 (fontified t face font-lock-string-face) 14870 14871 (fontified t) 14871 14873 (fontified t face font-lock-string-face) 14873 14874 (fontified t) 14874 14876 (fontified t face font-lock-string-face) 14876 14877 (fontified t) 14877 14879 (fontified t face font-lock-string-face) 14879 14880 (fontified t) 14880 14882 (fontified t face font-lock-string-face) 14882 14883 (fontified t) 14883 14885 (fontified t face font-lock-string-face) 14885 14886 (fontified t) 14886 14888 (fontified t face font-lock-string-face) 14888 14889 (fontified t) 14889 14891 (fontified t face font-lock-string-face) 14891 14892 (fontified t) 14892 14894 (fontified t face font-lock-string-face) 14894 14895 (fontified t) 14895 14897 (fontified t face font-lock-string-face) 14897 14898 (fontified t) 14898 14900 (fontified t face font-lock-string-face) 14900 14901 (fontified t) 14901 14903 (fontified t face font-lock-string-face) 14903 14904 (fontified t) 14904 14906 (fontified t) 14906 14908 (fontified t face font-lock-string-face) 14908 14909 (fontified t) 14909 14921 (fontified t face font-lock-string-face) 14921 14922 (fontified t) 14922 14989 (fontified t face font-lock-string-face) 14989 14990 (fontified t) 14990 15119 (fontified t face font-lock-string-face) 15119 15120 (fontified t) 15120 15145 (fontified t face font-lock-string-face) 15145 15150 (fontified t) 15150 15152 (fontified t face font-lock-string-face) 15152 15153 (fontified t) 15153 15163 (fontified t face font-lock-string-face) 15163 15169 (fontified t) 15169 15171 (fontified t face font-lock-string-face) 15171 15172 (fontified t) 15172 15174 (fontified t face font-lock-string-face) 15174 15175 (fontified t) 15175 15243 (fontified t face font-lock-string-face) 15243 15244 (fontified t) 15244 15246 (fontified t face font-lock-string-face) 15246 15247 (fontified t) 15247 15249 (fontified t face font-lock-string-face) 15249 15250 (fontified t) 15250 15252 (fontified t face font-lock-string-face) 15252 15253 (fontified t) 15253 15255 (fontified t face font-lock-string-face) 15255 15256 (fontified t) 15256 15258 (fontified t face font-lock-string-face) 15258 15259 (fontified t) 15259 15269 (fontified t face font-lock-string-face) 15269 15270 (fontified t) 15270 15272 (fontified t face font-lock-string-face) 15272 15273 (fontified t) 15273 15275 (fontified t face font-lock-string-face) 15275 15276 (fontified t) 15276 15278 (fontified t face font-lock-string-face) 15278 15279 (fontified t) 15279 15281 (fontified t face font-lock-string-face) 15281 15282 (fontified t) 15282 15284 (fontified t face font-lock-string-face) 15284 15285 (fontified t) 15285 15287 (fontified t face font-lock-string-face) 15287 15288 (fontified t) 15288 15290 (fontified t face font-lock-string-face) 15290 15291 (fontified t) 15291 15293 (fontified t face font-lock-string-face) 15293 15294 (fontified t) 15294 15296 (fontified t face font-lock-string-face) 15296 15297 (fontified t) 15297 15299 (fontified t face font-lock-string-face) 15299 15300 (fontified t) 15300 15302 (fontified t face font-lock-string-face) 15302 15303 (fontified t rear-nonsticky t)) . 1) (undo-tree-id0 . -15303) (undo-tree-id1 . -15302) (undo-tree-id2 . -13826) (undo-tree-id3 . -10399) (undo-tree-id4 . -97) (undo-tree-id5 . -97) (undo-tree-id6 . -13826) (undo-tree-id7 . -15303) (undo-tree-id8 . -10399) (undo-tree-id9 . -15302)) nil (21419 58028 695932 465000) 0 nil]) ((nil rear-nonsticky nil 15303 . 15304) (nil fontified nil 98 . 15304) (98 . 15304)) nil (21419 58028 695937 989000) 0 nil]) ((nil rear-nonsticky nil 95 . 96) (nil fontified nil 1 . 96) (1 . 96)) nil (21419 58028 695941 679000) 0 nil]) ((#("@Article{kloog_possible_2008,
+  Title                    = {A possible association between exposure to Light at Night and breast cancer incidence in the urban space of Tel-Aviv.},
+  Author                   = {Kloog, Itai and Haim, Abraham and Portnov, Boris A.},
+  Journal                  = {Studies in Natural Resources and Environmental Management},
+  Year                     = {2008},
+  Number                   = {1},
+  Pages                    = {103--110},
+  Volume                   = {6},
+
+  File                     = {kloog_possible_2008.pdf:kloog_possible_2008.pdf:PDF},
+  Keywords                 = {Breast cancer, {GIS}, Kernel density function, Light-at-night}
+}
+@Article{Kloog2008,
+  Title                    = {Light at night co-distributes with incident breast but not lung cancer in the female population of {Israel}},
+  Author                   = {Kloog, Itai and Haim, Abraham and Stevens, Richard G and Barchana, Micha and Portnov, Boris A},
+  Journal                  = {Chronobiology international},
+  Year                     = {2008},
+  Number                   = {1},
+  Pages                    = {65--81},
+  Volume                   = {25},
+
+  Doi                      = {10.1080/07420520801921572},
+  File                     = {:Kloog2008.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Informa UK Ltd UK},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_using_2009,
+  Title                    = {Using kernel density function as an urban analysis tool: Investigating the association between nightlight exposure and the incidence of breast cancer in Haifa, {Israel}},
+  Author                   = {Kloog, Itai and Haim, Abraham and Portnov, Boris A.},
+  Journal                  = {Computers, Environment and Urban Systems},
+  Year                     = {2009},
+
+  Month                    = jan,
+  Number                   = {1},
+  Pages                    = {55--63},
+  Volume                   = {33},
+
+  Abstract                 = {The kernel density ({KD)} function estimates the intensity of events across a surface by calculating the overall number of cases situated within a given search radius from a target point. To form a continuous surface from individual observations, the {KD} technique does not require the presence of a parameter{\\^{a}}����s value in a given location (e.g., the incidence rate of a disease). This feature of {KD} smoothing is especially beneficial for empirical studies in which individual observations are represented by geographic coordinates only and have no other attributes, required by more commonly used smoothing techniques, such as spline and kriging. In the present study, we illustrate the use of {KD} technique for a study of association between the geographical distributions of breast cancer cases and exposure to artificial illumination during nighttime (light-at-night or {LAN)} in the city of Haifa, Israel.},
+  Doi                      = {10.1016/j.compenvurbsys.2008.09.006},
+  File                     = {Published version:kloog_using_2009.pdf:PDF},
+  ISSN                     = {0198-9715},
+  Keywords                 = {Breast cancer, Breast cancer, {GIS}, {GIS}, Kernel density function, Kernel density function, Light-at-night, Light-at-night},
+  Shorttitle               = {Using kernel density function as an urban analysis tool},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0198971508000641},
+  Urldate                  = {2012-05-31}
+}
+@Article{Kloog2009,
+  Title                    = {Global co-distribution of light at night ({LAN}) and cancers of prostate, colon, and lung in men},
+  Author                   = {Kloog, Itai and Haim, Abraham and Stevens, Richard G and Portnov, Boris A},
+  Journal                  = {Chronobiology international},
+  Year                     = {2009},
+  Number                   = {1},
+  Pages                    = {108--125},
+  Volume                   = {26},
+
+  Doi                      = {10.1080/07420520802694020},
+  File                     = {:Kloog2009.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Informa UK Ltd UK},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_nighttime_2010,
+  Title                    = {Nighttime light level co-distributes with breast cancer incidence worldwide},
+  Author                   = {Kloog, I. and Stevens, R. G and Haim, A. and Portnov, B. A},
+  Journal                  = {Cancer Causes and Control},
+  Year                     = {2010},
+  Number                   = {12},
+  Pages                    = {2059������2068},
+  Volume                   = {21},
+
+  File                     = {:kloog_nighttime_2010.pdf:PDF}
+}
+@Article{haim_authors_2011,
+  Title                    = {Authors' response},
+  Author                   = {Haim, Abraham and Kloog, Itai and Rennert, Hedy S. and Portnov, Boris A.},
+  Journal                  = {Chronobiology International: The Journal of Biological \\& Medical Rhythm Research},
+  Year                     = {2011},
+
+  Month                    = may,
+  Number                   = {4},
+  Pages                    = {379--380},
+  Volume                   = {28},
+
+  File                     = {haim_authors_2011.pdf:haim_authors_2011.pdf:PDF},
+  ISSN                     = {07420528},
+  Keywords                 = {{LIGHT} -- Physiological effect, {LOGISTIC} regression analysis, Melatonin, {NIGHT}, {OUTCOME} assessment (Medical care), {QUESTIONNAIRES}, Sleep},
+  Lccn                     = {60369118}
+}
+@Article{kloog_assessing_2011,
+  Title                    = {Assessing temporally and spatially resolved {PM2.5} exposures for epidemiological studies using satellite aerosol optical depth measurements},
+  Author                   = {Kloog, Itai and Koutrakis, Petros and Coull, Brent A. and Lee, Hyung Joo and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2011},
+
+  Month                    = nov,
+  Number                   = {35},
+  Pages                    = {6267--6275},
+  Volume                   = {45},
+
+  Abstract                 = {Land use regression ({LUR)} models provide good estimates of spatially resolved long-term exposures, but are poor at capturing short term exposures. Satellite-derived Aerosol Optical Depth ({AOD)} measurements have the potential to provide spatio-temporally resolved predictions of both long and short term exposures, but previous studies have generally showed relatively low predictive power. Our objective was to extend our previous work on day-specific calibrations of {AOD} data using ground {PM2.5} measurements by incorporating commonly used {LUR} variables and meteorological variables, thus benefiting from both the spatial resolution from the {LUR} models and the spatio-temporal resolution from the satellite models. Later we use spatial smoothing to predict {PM2.5} concentrations for day/locations with missing {AOD} measures. We used mixed models with random slopes for day to calibrate {AOD} data for 2000������2008 across New-England with monitored {PM2.5} measurements. We then used a generalized additive mixed model with spatial smoothing to estimate {PM2.5} in location������day pairs with missing {AOD}, using regional measured {PM2.5}, {AOD} values in neighboring cells, and land use. Finally, local (100����m) land use terms were used to model the difference between grid cell prediction and monitored value to capture very local traffic particles. Out-of-sample ten-fold cross-validation was used to quantify the accuracy of our predictions. For days with available {AOD} data we found high out-of-sample R2 (mean out-of-sample R2����=����0.830, year to year variation 0.725������0.904). For days without {AOD} values, our model performance was also excellent (mean out-of-sample R2����=����0.810, year to year variation 0.692������0.887). Importantly, these R2 are for daily, rather than monthly or yearly, values. Our model allows one to assess short term and long-term human exposures in order to investigate both the acute and chronic effects of ambient particles, respectively.},
+  Doi                      = {10.1016/j.atmosenv.2011.08.066},
+  File                     = {kloog_assessing_2011.pdf:kloog_assessing_2011.pdf:PDF},
+  ISSN                     = {1352-2310},
+  Keywords                 = {Aerosol optical depth, Epidemiology, Exposure error, LAN, air pollution, {PM2.5}},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231011009125},
+  Urldate                  = {2012-05-31}
+}
+@Article{Kloog2011,
+  Title                    = {Does the modern urbanized sleeping habitat pose a breast cancer risk?},
+  Author                   = {Kloog, Itai and Portnov, Boris A and Rennert, Hedy S and Haim, Abraham},
+  Journal                  = {Chronobiology international},
+  Year                     = {2011},
+  Number                   = {1},
+  Pages                    = {76--80},
+  Volume                   = {28},
+
+  Doi                      = {10.3109/07420528.2010.531490},
+  File                     = {:/home/zeltak/Dropbox/uni/projects/PhD/lan-bc-case-control/Kloog2011.pdf:PDF},
+  Publisher                = {Informa Healthcare New York, USA},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_temporal_2012,
+  Title                    = {Temporal and spatial assessments of minimum air temperature using satellite surface temperature measurements in Massachusetts, {USA}},
+  Author                   = {Kloog, Itai and Chudnovsky, Alexandra and Koutrakis, Petros and Schwartz, Joel},
+  Journal                  = {Science of The Total Environment},
+  Year                     = {2012},
+
+  Month                    = aug,
+  Number                   = {0},
+  Pages                    = {85--92},
+  Volume                   = {432},
+
+  Abstract                 = {Although meteorological stations provide accurate air temperature observations, their spatial coverage is limited and thus often insufficient for epidemiological studies. Satellite data expand spatial coverage, enhancing our ability to estimate near surface air temperature (Ta). However, the derivation of Ta from surface temperature (Ts) measured by satellites is far from being straightforward. In this study, we present a novel approach that incorporates land use regression, meteorological variables and spatial smoothing to first calibrate between Ts and Ta on a daily basis and then predict Ta for days when satellite Ts data were not available. We applied mixed regression models with daily random slopes to calibrate Moderate Resolution Imaging Spectroradiometer ({MODIS)} Ts data with monitored Ta measurements for 2003. Then, we used a generalized additive mixed model with spatial smoothing to estimate Ta in days with missing Ts. Out-of-sample tenfold cross-validation was used to quantify the accuracy of our predictions. Our model performance was excellent for both days with available Ts and days without Ts observations (mean out-of-sample R2\\&\\#xa0;=\\&\\#xa0;0.946 and R2\\&\\#xa0;=\\&\\#xa0;0.941 respectively). Furthermore, based on the high quality predictions we investigated the spatial patterns of Ta within the study domain as they relate to urban vs. non-urban land uses.},
+  Doi                      = {10.1016/j.scitotenv.2012.05.095},
+  File                     = {Published version:kloog_temporal_2012.pdf:PDF},
+  ISSN                     = {0048-9697},
+  Keywords                 = {Air temperature, Epidemiology, Exposure error, {MODIS}, Surface temperature},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0048969712008108},
+  Urldate                  = {2012-08-20}
+}
+@Article{kloog_acute_2012,
+  Title                    = {Acute and Chronic Effects of Particles on Hospital Admissions in New-England},
+  Author                   = {Kloog, Itai and Coull, Brent A. and Zanobetti, Antonella and Koutrakis, Petros and Schwartz, Joel D.},
+  Journal                  = {{PLoS} {ONE}},
+  Year                     = {2012},
+
+  Month                    = apr,
+  Number                   = {4},
+  Pages                    = {e34664},
+  Volume                   = {7},
+
+  Abstract                 = {{BackgroundMany} studies have reported significant associations between exposure to {PM2.5} and hospital admissions, but all have focused on the effects of short-term exposure. In addition all these studies have relied on a limited number of {PM2.5} monitors in their study regions, which introduces exposure error, and excludes rural and suburban populations from locations in which monitors are not available, reducing generalizability and potentially creating selection {bias.MethodsUsing} our novel prediction models for exposure combining land use regression with physical measurements (satellite aerosol optical depth) we investigated both the long and short term effects of {PM2.5} exposures on hospital admissions across New-England for all residents aged 65 and older. We performed separate Poisson regression analysis for each admission type: all respiratory, cardiovascular disease ({CVD)}, stroke and diabetes. Daily admission counts in each zip code were regressed against long and short-term {PM2.5} exposure, temperature, socio-economic data and a spline of time to control for seasonal trends in baseline {risk.ResultsWe} observed associations between both short-term and long-term exposure to {PM2.5} and hospitalization for all of the outcomes examined. In example, for respiratory diseases, for every10-����g/m3 increase in short-term {PM2.5} exposure there is a 0.70 percent increase in admissions ({CI}������=������0.35 to 0.52) while concurrently for every10-����g/m3 increase in long-term {PM2.5} exposure there is a 4.22 percent increase in admissions ({CI}������=������1.06 to {4.75).ConclusionsAs} with mortality studies, chronic exposure to particles is associated with substantially larger increases in hospital admissions than acute exposure and both can be detected simultaneously using our exposure models.},
+  Doi                      = {10.1371/journal.pone.0034664},
+  File                     = {Published version:kloog_acute_2012.pdf:PDF},
+  Url                      = {http://dx.doi.org/10.1371/journal.pone.0034664},
+  Urldate                  = {2012-05-31}
+}
+@Article{kloog_using_2012,
+  Title                    = {Using new satellite based exposure methods to study the association between pregnancy pm2.5 exposure, premature birth and birth weight in Massachusetts},
+  Author                   = {Kloog, Itai and Melly, Steven J. and Ridgway, William L. and Coull, Brent A. and Schwartz, Joel},
+  Journal                  = {Environmental Health},
+  Year                     = {2012},
+
+  Month                    = jun,
+  Number                   = {1},
+  Pages                    = {40},
+  Volume                   = {11},
+
+  Abstract                 = {Adverse birth outcomes such as low birth weight and premature birth have been previously linked with exposure to ambient air pollution. Most studies relied on a limited number of monitors in the region of interest, which can introduce exposure error or restrict the analysis to persons living near a monitor, which reduces sample size and generalizability and may create selection bias.},
+  Copyright                = {2012 Kloog et al.; licensee {BioMed} Central Ltd.},
+  Doi                      = {10.1186/1476-069X-11-40},
+  File                     = {Published version:kloog_using_2012b.pdf:PDF;Published version:kloog_using_2012.pdf:PDF},
+  ISSN                     = {1476-{069X}},
+  Keywords                 = {Aerosol optical depth, air pollution, Birth Weight, Epidemiology, {PM}, Preterm birth},
+  Language                 = {en},
+  Url                      = {http://www.ehjournal.net/content/11/1/40/abstract},
+  Urldate                  = {2012-07-27}
+}
+@Article{kloog_incorporating_2012,
+  Title                    = {Incorporating local land use regression and satellite aerosol optical depth in a hybrid model of spatiotemporal {PM2.} 5 exposures in the Mid-Atlantic states},
+  Author                   = {Kloog, Itai and Nordio, Francesco and Coull, Brent A. and Schwartz, Joel},
+  Journal                  = {Environmental science \\& technology},
+  Year                     = {2012},
+  Number                   = {21},
+  Pages                    = {11913������11921},
+  Volume                   = {46},
+
+  File                     = {Published version:kloog_incorporating_2012.pdf:PDF},
+  Url                      = {http://pubs.acs.org/doi/abs/10.1021/es302673e},
+  Urldate                  = {2013-07-08}
+}
+@Article{kloog_detecting_2012,
+  Title                    = {Detecting the Association between Children Health and Lead Exposure Using Voronoi Polygon Rezoning},
+  Author                   = {Kloog, I. and Portnov, B.},
+  Journal                  = {Geography Research Forum},
+  Year                     = {2012},
+  Pages                    = {46--61},
+  Volume                   = {32},
+
+  File                     = {:kloogmanuscript_v3.pdf:PDF}
+}
+@Article{Chiu2013,
+  Title                    = {Effects of prenatal community violence and ambient air pollution on childhood wheeze in an urban population},
+  Author                   = {Chiu, Yueh-Hsiu Mathilda and Coull, Brent A and Sternthal, Michelle J and Kloog, Itai and Schwartz, Joel and Cohen, Sheldon and Wright, Rosalind J},
+  Journal                  = {Journal of Allergy and Clinical Immunology},
+  Year                     = {2013},
+
+  File                     = {:Chiu2013.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Elsevier},
+  Timestamp                = {2014.04.04},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0091674913014693}
+}
+@Article{kloog_long-_2013,
+  Title                    = {Long- and Short-Term Exposure to {PM2.5} and Mortality},
+  Author                   = {Kloog, Itai and Ridgway, Bill and Koutrakis, Petros and Coull, Brent A. and Schwartz, Joel D.},
+  Journal                  = {Epidemiology},
+  Year                     = {2013},
+
+  Month                    = jul,
+  Number                   = {4},
+  Pages                    = {555--561},
+  Volume                   = {24},
+
+  Doi                      = {10.1097/EDE.0b013e318294beaa},
+  File                     = {:kloog00001648-201307000-00011.pdf:PDF},
+  ISSN                     = {1044-3983},
+  Url                      = {http://journals.lww.com/epidem/Abstract/2013/07000/Long__and_Short_Term_Exposure_to_PM2_5_and.11.aspx},
+  Urldate                  = {2013-07-26}
+}
+@Article{madrigano_long-term_2013,
+  Title                    = {Long-term Exposure to {PM2.} 5 and Incidence of Acute Myocardial Infarction},
+  Author                   = {Madrigano, Jaime and Kloog, Itai and Goldberg, Robert and Coull, Brent A. and Mittleman, Murray A. and Schwartz, Joel},
+  Journal                  = {Environmental health perspectives},
+  Year                     = {2013},
+  Number                   = {2},
+  Pages                    = {192},
+  Volume                   = {121},
+
+  File                     = {Published version:madrigano_long-term_2013.pdf:PDF;[HTML] from nih.gov:G:},
+  Url                      = {http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3569684/},
+  Urldate                  = {2013-07-26}
+}
+@Article{nordio_estimating_2013,
+  Title                    = {Estimating spatio-temporal resolved {PM10} aerosol mass concentrations using {MODIS} satellite data and land use regression over Lombardy, Italy},
+  Author                   = {Nordio, Francesco and Kloog, Itai and Coull, Brent A. and Chudnovsky, Alexandra and Grillo, Paolo and Bertazzi, Pier Alberto and Baccarelli, Andrea A. and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2013},
+
+  Month                    = aug,
+  Pages                    = {227--236},
+  Volume                   = {74},
+
+  Abstract                 = {Abstract Traditional air pollution epidemiology studies being conducted in large cities can be limited by the availability of monitoring. Satellite Aerosol Optical Depth ({AOD)} measurements offer the possibility of exposure estimates for the entire population. We previously demonstrated that daily calibration substantially increased the predictive power of satellite {AOD} measurements for fine particles ({PM2.5)} in New England, allowing estimation of exposure in locations without monitors. Similar results have not been reported for larger particles ({PM10)}, which are often the only measures that can be used in locations worldwide that do not have comprehensive {PM2.5} monitoring; this also applies to {PM} estimation of historical exposures. Here we extend this methodology by applying it to 2000������2009 {PM10} data from Lombardy, Northern Italy a region with high altitude differences, frequent temperature inversions and stationary fronts. Specifically, by 1) incorporating a model for missing {AOD} data to deal with non-randomness in the missing data; and 2) modeling interactions between land use and meteorological parameters to better capture space������time interactions. We calibrated {AOD} data through mixed-effect models regressing {PM10} measurements using day-specific random intercepts, and fixed and random {AOD} and temperature slopes. We used inverse-probability weighting to account for nonrandom {AOD} missingness, while reducing the dimensionality of spatial and temporal predictors and avoiding selecting different predictors in different locations, as common in land-use regression. We take advantage of associations of grid-cell {AOD} values with {PM10} monitoring located elsewhere and with {AOD} values in neighboring grid cells to develop grid-cell predictions when {AOD} is missing. By using ten-fold cross-validation to test the accuracy of our predictions, we found high out-of-sample R2 (R2����=����0.787, year to year variation 0.738������0.818) for days with available {AOD} data. Even in days with no available {AOD}, our model performance was comparable (R2����=����0.787, year to year variation 0.736������0.841). Our results demonstrate that {PM10} can be reliably predicted using this {AOD-based} prediction model, even in a geographical area with complex geographic and weather patterns.},
+  Doi                      = {10.1016/j.atmosenv.2013.03.043},
+  File                     = {Published version:nordio_estimating_2013.pdf:PDF},
+  ISSN                     = {1352-2310},
+  Keywords                 = {Aerosol Optical Depth ({AOD)}, air pollution, Epidemiology, Exposure error, {PM10}},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231013002197},
+  Urldate                  = {2013-07-10}
+}
+@Article{Zusman2013,
+  Title                    = {Estimating multi-annual PM\\textsubscript{ 2.5} air pollution levels using sVOC soil tests: Ashkelon South, {Israel} as a case study},
+  Author                   = {Zusman, Marina and Ben Asher, Josefa and Kloog, Itai and Portnov, Boris A},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2013},
+  Pages                    = {633--641},
+  Volume                   = {81},
+
+  File                     = {:marina1-s2.0-S1352231013007413-main.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Elsevier},
+  Timestamp                = {2014.04.04},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231013007413}
+}
+@Article{chudnovsky_fine_2014,
+  Title                    = {Fine particulate matter predictions using high resolution aerosol optical depth ({AOD)} retrievals},
+  Author                   = {Chudnovsky, Alexandra A. and Koutrakis, Petros and Kloog, Itai and Melly, Steven and Nordio, Francesco and Lyapustin, Alexei and Wang, Yujie and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2014},
+
+  File                     = {Published version:chudnovsky_fine_2014.pdf:PDF},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231014001150},
+  Urldate                  = {2014-03-02}
+}
+@Article{fleisch_air_2014,
+  Title                    = {Air pollution exposure and abnormal glucose tolerance during pregnancy: The project viva cohort},
+  Author                   = {Fleisch, Abby F. and Gold, Diane R. and Rifas-Shiman, Sheryl L. and Koutrakis, Petros and Schwartz, Joel D. and Kloog, Itai and Melly, Steven and Coull, Brent A. and Zanobetti, Antonella and Gillman, Matthew W.},
+  Journal                  = {Environ Health Perspect},
+  Year                     = {2014},
+
+  File                     = {Published version:fleisch_air_2014.pdf:PDF},
+  Shorttitle               = {Air pollution exposure and abnormal glucose tolerance during pregnancy},
+  Url                      = {http://ww.ademloos.be/sites/default/files/gezondheid_docs/Fleisch_Air%2Bpollution%2Band%2Bglucose%2Bpregnancy_2014.pdf},
+  Urldate                  = {2014-04-03}
+}
+@Article{kloog_short_2014,
+  Title                    = {Short Term Effects of Particle Exposure on Hospital Admissions in the Mid-Atlantic States: A Population Estimate},
+  Author                   = {Kloog, Itai and Nordio, Francesco and Zanobetti, Antonella and Coull, Brent A. and Koutrakis, Petros and Schwartz, Joel D.},
+  Journal                  = {{PloS} one},
+  Year                     = {2014},
+  Number                   = {2},
+  Pages                    = {e88578},
+  Volume                   = {9},
+
+  File                     = {Published version:kloog_short_2014.pdf:PDF;[HTML] from plos.org:G:},
+  Shorttitle               = {Short Term Effects of Particle Exposure on Hospital Admissions in the Mid-Atlantic States},
+  Url                      = {http://dx.plos.org/10.1371/journal.pone.0088578},
+  Urldate                  = {2014-04-03}
+" 0 501 (fontified t) 501 1026 (fontified t) 1026 1260 (fontified t) 1260 1278 (fontified t face font-lock-builtin-face) 1278 1642 (fontified t) 1642 2935 (fontified t) 24759 24834 (fontified t) 24834 24937 (fontified t) 24937 25088 (fontified t) 25088 25130 (fontified t) 25130 25612 (fontified t) 25612 25646 (fontified t) 25646 25719 (fontified t) 25719 25720 (fontified t face font-lock-comment-delimiter-face) 25720 25746 (fontified t face font-lock-comment-face) 25746 25990 (fontified t)) . 1) (undo-tree-id10 . -25990) (undo-tree-id11 . -25989)) nil (21419 58028 695945 446000) 0 nil]) ((nil rear-nonsticky nil 25992 . 25993) (nil fontified nil 1 . 25993) (1 . 25993)) nil (21419 58028 695949 475000) 0 nil]) ((#("@Article{kloog_possible_2008,
+  Title                    = {A possible association between exposure to Light at Night and breast cancer incidence in the urban space of Tel-Aviv.},
+  Author                   = {Kloog, Itai and Haim, Abraham and Portnov, Boris A.},
+  Journal                  = {Studies in Natural Resources and Environmental Management},
+  Year                     = {2008},
+  Number                   = {1},
+  Pages                    = {103--110},
+  Volume                   = {6},
+
+  File                     = {kloog_possible_2008.pdf:kloog_possible_2008.pdf:PDF},
+  Keywords                 = {Breast cancer, {GIS}, Kernel density function, Light-at-night}
+}
+@Article{Kloog2008,
+  Title                    = {Light at night co-distributes with incident breast but not lung cancer in the female population of {Israel}},
+  Author                   = {Kloog, Itai and Haim, Abraham and Stevens, Richard G and Barchana, Micha and Portnov, Boris A},
+  Journal                  = {Chronobiology international},
+  Year                     = {2008},
+  Number                   = {1},
+  Pages                    = {65--81},
+  Volume                   = {25},
+
+  Doi                      = {10.1080/07420520801921572},
+  File                     = {:Kloog2008.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Informa UK Ltd UK},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_using_2009,
+  Title                    = {Using kernel density function as an urban analysis tool: Investigating the association between nightlight exposure and the incidence of breast cancer in Haifa, {Israel}},
+  Author                   = {Kloog, Itai and Haim, Abraham and Portnov, Boris A.},
+  Journal                  = {Computers, Environment and Urban Systems},
+  Year                     = {2009},
+
+  Month                    = jan,
+  Number                   = {1},
+  Pages                    = {55--63},
+  Volume                   = {33},
+
+  Abstract                 = {The kernel density ({KD)} function estimates the intensity of events across a surface by calculating the overall number of cases situated within a given search radius from a target point. To form a continuous surface from individual observations, the {KD} technique does not require the presence of a parameter{\\^{a}}����s value in a given location (e.g., the incidence rate of a disease). This feature of {KD} smoothing is especially beneficial for empirical studies in which individual observations are represented by geographic coordinates only and have no other attributes, required by more commonly used smoothing techniques, such as spline and kriging. In the present study, we illustrate the use of {KD} technique for a study of association between the geographical distributions of breast cancer cases and exposure to artificial illumination during nighttime (light-at-night or {LAN)} in the city of Haifa, Israel.},
+  Doi                      = {10.1016/j.compenvurbsys.2008.09.006},
+  File                     = {Published version:kloog_using_2009.pdf:PDF},
+  ISSN                     = {0198-9715},
+  Keywords                 = {Breast cancer, Breast cancer, {GIS}, {GIS}, Kernel density function, Kernel density function, Light-at-night, Light-at-night},
+  Shorttitle               = {Using kernel density function as an urban analysis tool},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0198971508000641},
+  Urldate                  = {2012-05-31}
+}
+@Article{Kloog2009,
+  Title                    = {Global co-distribution of light at night ({LAN}) and cancers of prostate, colon, and lung in men},
+  Author                   = {Kloog, Itai and Haim, Abraham and Stevens, Richard G and Portnov, Boris A},
+  Journal                  = {Chronobiology international},
+  Year                     = {2009},
+  Number                   = {1},
+  Pages                    = {108--125},
+  Volume                   = {26},
+
+  Doi                      = {10.1080/07420520802694020},
+  File                     = {:Kloog2009.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Informa UK Ltd UK},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_nighttime_2010,
+  Title                    = {Nighttime light level co-distributes with breast cancer incidence worldwide},
+  Author                   = {Kloog, I. and Stevens, R. G and Haim, A. and Portnov, B. A},
+  Journal                  = {Cancer Causes and Control},
+  Year                     = {2010},
+  Number                   = {12},
+  Pages                    = {2059������2068},
+  Volume                   = {21},
+
+  File                     = {:kloog_nighttime_2010.pdf:PDF}
+}
+@Article{haim_authors_2011,
+  Title                    = {Authors' response},
+  Author                   = {Haim, Abraham and Kloog, Itai and Rennert, Hedy S. and Portnov, Boris A.},
+  Journal                  = {Chronobiology International: The Journal of Biological \\& Medical Rhythm Research},
+  Year                     = {2011},
+
+  Month                    = may,
+  Number                   = {4},
+  Pages                    = {379--380},
+  Volume                   = {28},
+
+  File                     = {haim_authors_2011.pdf:haim_authors_2011.pdf:PDF},
+  ISSN                     = {07420528},
+  Keywords                 = {{LIGHT} -- Physiological effect, {LOGISTIC} regression analysis, Melatonin, {NIGHT}, {OUTCOME} assessment (Medical care), {QUESTIONNAIRES}, Sleep},
+  Lccn                     = {60369118}
+}
+@Article{kloog_assessing_2011,
+  Title                    = {Assessing temporally and spatially resolved {PM2.5} exposures for epidemiological studies using satellite aerosol optical depth measurements},
+  Author                   = {Kloog, Itai and Koutrakis, Petros and Coull, Brent A. and Lee, Hyung Joo and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2011},
+
+  Month                    = nov,
+  Number                   = {35},
+  Pages                    = {6267--6275},
+  Volume                   = {45},
+
+  Abstract                 = {Land use regression ({LUR)} models provide good estimates of spatially resolved long-term exposures, but are poor at capturing short term exposures. Satellite-derived Aerosol Optical Depth ({AOD)} measurements have the potential to provide spatio-temporally resolved predictions of both long and short term exposures, but previous studies have generally showed relatively low predictive power. Our objective was to extend our previous work on day-specific calibrations of {AOD} data using ground {PM2.5} measurements by incorporating commonly used {LUR} variables and meteorological variables, thus benefiting from both the spatial resolution from the {LUR} models and the spatio-temporal resolution from the satellite models. Later we use spatial smoothing to predict {PM2.5} concentrations for day/locations with missing {AOD} measures. We used mixed models with random slopes for day to calibrate {AOD} data for 2000������2008 across New-England with monitored {PM2.5} measurements. We then used a generalized additive mixed model with spatial smoothing to estimate {PM2.5} in location������day pairs with missing {AOD}, using regional measured {PM2.5}, {AOD} values in neighboring cells, and land use. Finally, local (100����m) land use terms were used to model the difference between grid cell prediction and monitored value to capture very local traffic particles. Out-of-sample ten-fold cross-validation was used to quantify the accuracy of our predictions. For days with available {AOD} data we found high out-of-sample R2 (mean out-of-sample R2����=����0.830, year to year variation 0.725������0.904). For days without {AOD} values, our model performance was also excellent (mean out-of-sample R2����=����0.810, year to year variation 0.692������0.887). Importantly, these R2 are for daily, rather than monthly or yearly, values. Our model allows one to assess short term and long-term human exposures in order to investigate both the acute and chronic effects of ambient particles, respectively.},
+  Doi                      = {10.1016/j.atmosenv.2011.08.066},
+  File                     = {kloog_assessing_2011.pdf:kloog_assessing_2011.pdf:PDF},
+  ISSN                     = {1352-2310},
+  Keywords                 = {Aerosol optical depth, Epidemiology, Exposure error, LAN, air pollution, {PM2.5}},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231011009125},
+  Urldate                  = {2012-05-31}
+}
+@Article{Kloog2011,
+  Title                    = {Does the modern urbanized sleeping habitat pose a breast cancer risk?},
+  Author                   = {Kloog, Itai and Portnov, Boris A and Rennert, Hedy S and Haim, Abraham},
+  Journal                  = {Chronobiology international},
+  Year                     = {2011},
+  Number                   = {1},
+  Pages                    = {76--80},
+  Volume                   = {28},
+
+  Doi                      = {10.3109/07420528.2010.531490},
+  File                     = {:/home/zeltak/Dropbox/uni/projects/PhD/lan-bc-case-control/Kloog2011.pdf:PDF},
+  Publisher                = {Informa Healthcare New York, USA},
+  Timestamp                = {2014.04.04}
+}
+@Article{kloog_temporal_2012,
+  Title                    = {Temporal and spatial assessments of minimum air temperature using satellite surface temperature measurements in Massachusetts, {USA}},
+  Author                   = {Kloog, Itai and Chudnovsky, Alexandra and Koutrakis, Petros and Schwartz, Joel},
+  Journal                  = {Science of The Total Environment},
+  Year                     = {2012},
+
+  Month                    = aug,
+  Number                   = {0},
+  Pages                    = {85--92},
+  Volume                   = {432},
+
+  Abstract                 = {Although meteorological stations provide accurate air temperature observations, their spatial coverage is limited and thus often insufficient for epidemiological studies. Satellite data expand spatial coverage, enhancing our ability to estimate near surface air temperature (Ta). However, the derivation of Ta from surface temperature (Ts) measured by satellites is far from being straightforward. In this study, we present a novel approach that incorporates land use regression, meteorological variables and spatial smoothing to first calibrate between Ts and Ta on a daily basis and then predict Ta for days when satellite Ts data were not available. We applied mixed regression models with daily random slopes to calibrate Moderate Resolution Imaging Spectroradiometer ({MODIS)} Ts data with monitored Ta measurements for 2003. Then, we used a generalized additive mixed model with spatial smoothing to estimate Ta in days with missing Ts. Out-of-sample tenfold cross-validation was used to quantify the accuracy of our predictions. Our model performance was excellent for both days with available Ts and days without Ts observations (mean out-of-sample R2\\&\\#xa0;=\\&\\#xa0;0.946 and R2\\&\\#xa0;=\\&\\#xa0;0.941 respectively). Furthermore, based on the high quality predictions we investigated the spatial patterns of Ta within the study domain as they relate to urban vs. non-urban land uses.},
+  Doi                      = {10.1016/j.scitotenv.2012.05.095},
+  File                     = {Published version:kloog_temporal_2012.pdf:PDF},
+  ISSN                     = {0048-9697},
+  Keywords                 = {Air temperature, Epidemiology, Exposure error, {MODIS}, Surface temperature},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0048969712008108},
+  Urldate                  = {2012-08-20}
+}
+@Article{kloog_acute_2012,
+  Title                    = {Acute and Chronic Effects of Particles on Hospital Admissions in New-England},
+  Author                   = {Kloog, Itai and Coull, Brent A. and Zanobetti, Antonella and Koutrakis, Petros and Schwartz, Joel D.},
+  Journal                  = {{PLoS} {ONE}},
+  Year                     = {2012},
+
+  Month                    = apr,
+  Number                   = {4},
+  Pages                    = {e34664},
+  Volume                   = {7},
+
+  Abstract                 = {{BackgroundMany} studies have reported significant associations between exposure to {PM2.5} and hospital admissions, but all have focused on the effects of short-term exposure. In addition all these studies have relied on a limited number of {PM2.5} monitors in their study regions, which introduces exposure error, and excludes rural and suburban populations from locations in which monitors are not available, reducing generalizability and potentially creating selection {bias.MethodsUsing} our novel prediction models for exposure combining land use regression with physical measurements (satellite aerosol optical depth) we investigated both the long and short term effects of {PM2.5} exposures on hospital admissions across New-England for all residents aged 65 and older. We performed separate Poisson regression analysis for each admission type: all respiratory, cardiovascular disease ({CVD)}, stroke and diabetes. Daily admission counts in each zip code were regressed against long and short-term {PM2.5} exposure, temperature, socio-economic data and a spline of time to control for seasonal trends in baseline {risk.ResultsWe} observed associations between both short-term and long-term exposure to {PM2.5} and hospitalization for all of the outcomes examined. In example, for respiratory diseases, for every10-����g/m3 increase in short-term {PM2.5} exposure there is a 0.70 percent increase in admissions ({CI}������=������0.35 to 0.52) while concurrently for every10-����g/m3 increase in long-term {PM2.5} exposure there is a 4.22 percent increase in admissions ({CI}������=������1.06 to {4.75).ConclusionsAs} with mortality studies, chronic exposure to particles is associated with substantially larger increases in hospital admissions than acute exposure and both can be detected simultaneously using our exposure models.},
+  Doi                      = {10.1371/journal.pone.0034664},
+  File                     = {Published version:kloog_acute_2012.pdf:PDF},
+  Url                      = {http://dx.doi.org/10.1371/journal.pone.0034664},
+  Urldate                  = {2012-05-31}
+}
+@Article{kloog_using_2012,
+  Title                    = {Using new satellite based exposure methods to study the association between pregnancy pm2.5 exposure, premature birth and birth weight in Massachusetts},
+  Author                   = {Kloog, Itai and Melly, Steven J. and Ridgway, William L. and Coull, Brent A. and Schwartz, Joel},
+  Journal                  = {Environmental Health},
+  Year                     = {2012},
+
+  Month                    = jun,
+  Number                   = {1},
+  Pages                    = {40},
+  Volume                   = {11},
+
+  Abstract                 = {Adverse birth outcomes such as low birth weight and premature birth have been previously linked with exposure to ambient air pollution. Most studies relied on a limited number of monitors in the region of interest, which can introduce exposure error or restrict the analysis to persons living near a monitor, which reduces sample size and generalizability and may create selection bias.},
+  Copyright                = {2012 Kloog et al.; licensee {BioMed} Central Ltd.},
+  Doi                      = {10.1186/1476-069X-11-40},
+  File                     = {Published version:kloog_using_2012b.pdf:PDF;Published version:kloog_using_2012.pdf:PDF},
+  ISSN                     = {1476-{069X}},
+  Keywords                 = {Aerosol optical depth, air pollution, Birth Weight, Epidemiology, {PM}, Preterm birth},
+  Language                 = {en},
+  Url                      = {http://www.ehjournal.net/content/11/1/40/abstract},
+  Urldate                  = {2012-07-27}
+}
+@Article{kloog_incorporating_2012,
+  Title                    = {Incorporating local land use regression and satellite aerosol optical depth in a hybrid model of spatiotemporal {PM2.} 5 exposures in the Mid-Atlantic states},
+  Author                   = {Kloog, Itai and Nordio, Francesco and Coull, Brent A. and Schwartz, Joel},
+  Journal                  = {Environmental science \\& technology},
+  Year                     = {2012},
+  Number                   = {21},
+  Pages                    = {11913������11921},
+  Volume                   = {46},
+
+  File                     = {Published version:kloog_incorporating_2012.pdf:PDF},
+  Url                      = {http://pubs.acs.org/doi/abs/10.1021/es302673e},
+  Urldate                  = {2013-07-08}
+}
+@Article{kloog_detecting_2012,
+  Title                    = {Detecting the Association between Children Health and Lead Exposure Using Voronoi Polygon Rezoning},
+  Author                   = {Kloog, I. and Portnov, B.},
+  Journal                  = {Geography Research Forum},
+  Year                     = {2012},
+  Pages                    = {46--61},
+  Volume                   = {32},
+
+  File                     = {:kloogmanuscript_v3.pdf:PDF}
+}
+@Article{Chiu2013,
+  Title                    = {Effects of prenatal community violence and ambient air pollution on childhood wheeze in an urban population},
+  Author                   = {Chiu, Yueh-Hsiu Mathilda and Coull, Brent A and Sternthal, Michelle J and Kloog, Itai and Schwartz, Joel and Cohen, Sheldon and Wright, Rosalind J},
+  Journal                  = {Journal of Allergy and Clinical Immunology},
+  Year                     = {2013},
+
+  File                     = {:Chiu2013.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Elsevier},
+  Timestamp                = {2014.04.04},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S0091674913014693}
+}
+@Article{kloog_long-_2013,
+  Title                    = {Long- and Short-Term Exposure to {PM2.5} and Mortality},
+  Author                   = {Kloog, Itai and Ridgway, Bill and Koutrakis, Petros and Coull, Brent A. and Schwartz, Joel D.},
+  Journal                  = {Epidemiology},
+  Year                     = {2013},
+
+  Month                    = jul,
+  Number                   = {4},
+  Pages                    = {555--561},
+  Volume                   = {24},
+
+  Doi                      = {10.1097/EDE.0b013e318294beaa},
+  File                     = {:kloog00001648-201307000-00011.pdf:PDF},
+  ISSN                     = {1044-3983},
+  Url                      = {http://journals.lww.com/epidem/Abstract/2013/07000/Long__and_Short_Term_Exposure_to_PM2_5_and.11.aspx},
+  Urldate                  = {2013-07-26}
+}
+@Article{madrigano_long-term_2013,
+  Title                    = {Long-term Exposure to {PM2.} 5 and Incidence of Acute Myocardial Infarction},
+  Author                   = {Madrigano, Jaime and Kloog, Itai and Goldberg, Robert and Coull, Brent A. and Mittleman, Murray A. and Schwartz, Joel},
+  Journal                  = {Environmental health perspectives},
+  Year                     = {2013},
+  Number                   = {2},
+  Pages                    = {192},
+  Volume                   = {121},
+
+  File                     = {Published version:madrigano_long-term_2013.pdf:PDF;[HTML] from nih.gov:G:},
+  Url                      = {http://www.ncbi.nlm.nih.gov/pmc/articles/PMC3569684/},
+  Urldate                  = {2013-07-26}
+}
+@Article{nordio_estimating_2013,
+  Title                    = {Estimating spatio-temporal resolved {PM10} aerosol mass concentrations using {MODIS} satellite data and land use regression over Lombardy, Italy},
+  Author                   = {Nordio, Francesco and Kloog, Itai and Coull, Brent A. and Chudnovsky, Alexandra and Grillo, Paolo and Bertazzi, Pier Alberto and Baccarelli, Andrea A. and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2013},
+
+  Month                    = aug,
+  Pages                    = {227--236},
+  Volume                   = {74},
+
+  Abstract                 = {Abstract Traditional air pollution epidemiology studies being conducted in large cities can be limited by the availability of monitoring. Satellite Aerosol Optical Depth ({AOD)} measurements offer the possibility of exposure estimates for the entire population. We previously demonstrated that daily calibration substantially increased the predictive power of satellite {AOD} measurements for fine particles ({PM2.5)} in New England, allowing estimation of exposure in locations without monitors. Similar results have not been reported for larger particles ({PM10)}, which are often the only measures that can be used in locations worldwide that do not have comprehensive {PM2.5} monitoring; this also applies to {PM} estimation of historical exposures. Here we extend this methodology by applying it to 2000������2009 {PM10} data from Lombardy, Northern Italy a region with high altitude differences, frequent temperature inversions and stationary fronts. Specifically, by 1) incorporating a model for missing {AOD} data to deal with non-randomness in the missing data; and 2) modeling interactions between land use and meteorological parameters to better capture space������time interactions. We calibrated {AOD} data through mixed-effect models regressing {PM10} measurements using day-specific random intercepts, and fixed and random {AOD} and temperature slopes. We used inverse-probability weighting to account for nonrandom {AOD} missingness, while reducing the dimensionality of spatial and temporal predictors and avoiding selecting different predictors in different locations, as common in land-use regression. We take advantage of associations of grid-cell {AOD} values with {PM10} monitoring located elsewhere and with {AOD} values in neighboring grid cells to develop grid-cell predictions when {AOD} is missing. By using ten-fold cross-validation to test the accuracy of our predictions, we found high out-of-sample R2 (R2����=����0.787, year to year variation 0.738������0.818) for days with available {AOD} data. Even in days with no available {AOD}, our model performance was comparable (R2����=����0.787, year to year variation 0.736������0.841). Our results demonstrate that {PM10} can be reliably predicted using this {AOD-based} prediction model, even in a geographical area with complex geographic and weather patterns.},
+  Doi                      = {10.1016/j.atmosenv.2013.03.043},
+  File                     = {Published version:nordio_estimating_2013.pdf:PDF},
+  ISSN                     = {1352-2310},
+  Keywords                 = {Aerosol Optical Depth ({AOD)}, air pollution, Epidemiology, Exposure error, {PM10}},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231013002197},
+  Urldate                  = {2013-07-10}
+}
+@Article{Zusman2013,
+  Title                    = {Estimating multi-annual PM\\textsubscript{ 2.5} air pollution levels using sVOC soil tests: Ashkelon South, {Israel} as a case study},
+  Author                   = {Zusman, Marina and Ben Asher, Josefa and Kloog, Itai and Portnov, Boris A},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2013},
+  Pages                    = {633--641},
+  Volume                   = {81},
+
+  File                     = {:marina1-s2.0-S1352231013007413-main.pdf:PDF},
+  Owner                    = {zeltak},
+  Publisher                = {Elsevier},
+  Timestamp                = {2014.04.04},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231013007413}
+}
+@Article{chudnovsky_fine_2014,
+  Title                    = {Fine particulate matter predictions using high resolution aerosol optical depth ({AOD)} retrievals},
+  Author                   = {Chudnovsky, Alexandra A. and Koutrakis, Petros and Kloog, Itai and Melly, Steven and Nordio, Francesco and Lyapustin, Alexei and Wang, Yujie and Schwartz, Joel},
+  Journal                  = {Atmospheric Environment},
+  Year                     = {2014},
+
+  File                     = {Published version:chudnovsky_fine_2014.pdf:PDF},
+  Url                      = {http://www.sciencedirect.com/science/article/pii/S1352231014001150},
+  Urldate                  = {2014-03-02}
+}
+@Article{fleisch_air_2014,
+  Title                    = {Air pollution exposure and abnormal glucose tolerance during pregnancy: The project viva cohort},
+  Author                   = {Fleisch, Abby F. and Gold, Diane R. and Rifas-Shiman, Sheryl L. and Koutrakis, Petros and Schwartz, Joel D. and Kloog, Itai and Melly, Steven and Coull, Brent A. and Zanobetti, Antonella and Gillman, Matthew W.},
+  Journal                  = {Environ Health Perspect},
+  Year                     = {2014},
+
+  File                     = {Published version:fleisch_air_2014.pdf:PDF},
+  Shorttitle               = {Air pollution exposure and abnormal glucose tolerance during pregnancy},
+  Url                      = {http://ww.ademloos.be/sites/default/files/gezondheid_docs/Fleisch_Air%2Bpollution%2Band%2Bglucose%2Bpregnancy_2014.pdf},
+  Urldate                  = {2014-04-03}
+}
+@Article{kloog_short_2014,
+  Title                    = {Short Term Effects of Particle Exposure on Hospital Admissions in the Mid-Atlantic States: A Population Estimate},
+  Author                   = {Kloog, Itai and Nordio, Francesco and Zanobetti, Antonella and Coull, Brent A. and Koutrakis, Petros and Schwartz, Joel D.},
+  Journal                  = {{PloS} one},
+  Year                     = {2014},
+  Number                   = {2},
+  Pages                    = {e88578},
+  Volume                   = {9},
+
+  File                     = {Published version:kloog_short_2014.pdf:PDF;[HTML] from plos.org:G:},
+  Shorttitle               = {Short Term Effects of Particle Exposure on Hospital Admissions in the Mid-Atlantic States},
+  Url                      = {http://dx.plos.org/10.1371/journal.pone.0088578},
+  Urldate                  = {2014-04-03}
+}
+" 0 501 (fontified t) 501 1026 (fontified t) 1026 1260 (fontified t) 1260 1278 (fontified t face font-lock-builtin-face) 1278 1642 (fontified t) 1642 2935 (fontified t) 24044 24045 (fontified t) 24045 24124 (fontified t) 24124 24223 (fontified t) 24223 24265 (fontified t) 24265 24267 (fontified t) 24267 24294 (fontified t) 24294 24422 (fontified t) 24422 24665 (fontified t) 24665 24721 (fontified t) 24721 24758 (fontified t) 24758 24759 (fontified t) 24759 24834 (fontified t) 24834 24937 (fontified t) 24937 25088 (fontified t) 25088 25130 (fontified t) 25130 25132 (fontified t) 25132 25646 (fontified t) 25646 25719 (fontified t) 25719 25720 (fontified t face font-lock-comment-delimiter-face) 25720 25746 (fontified t face font-lock-comment-face) 25746 25991 (fontified t) 25991 25992 (rear-nonsticky t fontified t)) . 1) (undo-tree-id12 . -25992) (undo-tree-id13 . -25647) (undo-tree-id14 . -25991)) nil (21419 58028 695953 885000) 0 nil]) ((nil rear-nonsticky nil 25992 . 25993) (nil fontified nil 1 . 25993) (1 . 25993) (t 0 0 0 -2000)) nil (21419 58028 695958 95000) 0 nil]) nil nil (21419 58028 695960 226000) 0 nil] #1# 68329 8 nil]
