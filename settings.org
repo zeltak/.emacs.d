@@ -686,7 +686,7 @@ provides function to drag images from browser and link address
 $Note$ this requires package async to be installed, @async must be loaded before this package@
 
 #+BEGIN_SRC emacs-lisp :results none
-(load-file "~/.emacs.d/src/extra/org-download/org-download.el")
+(load-file "~/.emacs.g/extra/org-download/org-download.el")
 
 (setq-default org-download-heading-lvl nil)
 (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014")
@@ -698,7 +698,7 @@ $Note$ this requires package async to be installed, @async must be loaded before
 ** org-dp (wrap code blocks functions) 
 
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/extra/org-dp/")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
 (require 'org-dp-lib)
 #+END_SRC
 
@@ -1126,7 +1126,7 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 https://github.com/dfeich/org-screenshot
 
 #+BEGIN_SRC emacs-lisp :results none
-;(load-file "/home/zeltak/.emacs.d/src/extra/org-screenshot/org-screenshot.el")
+;(load-file "/home/zeltak/.emacs.g/extra/org-screenshot/org-screenshot.el")
 ;(require 'org-screenshot)
 #+END_SRC
 
@@ -2368,7 +2368,7 @@ my system:
 ** org ref
 
 #+BEGIN_SRC emacs-lisp :results none
-;(org-babel-load-file "/home/zeltak/.emacs.d/src/extra/org-ref/org-ref.org")
+;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 #+END_SRC
 
 * look and feel
@@ -3287,14 +3287,14 @@ COMMAND2
 #+END_EXAMPLE
 ** edit with emacs
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/extra/edit-server/")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
 (edit-server-start)
 #+END_SRC 
 * R/ESS
 ** load ess
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/ESS/lisp/")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
 (load "ess-site")
 #+END_SRC
 
@@ -3386,7 +3386,7 @@ http://kitchingroup.cheme.cmu.edu/blog/2014/05/13/Using-org-ref-for-citations-an
 @this needs to load in last parts of config file since it depends on org stuff loading@
 
 #+BEGIN_SRC emacs-lisp :results none
-(org-babel-load-file "/home/zeltak/.emacs.d/src/extra/org-ref/org-ref.org")
+(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 #+END_SRC
 *** customize
 #+BEGIN_SRC emacs-lisp :results none

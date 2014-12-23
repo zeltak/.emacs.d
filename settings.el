@@ -1,3 +1,4 @@
+
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
@@ -156,7 +157,6 @@
 
 (global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
 
-(global-set-key (kbd "<f7> h") 'helm-org-headlines)
 (global-set-key (kbd "<f7> y") 'helm-show-kill-ring)
 (global-set-key (kbd "<f7> k") 'helm-show-kill-ring)
 (global-set-key (kbd "<f7> r") 'helm-recentf)
@@ -165,6 +165,9 @@
 (global-set-key (kbd "<f7> f") 'helm-find-files)
 ;to replace native C-x C-f
 (global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "<f7> o") 'helm-occur)
+(global-set-key (kbd "<f7> h") 'helm-apropos)
+(global-set-key (kbd "<f7> t") 'helm-top)
 
 (global-set-key (kbd "<f7> b") 'helm-buffers-list)
 (global-set-key (kbd "<f7> <f7>") 'helm-mini)
@@ -436,6 +439,10 @@ Usage: (package-require 'package)"
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
 
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+(setq helm-locate-fuzzy-match t)
+
 
 
 (require 'async)
@@ -462,11 +469,6 @@ Usage: (package-require 'package)"
 (evilnc-default-hotkeys)
 (setq evilnc-hotkey-comment-operator ",,")
 
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/ESS/lisp/")
-(load "ess-site")
-
-(setq ess-eval-visibly 'nowait)
-
 (require 'edit-server)
  (edit-server-start)
 (autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
@@ -478,14 +480,14 @@ Usage: (package-require 'package)"
 
 (toggle-diredp-find-file-reuse-dir 1)
 
-(load-file "~/.emacs.d/src/extra/org-download/org-download.el")
+(load-file "~/.emacs.g/extra/org-download/org-download.el")
 
 (setq-default org-download-heading-lvl nil)
 (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014")
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/extra/org-dp/")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
 (require 'org-dp-lib)
 
 (require 'yasnippet)
@@ -811,7 +813,7 @@ Usage: (package-require 'package)"
 
 
 
-;(load-file "/home/zeltak/.emacs.d/src/extra/org-screenshot/org-screenshot.el")
+;(load-file "/home/zeltak/.emacs.g/extra/org-screenshot/org-screenshot.el")
 ;(require 'org-screenshot)
 
 ;; (require 'fill-column-indicator)
@@ -1768,7 +1770,7 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 )))
 
-;(org-babel-load-file "/home/zeltak/.emacs.d/src/extra/org-ref/org-ref.org")
+;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 
 ;; Remove splash screen
 (setq inhibit-splash-screen t)
@@ -2463,9 +2465,12 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'z-open-file-fast)
 
-(add-to-list 'load-path "/home/zeltak/.emacs.d/src/extra/edit-server/")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
 (edit-server-start)
+
+(add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
+(load "ess-site")
 
 (defun clear-shell ()
    (interactive)
@@ -2473,6 +2478,21 @@ With prefix P, create local abbrev. Otherwise it will be global."
      (setq comint-buffer-maximum-size 0)
      (comint-truncate-buffer)
      (setq comint-buffer-maximum-size old-max)))
+
+(add-hook 'inferior-ess-mode-hook
+    '(lambda nil
+          (define-key inferior-ess-mode-map [\C-up]
+              'comint-previous-matching-input-from-input)
+          (define-key inferior-ess-mode-map [\C-down]
+              'comint-next-matching-input-from-input)
+          (define-key inferior-ess-mode-map [\C-x \t]
+              'comint-dynamic-complete-filename)
+     )
+ )
+
+(setq ess-eval-visibly 'nowait)
+
+(setq ess-ask-about-transfile t)
 
 (defgroup helm-org-wiki nil
       "Simple jump-to-org-file package."
@@ -2511,7 +2531,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
               helm-source-org-wiki-not-found)))
     (provide 'helm-org-wiki)
 
-(org-babel-load-file "/home/zeltak/.emacs.d/src/extra/org-ref/org-ref.org")
+(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 
 (setq org-ref-bibliography-notes ""
       org-ref-default-bibliography '("/home/zeltak/ZH_tmp/test.bib")
