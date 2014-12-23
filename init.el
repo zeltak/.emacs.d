@@ -5,7 +5,7 @@
 
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
 
-(add-to-list 'load-path "~/.emacs.d/src/org-mode/lisp")
+(add-to-list 'load-path "~/.emacs.g/org-mode/lisp")
 (require 'org-install)
 
 (require 'org)
