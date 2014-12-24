@@ -202,6 +202,8 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (global-set-key (kbd "C-<backspace>") (lambda ()
                                         (interactive)
                                         (kill-line 0)))
+
+(global-set-key (kbd "M-2") 'er/expand-region)					
 #+END_SRC
 
 ** F5 Gnus
@@ -958,6 +960,9 @@ $note its built into emacs no intsall needed$
 
 #+END_SRC
 
+** TODO expnad region
+https://github.com/magnars/expand-region.el
+if installed through package manager no extra config is needed 
 ** Ace jump
 #+BEGIN_SRC emacs-lisp :results none 
   ;; some proposals for binding:
