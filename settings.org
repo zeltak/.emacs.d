@@ -3297,6 +3297,22 @@ COMMAND2
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
 (load "ess-site")
 #+END_SRC
+** default dirs
+*** asks where to save the text in the buffer with R process
+#+BEGIN_SRC emacs-lisp :results none
+(setq ess-ask-about-transfile nil)
+#+END_SRC
+This way ESS always asks where to save the text in the buffer with R process. You can number these files according to date, so you will always have another way to track what exactly you were doing. The only caveat of this option is that for some reason ESS sets the R buffer to read only, after loading the R. The shortcut for making buffer writable is C-x C-q.
+
+
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq ess-ask-for-ess-directory "/home/zeltak/ZH_tmp/")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq ess-local-process-name "Runi")
+#+END_SRC
 
 ** functions
 *** clear shell function
@@ -3329,13 +3345,6 @@ This recalls the R statement from your R statement history, but it tries to matc
 #+BEGIN_SRC emacs-lisp :results none
 (setq ess-eval-visibly 'nowait)
 #+END_SRC
-*** asks where to save the text in the buffer with R process
-#+BEGIN_SRC emacs-lisp :results none
-(setq ess-ask-about-transfile t)
-#+END_SRC
-This way ESS always asks where to save the text in the buffer with R process. You can number these files according to date, so you will always have another way to track what exactly you were doing. The only caveat of this option is that for some reason ESS sets the R buffer to read only, after loading the R. The shortcut for making buffer writable is C-x C-q.
-
-
 
 * test
 ** helm org wiki

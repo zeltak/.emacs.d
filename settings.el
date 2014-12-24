@@ -2471,6 +2471,10 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
 (load "ess-site")
 
+(setq ess-ask-for-ess-directory "/home/zeltak/ZH_tmp/")
+
+(setq ess-local-process-name "Runi")
+
 (defun clear-shell ()
    (interactive)
    (let ((old-max comint-buffer-maximum-size))

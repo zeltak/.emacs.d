@@ -21,6 +21,8 @@
 
 (define-abbrev-table 'bookmark-edit-annotation-mode-abbrev-table '())
 
+(define-abbrev-table 'bookmark-show-annotation-mode-abbrev-table '())
+
 (define-abbrev-table 'browse-kill-ring-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
@@ -69,7 +71,8 @@
 
 (define-abbrev-table 'global-abbrev-table
   '(
-    ("8bash" "#!/bin/bash" nil 1)
+    ("8bash" "#!/bin/bash" nil 0)
+    ("8c" "#-------------->" nil 0)
     ("8c " "#-------->" nil 0)
     ("8emi" "ikloog@gmail.com" nil 0)
     ("8emu" "ikloog@bgu.ac.il" nil 0)
@@ -406,7 +409,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 1)
+    ("emacs" "Emacs" nil 0)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
@@ -529,7 +532,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 2)
+    ("i" "I" nil 0)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -858,7 +861,7 @@
     ("statment" "statement" nil 0)
     ("statments" "statements" nil 0)
     ("stnad" "stand" nil 0)
-    ("stopry" "story" nil 1)
+    ("stopry" "story" nil 0)
     ("stoyr" "story" nil 0)
     ("stpo" "stop" nil 0)
     ("strentgh" "strength" nil 0)
@@ -983,7 +986,7 @@
     ("wief" "wife" nil 0)
     ("wierd" "weird" nil 0)
     ("wihch" "which" nil 0)
-    ("wiht" "with" nil 1)
+    ("wiht" "with" nil 0)
     ("willbe" "will be" nil 0)
     ("windoes" "windows" nil 0)
     ("witha" "with a" nil 0)

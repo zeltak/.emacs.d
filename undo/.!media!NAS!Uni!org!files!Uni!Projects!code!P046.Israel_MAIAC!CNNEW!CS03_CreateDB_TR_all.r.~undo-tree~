@@ -1,0 +1,1581 @@
+"c3bf71d784e36c29e7cc77ad971a2b1193db03d0"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil (#1=[nil nil ((#("
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(broom)
+library(FNN)
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/geomerge_alpha.r\")
+
+
+
+########### import datasets
+#import NDVI
+ndvid<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/ndviid_aodid.csv\")
+ndvi<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN006_NDVI_yearly/ndvi.rds\")
+allbestpredlist <- list()
+path.data<-\"/media/NAS/Uni/Data/Europe/PBL_Europe/dailymeanpbl/\"
+
+for(i in 2013:2013){
+  allbestpredlist[[paste0(\"year_\", i)]] <- fread(paste0(path.data, \"fianlpblXY_\", i, \".csv\"))
+  print(i)
+} 
+allbestpred <- rbindlist(allbestpredlist)
+rm(allbestpredlist)
+
+pbl <-  allbestpred[ longitude > 32 & longitude < 37 & latitude < 34 & latitude > 29, ]
+pbl <- pbl [, day:=as.Date(strptime(date, \"%m/%d/%Y\"))]
+
+#import LU
+lu1<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/LU1.csv\")
+#add Land cover to LU
+p_os<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_os.csv\")
+p_dev<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devHG.csv\")
+p_dos<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devOS.csv\")
+p_farm<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_farming.csv\")
+p_for<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_forest.csv\")
+p_ind<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_industry.csv\")
+
+lu1 <- merge(lu1, p_os[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_os:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dev[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dev:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dos[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dos:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_farm[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_farm:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_for[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_for:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_ind[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_ind:=MEAN*100]
+lu1[,MEAN:=NULL]
+#delete \"palestine\"
+wlu<-lu1[!is.na(p_for)]
+l=seq(names(wlu));names(l)=names(wlu);l
+wlu[,c(\"OBJECTID\",\"Join_Count\" ,\"TARGET_FID\",\"longitude\", \"latitude\",\"lat_aod\", \"long_aod\" ,\"x_aod_ITM\",\"y_aod_ITM\",\"x_stn_ITM\" ,\"y_stn_ITM\"):=NULL]
+
+
+
+#Temp
+Temp <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Temp_D.csv\")
+Temp$date<-paste(Temp$Day,Temp$Month,Temp$Year,sep=\"/\")
+Temp[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Temp[, c := as.numeric(format(day, \"%Y\")) ]
+Temp[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Temp <- Temp[X != 'NaN']
+Temp <- Temp[Temp != 'NaN']
+Temp <- Temp[c == 2013]
+
+
+#WD
+WD <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WD_D.csv\")
+WD$date<-paste(WD$Day,WD$Month,WD$Year,sep=\"/\")
+WD[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WD[, c := as.numeric(format(day, \"%Y\")) ]
+WD[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WD <- WD[X != 'NaN']
+WD <- WD[WD != 'NaN']
+WD <- WD[c == 2013]
+
+#WS
+WS <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WS_D.csv\")
+WS$date<-paste(WS$Day,WS$Month,WS$Year,sep=\"/\")
+WS[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WS[, c := as.numeric(format(day, \"%Y\")) ]
+WS[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WS <- WS[X != 'NaN']
+WS <- WS[WS != 'NaN']
+WS <- WS[c == 2013]
+
+
+#RH
+RH <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/RH_D.csv\")
+RH$date<-paste(RH$Day,RH$Month,RH$Year,sep=\"/\")
+RH[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+RH[, c := as.numeric(format(day, \"%Y\")) ]
+RH[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+RH <- RH[X != 'NaN']
+RH <- RH[RH != 'NaN']
+RH <- RH[c == 2013]
+
+
+#Rain
+Rain <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Rain_D.csv\")
+Rain$date<-paste(Rain$Day,Rain$Month,Rain$Year,sep=\"/\")
+Rain[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Rain[, c := as.numeric(format(day, \"%Y\")) ]
+Rain[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Rain <- Rain[X != 'NaN']
+Rain<- Rain[Rain != 'NaN']
+Rain<- Rain[c == 2013]
+
+#NO2
+NO2 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/NO2_D.csv\")
+NO2$date<-paste(NO2$Day,NO2$Month,NO2$Year,sep=\"/\")
+NO2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+NO2[, c := as.numeric(format(day, \"%Y\")) ]
+NO2[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+NO2 <- NO2[X != 'NaN']
+NO2<- NO2[NO2 != 'NaN']
+NO2<- NO2[c == 2013]
+
+
+#########-------------------############
+#load PA grid (points in \"palestine authority\")
+ilgreen <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL.green_grid_north.csv\")
+
+###load Tera
+#load aod data
+tera<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN003_AOd_allyears/AOD_TR_0014.RDS\")
+tera <- tera[tera$aodid %in% ilgreen$aodid, ] 
+tera<- tera[yr == \"2013\"]
+#system.time(tera[, MaskLandWaterSnow := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[4:5]), collapse = \"\")}))])
+system.time(tera[, MaskAdjacency := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[6:8]), collapse = \"\")}))])
+#clean
+l=seq(names(tera));names(l)=names(tera);l
+tera<-tera[, c(1:6,25:29),with=FALSE]
+#bkaq<-copy(tera)
+
+#create single aod point per aodid per day
+tera <-tera %>%
+    group_by(aodid,day) %>%
+    summarise_each(funs(mean),long_aod,lat_aod,aod,UN,WV,day,x_aod_ITM, y_aod_ITM ,MaskAdjacency)
+
+
+#create full LU TS
+days<-seq.Date(from = as.Date(\"2013-01-01\"), to = as.Date(\"2013-12-31\"), 1)
+#create date range
+aod2013 <- data.table(expand.grid(aodid = ilgreen[, unique(aodid)], day = days))
+setkey(aod2013,aodid,day)
+setkey(tera,aodid,day)
+m1 <- merge(aod2013, tera, all.x = T)  
+
+
+#add land use and X,Y
+setkey(m1,aodid)
+setkey(wlu,aodid)
+m2<-merge(m1,wlu,all.x = T)
+#take out Junk
+m2<-m2[, c(3,4,8,9,22,23) := NULL]
+#clean points with no lu data (on borders and in golan)
+m2 <- m2[!is.na(pblid)]
+
+#add back lat/long and metreg
+grid<-ilgreen[,c(\"lat_aod\",\"long_aod\",\"aodid\", \"x_aod_ITM\", \"y_aod_ITM\",\"metreg\"),with=FALSE]
+setkey(grid,aodid)
+setkey(m2,aodid)
+m2<-merge(m2,grid,all.x = T)
+names(m2)
+
+#---------> Temporal additions
+
+#Temp
+#xtract year met
+met2013<- Temp[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+metreg <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL_stn_metreg.csv\")
+setkey(metreg,stn)
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+temp.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(tempa = mean(Temp)) 
+setkey(m2,metreg,day)
+setkey(temp.a,metreg,day)
+m3 <- merge(m2, temp.a, all.x = T)
+summary(m3)
+
+
+
+#WS
+#xtract year met
+met2013<- WS[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+WS.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(WSa = mean(WS)) 
+setkey(m3,metreg,day)
+setkey(WS.a,metreg,day)
+m3 <- merge(m3, WS.a, all.x = T)
+summary(m3)
+
+#RH
+#xtract year met
+met2013<- RH[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+RH.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(RHa = mean(RH)) 
+setkey(m3,metreg,day)
+setkey(RH.a,metreg,day)
+m3 <- merge(m3, RH.a, all.x = T)
+summary(m3)
+
+#WD
+#xtract year met
+met2013<- WD[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+WD.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(WDa = mean(WD)) 
+setkey(m3,metreg,day)
+setkey(WD.a,metreg,day)
+m3 <- merge(m3, WD.a, all.x = T)
+summary(m3)
+
+
+#Rain
+#xtract year met
+met2013<- Rain[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+Rain.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(Raina = mean(Rain)) 
+setkey(m3,metreg,day)
+setkey(Rain.a,metreg,day)
+m3 <- merge(m3, Rain.a, all.x = T)
+summary(m3)
+
+
+
+#NO2
+#xtract year met
+met2013<- NO2[c==2013]
+# tst<-met2013 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2013,stn)
+met2013 <- merge(met2013, metreg[,list(stn,metreg)], all.x = T)
+NO2.a <-met2013 %>%
+    group_by(metreg,day) %>%
+    summarise(NO2a = mean(NO2)) 
+setkey(m3,metreg,day)
+setkey(NO2.a,metreg,day)
+m3 <- merge(m3, NO2.a, all.x = T)
+summary(m3)
+
+
+#----> Spatial
+#Join PBL
+setkey(pbl , day, pblid)
+setkey(m3, day, pblid)
+m3<-left_join(m3, pbl)
+
+#add season
+m3$month <- as.numeric(format(m3$day, \"%m\"))
+#1-winter, 2-spring,3-summer,4-autum
+m3$season<-recode(m3$month,\"1=1;2=1;3=2;4=2;5=2;6=3;7=3;8=3;9=4;10=4;11=4;12=1\")
+#1-winter, 2-summer
+m3$seasonSW<-recode(m3$month,\"1=1;2=1;3=1;4=2;5=2;6=2;7=2;8=2;9=2;10=1;11=1;12=1\")
+#add month
+m3[, m := as.numeric(format(day, \"%m\")) ]
+#add year
+m3[, c := as.numeric(format(day, \"%Y\")) ]
+#join NDVI to aod
+setkey(ndvi, ndviid, c, m )
+setkey(m3,  ndviid, c, m)
+m3 <- merge(m3, ndvi, all.x = T)
+
+#add dust days,remember that these are just days with dust not a full TS
+dust2<-fread(\"/media/NAS/Uni/Data/Israel/Dust/dust.csv\")
+dust2$date<-paste(dust2$Day,dust2$Month,dust2$Year,sep=\"/\")
+dust2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+dust2[,c(\"Year\",\"Month\",\"date\"):=NULL]
+setnames(dust2,\"StationID\",\"stn\")
+dust2[, c := as.numeric(format(day, \"%Y\")) ]
+dust2<- dust2[c==2013]
+
+setkey(m3 , day, stn)
+setkey(dust2, day, stn)
+m3 <- merge(m3, dust2[,list(day,stn,Dust)], all.x = T)
+m3<-m3[is.na(Dust), Dust:= 0]
+
+
+#########-------------------weights ############
+#clean
+summary(m3)
+#delete areas in desset that have missing Temp
+m3 <- m3[tempa != 'NA']
+#create weights
+m3<-m3[,obs:=1]
+m3[is.na(aod), obs:= 0]
+#model
+w1<- glm(obs ~ elev+MeanPbl+tempa+as.factor(month),family=binomial,data=m3)
+m3$prob <- predict(w1,type = c(\"response\"))  #get probability prediction , note that its a binary logisitc and thus the type-repsonse option
+m3$wt <- 1/m3$prob
+m3$normwt <- m3$wt/mean(m3$wt)
+
+#----------> Cleanup
+m3<-m3[, c(\"prob\",\"wt\") := NULL]
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM25
+PM25 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM25_D.csv\")
+PM25$date<-paste(PM25$Day,PM25$Month,PM25$Year,sep=\"/\")
+PM25[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM25[, c := as.numeric(format(day, \"%Y\")) ]
+PM25[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM25 <- PM25[X != 'NaN']
+PM25<-PM25[!is.na(PM25)]
+#clear non continous stations
+setnames(PM25,\"X\",\"x_stn_ITM\")
+setnames(PM25,\"Y\",\"y_stn_ITM\")
+pmall2013<- PM25[c==2013]
+
+pm.m <- makepointsmatrix(pmall2013, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m3, pmall2013 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM25\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m3,aodid,day)
+m4 <- merge(m3,closestaodse,all.x = T)
+
+m4_NA<- m4[is.na(closestmean),]
+m4_NA[,closestmean := NULL]
+m4_good<- m4[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m4_NA, pmall2013 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM25\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m4_NA,aodid,day)
+m4x <- merge(m4_NA,closestaodse,all.x = T)
+
+m5<-rbindlist(list(m4x,m4_good))
+setnames(m5,\"closestmean\",\"meanPM\")
+
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM10
+PM10 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM10_D.csv\")
+PM10$date<-paste(PM10$Day,PM10$Month,PM10$Year,sep=\"/\")
+PM10[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM10[, c := as.numeric(format(day, \"%Y\")) ]
+PM10[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM10 <- PM10[X != 'NaN']
+PM10<-PM10[!is.na(PM10)]
+#clear non continous stations
+setnames(PM10,\"X\",\"x_stn_ITM\")
+setnames(PM10,\"Y\",\"y_stn_ITM\")
+pmall2013<- PM10[c==2013]
+
+pm.m <- makepointsmatrix(pmall2013, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m5, pmall2013 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM10\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m5,aodid,day)
+m6 <- merge(m5,closestaodse,all.x = T)
+
+m6_NA<- m6[is.na(closestmean),]
+m6_NA[,closestmean := NULL]
+m6_good<- m6[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m6_NA, pmall2013 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM10\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m6_NA,aodid,day)
+m6x <- merge(m6_NA,closestaodse,all.x = T)
+
+m7<-rbindlist(list(m6x,m6_good))
+setnames(m7,\"closestmean\",\"meanPM10\")
+
+
+
+
+
+
+
+
+#------------> save mods
+#mod3
+saveRDS(m7,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod3.TR.2013.rds\")
+#mod2
+m7.m2 <- m7[!is.na(aod)]
+saveRDS(m7.m2,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.TR.2013.rds\")
+
+
+
+
+
+#--------->mod1
+#PM25
+#to fix missing days issues resulting in cartesean error
+m7days <- sort(unique(m7.m2$day))
+
+########### join aod to PM25
+#create PM matrix
+pm.m <- makepointsmatrix(PM25, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM25[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM25,stn,day)
+setkey(closestaod,stn,day)
+PM25.m1 <- merge(PM25[,list(stn,day,PM25)], closestaod, all.x = T)
+PM25.m1<-PM25.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM25.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR.2013.rds\")
+
+
+#--------->mod1
+########### join aod to PM10
+#create PM matrix
+pm.m <- makepointsmatrix(PM10, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM10[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM10,stn,day)
+setkey(closestaod,stn,day)
+PM10.m1 <- merge(PM10[,list(stn,day,PM10)], closestaod, all.x = T)
+PM10.m1<-PM10.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM10.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR10.2013.rds\")
+
+
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(broom)
+library(FNN)
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/geomerge_alpha.r\")
+
+
+
+########### import datasets
+#import NDVI
+ndvid<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/ndviid_aodid.csv\")
+ndvi<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN006_NDVI_yearly/ndvi.rds\")
+allbestpredlist <- list()
+path.data<-\"/media/NAS/Uni/Data/Europe/PBL_Europe/dailymeanpbl/\"
+
+for(i in 2014:2014){
+  allbestpredlist[[paste0(\"year_\", i)]] <- fread(paste0(path.data, \"fianlpblXY_\", i, \".csv\"))
+  print(i)
+} 
+allbestpred <- rbindlist(allbestpredlist)
+rm(allbestpredlist)
+
+pbl <-  allbestpred[ longitude > 32 & longitude < 37 & latitude < 34 & latitude > 29, ]
+pbl <- pbl [, day:=as.Date(strptime(date, \"%m/%d/%Y\"))]
+
+#import LU
+lu1<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/LU1.csv\")
+#add Land cover to LU
+p_os<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_os.csv\")
+p_dev<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devHG.csv\")
+p_dos<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devOS.csv\")
+p_farm<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_farming.csv\")
+p_for<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_forest.csv\")
+p_ind<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_industry.csv\")
+
+lu1 <- merge(lu1, p_os[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_os:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dev[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dev:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dos[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dos:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_farm[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_farm:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_for[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_for:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_ind[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_ind:=MEAN*100]
+lu1[,MEAN:=NULL]
+#delete \"palestine\"
+wlu<-lu1[!is.na(p_for)]
+l=seq(names(wlu));names(l)=names(wlu);l
+wlu[,c(\"OBJECTID\",\"Join_Count\" ,\"TARGET_FID\",\"longitude\", \"latitude\",\"lat_aod\", \"long_aod\" ,\"x_aod_ITM\",\"y_aod_ITM\",\"x_stn_ITM\" ,\"y_stn_ITM\"):=NULL]
+
+
+
+#Temp
+Temp <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Temp_D.csv\")
+Temp$date<-paste(Temp$Day,Temp$Month,Temp$Year,sep=\"/\")
+Temp[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Temp[, c := as.numeric(format(day, \"%Y\")) ]
+Temp[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Temp <- Temp[X != 'NaN']
+Temp <- Temp[Temp != 'NaN']
+Temp <- Temp[c == 2014]
+
+
+#WD
+WD <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WD_D.csv\")
+WD$date<-paste(WD$Day,WD$Month,WD$Year,sep=\"/\")
+WD[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WD[, c := as.numeric(format(day, \"%Y\")) ]
+WD[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WD <- WD[X != 'NaN']
+WD <- WD[WD != 'NaN']
+WD <- WD[c == 2014]
+
+#WS
+WS <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WS_D.csv\")
+WS$date<-paste(WS$Day,WS$Month,WS$Year,sep=\"/\")
+WS[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WS[, c := as.numeric(format(day, \"%Y\")) ]
+WS[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WS <- WS[X != 'NaN']
+WS <- WS[WS != 'NaN']
+WS <- WS[c == 2014]
+
+
+#RH
+RH <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/RH_D.csv\")
+RH$date<-paste(RH$Day,RH$Month,RH$Year,sep=\"/\")
+RH[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+RH[, c := as.numeric(format(day, \"%Y\")) ]
+RH[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+RH <- RH[X != 'NaN']
+RH <- RH[RH != 'NaN']
+RH <- RH[c == 2014]
+
+
+#Rain
+Rain <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Rain_D.csv\")
+Rain$date<-paste(Rain$Day,Rain$Month,Rain$Year,sep=\"/\")
+Rain[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Rain[, c := as.numeric(format(day, \"%Y\")) ]
+Rain[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Rain <- Rain[X != 'NaN']
+Rain<- Rain[Rain != 'NaN']
+Rain<- Rain[c == 2014]
+
+#NO2
+NO2 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/NO2_D.csv\")
+NO2$date<-paste(NO2$Day,NO2$Month,NO2$Year,sep=\"/\")
+NO2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+NO2[, c := as.numeric(format(day, \"%Y\")) ]
+NO2[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+NO2 <- NO2[X != 'NaN']
+NO2<- NO2[NO2 != 'NaN']
+NO2<- NO2[c == 2014]
+
+
+#########-------------------############
+#load PA grid (points in \"palestine authority\")
+ilgreen <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL.green_grid_north.csv\")
+
+###load Tera
+#load aod data
+tera<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN003_AOd_allyears/AOD_TR_0014.RDS\")
+tera <- tera[tera$aodid %in% ilgreen$aodid, ] 
+tera<- tera[yr == \"2014\"]
+#system.time(tera[, MaskLandWaterSnow := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[4:5]), collapse = \"\")}))])
+system.time(tera[, MaskAdjacency := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[6:8]), collapse = \"\")}))])
+#clean
+l=seq(names(tera));names(l)=names(tera);l
+tera<-tera[, c(1:6,25:29),with=FALSE]
+#bkaq<-copy(tera)
+
+#create single aod point per aodid per day
+tera <-tera %>%
+    group_by(aodid,day) %>%
+    summarise_each(funs(mean),long_aod,lat_aod,aod,UN,WV,day,x_aod_ITM, y_aod_ITM ,MaskAdjacency)
+
+
+#create full LU TS
+days<-seq.Date(from = as.Date(\"2014-01-01\"), to = as.Date(\"2014-12-31\"), 1)
+#create date range
+aod2014 <- data.table(expand.grid(aodid = ilgreen[, unique(aodid)], day = days))
+setkey(aod2014,aodid,day)
+setkey(tera,aodid,day)
+m1 <- merge(aod2014, tera, all.x = T)  
+
+
+#add land use and X,Y
+setkey(m1,aodid)
+setkey(wlu,aodid)
+m2<-merge(m1,wlu,all.x = T)
+#take out Junk
+m2<-m2[, c(3,4,8,9,22,23) := NULL]
+#clean points with no lu data (on borders and in golan)
+m2 <- m2[!is.na(pblid)]
+
+#add back lat/long and metreg
+grid<-ilgreen[,c(\"lat_aod\",\"long_aod\",\"aodid\", \"x_aod_ITM\", \"y_aod_ITM\",\"metreg\"),with=FALSE]
+setkey(grid,aodid)
+setkey(m2,aodid)
+m2<-merge(m2,grid,all.x = T)
+names(m2)
+
+#---------> Temporal additions
+
+#Temp
+#xtract year met
+met2014<- Temp[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+metreg <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL_stn_metreg.csv\")
+setkey(metreg,stn)
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+temp.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(tempa = mean(Temp)) 
+setkey(m2,metreg,day)
+setkey(temp.a,metreg,day)
+m3 <- merge(m2, temp.a, all.x = T)
+summary(m3)
+
+
+
+#WS
+#xtract year met
+met2014<- WS[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+WS.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(WSa = mean(WS)) 
+setkey(m3,metreg,day)
+setkey(WS.a,metreg,day)
+m3 <- merge(m3, WS.a, all.x = T)
+summary(m3)
+
+#RH
+#xtract year met
+met2014<- RH[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+RH.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(RHa = mean(RH)) 
+setkey(m3,metreg,day)
+setkey(RH.a,metreg,day)
+m3 <- merge(m3, RH.a, all.x = T)
+summary(m3)
+
+#WD
+#xtract year met
+met2014<- WD[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+WD.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(WDa = mean(WD)) 
+setkey(m3,metreg,day)
+setkey(WD.a,metreg,day)
+m3 <- merge(m3, WD.a, all.x = T)
+summary(m3)
+
+
+#Rain
+#xtract year met
+met2014<- Rain[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+Rain.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(Raina = mean(Rain)) 
+setkey(m3,metreg,day)
+setkey(Rain.a,metreg,day)
+m3 <- merge(m3, Rain.a, all.x = T)
+summary(m3)
+
+
+
+#NO2
+#xtract year met
+met2014<- NO2[c==2014]
+# tst<-met2014 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2014,stn)
+met2014 <- merge(met2014, metreg[,list(stn,metreg)], all.x = T)
+NO2.a <-met2014 %>%
+    group_by(metreg,day) %>%
+    summarise(NO2a = mean(NO2)) 
+setkey(m3,metreg,day)
+setkey(NO2.a,metreg,day)
+m3 <- merge(m3, NO2.a, all.x = T)
+summary(m3)
+
+
+#----> Spatial
+#Join PBL
+setkey(pbl , day, pblid)
+setkey(m3, day, pblid)
+m3<-left_join(m3, pbl)
+
+#add season
+m3$month <- as.numeric(format(m3$day, \"%m\"))
+#1-winter, 2-spring,3-summer,4-autum
+m3$season<-recode(m3$month,\"1=1;2=1;3=2;4=2;5=2;6=3;7=3;8=3;9=4;10=4;11=4;12=1\")
+#1-winter, 2-summer
+m3$seasonSW<-recode(m3$month,\"1=1;2=1;3=1;4=2;5=2;6=2;7=2;8=2;9=2;10=1;11=1;12=1\")
+#add month
+m3[, m := as.numeric(format(day, \"%m\")) ]
+#add year
+m3[, c := as.numeric(format(day, \"%Y\")) ]
+#join NDVI to aod
+setkey(ndvi, ndviid, c, m )
+setkey(m3,  ndviid, c, m)
+m3 <- merge(m3, ndvi, all.x = T)
+
+#add dust days,remember that these are just days with dust not a full TS
+dust2<-fread(\"/media/NAS/Uni/Data/Israel/Dust/dust.csv\")
+dust2$date<-paste(dust2$Day,dust2$Month,dust2$Year,sep=\"/\")
+dust2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+dust2[,c(\"Year\",\"Month\",\"date\"):=NULL]
+setnames(dust2,\"StationID\",\"stn\")
+dust2[, c := as.numeric(format(day, \"%Y\")) ]
+dust2<- dust2[c==2014]
+
+setkey(m3 , day, stn)
+setkey(dust2, day, stn)
+m3 <- merge(m3, dust2[,list(day,stn,Dust)], all.x = T)
+m3<-m3[is.na(Dust), Dust:= 0]
+
+
+#########-------------------weights ############
+#clean
+summary(m3)
+#delete areas in desset that have missing Temp
+m3 <- m3[tempa != 'NA']
+#create weights
+m3<-m3[,obs:=1]
+m3[is.na(aod), obs:= 0]
+#model
+w1<- glm(obs ~ elev+MeanPbl+tempa+as.factor(month),family=binomial,data=m3)
+m3$prob <- predict(w1,type = c(\"response\"))  #get probability prediction , note that its a binary logisitc and thus the type-repsonse option
+m3$wt <- 1/m3$prob
+m3$normwt <- m3$wt/mean(m3$wt)
+
+#----------> Cleanup
+m3<-m3[, c(\"prob\",\"wt\") := NULL]
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM25
+PM25 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM25_D.csv\")
+PM25$date<-paste(PM25$Day,PM25$Month,PM25$Year,sep=\"/\")
+PM25[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM25[, c := as.numeric(format(day, \"%Y\")) ]
+PM25[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM25 <- PM25[X != 'NaN']
+PM25<-PM25[!is.na(PM25)]
+#clear non continous stations
+setnames(PM25,\"X\",\"x_stn_ITM\")
+setnames(PM25,\"Y\",\"y_stn_ITM\")
+pmall2014<- PM25[c==2014]
+
+pm.m <- makepointsmatrix(pmall2014, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m3, pmall2014 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM25\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m3,aodid,day)
+m4 <- merge(m3,closestaodse,all.x = T)
+
+m4_NA<- m4[is.na(closestmean),]
+m4_NA[,closestmean := NULL]
+m4_good<- m4[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m4_NA, pmall2014 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM25\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m4_NA,aodid,day)
+m4x <- merge(m4_NA,closestaodse,all.x = T)
+
+m5<-rbindlist(list(m4x,m4_good))
+setnames(m5,\"closestmean\",\"meanPM\")
+
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM10
+PM10 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM10_D.csv\")
+PM10$date<-paste(PM10$Day,PM10$Month,PM10$Year,sep=\"/\")
+PM10[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM10[, c := as.numeric(format(day, \"%Y\")) ]
+PM10[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM10 <- PM10[X != 'NaN']
+PM10<-PM10[!is.na(PM10)]
+#clear non continous stations
+setnames(PM10,\"X\",\"x_stn_ITM\")
+setnames(PM10,\"Y\",\"y_stn_ITM\")
+pmall2014<- PM10[c==2014]
+
+pm.m <- makepointsmatrix(pmall2014, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m5, pmall2014 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM10\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m5,aodid,day)
+m6 <- merge(m5,closestaodse,all.x = T)
+
+m6_NA<- m6[is.na(closestmean),]
+m6_NA[,closestmean := NULL]
+m6_good<- m6[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m6_NA, pmall2014 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM10\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m6_NA,aodid,day)
+m6x <- merge(m6_NA,closestaodse,all.x = T)
+
+m7<-rbindlist(list(m6x,m6_good))
+setnames(m7,\"closestmean\",\"meanPM10\")
+
+
+
+
+
+
+
+
+#------------> save mods
+#mod3
+saveRDS(m7,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod3.TR.2014.rds\")
+#mod2
+m7.m2 <- m7[!is.na(aod)]
+saveRDS(m7.m2,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.TR.2014.rds\")
+
+
+
+
+
+#--------->mod1
+#PM25
+#to fix missing days issues resulting in cartesean error
+m7days <- sort(unique(m7.m2$day))
+
+########### join aod to PM25
+#create PM matrix
+pm.m <- makepointsmatrix(PM25, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM25[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM25,stn,day)
+setkey(closestaod,stn,day)
+PM25.m1 <- merge(PM25[,list(stn,day,PM25)], closestaod, all.x = T)
+PM25.m1<-PM25.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM25.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR.2014.rds\")
+
+
+#--------->mod1
+########### join aod to PM10
+#create PM matrix
+pm.m <- makepointsmatrix(PM10, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM10[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM10,stn,day)
+setkey(closestaod,stn,day)
+PM10.m1 <- merge(PM10[,list(stn,day,PM10)], closestaod, all.x = T)
+PM10.m1<-PM10.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM10.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR10.2014.rds\")
+
+
+###############
+#LIBS
+###############
+library(lme4)
+library(reshape)
+library(foreign) 
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(data.table)
+library(reshape2)
+library(Hmisc)
+library(mgcv)
+library(gdata)
+library(car)
+library(broom)
+library(FNN)
+source(\"/media/NAS/Uni/org/files/Uni/Projects/code/$Rsnips/geomerge_alpha.r\")
+
+
+
+########### import datasets
+#import NDVI
+ndvid<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/ndviid_aodid.csv\")
+ndvi<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN006_NDVI_yearly/ndvi.rds\")
+allbestpredlist <- list()
+path.data<-\"/media/NAS/Uni/Data/Europe/PBL_Europe/dailymeanpbl/\"
+
+for(i in 2015:2015){
+  allbestpredlist[[paste0(\"year_\", i)]] <- fread(paste0(path.data, \"fianlpblXY_\", i, \".csv\"))
+  print(i)
+} 
+allbestpred <- rbindlist(allbestpredlist)
+rm(allbestpredlist)
+
+pbl <-  allbestpred[ longitude > 32 & longitude < 37 & latitude < 34 & latitude > 29, ]
+pbl <- pbl [, day:=as.Date(strptime(date, \"%m/%d/%Y\"))]
+
+#import LU
+lu1<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/LU1.csv\")
+#add Land cover to LU
+p_os<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_os.csv\")
+p_dev<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devHG.csv\")
+p_dos<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devOS.csv\")
+p_farm<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_farming.csv\")
+p_for<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_forest.csv\")
+p_ind<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_industry.csv\")
+
+lu1 <- merge(lu1, p_os[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_os:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dev[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dev:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dos[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dos:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_farm[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_farm:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_for[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_for:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_ind[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_ind:=MEAN*100]
+lu1[,MEAN:=NULL]
+#delete \"palestine\"
+wlu<-lu1[!is.na(p_for)]
+l=seq(names(wlu));names(l)=names(wlu);l
+wlu[,c(\"OBJECTID\",\"Join_Count\" ,\"TARGET_FID\",\"longitude\", \"latitude\",\"lat_aod\", \"long_aod\" ,\"x_aod_ITM\",\"y_aod_ITM\",\"x_stn_ITM\" ,\"y_stn_ITM\"):=NULL]
+
+
+
+#Temp
+Temp <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Temp_D.csv\")
+Temp$date<-paste(Temp$Day,Temp$Month,Temp$Year,sep=\"/\")
+Temp[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Temp[, c := as.numeric(format(day, \"%Y\")) ]
+Temp[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Temp <- Temp[X != 'NaN']
+Temp <- Temp[Temp != 'NaN']
+Temp <- Temp[c == 2015]
+
+
+#WD
+WD <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WD_D.csv\")
+WD$date<-paste(WD$Day,WD$Month,WD$Year,sep=\"/\")
+WD[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WD[, c := as.numeric(format(day, \"%Y\")) ]
+WD[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WD <- WD[X != 'NaN']
+WD <- WD[WD != 'NaN']
+WD <- WD[c == 2015]
+
+#WS
+WS <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/WS_D.csv\")
+WS$date<-paste(WS$Day,WS$Month,WS$Year,sep=\"/\")
+WS[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+WS[, c := as.numeric(format(day, \"%Y\")) ]
+WS[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+WS <- WS[X != 'NaN']
+WS <- WS[WS != 'NaN']
+WS <- WS[c == 2015]
+
+
+#RH
+RH <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/RH_D.csv\")
+RH$date<-paste(RH$Day,RH$Month,RH$Year,sep=\"/\")
+RH[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+RH[, c := as.numeric(format(day, \"%Y\")) ]
+RH[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+RH <- RH[X != 'NaN']
+RH <- RH[RH != 'NaN']
+RH <- RH[c == 2015]
+
+
+#Rain
+Rain <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/Rain_D.csv\")
+Rain$date<-paste(Rain$Day,Rain$Month,Rain$Year,sep=\"/\")
+Rain[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+Rain[, c := as.numeric(format(day, \"%Y\")) ]
+Rain[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+Rain <- Rain[X != 'NaN']
+Rain<- Rain[Rain != 'NaN']
+Rain<- Rain[c == 2015]
+
+#NO2
+NO2 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/temporal MOEP/NO2_D.csv\")
+NO2$date<-paste(NO2$Day,NO2$Month,NO2$Year,sep=\"/\")
+NO2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+NO2[, c := as.numeric(format(day, \"%Y\")) ]
+NO2[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+NO2 <- NO2[X != 'NaN']
+NO2<- NO2[NO2 != 'NaN']
+NO2<- NO2[c == 2015]
+
+
+#########-------------------############
+#load PA grid (points in \"palestine authority\")
+ilgreen <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL.green_grid_north.csv\")
+
+###load Tera
+#load aod data
+tera<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN003_AOd_allyears/AOD_TR_0014.RDS\")
+tera <- tera[tera$aodid %in% ilgreen$aodid, ] 
+tera<- tera[yr == \"2015\"]
+#system.time(tera[, MaskLandWaterSnow := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[4:5]), collapse = \"\")}))])
+system.time(tera[, MaskAdjacency := as.factor(sapply(QA, function(x){paste(rev(as.integer(intToBits(x))[6:8]), collapse = \"\")}))])
+#clean
+l=seq(names(tera));names(l)=names(tera);l
+tera<-tera[, c(1:6,25:29),with=FALSE]
+#bkaq<-copy(tera)
+
+#create single aod point per aodid per day
+tera <-tera %>%
+    group_by(aodid,day) %>%
+    summarise_each(funs(mean),long_aod,lat_aod,aod,UN,WV,day,x_aod_ITM, y_aod_ITM ,MaskAdjacency)
+
+
+#create full LU TS
+days<-seq.Date(from = as.Date(\"2015-01-01\"), to = as.Date(\"2015-12-31\"), 1)
+#create date range
+aod2015 <- data.table(expand.grid(aodid = ilgreen[, unique(aodid)], day = days))
+setkey(aod2015,aodid,day)
+setkey(tera,aodid,day)
+m1 <- merge(aod2015, tera, all.x = T)  
+
+
+#add land use and X,Y
+setkey(m1,aodid)
+setkey(wlu,aodid)
+m2<-merge(m1,wlu,all.x = T)
+#take out Junk
+m2<-m2[, c(3,4,8,9,22,23) := NULL]
+#clean points with no lu data (on borders and in golan)
+m2 <- m2[!is.na(pblid)]
+
+#add back lat/long and metreg
+grid<-ilgreen[,c(\"lat_aod\",\"long_aod\",\"aodid\", \"x_aod_ITM\", \"y_aod_ITM\",\"metreg\"),with=FALSE]
+setkey(grid,aodid)
+setkey(m2,aodid)
+m2<-merge(m2,grid,all.x = T)
+names(m2)
+
+#---------> Temporal additions
+
+#Temp
+#xtract year met
+met2015<- Temp[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+metreg <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/IL_stn_metreg.csv\")
+setkey(metreg,stn)
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+temp.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(tempa = mean(Temp)) 
+setkey(m2,metreg,day)
+setkey(temp.a,metreg,day)
+m3 <- merge(m2, temp.a, all.x = T)
+summary(m3)
+
+
+
+#WS
+#xtract year met
+met2015<- WS[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+WS.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(WSa = mean(WS)) 
+setkey(m3,metreg,day)
+setkey(WS.a,metreg,day)
+m3 <- merge(m3, WS.a, all.x = T)
+summary(m3)
+
+#RH
+#xtract year met
+met2015<- RH[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+RH.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(RHa = mean(RH)) 
+setkey(m3,metreg,day)
+setkey(RH.a,metreg,day)
+m3 <- merge(m3, RH.a, all.x = T)
+summary(m3)
+
+#WD
+#xtract year met
+met2015<- WD[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+WD.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(WDa = mean(WD)) 
+setkey(m3,metreg,day)
+setkey(WD.a,metreg,day)
+m3 <- merge(m3, WD.a, all.x = T)
+summary(m3)
+
+
+#Rain
+#xtract year met
+met2015<- Rain[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+Rain.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(Raina = mean(Rain)) 
+setkey(m3,metreg,day)
+setkey(Rain.a,metreg,day)
+m3 <- merge(m3, Rain.a, all.x = T)
+summary(m3)
+
+
+
+#NO2
+#xtract year met
+met2015<- NO2[c==2015]
+# tst<-met2015 %>%
+#     group_by(stn) %>%
+#     summarise(data = n())
+setkey(met2015,stn)
+met2015 <- merge(met2015, metreg[,list(stn,metreg)], all.x = T)
+NO2.a <-met2015 %>%
+    group_by(metreg,day) %>%
+    summarise(NO2a = mean(NO2)) 
+setkey(m3,metreg,day)
+setkey(NO2.a,metreg,day)
+m3 <- merge(m3, NO2.a, all.x = T)
+summary(m3)
+
+
+#----> Spatial
+#Join PBL
+setkey(pbl , day, pblid)
+setkey(m3, day, pblid)
+m3<-left_join(m3, pbl)
+
+#add season
+m3$month <- as.numeric(format(m3$day, \"%m\"))
+#1-winter, 2-spring,3-summer,4-autum
+m3$season<-recode(m3$month,\"1=1;2=1;3=2;4=2;5=2;6=3;7=3;8=3;9=4;10=4;11=4;12=1\")
+#1-winter, 2-summer
+m3$seasonSW<-recode(m3$month,\"1=1;2=1;3=1;4=2;5=2;6=2;7=2;8=2;9=2;10=1;11=1;12=1\")
+#add month
+m3[, m := as.numeric(format(day, \"%m\")) ]
+#add year
+m3[, c := as.numeric(format(day, \"%Y\")) ]
+#join NDVI to aod
+setkey(ndvi, ndviid, c, m )
+setkey(m3,  ndviid, c, m)
+m3 <- merge(m3, ndvi, all.x = T)
+
+#add dust days,remember that these are just days with dust not a full TS
+dust2<-fread(\"/media/NAS/Uni/Data/Israel/Dust/dust.csv\")
+dust2$date<-paste(dust2$Day,dust2$Month,dust2$Year,sep=\"/\")
+dust2[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+dust2[,c(\"Year\",\"Month\",\"date\"):=NULL]
+setnames(dust2,\"StationID\",\"stn\")
+dust2[, c := as.numeric(format(day, \"%Y\")) ]
+dust2<- dust2[c==2015]
+
+setkey(m3 , day, stn)
+setkey(dust2, day, stn)
+m3 <- merge(m3, dust2[,list(day,stn,Dust)], all.x = T)
+m3<-m3[is.na(Dust), Dust:= 0]
+
+
+#########-------------------weights ############
+#clean
+summary(m3)
+#delete areas in desset that have missing Temp
+m3 <- m3[tempa != 'NA']
+#create weights
+m3<-m3[,obs:=1]
+m3[is.na(aod), obs:= 0]
+#model
+w1<- glm(obs ~ elev+MeanPbl+tempa+as.factor(month),family=binomial,data=m3)
+m3$prob <- predict(w1,type = c(\"response\"))  #get probability prediction , note that its a binary logisitc and thus the type-repsonse option
+m3$wt <- 1/m3$prob
+m3$normwt <- m3$wt/mean(m3$wt)
+
+#----------> Cleanup
+m3<-m3[, c(\"prob\",\"wt\") := NULL]
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM25
+PM25 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM25_D.csv\")
+PM25$date<-paste(PM25$Day,PM25$Month,PM25$Year,sep=\"/\")
+PM25[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM25[, c := as.numeric(format(day, \"%Y\")) ]
+PM25[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM25 <- PM25[X != 'NaN']
+PM25<-PM25[!is.na(PM25)]
+#clear non continous stations
+setnames(PM25,\"X\",\"x_stn_ITM\")
+setnames(PM25,\"Y\",\"y_stn_ITM\")
+pmall2015<- PM25[c==2015]
+
+pm.m <- makepointsmatrix(pmall2015, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m3, pmall2015 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM25\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m3,aodid,day)
+m4 <- merge(m3,closestaodse,all.x = T)
+
+m4_NA<- m4[is.na(closestmean),]
+m4_NA[,closestmean := NULL]
+m4_good<- m4[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m4_NA, pmall2015 [, list(day,PM25,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM25\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM25 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m4_NA,aodid,day)
+m4x <- merge(m4_NA,closestaodse,all.x = T)
+
+m5<-rbindlist(list(m4x,m4_good))
+setnames(m5,\"closestmean\",\"meanPM\")
+
+
+
+#########-------------------############
+#add meanPM per grid per day
+
+#PM10
+PM10 <- fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/0.raw/PM/PM10_D.csv\")
+PM10$date<-paste(PM10$Day,PM10$Month,PM10$Year,sep=\"/\")
+PM10[, day:=as.Date(strptime(date, \"%d/%m/%Y\"))]
+PM10[, c := as.numeric(format(day, \"%Y\")) ]
+PM10[,c(\"Year\",\"Month\",\"Day\",\"date\"):=NULL]
+PM10 <- PM10[X != 'NaN']
+PM10<-PM10[!is.na(PM10)]
+#clear non continous stations
+setnames(PM10,\"X\",\"x_stn_ITM\")
+setnames(PM10,\"Y\",\"y_stn_ITM\")
+pmall2015<- PM10[c==2015]
+
+pm.m <- makepointsmatrix(pmall2015, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+setkey(m3, aodid)
+aod.m <- makepointsmatrix(m3[m3[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m5, pmall2015 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\",\"PM10\",knearest = 5, maxdistance = 30000, nearestmean = T)
+
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m5,aodid,day)
+m6 <- merge(m5,closestaodse,all.x = T)
+
+m6_NA<- m6[is.na(closestmean),]
+m6_NA[,closestmean := NULL]
+m6_good<- m6[!is.na(closestmean),]
+
+closestaodse<- nearestbyday(aod.m  ,pm.m , 
+                            m6_NA, pmall2015 [, list(day,PM10,stn)], 
+                            \"aodid\", \"stn\", \"closest\", \"PM10\", knearest = 9, maxdistance = 90000, nearestmean = TRUE)
+#cleanup
+closestaodse[,PM10 :=NULL]
+closestaodse[,closest :=NULL]
+closestaodse[,closestknn :=NULL]
+closestaodse[,closestnobs:=NULL]
+
+#join to DB
+setkey(closestaodse,aodid,day)
+setkey(m6_NA,aodid,day)
+m6x <- merge(m6_NA,closestaodse,all.x = T)
+
+m7<-rbindlist(list(m6x,m6_good))
+setnames(m7,\"closestmean\",\"meanPM10\")
+
+
+
+
+
+
+
+
+#------------> save mods
+#mod3
+saveRDS(m7,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod3.TR.2015.rds\")
+#mod2
+m7.m2 <- m7[!is.na(aod)]
+saveRDS(m7.m2,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod2.TR.2015.rds\")
+
+
+
+
+
+#--------->mod1
+#PM25
+#to fix missing days issues resulting in cartesean error
+m7days <- sort(unique(m7.m2$day))
+
+########### join aod to PM25
+#create PM matrix
+pm.m <- makepointsmatrix(PM25, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM25[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM25,stn,day)
+setkey(closestaod,stn,day)
+PM25.m1 <- merge(PM25[,list(stn,day,PM25)], closestaod, all.x = T)
+PM25.m1<-PM25.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM25.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR.2015.rds\")
+
+
+#--------->mod1
+########### join aod to PM10
+#create PM matrix
+pm.m <- makepointsmatrix(PM10, \"x_stn_ITM\", \"y_stn_ITM\", \"stn\")
+#create aod terra matrix
+setkey(m7.m2,aodid)
+aod.m <- makepointsmatrix(m7.m2[m7.m2[,unique(aodid)], list(x_aod_ITM, y_aod_ITM, aodid), mult = \"first\"], \"x_aod_ITM\", \"y_aod_ITM\", \"aodid\")
+#run function
+closestaod <- nearestbyday(pm.m, aod.m, 
+                           PM10[day %in% m7days,], m7.m2, 
+                           \"stn\", \"aodid\", \"closest\", \"aod\", knearest = 9, maxdistance = 1500)
+
+closestaod[,i.stn :=NULL]
+closestaod[,closestknn :=NULL]
+
+setkey(PM10,stn,day)
+setkey(closestaod,stn,day)
+PM10.m1 <- merge(PM10[,list(stn,day,PM10)], closestaod, all.x = T)
+PM10.m1<-PM10.m1[!is.na(aod)]
+#save mod 1
+saveRDS(PM10.m1,\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN000_RWORKDIR/mod1.TR10.2015.rds\")
+
+" 0 1 (fontified t) 1 16 (fontified t face font-lock-comment-delimiter-face) 16 17 (fontified t face font-lock-comment-face) 17 18 (fontified t face font-lock-comment-delimiter-face) 18 23 (fontified t face font-lock-comment-face) 23 38 (fontified t face font-lock-comment-delimiter-face) 38 39 (fontified t face font-lock-comment-face) 39 46 (fontified t face font-lock-constant-face) 46 53 (fontified t) 53 60 (fontified t face font-lock-constant-face) 60 70 (fontified t) 70 77 (fontified t face font-lock-constant-face) 77 88 (fontified t) 88 95 (fontified t face font-lock-constant-face) 95 105 (fontified t) 105 112 (fontified t face font-lock-constant-face) 112 119 (fontified t) 119 126 (fontified t face font-lock-constant-face) 126 134 (fontified t) 134 141 (fontified t face font-lock-constant-face) 141 154 (fontified t) 154 161 (fontified t face font-lock-constant-face) 161 172 (fontified t) 172 179 (fontified t face font-lock-constant-face) 179 187 (fontified t) 187 194 (fontified t face font-lock-constant-face) 194 201 (fontified t) 201 208 (fontified t face font-lock-constant-face) 208 216 (fontified t) 216 223 (fontified t face font-lock-constant-face) 223 229 (fontified t) 229 236 (fontified t face font-lock-constant-face) 236 244 (fontified t) 244 251 (fontified t face font-lock-constant-face) 251 257 (fontified t) 257 263 (fontified t face font-lock-constant-face) 263 264 (fontified t) 264 333 (fontified t face font-lock-string-face) 333 335 (fontified t) 335 338 (fontified t) 338 350 (fontified t face font-lock-comment-delimiter-face) 350 366 (fontified t face font-lock-comment-face) 366 367 (fontified t face font-lock-comment-delimiter-face) 367 379 (fontified t face font-lock-comment-face) 379 384 (fontified t) 384 386 (fontified t face font-lock-constant-face) 386 392 (fontified t) 392 490 (fontified t face font-lock-string-face) 490 496 (fontified t) 496 498 (fontified t face font-lock-constant-face) 498 506 (fontified t) 506 597 (fontified t face font-lock-string-face) 597 599 (fontified t) 599 615 (fontified t) 615 617 (fontified t face font-lock-constant-face) 617 634 (fontified t) 634 636 (fontified t face font-lock-constant-face) 636 689 (fontified t face font-lock-string-face) 689 691 (fontified t) 691 694 (fontified t face font-lock-keyword-face) 694 697 (fontified t) 697 699 (fontified t face font-lock-keyword-face) 699 738 (fontified t) 738 745 (fontified t face font-lock-string-face) 745 752 (fontified t) 752 754 (fontified t face font-lock-constant-face) 754 779 (fontified t) 779 792 (fontified t face font-lock-string-face) 792 797 (fontified t) 797 803 (fontified t face font-lock-string-face) 803 832 (fontified t) 832 834 (fontified t face font-lock-constant-face) 834 862 (fontified t) 862 887 (fontified t) 887 889 (fontified t face font-lock-constant-face) 889 975 (fontified t) 975 977 (fontified t face font-lock-constant-face) 977 1013 (fontified t) 1013 1023 (fontified t face font-lock-string-face) 1023 1028 (fontified t) 1028 1029 (fontified t face font-lock-comment-delimiter-face) 1029 1039 (fontified t face font-lock-comment-face) 1039 1042 (fontified t) 1042 1044 (fontified t face font-lock-constant-face) 1044 1050 (fontified t) 1050 1144 (fontified t face font-lock-string-face) 1144 1146 (fontified t) 1146 1147 (face font-lock-comment-delimiter-face) 1147 1168 (face font-lock-comment-face) 1172 1174 (face font-lock-constant-face) 1180 1275 (face font-lock-string-face) 1282 1284 (face font-lock-constant-face) 1290 1388 (face font-lock-string-face) 1395 1397 (face font-lock-constant-face) 1403 1501 (face font-lock-string-face) 1509 1511 (face font-lock-constant-face) 1517 1617 (face font-lock-string-face) 1624 1626 (face font-lock-constant-face) 1632 1731 (face font-lock-string-face) 1738 1740 (face font-lock-constant-face) 1746 1847 (face font-lock-string-face) 1854 1856 (face font-lock-constant-face) 1911 1918 (face font-lock-string-face) 1953 1957 (face font-lock-type-face) 1963 1965 (face font-lock-constant-face) 2021 2028 (face font-lock-string-face) 2064 2068 (face font-lock-type-face) 2074 2076 (face font-lock-constant-face) 2132 2139 (face font-lock-string-face) 2175 2179 (face font-lock-type-face) 2185 2187 (face font-lock-constant-face) 2244 2251 (face font-lock-string-face) 2288 2292 (face font-lock-type-face) 2298 2300 (face font-lock-constant-face) 2356 2363 (face font-lock-string-face) 2399 2403 (face font-lock-type-face) 2409 2411 (face font-lock-constant-face) 2467 2474 (face font-lock-string-face) 2510 2514 (face font-lock-type-face) 2516 2517 (face font-lock-comment-delimiter-face) 2517 2536 (face font-lock-comment-face) 2539 2541 (face font-lock-constant-face) 2607 2617 (face font-lock-string-face) 2618 2630 (face font-lock-string-face) 2632 2644 (face font-lock-string-face) 2645 2656 (face font-lock-string-face) 2658 2668 (face font-lock-string-face) 2669 2678 (face font-lock-string-face) 2680 2690 (face font-lock-string-face) 2692 2703 (face font-lock-string-face) 2704 2715 (face font-lock-string-face) 2716 2727 (face font-lock-string-face) 2729 2740 (face font-lock-string-face) 2743 2747 (face font-lock-type-face) 2752 2753 (face font-lock-comment-delimiter-face) 2753 2758 (face font-lock-comment-face) 2763 2765 (face font-lock-constant-face) 2772 2846 (face font-lock-string-face) 2857 2859 (face font-lock-constant-face) 2899 2902 (face font-lock-string-face) 2939 2949 (face font-lock-string-face) 2988 2992 (face font-lock-string-face) 3005 3011 (face font-lock-string-face) 3012 3019 (face font-lock-string-face) 3020 3025 (face font-lock-string-face) 3026 3032 (face font-lock-string-face) 3035 3039 (face font-lock-type-face) 3046 3048 (face font-lock-constant-face) 3059 3064 (face font-lock-string-face) 3071 3073 (face font-lock-constant-face) 3087 3092 (face font-lock-string-face) 3099 3101 (face font-lock-constant-face) 3120 3121 (face font-lock-comment-delimiter-face) 3121 3124 (face font-lock-comment-face) 3127 3129 (face font-lock-constant-face) 3136 3208 (face font-lock-string-face) 3217 3219 (face font-lock-constant-face) 3253 3256 (face font-lock-string-face) 3291 3301 (face font-lock-string-face) 3338 3342 (face font-lock-string-face) 3353 3359 (face font-lock-string-face) 3360 3367 (face font-lock-string-face) 3368 3373 (face font-lock-string-face) 3374 3380 (face font-lock-string-face) 3383 3387 (face font-lock-type-face) 3392 3394 (face font-lock-constant-face) 3403 3408 (face font-lock-string-face) 3413 3415 (face font-lock-constant-face) 3425 3430 (face font-lock-string-face) 3435 3437 (face font-lock-constant-face) 3453 3454 (face font-lock-comment-delimiter-face) 3454 3457 (face font-lock-comment-face) 3460 3462 (face font-lock-constant-face) 3469 3541 (face font-lock-string-face) 3550 3552 (face font-lock-constant-face) 3586 3589 (face font-lock-string-face) 3624 3634 (face font-lock-string-face) 3671 3675 (face font-lock-string-face) 3686 3692 (face font-lock-string-face) 3693 3700 (face font-lock-string-face) 3701 3706 (face font-lock-string-face) 3707 3713 (face font-lock-string-face) 3716 3720 (face font-lock-type-face) 3725 3727 (face font-lock-constant-face) 3736 3741 (face font-lock-string-face) 3746 3748 (face font-lock-constant-face) 3758 3763 (face font-lock-string-face) 3768 3770 (face font-lock-constant-face) 3787 3788 (face font-lock-comment-delimiter-face) 3788 3791 (face font-lock-comment-face) 3794 3796 (face font-lock-constant-face) 3803 3875 (face font-lock-string-face) 3884 3886 (face font-lock-constant-face) 3920 3923 (face font-lock-string-face) 3958 3968 (face font-lock-string-face) 4005 4009 (face font-lock-string-face) 4020 4026 (face font-lock-string-face) 4027 4034 (face font-lock-string-face) 4035 4040 (face font-lock-string-face) 4041 4047 (face font-lock-string-face) 4050 4054 (face font-lock-type-face) 4059 4061 (face font-lock-constant-face) 4070 4075 (face font-lock-string-face) 4080 4082 (face font-lock-constant-face) 4092 4097 (face font-lock-string-face) 4102 4104 (face font-lock-constant-face) 4121 4122 (face font-lock-comment-delimiter-face) 4122 4127 (face font-lock-comment-face) 4132 4134 (face font-lock-constant-face) 4141 4215 (face font-lock-string-face) 4226 4228 (face font-lock-constant-face) 4268 4271 (face font-lock-string-face) 4308 4318 (face font-lock-string-face) 4357 4361 (face font-lock-string-face) 4374 4380 (face font-lock-string-face) 4381 4388 (face font-lock-string-face) 4389 4394 (face font-lock-string-face) 4395 4401 (face font-lock-string-face) 4404 4408 (face font-lock-type-face) 4415 4417 (face font-lock-constant-face) 4428 4433 (face font-lock-string-face) 4439 4441 (face font-lock-constant-face) 4455 4460 (face font-lock-string-face) 4466 4468 (face font-lock-constant-face) 4486 4487 (face font-lock-comment-delimiter-face) 4487 4491 (face font-lock-comment-face) 4495 4497 (face font-lock-constant-face) 4504 4577 (face font-lock-string-face) 4587 4589 (face font-lock-constant-face) 4626 4629 (face font-lock-string-face) 4665 4675 (face font-lock-string-face) 4713 4717 (face font-lock-string-face) 4729 4735 (face font-lock-string-face) 4736 4743 (face font-lock-string-face) 4744 4749 (face font-lock-string-face) 4750 4756 (face font-lock-string-face) 4759 4763 (face font-lock-type-face) 4769 4771 (face font-lock-constant-face) 4781 4786 (face font-lock-string-face) 4791 4793 (face font-lock-constant-face) 4805 4810 (face font-lock-string-face) 4815 4817 (face font-lock-constant-face) 4835 4844 (face font-lock-comment-delimiter-face) 4844 4876 (face font-lock-comment-face) 4876 4877 (face font-lock-comment-delimiter-face) 4877 4924 (face font-lock-comment-face) 4932 4934 (face font-lock-constant-face) 4941 5046 (face font-lock-string-face) 5049 5052 (face font-lock-comment-delimiter-face) 5052 5057 (face font-lock-comment-face) 5057 5061 (face font-lock-comment-face) 5061 5062 (face font-lock-comment-face) 5062 5063 (face font-lock-comment-delimiter-face) 5063 5077 (face font-lock-comment-face) 5081 5083 (face font-lock-constant-face) 5091 5178 (face font-lock-string-face) 5178 5180 (face font-lock-string-face) 5180 5190 (face font-lock-string-face) 5197 5199 (face font-lock-constant-face) 5217 5219 (face font-lock-keyword-face) 5243 5245 (face font-lock-constant-face) 5257 5263 (face font-lock-string-face) 5265 5266 (face font-lock-comment-delimiter-face) 5266 5278 (face font-lock-comment-face) 5278 5282 (face font-lock-comment-face) 5282 5401 (face font-lock-comment-face) 5458 5466 (face font-lock-keyword-face) 5523 5525 (face font-lock-string-face) 5532 5533 (face font-lock-comment-delimiter-face) 5533 5539 (face font-lock-comment-face) 5585 5587 (face font-lock-constant-face) 5612 5617 (face font-lock-type-face) 5619 5620 (face font-lock-comment-delimiter-face) 5620 5631 (face font-lock-comment-face) 5631 5635 (face font-lock-comment-face) 5635 5637 (face font-lock-comment-face) 5638 5639 (face font-lock-comment-delimiter-face) 5639 5681 (face font-lock-comment-face) 5686 5688 (face font-lock-constant-face) 5825 5826 (face font-lock-comment-delimiter-face) 5826 5844 (face font-lock-comment-face) 5848 5850 (face font-lock-constant-face) 5874 5886 (face font-lock-string-face) 5902 5914 (face font-lock-string-face) 5920 5921 (face font-lock-comment-delimiter-face) 5921 5939 (face font-lock-comment-face) 5947 5949 (face font-lock-constant-face) 6072 6074 (face font-lock-constant-face) 6111 6112 (face font-lock-comment-delimiter-face) 6112 6133 (face font-lock-comment-face) 6170 6172 (face font-lock-constant-face) 6196 6197 (face font-lock-comment-delimiter-face) 6197 6211 (face font-lock-comment-face) 6213 6215 (face font-lock-constant-face) 6240 6244 (face font-lock-type-face) 6246 6247 (face font-lock-comment-delimiter-face) 6247 6302 (face font-lock-comment-face) 6305 6307 (face font-lock-constant-face) 6327 6328 (face font-lock-comment-delimiter-face) 6328 6357 (face font-lock-comment-face) 6361 6363 (face font-lock-constant-face) 6374 6383 (face font-lock-string-face) 6384 6394 (face font-lock-string-face) 6395 6402 (face font-lock-string-face) 6404 6415 (face font-lock-string-face) 6417 6428 (face font-lock-string-face) 6429 6437 (face font-lock-string-face) 6444 6449 (face font-lock-type-face) 6489 6491 (face font-lock-constant-face) 6527 6528 (face font-lock-comment-delimiter-face) 6528 6558 (face font-lock-comment-face) 6559 6560 (face font-lock-comment-delimiter-face) 6560 6565 (face font-lock-comment-face) 6565 6566 (face font-lock-comment-delimiter-face) 6566 6582 (face font-lock-comment-face) 6589 6591 (face font-lock-constant-face) 6606 6608 (face font-lock-comment-delimiter-face) 6608 6625 (face font-lock-comment-face) 6625 6631 (face font-lock-comment-delimiter-face) 6631 6649 (face font-lock-comment-face) 6649 6655 (face font-lock-comment-delimiter-face) 6655 6677 (face font-lock-comment-face) 6684 6686 (face font-lock-constant-face) 6693 6792 (face font-lock-string-face) 6841 6843 (face font-lock-constant-face) 6904 6906 (face font-lock-constant-face) 7033 7035 (face font-lock-constant-face) 7080 7081 (face font-lock-comment-delimiter-face) 7081 7084 (face font-lock-comment-face) 7084 7085 (face font-lock-comment-delimiter-face) 7085 7101 (face font-lock-comment-face) 7108 7110 (face font-lock-constant-face) 7123 7125 (face font-lock-comment-delimiter-face) 7125 7142 (face font-lock-comment-face) 7142 7148 (face font-lock-comment-delimiter-face) 7148 7166 (face font-lock-comment-face) 7166 7172 (face font-lock-comment-delimiter-face) 7172 7194 (face font-lock-comment-face) 7222 7224 (face font-lock-constant-face) 7283 7285 (face font-lock-constant-face) 7406 7408 (face font-lock-constant-face) 7449 7450 (face font-lock-comment-delimiter-face) 7450 7453 (face font-lock-comment-face) 7453 7454 (face font-lock-comment-delimiter-face) 7454 7470 (face font-lock-comment-face) 7477 7479 (face font-lock-constant-face) 7492 7494 (face font-lock-comment-delimiter-face) 7494 7511 (face font-lock-comment-face) 7511 7517 (face font-lock-comment-delimiter-face) 7517 7535 (face font-lock-comment-face) 7535 7541 (face font-lock-comment-delimiter-face) 7541 7563 (face font-lock-comment-face) 7591 7593 (face font-lock-constant-face) 7652 7654 (face font-lock-constant-face) 7775 7777 (face font-lock-constant-face) 7818 7819 (face font-lock-comment-delimiter-face) 7819 7822 (face font-lock-comment-face) 7822 7823 (face font-lock-comment-delimiter-face) 7823 7839 (face font-lock-comment-face) 7846 7848 (face font-lock-constant-face) 7861 7863 (face font-lock-comment-delimiter-face) 7863 7880 (face font-lock-comment-face) 7880 7886 (face font-lock-comment-delimiter-face) 7886 7904 (face font-lock-comment-face) 7904 7910 (face font-lock-comment-delimiter-face) 7910 7932 (face font-lock-comment-face) 7960 7962 (face font-lock-constant-face) 8021 8023 (face font-lock-constant-face) 8144 8146 (face font-lock-constant-face) 8188 8189 (face font-lock-comment-delimiter-face) 8189 8194 (face font-lock-comment-face) 8194 8195 (face font-lock-comment-delimiter-face) 8195 8211 (face font-lock-comment-face) 8218 8220 (face font-lock-constant-face) 8235 8237 (face font-lock-comment-delimiter-face) 8237 8254 (face font-lock-comment-face) 8254 8260 (face font-lock-comment-delimiter-face) 8260 8278 (face font-lock-comment-face) 8278 8284 (face font-lock-comment-delimiter-face) 8284 8306 (face font-lock-comment-face) 8334 8336 (face font-lock-constant-face) 8397 8399 (face font-lock-constant-face) 8526 8528 (face font-lock-constant-face) 8573 8574 (face font-lock-comment-delimiter-face) 8574 8578 (face font-lock-comment-face) 8578 8579 (face font-lock-comment-delimiter-face) 8579 8595 (face font-lock-comment-face) 8602 8604 (face font-lock-constant-face) 8618 8620 (face font-lock-comment-delimiter-face) 8620 8637 (face font-lock-comment-face) 8637 8643 (face font-lock-comment-delimiter-face) 8643 8661 (face font-lock-comment-face) 8661 8667 (face font-lock-comment-delimiter-face) 8667 8689 (face font-lock-comment-face) 8717 8719 (face font-lock-constant-face) 8779 8781 (face font-lock-constant-face) 8905 8907 (face font-lock-constant-face) 8950 8951 (face font-lock-comment-delimiter-face) 8951 8965 (face font-lock-comment-face) 8965 8966 (face font-lock-comment-delimiter-face) 8966 8975 (face font-lock-comment-face) 9025 9027 (face font-lock-constant-face) 9047 9048 (face font-lock-comment-delimiter-face) 9048 9059 (face font-lock-comment-face) 9068 9070 (face font-lock-constant-face) 9097 9101 (face font-lock-string-face) 9104 9105 (face font-lock-comment-delimiter-face) 9105 9141 (face font-lock-comment-face) 9150 9152 (face font-lock-constant-face) 9168 9220 (face font-lock-string-face) 9222 9223 (face font-lock-comment-delimiter-face) 9223 9242 (face font-lock-comment-face) 9253 9255 (face font-lock-constant-face) 9271 9323 (face font-lock-string-face) 9325 9326 (face font-lock-comment-delimiter-face) 9326 9336 (face font-lock-comment-face) 9369 9373 (face font-lock-string-face) 9378 9379 (face font-lock-comment-delimiter-face) 9379 9388 (face font-lock-comment-face) 9421 9425 (face font-lock-string-face) 9430 9431 (face font-lock-comment-delimiter-face) 9431 9448 (face font-lock-comment-face) 9505 9507 (face font-lock-constant-face) 9536 9537 (face font-lock-comment-delimiter-face) 9537 9608 (face font-lock-comment-face) 9608 9609 (face font-lock-comment-face) 9614 9616 (face font-lock-constant-face) 9622 9664 (face font-lock-string-face) 9676 9678 (face font-lock-constant-face) 9721 9724 (face font-lock-string-face) 9762 9772 (face font-lock-string-face) 9785 9791 (face font-lock-string-face) 9792 9799 (face font-lock-string-face) 9800 9806 (face font-lock-string-face) 9809 9813 (face font-lock-type-face) 9830 9841 (face font-lock-string-face) 9842 9847 (face font-lock-string-face) 9885 9889 (face font-lock-string-face) 9899 9901 (face font-lock-constant-face) 9967 9969 (face font-lock-constant-face) 10021 10023 (face font-lock-constant-face) 10051 10060 (face font-lock-comment-delimiter-face) 10060 10100 (face font-lock-comment-face) 10100 10101 (face font-lock-comment-delimiter-face) 10101 10107 (face font-lock-comment-face) 10119 10120 (face font-lock-comment-delimiter-face) 10120 10166 (face font-lock-comment-face) 10169 10171 (face font-lock-constant-face) 10184 10188 (face font-lock-string-face) 10190 10191 (face font-lock-comment-delimiter-face) 10191 10206 (face font-lock-comment-face) 10208 10210 (face font-lock-constant-face) 10246 10247 (face font-lock-comment-delimiter-face) 10247 10253 (face font-lock-comment-face) 10255 10257 (face font-lock-constant-face) 10337 10339 (face font-lock-constant-face) 10360 10370 (face font-lock-string-face) 10374 10375 (face font-lock-comment-delimiter-face) 10375 10470 (face font-lock-comment-face) 10476 10478 (face font-lock-constant-face) 10499 10501 (face font-lock-constant-face) 10521 10522 (face font-lock-comment-delimiter-face) 10522 10542 (face font-lock-comment-face) 10544 10546 (face font-lock-constant-face) 10553 10559 (face font-lock-string-face) 10560 10564 (face font-lock-string-face) 10569 10573 (face font-lock-type-face) 10577 10586 (face font-lock-comment-delimiter-face) 10586 10618 (face font-lock-comment-face) 10618 10619 (face font-lock-comment-delimiter-face) 10619 10647 (face font-lock-comment-face) 10648 10649 (face font-lock-comment-delimiter-face) 10649 10654 (face font-lock-comment-face) 10659 10661 (face font-lock-constant-face) 10668 10731 (face font-lock-string-face) 10742 10744 (face font-lock-constant-face) 10784 10787 (face font-lock-string-face) 10824 10834 (face font-lock-string-face) 10873 10877 (face font-lock-string-face) 10890 10896 (face font-lock-string-face) 10897 10904 (face font-lock-string-face) 10905 10910 (face font-lock-string-face) 10911 10917 (face font-lock-string-face) 10920 10924 (face font-lock-type-face) 10931 10933 (face font-lock-constant-face) 10944 10949 (face font-lock-string-face) 10955 10957 (face font-lock-constant-face) 10976 10977 (face font-lock-comment-delimiter-face) 10977 11006 (face font-lock-comment-face) 11020 11023 (face font-lock-string-face) 11024 11035 (face font-lock-string-face) 11051 11054 (face font-lock-string-face) 11055 11066 (face font-lock-string-face) 11077 11079 (face font-lock-constant-face) 11100 11102 (face font-lock-constant-face) 11131 11142 (face font-lock-string-face) 11144 11155 (face font-lock-string-face) 11157 11162 (face font-lock-string-face) 11188 11190 (face font-lock-constant-face) 11273 11280 (face font-lock-string-face) 11283 11294 (face font-lock-string-face) 11296 11307 (face font-lock-string-face) 11309 11316 (face font-lock-string-face) 11331 11333 (face font-lock-constant-face) 11458 11465 (face font-lock-string-face) 11467 11472 (face font-lock-string-face) 11474 11483 (face font-lock-string-face) 11484 11490 (face font-lock-string-face) 11544 11545 (face font-lock-comment-delimiter-face) 11545 11553 (face font-lock-comment-face) 11574 11578 (face font-lock-type-face) 11604 11608 (face font-lock-type-face) 11637 11641 (face font-lock-type-face) 11670 11674 (face font-lock-type-face) 11677 11678 (face font-lock-comment-delimiter-face) 11678 11689 (face font-lock-comment-face) 11744 11746 (face font-lock-constant-face) 11786 11788 (face font-lock-constant-face) 11835 11839 (face font-lock-type-face) 11848 11850 (face font-lock-constant-face) 11889 11891 (face font-lock-constant-face) 12019 12026 (face font-lock-string-face) 12028 12033 (face font-lock-string-face) 12035 12044 (face font-lock-string-face) 12046 12052 (face font-lock-string-face) 12103 12107 (face font-lock-type-face) 12109 12110 (face font-lock-comment-delimiter-face) 12110 12118 (face font-lock-comment-face) 12139 12143 (face font-lock-type-face) 12169 12173 (face font-lock-type-face) 12202 12206 (face font-lock-type-face) 12235 12239 (face font-lock-type-face) 12242 12243 (face font-lock-comment-delimiter-face) 12243 12254 (face font-lock-comment-face) 12313 12315 (face font-lock-constant-face) 12355 12357 (face font-lock-constant-face) 12398 12411 (face font-lock-string-face) 12412 12420 (face font-lock-string-face) 12425 12434 (face font-lock-comment-delimiter-face) 12434 12466 (face font-lock-comment-face) 12466 12467 (face font-lock-comment-delimiter-face) 12467 12495 (face font-lock-comment-face) 12496 12497 (face font-lock-comment-delimiter-face) 12497 12502 (face font-lock-comment-face) 12507 12509 (face font-lock-constant-face) 12516 12579 (face font-lock-string-face) 12590 12592 (face font-lock-constant-face) 12632 12635 (face font-lock-string-face) 12672 12682 (face font-lock-string-face) 12721 12725 (face font-lock-string-face) 12738 12744 (face font-lock-string-face) 12745 12752 (face font-lock-string-face) 12753 12758 (face font-lock-string-face) 12759 12765 (face font-lock-string-face) 12768 12772 (face font-lock-type-face) 12779 12781 (face font-lock-constant-face) 12792 12797 (face font-lock-string-face) 12803 12805 (face font-lock-constant-face) 12824 12825 (face font-lock-comment-delimiter-face) 12825 12854 (face font-lock-comment-face) 12868 12871 (face font-lock-string-face) 12872 12883 (face font-lock-string-face) 12899 12902 (face font-lock-string-face) 12903 12914 (face font-lock-string-face) 12925 12927 (face font-lock-constant-face) 12948 12950 (face font-lock-constant-face) 12979 12990 (face font-lock-string-face) 12992 13003 (face font-lock-string-face) 13005 13010 (face font-lock-string-face) 13036 13038 (face font-lock-constant-face) 13121 13128 (face font-lock-string-face) 13131 13142 (face font-lock-string-face) 13144 13155 (face font-lock-string-face) 13157 13164 (face font-lock-string-face) 13179 13181 (face font-lock-constant-face) 13306 13313 (face font-lock-string-face) 13315 13320 (face font-lock-string-face) 13322 13331 (face font-lock-string-face) 13332 13338 (face font-lock-string-face) 13392 13393 (face font-lock-comment-delimiter-face) 13393 13401 (face font-lock-comment-face) 13422 13426 (face font-lock-type-face) 13452 13456 (face font-lock-type-face) 13485 13489 (face font-lock-type-face) 13518 13522 (face font-lock-type-face) 13525 13526 (face font-lock-comment-delimiter-face) 13526 13537 (face font-lock-comment-face) 13592 13594 (face font-lock-constant-face) 13634 13636 (face font-lock-constant-face) 13683 13687 (face font-lock-type-face) 13696 13698 (face font-lock-constant-face) 13737 13739 (face font-lock-constant-face) 13867 13874 (face font-lock-string-face) 13876 13881 (face font-lock-string-face) 13883 13892 (face font-lock-string-face) 13894 13900 (face font-lock-string-face) 13951 13955 (face font-lock-type-face) 13957 13958 (face font-lock-comment-delimiter-face) 13958 13966 (face font-lock-comment-face) 13987 13991 (face font-lock-type-face) 14017 14021 (face font-lock-type-face) 14050 14054 (face font-lock-type-face) 14083 14087 (face font-lock-type-face) 14090 14091 (face font-lock-comment-delimiter-face) 14091 14102 (face font-lock-comment-face) 14161 14163 (face font-lock-constant-face) 14203 14205 (face font-lock-constant-face) 14246 14259 (face font-lock-string-face) 14260 14270 (face font-lock-string-face) 14280 14281 (face font-lock-comment-delimiter-face) 14281 14305 (face font-lock-comment-face) 14305 14306 (face font-lock-comment-delimiter-face) 14306 14311 (face font-lock-comment-face) 14322 14406 (face font-lock-string-face) 14406 14408 (face font-lock-string-face) 14408 14418 (face font-lock-string-face) 14420 14421 (face font-lock-comment-delimiter-face) 14421 14426 (face font-lock-comment-face) 14432 14434 (face font-lock-constant-face) 14465 14549 (face font-lock-string-face) 14549 14551 (face font-lock-string-face) 14551 14561 (face font-lock-string-face) 14568 14569 (face font-lock-comment-delimiter-face) 14569 14584 (face font-lock-comment-face) 14584 14585 (face font-lock-comment-delimiter-face) 14585 14590 (face font-lock-comment-face) 14590 14591 (face font-lock-comment-delimiter-face) 14591 14647 (face font-lock-comment-face) 14654 14656 (face font-lock-constant-face) 14682 14694 (face font-lock-comment-delimiter-face) 14694 14711 (face font-lock-comment-face) 14711 14712 (face font-lock-comment-delimiter-face) 14712 14729 (face font-lock-comment-face) 14734 14736 (face font-lock-constant-face) 14760 14771 (face font-lock-string-face) 14773 14784 (face font-lock-string-face) 14786 14791 (face font-lock-string-face) 14793 14794 (face font-lock-comment-delimiter-face) 14794 14818 (face font-lock-comment-face) 14844 14846 (face font-lock-constant-face) 14935 14942 (face font-lock-string-face) 14945 14956 (face font-lock-string-face) 14958 14969 (face font-lock-string-face) 14971 14978 (face font-lock-string-face) 14980 14981 (face font-lock-comment-delimiter-face) 14981 14994 (face font-lock-comment-face) 15005 15007 (face font-lock-constant-face) 15072 15074 (face font-lock-keyword-face) 15121 15126 (face font-lock-string-face) 15128 15135 (face font-lock-string-face) 15137 15146 (face font-lock-string-face) 15148 15153 (face font-lock-string-face) 15210 15214 (face font-lock-type-face) 15241 15245 (face font-lock-type-face) 15304 15306 (face font-lock-constant-face) 15370 15372 (face font-lock-constant-face) 15393 15394 (face font-lock-comment-delimiter-face) 15394 15405 (face font-lock-comment-face) 15421 15505 (face font-lock-string-face) 15505 15507 (face font-lock-string-face) 15507 15517 (face font-lock-string-face) 15521 15522 (face font-lock-comment-delimiter-face) 15522 15537 (face font-lock-comment-face) 15537 15549 (face font-lock-comment-delimiter-face) 15549 15566 (face font-lock-comment-face) 15566 15567 (face font-lock-comment-delimiter-face) 15567 15584 (face font-lock-comment-face) 15589 15591 (face font-lock-constant-face) 15615 15626 (face font-lock-string-face) 15628 15639 (face font-lock-string-face) 15641 15646 (face font-lock-string-face) 15648 15649 (face font-lock-comment-delimiter-face) 15649 15673 (face font-lock-comment-face) 15699 15701 (face font-lock-constant-face) 15790 15797 (face font-lock-string-face) 15800 15811 (face font-lock-string-face) 15813 15824 (face font-lock-string-face) 15826 15833 (face font-lock-string-face) 15835 15836 (face font-lock-comment-delimiter-face) 15836 15849 (face font-lock-comment-face) 15860 15862 (face font-lock-constant-face) 15927 15929 (face font-lock-keyword-face) 15976 15981 (face font-lock-string-face) 15983 15990 (face font-lock-string-face) 15992 16001 (face font-lock-string-face) 16003 16008 (face font-lock-string-face) 16065 16069 (face font-lock-type-face) 16096 16100 (face font-lock-type-face) 16159 16161 (face font-lock-constant-face) 16225 16227 (face font-lock-constant-face) 16248 16249 (face font-lock-comment-delimiter-face) 16249 16260 (face font-lock-comment-face) 16276 16360 (face font-lock-string-face) 16360 16362 (face font-lock-string-face) 16362 16374 (face font-lock-string-face) 16378 16393 (face font-lock-comment-delimiter-face) 16393 16394 (face font-lock-comment-face) 16394 16395 (face font-lock-comment-delimiter-face) 16395 16400 (face font-lock-comment-face) 16400 16415 (face font-lock-comment-delimiter-face) 16415 16416 (face font-lock-comment-face) 16416 16423 (face font-lock-constant-face) 16430 16437 (face font-lock-constant-face) 16447 16454 (face font-lock-constant-face) 16465 16472 (face font-lock-constant-face) 16482 16489 (face font-lock-constant-face) 16496 16503 (face font-lock-constant-face) 16511 16518 (face font-lock-constant-face) 16531 16538 (face font-lock-constant-face) 16549 16556 (face font-lock-constant-face) 16564 16571 (face font-lock-constant-face) 16578 16585 (face font-lock-constant-face) 16593 16600 (face font-lock-constant-face) 16606 16613 (face font-lock-constant-face) 16621 16628 (face font-lock-constant-face) 16634 16640 (face font-lock-constant-face) 16641 16710 (face font-lock-string-face) 16715 16727 (face font-lock-comment-delimiter-face) 16727 16743 (face font-lock-comment-face) 16743 16744 (face font-lock-comment-delimiter-face) 16744 16756 (face font-lock-comment-face) 16761 16763 (face font-lock-constant-face) 16769 16867 (face font-lock-string-face) 16873 16875 (face font-lock-constant-face) 16883 16974 (face font-lock-string-face) 16992 16994 (face font-lock-constant-face) 17011 17013 (face font-lock-constant-face) 17013 17066 (face font-lock-string-face) 17068 17071 (face font-lock-keyword-face) 17074 17076 (face font-lock-keyword-face) 17115 17122 (face font-lock-string-face) 17129 17131 (face font-lock-constant-face) 17156 17169 (face font-lock-string-face) 17174 17180 (face font-lock-string-face) 17209 17211 (face font-lock-constant-face) 17264 17266 (face font-lock-constant-face) 17352 17354 (face font-lock-constant-face) 17390 17400 (face font-lock-string-face) 17405 17406 (face font-lock-comment-delimiter-face) 17406 17416 (face font-lock-comment-face) 17419 17421 (face font-lock-constant-face) 17427 17521 (face font-lock-string-face) 17523 17524 (face font-lock-comment-delimiter-face) 17524 17545 (face font-lock-comment-face) 17549 17551 (face font-lock-constant-face) 17557 17652 (face font-lock-string-face) 17659 17661 (face font-lock-constant-face) 17667 17765 (face font-lock-string-face) 17772 17774 (face font-lock-constant-face) 17780 17878 (face font-lock-string-face) 17886 17888 (face font-lock-constant-face) 17894 17994 (face font-lock-string-face) 18001 18003 (face font-lock-constant-face) 18009 18108 (face font-lock-string-face) 18115 18117 (face font-lock-constant-face) 18123 18224 (face font-lock-string-face) 18231 18233 (face font-lock-constant-face) 18288 18295 (face font-lock-string-face) 18330 18334 (face font-lock-type-face) 18340 18342 (face font-lock-constant-face) 18398 18405 (face font-lock-string-face) 18441 18445 (face font-lock-type-face) 18451 18453 (face font-lock-constant-face) 18509 18516 (face font-lock-string-face) 18552 18556 (face font-lock-type-face) 18562 18564 (face font-lock-constant-face) 18621 18628 (face font-lock-string-face) 18665 18669 (face font-lock-type-face) 18675 18677 (face font-lock-constant-face) 18733 18740 (face font-lock-string-face) 18776 18780 (face font-lock-type-face) 18786 18788 (face font-lock-constant-face) 18844 18851 (face font-lock-string-face) 18887 18891 (face font-lock-type-face) 18893 18894 (face font-lock-comment-delimiter-face) 18894 18913 (face font-lock-comment-face) 18916 18918 (face font-lock-constant-face) 18984 18994 (face font-lock-string-face) 18995 19007 (face font-lock-string-face) 19009 19021 (face font-lock-string-face) 19022 19033 (face font-lock-string-face) 19035 19045 (face font-lock-string-face) 19046 19055 (face font-lock-string-face) 19057 19067 (face font-lock-string-face) 19069 19080 (face font-lock-string-face) 19081 19092 (face font-lock-string-face) 19093 19104 (face font-lock-string-face) 19106 19117 (face font-lock-string-face) 19120 19124 (face font-lock-type-face) 19129 19130 (face font-lock-comment-delimiter-face) 19130 19135 (face font-lock-comment-face) 19140 19142 (face font-lock-constant-face) 19149 19223 (face font-lock-string-face) 19234 19236 (face font-lock-constant-face) 19276 19279 (face font-lock-string-face) 19316 19326 (face font-lock-string-face) 19365 19369 (face font-lock-string-face) 19382 19388 (face font-lock-string-face) 19389 19396 (face font-lock-string-face) 19397 19402 (face font-lock-string-face) 19403 19409 (face font-lock-string-face) 19412 19416 (face font-lock-type-face) 19423 19425 (face font-lock-constant-face) 19436 19441 (face font-lock-string-face) 19448 19450 (face font-lock-constant-face) 19464 19469 (face font-lock-string-face) 19476 19478 (face font-lock-constant-face) 19497 19498 (face font-lock-comment-delimiter-face) 19498 19501 (face font-lock-comment-face) 19504 19506 (face font-lock-constant-face) 19513 19585 (face font-lock-string-face) 19594 19596 (face font-lock-constant-face) 19630 19633 (face font-lock-string-face) 19668 19678 (face font-lock-string-face) 19715 19719 (face font-lock-string-face) 19730 19736 (face font-lock-string-face) 19737 19744 (face font-lock-string-face) 19745 19750 (face font-lock-string-face) 19751 19757 (face font-lock-string-face) 19760 19764 (face font-lock-type-face) 19769 19771 (face font-lock-constant-face) 19780 19785 (face font-lock-string-face) 19790 19792 (face font-lock-constant-face) 19802 19807 (face font-lock-string-face) 19812 19814 (face font-lock-constant-face) 19830 19831 (face font-lock-comment-delimiter-face) 19831 19834 (face font-lock-comment-face) 19837 19839 (face font-lock-constant-face) 19846 19918 (face font-lock-string-face) 19927 19929 (face font-lock-constant-face) 19963 19966 (face font-lock-string-face) 20001 20011 (face font-lock-string-face) 20048 20052 (face font-lock-string-face) 20063 20069 (face font-lock-string-face) 20070 20077 (face font-lock-string-face) 20078 20083 (face font-lock-string-face) 20084 20090 (face font-lock-string-face) 20093 20097 (face font-lock-type-face) 20102 20104 (face font-lock-constant-face) 20113 20118 (face font-lock-string-face) 20123 20125 (face font-lock-constant-face) 20135 20140 (face font-lock-string-face) 20145 20147 (face font-lock-constant-face) 20164 20165 (face font-lock-comment-delimiter-face) 20165 20168 (face font-lock-comment-face) 20171 20173 (face font-lock-constant-face) 20180 20252 (face font-lock-string-face) 20261 20263 (face font-lock-constant-face) 20297 20300 (face font-lock-string-face) 20335 20345 (face font-lock-string-face) 20382 20386 (face font-lock-string-face) 20397 20403 (face font-lock-string-face) 20404 20411 (face font-lock-string-face) 20412 20417 (face font-lock-string-face) 20418 20424 (face font-lock-string-face) 20427 20431 (face font-lock-type-face) 20436 20438 (face font-lock-constant-face) 20447 20452 (face font-lock-string-face) 20457 20459 (face font-lock-constant-face) 20469 20474 (face font-lock-string-face) 20479 20481 (face font-lock-constant-face) 20498 20499 (face font-lock-comment-delimiter-face) 20499 20504 (face font-lock-comment-face) 20509 20511 (face font-lock-constant-face) 20518 20592 (face font-lock-string-face) 20603 20605 (face font-lock-constant-face) 20645 20648 (face font-lock-string-face) 20685 20695 (face font-lock-string-face) 20734 20738 (face font-lock-string-face) 20751 20757 (face font-lock-string-face) 20758 20765 (face font-lock-string-face) 20766 20771 (face font-lock-string-face) 20772 20778 (face font-lock-string-face) 20781 20785 (face font-lock-type-face) 20792 20794 (face font-lock-constant-face) 20805 20810 (face font-lock-string-face) 20816 20818 (face font-lock-constant-face) 20832 20837 (face font-lock-string-face) 20843 20845 (face font-lock-constant-face) 20863 20864 (face font-lock-comment-delimiter-face) 20864 20868 (face font-lock-comment-face) 20872 20874 (face font-lock-constant-face) 20881 20954 (face font-lock-string-face) 20964 20966 (face font-lock-constant-face) 21003 21006 (face font-lock-string-face) 21042 21052 (face font-lock-string-face) 21090 21094 (face font-lock-string-face) 21106 21112 (face font-lock-string-face) 21113 21120 (face font-lock-string-face) 21121 21126 (face font-lock-string-face) 21127 21133 (face font-lock-string-face) 21136 21140 (face font-lock-type-face) 21146 21148 (face font-lock-constant-face) 21158 21163 (face font-lock-string-face) 21168 21170 (face font-lock-constant-face) 21182 21187 (face font-lock-string-face) 21192 21194 (face font-lock-constant-face) 21212 21221 (face font-lock-comment-delimiter-face) 21221 21253 (face font-lock-comment-face) 21253 21254 (face font-lock-comment-delimiter-face) 21254 21301 (face font-lock-comment-face) 21309 21311 (face font-lock-constant-face) 21318 21423 (face font-lock-string-face) 21426 21429 (face font-lock-comment-delimiter-face) 21429 21434 (face font-lock-comment-face) 21434 21438 (face font-lock-comment-face) 21438 21439 (face font-lock-comment-face) 21439 21440 (face font-lock-comment-delimiter-face) 21440 21454 (face font-lock-comment-face) 21458 21460 (face font-lock-constant-face) 21468 21555 (face font-lock-string-face) 21555 21557 (face font-lock-string-face) 21557 21567 (face font-lock-string-face) 21574 21576 (face font-lock-constant-face) 21594 21596 (face font-lock-keyword-face) 21620 21622 (face font-lock-constant-face) 21634 21640 (face font-lock-string-face) 21642 21643 (face font-lock-comment-delimiter-face) 21643 21655 (face font-lock-comment-face) 21655 21659 (face font-lock-comment-face) 21659 21778 (face font-lock-comment-face) 21835 21843 (face font-lock-keyword-face) 21900 21902 (face font-lock-string-face) 21909 21910 (face font-lock-comment-delimiter-face) 21910 21916 (face font-lock-comment-face) 21962 21964 (face font-lock-constant-face) 21989 21994 (face font-lock-type-face) 21996 21997 (face font-lock-comment-delimiter-face) 21997 22008 (face font-lock-comment-face) 22008 22012 (face font-lock-comment-face) 22012 22014 (face font-lock-comment-face) 22015 22016 (face font-lock-comment-delimiter-face) 22016 22058 (face font-lock-comment-face) 22063 22065 (face font-lock-constant-face) 22202 22203 (face font-lock-comment-delimiter-face) 22203 22221 (face font-lock-comment-face) 22225 22227 (face font-lock-constant-face) 22251 22263 (face font-lock-string-face) 22279 22291 (face font-lock-string-face) 22297 22298 (face font-lock-comment-delimiter-face) 22298 22316 (face font-lock-comment-face) 22324 22326 (face font-lock-constant-face) 22449 22451 (face font-lock-constant-face) 22488 22489 (face font-lock-comment-delimiter-face) 22489 22510 (face font-lock-comment-face) 22547 22549 (face font-lock-constant-face) 22573 22574 (face font-lock-comment-delimiter-face) 22574 22588 (face font-lock-comment-face) 22590 22592 (face font-lock-constant-face) 22617 22621 (face font-lock-type-face) 22623 22624 (face font-lock-comment-delimiter-face) 22624 22679 (face font-lock-comment-face) 22682 22684 (face font-lock-constant-face) 22704 22705 (face font-lock-comment-delimiter-face) 22705 22734 (face font-lock-comment-face) 22738 22740 (face font-lock-constant-face) 22751 22760 (face font-lock-string-face) 22761 22771 (face font-lock-string-face) 22772 22779 (face font-lock-string-face) 22781 22792 (face font-lock-string-face) 22794 22805 (face font-lock-string-face) 22806 22814 (face font-lock-string-face) 22821 22826 (face font-lock-type-face) 22866 22868 (face font-lock-constant-face) 22904 22905 (face font-lock-comment-delimiter-face) 22905 22935 (face font-lock-comment-face) 22936 22937 (face font-lock-comment-delimiter-face) 22937 22942 (face font-lock-comment-face) 22942 22943 (face font-lock-comment-delimiter-face) 22943 22959 (face font-lock-comment-face) 22966 22968 (face font-lock-constant-face) 22983 22985 (face font-lock-comment-delimiter-face) 22985 23002 (face font-lock-comment-face) 23002 23008 (face font-lock-comment-delimiter-face) 23008 23026 (face font-lock-comment-face) 23026 23032 (face font-lock-comment-delimiter-face) 23032 23054 (face font-lock-comment-face) 23061 23063 (face font-lock-constant-face) 23070 23169 (face font-lock-string-face) 23218 23220 (face font-lock-constant-face) 23281 23283 (face font-lock-constant-face) 23410 23412 (face font-lock-constant-face) 23457 23458 (face font-lock-comment-delimiter-face) 23458 23461 (face font-lock-comment-face) 23461 23462 (face font-lock-comment-delimiter-face) 23462 23478 (face font-lock-comment-face) 23485 23487 (face font-lock-constant-face) 23500 23502 (face font-lock-comment-delimiter-face) 23502 23519 (face font-lock-comment-face) 23519 23525 (face font-lock-comment-delimiter-face) 23525 23543 (face font-lock-comment-face) 23543 23549 (face font-lock-comment-delimiter-face) 23549 23571 (face font-lock-comment-face) 23599 23601 (face font-lock-constant-face) 23660 23662 (face font-lock-constant-face) 23783 23785 (face font-lock-constant-face) 23826 23827 (face font-lock-comment-delimiter-face) 23827 23830 (face font-lock-comment-face) 23830 23831 (face font-lock-comment-delimiter-face) 23831 23847 (face font-lock-comment-face) 23854 23856 (face font-lock-constant-face) 23869 23871 (face font-lock-comment-delimiter-face) 23871 23888 (face font-lock-comment-face) 23888 23894 (face font-lock-comment-delimiter-face) 23894 23912 (face font-lock-comment-face) 23912 23918 (face font-lock-comment-delimiter-face) 23918 23940 (face font-lock-comment-face) 23968 23970 (face font-lock-constant-face) 24029 24031 (face font-lock-constant-face) 24152 24154 (face font-lock-constant-face) 24195 24196 (face font-lock-comment-delimiter-face) 24196 24199 (face font-lock-comment-face) 24199 24200 (face font-lock-comment-delimiter-face) 24200 24216 (face font-lock-comment-face) 24223 24225 (face font-lock-constant-face) 24238 24240 (face font-lock-comment-delimiter-face) 24240 24257 (face font-lock-comment-face) 24257 24263 (face font-lock-comment-delimiter-face) 24263 24281 (face font-lock-comment-face) 24281 24287 (face font-lock-comment-delimiter-face) 24287 24309 (face font-lock-comment-face) 24337 24339 (face font-lock-constant-face) 24398 24400 (face font-lock-constant-face) 24521 24523 (face font-lock-constant-face) 24565 24566 (face font-lock-comment-delimiter-face) 24566 24571 (face font-lock-comment-face) 24571 24572 (face font-lock-comment-delimiter-face) 24572 24588 (face font-lock-comment-face) 24595 24597 (face font-lock-constant-face) 24612 24614 (face font-lock-comment-delimiter-face) 24614 24631 (face font-lock-comment-face) 24631 24637 (face font-lock-comment-delimiter-face) 24637 24655 (face font-lock-comment-face) 24655 24661 (face font-lock-comment-delimiter-face) 24661 24683 (face font-lock-comment-face) 24711 24713 (face font-lock-constant-face) 24774 24776 (face font-lock-constant-face) 24903 24905 (face font-lock-constant-face) 24950 24951 (face font-lock-comment-delimiter-face) 24951 24955 (face font-lock-comment-face) 24955 24956 (face font-lock-comment-delimiter-face) 24956 24972 (face font-lock-comment-face) 24979 24981 (face font-lock-constant-face) 24995 24997 (face font-lock-comment-delimiter-face) 24997 25014 (face font-lock-comment-face) 25014 25020 (face font-lock-comment-delimiter-face) 25020 25038 (face font-lock-comment-face) 25038 25044 (face font-lock-comment-delimiter-face) 25044 25066 (face font-lock-comment-face) 25094 25096 (face font-lock-constant-face) 25156 25158 (face font-lock-constant-face) 25282 25284 (face font-lock-constant-face) 25327 25328 (face font-lock-comment-delimiter-face) 25328 25342 (face font-lock-comment-face) 25342 25343 (face font-lock-comment-delimiter-face) 25343 25352 (face font-lock-comment-face) 25402 25404 (face font-lock-constant-face) 25424 25425 (face font-lock-comment-delimiter-face) 25425 25436 (face font-lock-comment-face) 25445 25447 (face font-lock-constant-face) 25474 25478 (face font-lock-string-face) 25481 25482 (face font-lock-comment-delimiter-face) 25482 25518 (face font-lock-comment-face) 25527 25529 (face font-lock-constant-face) 25545 25597 (face font-lock-string-face) 25599 25600 (face font-lock-comment-delimiter-face) 25600 25619 (face font-lock-comment-face) 25630 25632 (face font-lock-constant-face) 25648 25700 (face font-lock-string-face) 25702 25703 (face font-lock-comment-delimiter-face) 25703 25713 (face font-lock-comment-face) 25746 25750 (face font-lock-string-face) 25755 25756 (face font-lock-comment-delimiter-face) 25756 25765 (face font-lock-comment-face) 25798 25802 (face font-lock-string-face) 25807 25808 (face font-lock-comment-delimiter-face) 25808 25825 (face font-lock-comment-face) 25882 25884 (face font-lock-constant-face) 25913 25914 (face font-lock-comment-delimiter-face) 25914 25985 (face font-lock-comment-face) 25985 25986 (face font-lock-comment-face) 25991 25993 (face font-lock-constant-face) 25999 26041 (face font-lock-string-face) 26053 26055 (face font-lock-constant-face) 26098 26101 (face font-lock-string-face) 26139 26149 (face font-lock-string-face) 26162 26168 (face font-lock-string-face) 26169 26176 (face font-lock-string-face) 26177 26183 (face font-lock-string-face) 26186 26190 (face font-lock-type-face) 26207 26218 (face font-lock-string-face) 26219 26224 (face font-lock-string-face) 26262 26266 (face font-lock-string-face) 26276 26278 (face font-lock-constant-face) 26344 26346 (face font-lock-constant-face) 26398 26400 (face font-lock-constant-face) 26428 26437 (face font-lock-comment-delimiter-face) 26437 26477 (face font-lock-comment-face) 26477 26478 (face font-lock-comment-delimiter-face) 26478 26484 (face font-lock-comment-face) 26496 26497 (face font-lock-comment-delimiter-face) 26497 26543 (face font-lock-comment-face) 26546 26548 (face font-lock-constant-face) 26561 26565 (face font-lock-string-face) 26567 26568 (face font-lock-comment-delimiter-face) 26568 26583 (face font-lock-comment-face) 26585 26587 (face font-lock-constant-face) 26623 26624 (face font-lock-comment-delimiter-face) 26624 26630 (face font-lock-comment-face) 26632 26634 (face font-lock-constant-face) 26714 26716 (face font-lock-constant-face) 26737 26747 (face font-lock-string-face) 26751 26752 (face font-lock-comment-delimiter-face) 26752 26847 (face font-lock-comment-face) 26853 26855 (face font-lock-constant-face) 26876 26878 (face font-lock-constant-face) 26898 26899 (face font-lock-comment-delimiter-face) 26899 26919 (face font-lock-comment-face) 26921 26923 (face font-lock-constant-face) 26930 26936 (face font-lock-string-face) 26937 26941 (face font-lock-string-face) 26946 26950 (face font-lock-type-face) 26954 26963 (face font-lock-comment-delimiter-face) 26963 26995 (face font-lock-comment-face) 26995 26996 (face font-lock-comment-delimiter-face) 26996 27024 (face font-lock-comment-face) 27025 27026 (face font-lock-comment-delimiter-face) 27026 27031 (face font-lock-comment-face) 27036 27038 (face font-lock-constant-face) 27045 27108 (face font-lock-string-face) 27119 27121 (face font-lock-constant-face) 27161 27164 (face font-lock-string-face) 27201 27211 (face font-lock-string-face) 27250 27254 (face font-lock-string-face) 27267 27273 (face font-lock-string-face) 27274 27281 (face font-lock-string-face) 27282 27287 (face font-lock-string-face) 27288 27294 (face font-lock-string-face) 27297 27301 (face font-lock-type-face) 27308 27310 (face font-lock-constant-face) 27321 27326 (face font-lock-string-face) 27332 27334 (face font-lock-constant-face) 27353 27354 (face font-lock-comment-delimiter-face) 27354 27383 (face font-lock-comment-face) 27397 27400 (face font-lock-string-face) 27401 27412 (face font-lock-string-face) 27428 27431 (face font-lock-string-face) 27432 27443 (face font-lock-string-face) 27454 27456 (face font-lock-constant-face) 27477 27479 (face font-lock-constant-face) 27508 27519 (face font-lock-string-face) 27521 27532 (face font-lock-string-face) 27534 27539 (face font-lock-string-face) 27565 27567 (face font-lock-constant-face) 27650 27657 (face font-lock-string-face) 27660 27671 (face font-lock-string-face) 27673 27684 (face font-lock-string-face) 27686 27693 (face font-lock-string-face) 27708 27710 (face font-lock-constant-face) 27835 27842 (face font-lock-string-face) 27844 27849 (face font-lock-string-face) 27851 27860 (face font-lock-string-face) 27861 27867 (face font-lock-string-face) 27921 27922 (face font-lock-comment-delimiter-face) 27922 27930 (face font-lock-comment-face) 27951 27955 (face font-lock-type-face) 27981 27985 (face font-lock-type-face) 28014 28018 (face font-lock-type-face) 28047 28051 (face font-lock-type-face) 28054 28055 (face font-lock-comment-delimiter-face) 28055 28066 (face font-lock-comment-face) 28121 28123 (face font-lock-constant-face) 28163 28165 (face font-lock-constant-face) 28212 28216 (face font-lock-type-face) 28225 28227 (face font-lock-constant-face) 28266 28268 (face font-lock-constant-face) 28396 28403 (face font-lock-string-face) 28405 28410 (face font-lock-string-face) 28412 28421 (face font-lock-string-face) 28423 28429 (face font-lock-string-face) 28480 28484 (face font-lock-type-face) 28486 28487 (face font-lock-comment-delimiter-face) 28487 28495 (face font-lock-comment-face) 28516 28520 (face font-lock-type-face) 28546 28550 (face font-lock-type-face) 28579 28583 (face font-lock-type-face) 28612 28616 (face font-lock-type-face) 28619 28620 (face font-lock-comment-delimiter-face) 28620 28631 (face font-lock-comment-face) 28690 28692 (face font-lock-constant-face) 28732 28734 (face font-lock-constant-face) 28775 28788 (face font-lock-string-face) 28789 28797 (face font-lock-string-face) 28802 28811 (face font-lock-comment-delimiter-face) 28811 28843 (face font-lock-comment-face) 28843 28844 (face font-lock-comment-delimiter-face) 28844 28872 (face font-lock-comment-face) 28873 28874 (face font-lock-comment-delimiter-face) 28874 28879 (face font-lock-comment-face) 28884 28886 (face font-lock-constant-face) 28893 28956 (face font-lock-string-face) 28967 28969 (face font-lock-constant-face) 29009 29012 (face font-lock-string-face) 29049 29059 (face font-lock-string-face) 29098 29102 (face font-lock-string-face) 29115 29121 (face font-lock-string-face) 29122 29129 (face font-lock-string-face) 29130 29135 (face font-lock-string-face) 29136 29142 (face font-lock-string-face) 29145 29149 (face font-lock-type-face) 29156 29158 (face font-lock-constant-face) 29169 29174 (face font-lock-string-face) 29180 29182 (face font-lock-constant-face) 29201 29202 (face font-lock-comment-delimiter-face) 29202 29231 (face font-lock-comment-face) 29245 29248 (face font-lock-string-face) 29249 29260 (face font-lock-string-face) 29276 29279 (face font-lock-string-face) 29280 29291 (face font-lock-string-face) 29302 29304 (face font-lock-constant-face) 29325 29327 (face font-lock-constant-face) 29356 29367 (face font-lock-string-face) 29369 29380 (face font-lock-string-face) 29382 29387 (face font-lock-string-face) 29413 29415 (face font-lock-constant-face) 29498 29505 (face font-lock-string-face) 29508 29519 (face font-lock-string-face) 29521 29532 (face font-lock-string-face) 29534 29541 (face font-lock-string-face) 29556 29558 (face font-lock-constant-face) 29683 29690 (face font-lock-string-face) 29692 29697 (face font-lock-string-face) 29699 29708 (face font-lock-string-face) 29709 29715 (face font-lock-string-face) 29769 29770 (face font-lock-comment-delimiter-face) 29770 29778 (face font-lock-comment-face) 29799 29803 (face font-lock-type-face) 29829 29833 (face font-lock-type-face) 29862 29866 (face font-lock-type-face) 29895 29899 (face font-lock-type-face) 29902 29903 (face font-lock-comment-delimiter-face) 29903 29914 (face font-lock-comment-face) 29969 29971 (face font-lock-constant-face) 30011 30013 (face font-lock-constant-face) 30060 30064 (face font-lock-type-face) 30073 30075 (face font-lock-constant-face) 30114 30116 (face font-lock-constant-face) 30244 30251 (face font-lock-string-face) 30253 30258 (face font-lock-string-face) 30260 30269 (face font-lock-string-face) 30271 30277 (face font-lock-string-face) 30328 30332 (face font-lock-type-face) 30334 30335 (face font-lock-comment-delimiter-face) 30335 30343 (face font-lock-comment-face) 30364 30368 (face font-lock-type-face) 30394 30398 (face font-lock-type-face) 30427 30431 (face font-lock-type-face) 30460 30464 (face font-lock-type-face) 30467 30468 (face font-lock-comment-delimiter-face) 30468 30479 (face font-lock-comment-face) 30538 30540 (face font-lock-constant-face) 30580 30582 (face font-lock-constant-face) 30623 30636 (face font-lock-string-face) 30637 30647 (face font-lock-string-face) 30657 30658 (face font-lock-comment-delimiter-face) 30658 30682 (face font-lock-comment-face) 30682 30683 (face font-lock-comment-delimiter-face) 30683 30688 (face font-lock-comment-face) 30699 30783 (face font-lock-string-face) 30783 30785 (face font-lock-string-face) 30785 30795 (face font-lock-string-face) 30797 30798 (face font-lock-comment-delimiter-face) 30798 30803 (face font-lock-comment-face) 30809 30811 (face font-lock-constant-face) 30842 30926 (face font-lock-string-face) 30926 30928 (face font-lock-string-face) 30928 30938 (face font-lock-string-face) 30945 30946 (face font-lock-comment-delimiter-face) 30946 30961 (face font-lock-comment-face) 30961 30962 (face font-lock-comment-delimiter-face) 30962 30967 (face font-lock-comment-face) 30967 30968 (face font-lock-comment-delimiter-face) 30968 31024 (face font-lock-comment-face) 31031 31033 (face font-lock-constant-face) 31059 31071 (face font-lock-comment-delimiter-face) 31071 31088 (face font-lock-comment-face) 31088 31089 (face font-lock-comment-delimiter-face) 31089 31106 (face font-lock-comment-face) 31111 31113 (face font-lock-constant-face) 31137 31148 (face font-lock-string-face) 31150 31161 (face font-lock-string-face) 31163 31168 (face font-lock-string-face) 31170 31171 (face font-lock-comment-delimiter-face) 31171 31195 (face font-lock-comment-face) 31221 31223 (face font-lock-constant-face) 31312 31319 (face font-lock-string-face) 31322 31333 (face font-lock-string-face) 31335 31346 (face font-lock-string-face) 31348 31355 (face font-lock-string-face) 31357 31358 (face font-lock-comment-delimiter-face) 31358 31371 (face font-lock-comment-face) 31382 31384 (face font-lock-constant-face) 31449 31451 (face font-lock-keyword-face) 31498 31503 (face font-lock-string-face) 31505 31512 (face font-lock-string-face) 31514 31523 (face font-lock-string-face) 31525 31530 (face font-lock-string-face) 31587 31591 (face font-lock-type-face) 31618 31622 (face font-lock-type-face) 31681 31683 (face font-lock-constant-face) 31747 31749 (face font-lock-constant-face) 31770 31771 (face font-lock-comment-delimiter-face) 31771 31782 (face font-lock-comment-face) 31798 31882 (face font-lock-string-face) 31882 31884 (face font-lock-string-face) 31884 31894 (face font-lock-string-face) 31898 31899 (face font-lock-comment-delimiter-face) 31899 31914 (face font-lock-comment-face) 31914 31926 (face font-lock-comment-delimiter-face) 31926 31943 (face font-lock-comment-face) 31943 31944 (face font-lock-comment-delimiter-face) 31944 31961 (face font-lock-comment-face) 31966 31968 (face font-lock-constant-face) 31992 32003 (face font-lock-string-face) 32005 32016 (face font-lock-string-face) 32018 32023 (face font-lock-string-face) 32025 32026 (face font-lock-comment-delimiter-face) 32026 32050 (face font-lock-comment-face) 32076 32078 (face font-lock-constant-face) 32167 32174 (face font-lock-string-face) 32177 32188 (face font-lock-string-face) 32190 32201 (face font-lock-string-face) 32203 32210 (face font-lock-string-face) 32212 32213 (face font-lock-comment-delimiter-face) 32213 32226 (face font-lock-comment-face) 32237 32239 (face font-lock-constant-face) 32304 32306 (face font-lock-keyword-face) 32353 32358 (face font-lock-string-face) 32360 32367 (face font-lock-string-face) 32369 32378 (face font-lock-string-face) 32380 32385 (face font-lock-string-face) 32442 32446 (face font-lock-type-face) 32473 32477 (face font-lock-type-face) 32536 32538 (face font-lock-constant-face) 32602 32604 (face font-lock-constant-face) 32625 32626 (face font-lock-comment-delimiter-face) 32626 32637 (face font-lock-comment-face) 32653 32737 (face font-lock-string-face) 32737 32739 (face font-lock-string-face) 32739 32751 (face font-lock-string-face) 32755 32770 (face font-lock-comment-delimiter-face) 32770 32771 (face font-lock-comment-face) 32771 32772 (face font-lock-comment-delimiter-face) 32772 32777 (face font-lock-comment-face) 32777 32792 (face font-lock-comment-delimiter-face) 32792 32793 (face font-lock-comment-face) 32793 32800 (face font-lock-constant-face) 32807 32814 (face font-lock-constant-face) 32824 32831 (face font-lock-constant-face) 32842 32849 (face font-lock-constant-face) 32859 32866 (face font-lock-constant-face) 32873 32880 (face font-lock-constant-face) 32888 32895 (face font-lock-constant-face) 32908 32915 (face font-lock-constant-face) 32926 32933 (face font-lock-constant-face) 32941 32948 (face font-lock-constant-face) 32955 32962 (face font-lock-constant-face) 32970 32977 (face font-lock-constant-face) 32983 32990 (face font-lock-constant-face) 32998 33005 (face font-lock-constant-face) 33011 33017 (face font-lock-constant-face) 33018 33087 (face font-lock-string-face) 33092 33104 (face font-lock-comment-delimiter-face) 33104 33120 (face font-lock-comment-face) 33120 33121 (face font-lock-comment-delimiter-face) 33121 33133 (face font-lock-comment-face) 33138 33140 (face font-lock-constant-face) 33146 33244 (face font-lock-string-face) 33250 33252 (face font-lock-constant-face) 33260 33351 (face font-lock-string-face) 33369 33371 (face font-lock-constant-face) 33388 33390 (face font-lock-constant-face) 33390 33443 (face font-lock-string-face) 33445 33448 (face font-lock-keyword-face) 33451 33453 (face font-lock-keyword-face) 33492 33499 (face font-lock-string-face) 33506 33508 (face font-lock-constant-face) 33533 33546 (face font-lock-string-face) 33551 33557 (face font-lock-string-face) 33586 33588 (face font-lock-constant-face) 33641 33643 (face font-lock-constant-face) 33729 33731 (face font-lock-constant-face) 33767 33777 (face font-lock-string-face) 33782 33783 (face font-lock-comment-delimiter-face) 33783 33793 (face font-lock-comment-face) 33796 33798 (face font-lock-constant-face) 33804 33898 (face font-lock-string-face) 33900 33901 (face font-lock-comment-delimiter-face) 33901 33922 (face font-lock-comment-face) 33926 33928 (face font-lock-constant-face) 33934 34029 (face font-lock-string-face) 34036 34038 (face font-lock-constant-face) 34044 34142 (face font-lock-string-face) 34149 34151 (face font-lock-constant-face) 34157 34255 (face font-lock-string-face) 34263 34265 (face font-lock-constant-face) 34271 34371 (face font-lock-string-face) 34378 34380 (face font-lock-constant-face) 34386 34485 (face font-lock-string-face) 34492 34494 (face font-lock-constant-face) 34500 34601 (face font-lock-string-face) 34608 34610 (face font-lock-constant-face) 34665 34672 (face font-lock-string-face) 34707 34711 (face font-lock-type-face) 34717 34719 (face font-lock-constant-face) 34775 34782 (face font-lock-string-face) 34818 34822 (face font-lock-type-face) 34828 34830 (face font-lock-constant-face) 34886 34893 (face font-lock-string-face) 34929 34933 (face font-lock-type-face) 34939 34941 (face font-lock-constant-face) 34998 35005 (face font-lock-string-face) 35042 35046 (face font-lock-type-face) 35052 35054 (face font-lock-constant-face) 35110 35117 (face font-lock-string-face) 35153 35157 (face font-lock-type-face) 35163 35165 (face font-lock-constant-face) 35221 35228 (face font-lock-string-face) 35264 35268 (face font-lock-type-face) 35270 35271 (face font-lock-comment-delimiter-face) 35271 35290 (face font-lock-comment-face) 35293 35295 (face font-lock-constant-face) 35361 35371 (face font-lock-string-face) 35372 35384 (face font-lock-string-face) 35386 35398 (face font-lock-string-face) 35399 35410 (face font-lock-string-face) 35412 35422 (face font-lock-string-face) 35423 35432 (face font-lock-string-face) 35434 35444 (face font-lock-string-face) 35446 35457 (face font-lock-string-face) 35458 35469 (face font-lock-string-face) 35470 35481 (face font-lock-string-face) 35483 35494 (face font-lock-string-face) 35497 35501 (face font-lock-type-face) 35506 35507 (face font-lock-comment-delimiter-face) 35507 35512 (face font-lock-comment-face) 35517 35519 (face font-lock-constant-face) 35526 35600 (face font-lock-string-face) 35611 35613 (face font-lock-constant-face) 35653 35656 (face font-lock-string-face) 35693 35703 (face font-lock-string-face) 35742 35746 (face font-lock-string-face) 35759 35765 (face font-lock-string-face) 35766 35773 (face font-lock-string-face) 35774 35779 (face font-lock-string-face) 35780 35786 (face font-lock-string-face) 35789 35793 (face font-lock-type-face) 35800 35802 (face font-lock-constant-face) 35813 35818 (face font-lock-string-face) 35825 35827 (face font-lock-constant-face) 35841 35846 (face font-lock-string-face) 35853 35855 (face font-lock-constant-face) 35874 35875 (face font-lock-comment-delimiter-face) 35875 35878 (face font-lock-comment-face) 35881 35883 (face font-lock-constant-face) 35890 35962 (face font-lock-string-face) 35971 35973 (face font-lock-constant-face) 36007 36010 (face font-lock-string-face) 36045 36055 (face font-lock-string-face) 36092 36096 (face font-lock-string-face) 36107 36113 (face font-lock-string-face) 36114 36121 (face font-lock-string-face) 36122 36127 (face font-lock-string-face) 36128 36134 (face font-lock-string-face) 36137 36141 (face font-lock-type-face) 36146 36148 (face font-lock-constant-face) 36157 36162 (face font-lock-string-face) 36167 36169 (face font-lock-constant-face) 36179 36184 (face font-lock-string-face) 36189 36191 (face font-lock-constant-face) 36207 36208 (face font-lock-comment-delimiter-face) 36208 36211 (face font-lock-comment-face) 36214 36216 (face font-lock-constant-face) 36223 36295 (face font-lock-string-face) 36304 36306 (face font-lock-constant-face) 36340 36343 (face font-lock-string-face) 36378 36388 (face font-lock-string-face) 36425 36429 (face font-lock-string-face) 36440 36446 (face font-lock-string-face) 36447 36454 (face font-lock-string-face) 36455 36460 (face font-lock-string-face) 36461 36467 (face font-lock-string-face) 36470 36474 (face font-lock-type-face) 36479 36481 (face font-lock-constant-face) 36490 36495 (face font-lock-string-face) 36500 36502 (face font-lock-constant-face) 36512 36517 (face font-lock-string-face) 36522 36524 (face font-lock-constant-face) 36541 36542 (face font-lock-comment-delimiter-face) 36542 36545 (face font-lock-comment-face) 36548 36550 (face font-lock-constant-face) 36557 36629 (face font-lock-string-face) 36638 36640 (face font-lock-constant-face) 36674 36677 (face font-lock-string-face) 36712 36722 (face font-lock-string-face) 36759 36763 (face font-lock-string-face) 36774 36780 (face font-lock-string-face) 36781 36788 (face font-lock-string-face) 36789 36794 (face font-lock-string-face) 36795 36801 (face font-lock-string-face) 36804 36808 (face font-lock-type-face) 36813 36815 (face font-lock-constant-face) 36824 36829 (face font-lock-string-face) 36834 36836 (face font-lock-constant-face) 36846 36851 (face font-lock-string-face) 36856 36858 (face font-lock-constant-face) 36875 36876 (face font-lock-comment-delimiter-face) 36876 36881 (face font-lock-comment-face) 36886 36888 (face font-lock-constant-face) 36895 36969 (face font-lock-string-face) 36980 36982 (face font-lock-constant-face) 37022 37025 (face font-lock-string-face) 37062 37072 (face font-lock-string-face) 37111 37115 (face font-lock-string-face) 37128 37134 (face font-lock-string-face) 37135 37142 (face font-lock-string-face) 37143 37148 (face font-lock-string-face) 37149 37155 (face font-lock-string-face) 37158 37162 (face font-lock-type-face) 37169 37171 (face font-lock-constant-face) 37182 37187 (face font-lock-string-face) 37193 37195 (face font-lock-constant-face) 37209 37214 (face font-lock-string-face) 37220 37222 (face font-lock-constant-face) 37240 37241 (face font-lock-comment-delimiter-face) 37241 37245 (face font-lock-comment-face) 37249 37251 (face font-lock-constant-face) 37258 37331 (face font-lock-string-face) 37341 37343 (face font-lock-constant-face) 37380 37383 (face font-lock-string-face) 37419 37429 (face font-lock-string-face) 37467 37471 (face font-lock-string-face) 37483 37489 (face font-lock-string-face) 37490 37497 (face font-lock-string-face) 37498 37503 (face font-lock-string-face) 37504 37510 (face font-lock-string-face) 37513 37517 (face font-lock-type-face) 37523 37525 (face font-lock-constant-face) 37535 37540 (face font-lock-string-face) 37545 37547 (face font-lock-constant-face) 37559 37564 (face font-lock-string-face) 37569 37571 (face font-lock-constant-face) 37589 37598 (face font-lock-comment-delimiter-face) 37598 37630 (face font-lock-comment-face) 37630 37631 (face font-lock-comment-delimiter-face) 37631 37678 (face font-lock-comment-face) 37686 37688 (face font-lock-constant-face) 37695 37800 (face font-lock-string-face) 37803 37806 (face font-lock-comment-delimiter-face) 37806 37811 (face font-lock-comment-face) 37811 37815 (face font-lock-comment-face) 37815 37816 (face font-lock-comment-face) 37816 37817 (face font-lock-comment-delimiter-face) 37817 37831 (face font-lock-comment-face) 37835 37837 (face font-lock-constant-face) 37845 37932 (face font-lock-string-face) 37932 37934 (face font-lock-string-face) 37934 37944 (face font-lock-string-face) 37951 37953 (face font-lock-constant-face) 37971 37973 (face font-lock-keyword-face) 37997 37999 (face font-lock-constant-face) 38011 38017 (face font-lock-string-face) 38019 38020 (face font-lock-comment-delimiter-face) 38020 38032 (face font-lock-comment-face) 38032 38036 (face font-lock-comment-face) 38036 38155 (face font-lock-comment-face) 38212 38220 (face font-lock-keyword-face) 38277 38279 (face font-lock-string-face) 38286 38287 (face font-lock-comment-delimiter-face) 38287 38293 (face font-lock-comment-face) 38339 38341 (face font-lock-constant-face) 38366 38371 (face font-lock-type-face) 38373 38374 (face font-lock-comment-delimiter-face) 38374 38385 (face font-lock-comment-face) 38385 38389 (face font-lock-comment-face) 38389 38391 (face font-lock-comment-face) 38392 38393 (face font-lock-comment-delimiter-face) 38393 38435 (face font-lock-comment-face) 38440 38442 (face font-lock-constant-face) 38579 38580 (face font-lock-comment-delimiter-face) 38580 38598 (face font-lock-comment-face) 38602 38604 (face font-lock-constant-face) 38628 38640 (face font-lock-string-face) 38656 38668 (face font-lock-string-face) 38674 38675 (face font-lock-comment-delimiter-face) 38675 38693 (face font-lock-comment-face) 38701 38703 (face font-lock-constant-face) 38826 38828 (face font-lock-constant-face) 38865 38866 (face font-lock-comment-delimiter-face) 38866 38887 (face font-lock-comment-face) 38924 38926 (face font-lock-constant-face) 38950 38951 (face font-lock-comment-delimiter-face) 38951 38965 (face font-lock-comment-face) 38967 38969 (face font-lock-constant-face) 38994 38998 (face font-lock-type-face) 39000 39001 (face font-lock-comment-delimiter-face) 39001 39056 (face font-lock-comment-face) 39059 39061 (face font-lock-constant-face) 39081 39082 (face font-lock-comment-delimiter-face) 39082 39111 (face font-lock-comment-face) 39115 39117 (face font-lock-constant-face) 39128 39137 (face font-lock-string-face) 39138 39148 (face font-lock-string-face) 39149 39156 (face font-lock-string-face) 39158 39169 (face font-lock-string-face) 39171 39182 (face font-lock-string-face) 39183 39191 (face font-lock-string-face) 39198 39203 (face font-lock-type-face) 39243 39245 (face font-lock-constant-face) 39281 39282 (face font-lock-comment-delimiter-face) 39282 39312 (face font-lock-comment-face) 39313 39314 (face font-lock-comment-delimiter-face) 39314 39319 (face font-lock-comment-face) 39319 39320 (face font-lock-comment-delimiter-face) 39320 39336 (face font-lock-comment-face) 39343 39345 (face font-lock-constant-face) 39360 39362 (face font-lock-comment-delimiter-face) 39362 39379 (face font-lock-comment-face) 39379 39385 (face font-lock-comment-delimiter-face) 39385 39403 (face font-lock-comment-face) 39403 39409 (face font-lock-comment-delimiter-face) 39409 39431 (face font-lock-comment-face) 39438 39440 (face font-lock-constant-face) 39447 39546 (face font-lock-string-face) 39595 39597 (face font-lock-constant-face) 39658 39660 (face font-lock-constant-face) 39787 39789 (face font-lock-constant-face) 39834 39835 (face font-lock-comment-delimiter-face) 39835 39838 (face font-lock-comment-face) 39838 39839 (face font-lock-comment-delimiter-face) 39839 39855 (face font-lock-comment-face) 39862 39864 (face font-lock-constant-face) 39877 39879 (face font-lock-comment-delimiter-face) 39879 39896 (face font-lock-comment-face) 39896 39902 (face font-lock-comment-delimiter-face) 39902 39920 (face font-lock-comment-face) 39920 39926 (face font-lock-comment-delimiter-face) 39926 39948 (face font-lock-comment-face) 39976 39978 (face font-lock-constant-face) 40037 40039 (face font-lock-constant-face) 40160 40162 (face font-lock-constant-face) 40203 40204 (face font-lock-comment-delimiter-face) 40204 40207 (face font-lock-comment-face) 40207 40208 (face font-lock-comment-delimiter-face) 40208 40224 (face font-lock-comment-face) 40231 40233 (face font-lock-constant-face) 40246 40248 (face font-lock-comment-delimiter-face) 40248 40265 (face font-lock-comment-face) 40265 40271 (face font-lock-comment-delimiter-face) 40271 40289 (face font-lock-comment-face) 40289 40295 (face font-lock-comment-delimiter-face) 40295 40317 (face font-lock-comment-face) 40345 40347 (face font-lock-constant-face) 40406 40408 (face font-lock-constant-face) 40529 40531 (face font-lock-constant-face) 40572 40573 (face font-lock-comment-delimiter-face) 40573 40576 (face font-lock-comment-face) 40576 40577 (face font-lock-comment-delimiter-face) 40577 40593 (face font-lock-comment-face) 40600 40602 (face font-lock-constant-face) 40615 40617 (face font-lock-comment-delimiter-face) 40617 40634 (face font-lock-comment-face) 40634 40640 (face font-lock-comment-delimiter-face) 40640 40658 (face font-lock-comment-face) 40658 40664 (face font-lock-comment-delimiter-face) 40664 40686 (face font-lock-comment-face) 40714 40716 (face font-lock-constant-face) 40775 40777 (face font-lock-constant-face) 40898 40900 (face font-lock-constant-face) 40942 40943 (face font-lock-comment-delimiter-face) 40943 40948 (face font-lock-comment-face) 40948 40949 (face font-lock-comment-delimiter-face) 40949 40965 (face font-lock-comment-face) 40972 40974 (face font-lock-constant-face) 40989 40991 (face font-lock-comment-delimiter-face) 40991 41008 (face font-lock-comment-face) 41008 41014 (face font-lock-comment-delimiter-face) 41014 41032 (face font-lock-comment-face) 41032 41038 (face font-lock-comment-delimiter-face) 41038 41060 (face font-lock-comment-face) 41088 41090 (face font-lock-constant-face) 41151 41153 (face font-lock-constant-face) 41280 41282 (face font-lock-constant-face) 41327 41328 (face font-lock-comment-delimiter-face) 41328 41332 (face font-lock-comment-face) 41332 41333 (face font-lock-comment-delimiter-face) 41333 41349 (face font-lock-comment-face) 41356 41358 (face font-lock-constant-face) 41372 41374 (face font-lock-comment-delimiter-face) 41374 41391 (face font-lock-comment-face) 41391 41397 (face font-lock-comment-delimiter-face) 41397 41415 (face font-lock-comment-face) 41415 41421 (face font-lock-comment-delimiter-face) 41421 41443 (face font-lock-comment-face) 41471 41473 (face font-lock-constant-face) 41533 41535 (face font-lock-constant-face) 41659 41661 (face font-lock-constant-face) 41704 41705 (face font-lock-comment-delimiter-face) 41705 41719 (face font-lock-comment-face) 41719 41720 (face font-lock-comment-delimiter-face) 41720 41729 (face font-lock-comment-face) 41779 41781 (face font-lock-constant-face) 41801 41802 (face font-lock-comment-delimiter-face) 41802 41813 (face font-lock-comment-face) 41822 41824 (face font-lock-constant-face) 41851 41855 (face font-lock-string-face) 41858 41859 (face font-lock-comment-delimiter-face) 41859 41895 (face font-lock-comment-face) 41904 41906 (face font-lock-constant-face) 41922 41974 (face font-lock-string-face) 41976 41977 (face font-lock-comment-delimiter-face) 41977 41996 (face font-lock-comment-face) 42007 42009 (face font-lock-constant-face) 42025 42077 (face font-lock-string-face) 42079 42080 (face font-lock-comment-delimiter-face) 42080 42090 (face font-lock-comment-face) 42123 42127 (face font-lock-string-face) 42132 42133 (face font-lock-comment-delimiter-face) 42133 42142 (face font-lock-comment-face) 42175 42179 (face font-lock-string-face) 42184 42185 (face font-lock-comment-delimiter-face) 42185 42202 (face font-lock-comment-face) 42259 42261 (face font-lock-constant-face) 42290 42291 (face font-lock-comment-delimiter-face) 42291 42362 (face font-lock-comment-face) 42362 42363 (face font-lock-comment-face) 42368 42370 (face font-lock-constant-face) 42376 42418 (face font-lock-string-face) 42430 42432 (face font-lock-constant-face) 42475 42478 (face font-lock-string-face) 42516 42526 (face font-lock-string-face) 42539 42545 (face font-lock-string-face) 42546 42553 (face font-lock-string-face) 42554 42560 (face font-lock-string-face) 42563 42567 (face font-lock-type-face) 42584 42595 (face font-lock-string-face) 42596 42601 (face font-lock-string-face) 42639 42643 (face font-lock-string-face) 42653 42655 (face font-lock-constant-face) 42721 42723 (face font-lock-constant-face) 42775 42777 (face font-lock-constant-face) 42805 42814 (face font-lock-comment-delimiter-face) 42814 42854 (face font-lock-comment-face) 42854 42855 (face font-lock-comment-delimiter-face) 42855 42861 (face font-lock-comment-face) 42873 42874 (face font-lock-comment-delimiter-face) 42874 42920 (face font-lock-comment-face) 42923 42925 (face font-lock-constant-face) 42938 42942 (face font-lock-string-face) 42944 42945 (face font-lock-comment-delimiter-face) 42945 42960 (face font-lock-comment-face) 42962 42964 (face font-lock-constant-face) 43000 43001 (face font-lock-comment-delimiter-face) 43001 43007 (face font-lock-comment-face) 43009 43011 (face font-lock-constant-face) 43091 43093 (face font-lock-constant-face) 43114 43124 (face font-lock-string-face) 43128 43129 (face font-lock-comment-delimiter-face) 43129 43224 (face font-lock-comment-face) 43230 43232 (face font-lock-constant-face) 43253 43255 (face font-lock-constant-face) 43275 43276 (face font-lock-comment-delimiter-face) 43276 43296 (face font-lock-comment-face) 43298 43300 (face font-lock-constant-face) 43307 43313 (face font-lock-string-face) 43314 43318 (face font-lock-string-face) 43323 43327 (face font-lock-type-face) 43331 43340 (face font-lock-comment-delimiter-face) 43340 43372 (face font-lock-comment-face) 43372 43373 (face font-lock-comment-delimiter-face) 43373 43401 (face font-lock-comment-face) 43402 43403 (face font-lock-comment-delimiter-face) 43403 43408 (face font-lock-comment-face) 43413 43415 (face font-lock-constant-face) 43422 43485 (face font-lock-string-face) 43496 43498 (face font-lock-constant-face) 43538 43541 (face font-lock-string-face) 43578 43588 (face font-lock-string-face) 43627 43631 (face font-lock-string-face) 43644 43650 (face font-lock-string-face) 43651 43658 (face font-lock-string-face) 43659 43664 (face font-lock-string-face) 43665 43671 (face font-lock-string-face) 43674 43678 (face font-lock-type-face) 43685 43687 (face font-lock-constant-face) 43698 43703 (face font-lock-string-face) 43709 43711 (face font-lock-constant-face) 43730 43731 (face font-lock-comment-delimiter-face) 43731 43760 (face font-lock-comment-face) 43774 43777 (face font-lock-string-face) 43778 43789 (face font-lock-string-face) 43805 43808 (face font-lock-string-face) 43809 43820 (face font-lock-string-face) 43831 43833 (face font-lock-constant-face) 43854 43856 (face font-lock-constant-face) 43885 43896 (face font-lock-string-face) 43898 43909 (face font-lock-string-face) 43911 43916 (face font-lock-string-face) 43942 43944 (face font-lock-constant-face) 44027 44034 (face font-lock-string-face) 44037 44048 (face font-lock-string-face) 44050 44061 (face font-lock-string-face) 44063 44070 (face font-lock-string-face) 44085 44087 (face font-lock-constant-face) 44212 44219 (face font-lock-string-face) 44221 44226 (face font-lock-string-face) 44228 44237 (face font-lock-string-face) 44238 44244 (face font-lock-string-face) 44298 44299 (face font-lock-comment-delimiter-face) 44299 44307 (face font-lock-comment-face) 44328 44332 (face font-lock-type-face) 44358 44362 (face font-lock-type-face) 44391 44395 (face font-lock-type-face) 44424 44428 (face font-lock-type-face) 44431 44432 (face font-lock-comment-delimiter-face) 44432 44443 (face font-lock-comment-face) 44498 44500 (face font-lock-constant-face) 44540 44542 (face font-lock-constant-face) 44589 44593 (face font-lock-type-face) 44602 44604 (face font-lock-constant-face) 44643 44645 (face font-lock-constant-face) 44773 44780 (face font-lock-string-face) 44782 44787 (face font-lock-string-face) 44789 44798 (face font-lock-string-face) 44800 44806 (face font-lock-string-face) 44857 44861 (face font-lock-type-face) 44863 44864 (face font-lock-comment-delimiter-face) 44864 44872 (face font-lock-comment-face) 44893 44897 (face font-lock-type-face) 44923 44927 (face font-lock-type-face) 44956 44960 (face font-lock-type-face) 44989 44993 (face font-lock-type-face) 44996 44997 (face font-lock-comment-delimiter-face) 44997 45008 (face font-lock-comment-face) 45067 45069 (face font-lock-constant-face) 45109 45111 (face font-lock-constant-face) 45152 45165 (face font-lock-string-face) 45166 45174 (face font-lock-string-face) 45179 45188 (face font-lock-comment-delimiter-face) 45188 45220 (face font-lock-comment-face) 45220 45221 (face font-lock-comment-delimiter-face) 45221 45249 (face font-lock-comment-face) 45250 45251 (face font-lock-comment-delimiter-face) 45251 45256 (face font-lock-comment-face) 45261 45263 (face font-lock-constant-face) 45270 45333 (face font-lock-string-face) 45344 45346 (face font-lock-constant-face) 45386 45389 (face font-lock-string-face) 45426 45436 (face font-lock-string-face) 45475 45479 (face font-lock-string-face) 45492 45498 (face font-lock-string-face) 45499 45506 (face font-lock-string-face) 45507 45512 (face font-lock-string-face) 45513 45519 (face font-lock-string-face) 45522 45526 (face font-lock-type-face) 45533 45535 (face font-lock-constant-face) 45546 45551 (face font-lock-string-face) 45557 45559 (face font-lock-constant-face) 45578 45579 (face font-lock-comment-delimiter-face) 45579 45608 (face font-lock-comment-face) 45622 45625 (face font-lock-string-face) 45626 45637 (face font-lock-string-face) 45653 45656 (face font-lock-string-face) 45657 45668 (face font-lock-string-face) 45679 45681 (face font-lock-constant-face) 45702 45704 (face font-lock-constant-face) 45733 45744 (face font-lock-string-face) 45746 45757 (face font-lock-string-face) 45759 45764 (face font-lock-string-face) 45790 45792 (face font-lock-constant-face) 45875 45882 (face font-lock-string-face) 45885 45896 (face font-lock-string-face) 45898 45909 (face font-lock-string-face) 45911 45918 (face font-lock-string-face) 45933 45935 (face font-lock-constant-face) 46060 46067 (face font-lock-string-face) 46069 46074 (face font-lock-string-face) 46076 46085 (face font-lock-string-face) 46086 46092 (face font-lock-string-face) 46146 46147 (face font-lock-comment-delimiter-face) 46147 46155 (face font-lock-comment-face) 46176 46180 (face font-lock-type-face) 46206 46210 (face font-lock-type-face) 46239 46243 (face font-lock-type-face) 46272 46276 (face font-lock-type-face) 46279 46280 (face font-lock-comment-delimiter-face) 46280 46291 (face font-lock-comment-face) 46346 46348 (face font-lock-constant-face) 46388 46390 (face font-lock-constant-face) 46437 46441 (face font-lock-type-face) 46450 46452 (face font-lock-constant-face) 46491 46493 (face font-lock-constant-face) 46621 46628 (face font-lock-string-face) 46630 46635 (face font-lock-string-face) 46637 46646 (face font-lock-string-face) 46648 46654 (face font-lock-string-face) 46705 46709 (face font-lock-type-face) 46711 46712 (face font-lock-comment-delimiter-face) 46712 46720 (face font-lock-comment-face) 46741 46745 (face font-lock-type-face) 46771 46775 (face font-lock-type-face) 46804 46808 (face font-lock-type-face) 46837 46841 (face font-lock-type-face) 46844 46845 (face font-lock-comment-delimiter-face) 46845 46856 (face font-lock-comment-face) 46915 46917 (face font-lock-constant-face) 46957 46959 (face font-lock-constant-face) 47000 47013 (face font-lock-string-face) 47014 47024 (face font-lock-string-face) 47034 47035 (face font-lock-comment-delimiter-face) 47035 47059 (face font-lock-comment-face) 47059 47060 (face font-lock-comment-delimiter-face) 47060 47065 (face font-lock-comment-face) 47076 47160 (face font-lock-string-face) 47160 47162 (face font-lock-string-face) 47162 47172 (face font-lock-string-face) 47174 47175 (face font-lock-comment-delimiter-face) 47175 47180 (face font-lock-comment-face) 47186 47188 (face font-lock-constant-face) 47219 47303 (face font-lock-string-face) 47303 47305 (face font-lock-string-face) 47305 47315 (face font-lock-string-face) 47322 47323 (face font-lock-comment-delimiter-face) 47323 47338 (face font-lock-comment-face) 47338 47339 (face font-lock-comment-delimiter-face) 47339 47344 (face font-lock-comment-face) 47344 47345 (face font-lock-comment-delimiter-face) 47345 47401 (face font-lock-comment-face) 47408 47410 (face font-lock-constant-face) 47436 47448 (face font-lock-comment-delimiter-face) 47448 47465 (face font-lock-comment-face) 47465 47466 (face font-lock-comment-delimiter-face) 47466 47483 (face font-lock-comment-face) 47488 47490 (face font-lock-constant-face) 47514 47525 (face font-lock-string-face) 47527 47538 (face font-lock-string-face) 47540 47545 (face font-lock-string-face) 47547 47548 (face font-lock-comment-delimiter-face) 47548 47572 (face font-lock-comment-face) 47598 47600 (face font-lock-constant-face) 47689 47696 (face font-lock-string-face) 47699 47710 (face font-lock-string-face) 47712 47723 (face font-lock-string-face) 47725 47732 (face font-lock-string-face) 47734 47735 (face font-lock-comment-delimiter-face) 47735 47748 (face font-lock-comment-face) 47759 47761 (face font-lock-constant-face) 47826 47828 (face font-lock-keyword-face) 47875 47880 (face font-lock-string-face) 47882 47889 (face font-lock-string-face) 47891 47900 (face font-lock-string-face) 47902 47907 (face font-lock-string-face) 47964 47968 (face font-lock-type-face) 47995 47999 (face font-lock-type-face) 48058 48060 (face font-lock-constant-face) 48117 48124 (fontified t) 48124 48126 (fontified t face font-lock-constant-face) 48126 48147 (fontified t) 48147 48148 (fontified t face font-lock-comment-delimiter-face) 48148 48159 (fontified t face font-lock-comment-face) 48159 48175 (fontified t) 48175 48259 (fontified t face font-lock-string-face) 48259 48261 (fontified t face font-lock-string-face) 48261 48271 (fontified t face font-lock-string-face) 48271 48273 (fontified t) 48273 48275 (fontified t) 48275 48276 (fontified t face font-lock-comment-delimiter-face) 48276 48291 (fontified t face font-lock-comment-face) 48291 48303 (fontified t face font-lock-comment-delimiter-face) 48303 48320 (fontified t face font-lock-comment-face) 48320 48321 (fontified t face font-lock-comment-delimiter-face) 48321 48338 (fontified t face font-lock-comment-face) 48338 48343 (fontified t) 48343 48345 (fontified t face font-lock-constant-face) 48345 48369 (fontified t) 48369 48380 (fontified t face font-lock-string-face) 48380 48382 (fontified t) 48382 48393 (fontified t face font-lock-string-face) 48393 48395 (fontified t) 48395 48400 (fontified t face font-lock-string-face) 48400 48402 (fontified t) 48402 48403 (fontified t face font-lock-comment-delimiter-face) 48403 48427 (fontified t face font-lock-comment-face) 48427 48453 (fontified t) 48453 48455 (fontified t face font-lock-constant-face) 48455 48544 (fontified t) 48544 48551 (fontified t face font-lock-string-face) 48551 48554 (fontified t) 48554 48565 (fontified t face font-lock-string-face) 48565 48567 (fontified t) 48567 48578 (fontified t face font-lock-string-face) 48578 48580 (fontified t) 48580 48587 (fontified t face font-lock-string-face) 48587 48589 (fontified t) 48589 48590 (fontified t face font-lock-comment-delimiter-face) 48590 48603 (fontified t face font-lock-comment-face) 48603 48614 (fontified t) 48614 48616 (fontified t face font-lock-constant-face) 48616 48644 (fontified t) 48644 48681 (fontified t) 48681 48683 (fontified t face font-lock-keyword-face) 48683 48730 (fontified t) 48730 48735 (fontified t face font-lock-string-face) 48735 48737 (fontified t) 48737 48744 (fontified t face font-lock-string-face) 48744 48746 (fontified t) 48746 48755 (fontified t face font-lock-string-face) 48755 48757 (fontified t) 48757 48762 (fontified t face font-lock-string-face) 48762 48798 (fontified t) 48798 48819 (fontified t) 48819 48823 (fontified t face font-lock-type-face) 48823 48850 (fontified t) 48850 48854 (fontified t face font-lock-type-face) 48854 48913 (fontified t) 48913 48915 (fontified t face font-lock-constant-face) 48915 48979 (fontified t) 48979 48981 (fontified t face font-lock-constant-face) 48981 49002 (fontified t) 49002 49003 (fontified t face font-lock-comment-delimiter-face) 49003 49014 (fontified t face font-lock-comment-face) 49014 49030 (fontified t) 49030 49114 (fontified t face font-lock-string-face) 49114 49116 (fontified t face font-lock-string-face) 49116 49128 (fontified t face font-lock-string-face) 49128 49130 (fontified t) 49130 49131 (fontified t)) . 163789) 212920 (t 21657 24280 298000 930000) (undo-tree-id0 . -49131) (undo-tree-id1 . -49131) (undo-tree-id2 . -42361) (undo-tree-id3 . -32998) (undo-tree-id4 . -32983) (undo-tree-id5 . -32970) (undo-tree-id6 . -32955) (undo-tree-id7 . -32941) (undo-tree-id8 . -32926) (undo-tree-id9 . -32908) (undo-tree-id10 . -32888) (undo-tree-id11 . -32873) (undo-tree-id12 . -32859) (undo-tree-id13 . -32842) (undo-tree-id14 . -32824) (undo-tree-id15 . -32807) (undo-tree-id16 . -32793) (undo-tree-id17 . -16621) (undo-tree-id18 . -16606) (undo-tree-id19 . -16593) (undo-tree-id20 . -16578) (undo-tree-id21 . -16564) (undo-tree-id22 . -16549) (undo-tree-id23 . -16531) (undo-tree-id24 . -16511) (undo-tree-id25 . -16496) (undo-tree-id26 . -16482) (undo-tree-id27 . -16465) (undo-tree-id28 . -16447) (undo-tree-id29 . -16430) (undo-tree-id30 . -16416) (undo-tree-id31 . -244) (undo-tree-id32 . -229) (undo-tree-id33 . -216) (undo-tree-id34 . -201) (undo-tree-id35 . -187) (undo-tree-id36 . -172) (undo-tree-id37 . -154) (undo-tree-id38 . -134) (undo-tree-id39 . -119) (undo-tree-id40 . -105) (undo-tree-id41 . -88) (undo-tree-id42 . -70) (undo-tree-id43 . -53) (undo-tree-id44 . -39) (undo-tree-id45 . -49131) (undo-tree-id46 . -49131) (undo-tree-id47 . -48117) (undo-tree-id48 . -704) (undo-tree-id49 . -49131) (undo-tree-id50 . -49131) (undo-tree-id51 . -48050) (undo-tree-id52 . -49131) (undo-tree-id53 . -48023) (undo-tree-id54 . -49131) (undo-tree-id55 . -48002) (undo-tree-id56 . -49131) (undo-tree-id57 . -48001) (undo-tree-id58 . -49131) (undo-tree-id59 . -47970) (undo-tree-id60 . -49131) (undo-tree-id61 . -47944) (undo-tree-id62 . -49131) (undo-tree-id63 . -47944) (undo-tree-id64 . -49131) (undo-tree-id65 . -47944) (undo-tree-id66 . -47944) (undo-tree-id67 . -49131) (undo-tree-id68 . -49131)) nil (21657 31910 532471 914000) 0 nil] [nil nil ((#("
+" 0 1 (fontified t)) . 163789) (t 21657 24280 298000 930000)) ((163789 . 163790)) (21657 31899 699907 316000) 0 nil]) (("AQ" . -212903) (212905 . 212907) ("AQ" . -212048) (212050 . 212052) ("AQ" . -211092) (211094 . 211096) ("AQ" . -210949) (210951 . 210953) (#("AQ" 0 2 (fontified t face font-lock-string-face)) . -201721) (201723 . 201725) ("AQ" . -196526) (196528 . 196530) ("AQ" . -195671) (195673 . 195675) ("AQ" . -194715) (194717 . 194719) ("AQ" . -194572) (194574 . 194576) ("AQ" . -185344) (185346 . 185348) ("AQ" . -180149) (180151 . 180153) ("AQ" . -179294) (179296 . 179298) ("AQ" . -178338) (178340 . 178342) ("AQ" . -178195) (178197 . 178199) ("AQ" . -168967) (168969 . 168971) ("AQ" . -163772) (163774 . 163776) ("AQ" . -162917) (162919 . 162921) ("AQ" . -161961) (161963 . 161965) ("AQ" . -161818) (161820 . 161822) ("AQ" . -152590) (152592 . 152594) ("AQ" . -147395) (147397 . 147399) ("AQ" . -146540) (146542 . 146544) ("AQ" . -145584) (145586 . 145588) ("AQ" . -145441) (145443 . 145445) ("AQ" . -136213) (136215 . 136217) ("AQ" . -131018) (131020 . 131022) ("AQ" . -130163) (130165 . 130167) ("AQ" . -129207) (129209 . 129211) ("AQ" . -129064) (129066 . 129068) ("AQ" . -119836) (119838 . 119840) ("AQ" . -114641) (114643 . 114645) ("AQ" . -113786) (113788 . 113790) ("AQ" . -112830) (112832 . 112834) ("AQ" . -112687) (112689 . 112691) ("AQ" . -103459) (103461 . 103463) ("AQ" . -98264) (98266 . 98268) ("AQ" . -97409) (97411 . 97413) ("AQ" . -96453) (96455 . 96457) ("AQ" . -96310) (96312 . 96314) ("AQ" . -87064) (87066 . 87068) ("AQ" . -81869) (81871 . 81873) ("AQ" . -81014) (81016 . 81018) ("AQ" . -80058) (80060 . 80062) ("AQ" . -79915) (79917 . 79919) ("AQ" . -70687) (70689 . 70691) ("AQ" . -65492) (65494 . 65496) ("AQ" . -64637) (64639 . 64641) ("AQ" . -63681) (63683 . 63685) ("AQ" . -63538) (63540 . 63542) ("AQ" . -54310) (54312 . 54314) ("AQ" . -49115) (49117 . 49119) ("AQ" . -48260) (48262 . 48264) ("AQ" . -47304) (47306 . 47308) ("AQ" . -47161) (47163 . 47165) ("AQ" . -37933) (37935 . 37937) ("AQ" . -32738) (32740 . 32742) ("AQ" . -31883) (31885 . 31887) ("AQ" . -30927) (30929 . 30931) ("AQ" . -30784) (30786 . 30788) ("AQ" . -21556) (21558 . 21560) ("AQ" . -16361) (16363 . 16365) ("AQ" . -15506) (15508 . 15510) ("AQ" . -14550) (14552 . 14554) ("AQ" . -14407) (14409 . 14411) (#("AQ" 0 2 (fontified t face font-lock-string-face)) . -5179) (5181 . 5183)) nil (21657 31899 701170 575000) 0 nil]) ((#("aqua" 0 4 (fontified nil)) . -202633) (202637 . 202641) (#("aqua" 0 4 (fontified nil)) . -202596) (202600 . 202604) (#("aqua" 0 4 (fontified nil)) . -202231) (202235 . 202239) (#("aqua" 0 4 (fontified nil)) . -202224) (202228 . 202232) (#("aqua" 0 4 (fontified nil)) . -202174) (202178 . 202182) (#("aqua" 0 4 (fontified nil)) . -202130) (202134 . 202138) (#("aqua" 0 4 (fontified nil)) . -202124) (202128 . 202132) (#("aqua" 0 4 (fontified nil)) . -202116) (202120 . 202124) (#("aqua" 0 4 (fontified nil)) . -202094) (202098 . 202102) (#("aqua" 0 4 (fontified nil)) . -201956) (201960 . 201964) (#("aqua" 0 4 (fontified nil)) . -201821) (201825 . 201829) (#("aqua" 0 4 (fontified nil)) . -201789) (201793 . 201797) (#("aqua" 0 4 (fontified nil)) . -201782) (201786 . 201790) (#("aqua" 0 4 (fontified nil)) . -201748) (201752 . 201756) (#("aqua" 0 4 (fontified nil)) . -201743) (201747 . 201751) (#("aqua" 0 4 (fontified nil)) . -201735) (201739 . 201743) (#("aqua" 0 4 (fontified nil)) . -201620) (201624 . 201628) (201600 . 201604) (#("tera" 0 4 (fontified nil)) . -201600) (#("Aqua" 0 4 (fontified nil)) . -201600) (201604 . 201608) (#("aqua" 0 4 (fontified nil)) . -186256) (186260 . 186264) (#("aqua" 0 4 (fontified nil)) . -186219) (186223 . 186227) (#("aqua" 0 4 (fontified nil)) . -185854) (185858 . 185862) (#("aqua" 0 4 (fontified nil)) . -185847) (185851 . 185855) (#("aqua" 0 4 (fontified nil)) . -185797) (185801 . 185805) (#("aqua" 0 4 (fontified nil)) . -185753) (185757 . 185761) (#("aqua" 0 4 (fontified nil)) . -185747) (185751 . 185755) (#("aqua" 0 4 (fontified nil)) . -185739) (185743 . 185747) (#("aqua" 0 4 (fontified nil)) . -185717) (185721 . 185725) (#("aqua" 0 4 (fontified nil)) . -185579) (185583 . 185587) (#("aqua" 0 4 (fontified nil)) . -185444) (185448 . 185452) (#("aqua" 0 4 (fontified nil)) . -185412) (185416 . 185420) (#("aqua" 0 4 (fontified nil)) . -185405) (185409 . 185413) (#("aqua" 0 4 (fontified nil)) . -185371) (185375 . 185379) (#("aqua" 0 4 (fontified nil)) . -185366) (185370 . 185374) (#("aqua" 0 4 (fontified nil)) . -185358) (185362 . 185366) (#("aqua" 0 4 (fontified nil)) . -185243) (185247 . 185251) (185223 . 185227) (#("tera" 0 4 (fontified nil)) . -185223) (#("Aqua" 0 4 (fontified nil)) . -185223) (185227 . 185231) (#("aqua" 0 4 (fontified nil)) . -169879) (169883 . 169887) (#("aqua" 0 4 (fontified nil)) . -169842) (169846 . 169850) (#("aqua" 0 4 (fontified nil)) . -169477) (169481 . 169485) (#("aqua" 0 4 (fontified nil)) . -169470) (169474 . 169478) (#("aqua" 0 4 (fontified nil)) . -169420) (169424 . 169428) (#("aqua" 0 4 (fontified nil)) . -169376) (169380 . 169384) (#("aqua" 0 4 (fontified nil)) . -169370) (169374 . 169378) (#("aqua" 0 4 (fontified nil)) . -169362) (169366 . 169370) (#("aqua" 0 4 (fontified nil)) . -169340) (169344 . 169348) (#("aqua" 0 4 (fontified nil)) . -169202) (169206 . 169210) (#("aqua" 0 4 (fontified nil)) . -169067) (169071 . 169075) (#("aqua" 0 4 (fontified nil)) . -169035) (169039 . 169043) (#("aqua" 0 4 (fontified nil)) . -169028) (169032 . 169036) (#("aqua" 0 4 (fontified nil)) . -168994) (168998 . 169002) (#("aqua" 0 4 (fontified nil)) . -168989) (168993 . 168997) (#("aqua" 0 4 (fontified nil)) . -168981) (168985 . 168989) (#("aqua" 0 4 (fontified nil)) . -168866) (168870 . 168874) (168846 . 168850) (#("tera" 0 4 (fontified nil)) . -168846) (#("Aqua" 0 4 (fontified nil)) . -168846) (168850 . 168854) (#("aqua" 0 4 (fontified nil)) . -153502) (153506 . 153510) (#("aqua" 0 4 (fontified nil)) . -153465) (153469 . 153473) (#("aqua" 0 4 (fontified nil)) . -153100) (153104 . 153108) (#("aqua" 0 4 (fontified nil)) . -153093) (153097 . 153101) (#("aqua" 0 4 (fontified nil)) . -153043) (153047 . 153051) (#("aqua" 0 4 (fontified nil)) . -152999) (153003 . 153007) (#("aqua" 0 4 (fontified nil)) . -152993) (152997 . 153001) (#("aqua" 0 4 (fontified nil)) . -152985) (152989 . 152993) (#("aqua" 0 4 (fontified nil)) . -152963) (152967 . 152971) (#("aqua" 0 4 (fontified nil)) . -152825) (152829 . 152833) (#("aqua" 0 4 (fontified nil)) . -152690) (152694 . 152698) (#("aqua" 0 4 (fontified nil)) . -152658) (152662 . 152666) (#("aqua" 0 4 (fontified nil)) . -152651) (152655 . 152659) (#("aqua" 0 4 (fontified nil)) . -152617) (152621 . 152625) (#("aqua" 0 4 (fontified nil)) . -152612) (152616 . 152620) (#("aqua" 0 4 (fontified nil)) . -152604) (152608 . 152612) (#("aqua" 0 4 (fontified nil)) . -152489) (152493 . 152497) (152469 . 152473) (#("tera" 0 4 (fontified nil)) . -152469) (#("Aqua" 0 4 (fontified nil)) . -152469) (152473 . 152477) (#("aqua" 0 4 (fontified nil)) . -137125) (137129 . 137133) (#("aqua" 0 4 (fontified nil)) . -137088) (137092 . 137096) (#("aqua" 0 4 (fontified nil)) . -136723) (136727 . 136731) (#("aqua" 0 4 (fontified nil)) . -136716) (136720 . 136724) (#("aqua" 0 4 (fontified nil)) . -136666) (136670 . 136674) (#("aqua" 0 4 (fontified nil)) . -136622) (136626 . 136630) (#("aqua" 0 4 (fontified nil)) . -136616) (136620 . 136624) (#("aqua" 0 4 (fontified nil)) . -136608) (136612 . 136616) (#("aqua" 0 4 (fontified nil)) . -136586) (136590 . 136594) (#("aqua" 0 4 (fontified nil)) . -136448) (136452 . 136456) (#("aqua" 0 4 (fontified nil)) . -136313) (136317 . 136321) (#("aqua" 0 4 (fontified nil)) . -136281) (136285 . 136289) (#("aqua" 0 4 (fontified nil)) . -136274) (136278 . 136282) (#("aqua" 0 4 (fontified nil)) . -136240) (136244 . 136248) (#("aqua" 0 4 (fontified nil)) . -136235) (136239 . 136243) (#("aqua" 0 4 (fontified nil)) . -136227) (136231 . 136235) (#("aqua" 0 4 (fontified nil)) . -136112) (136116 . 136120) (136092 . 136096) (#("tera" 0 4 (fontified nil)) . -136092) (#("Aqua" 0 4 (fontified nil)) . -136092) (136096 . 136100) (#("aqua" 0 4 (fontified nil)) . -120748) (120752 . 120756) (#("aqua" 0 4 (fontified nil)) . -120711) (120715 . 120719) (#("aqua" 0 4 (fontified nil)) . -120346) (120350 . 120354) (#("aqua" 0 4 (fontified nil)) . -120339) (120343 . 120347) (#("aqua" 0 4 (fontified nil)) . -120289) (120293 . 120297) (#("aqua" 0 4 (fontified nil)) . -120245) (120249 . 120253) (#("aqua" 0 4 (fontified nil)) . -120239) (120243 . 120247) (#("aqua" 0 4 (fontified nil)) . -120231) (120235 . 120239) (#("aqua" 0 4 (fontified nil)) . -120209) (120213 . 120217) (#("aqua" 0 4 (fontified nil)) . -120071) (120075 . 120079) (#("aqua" 0 4 (fontified nil)) . -119936) (119940 . 119944) (#("aqua" 0 4 (fontified nil)) . -119904) (119908 . 119912) (#("aqua" 0 4 (fontified nil)) . -119897) (119901 . 119905) (#("aqua" 0 4 (fontified nil)) . -119863) (119867 . 119871) (#("aqua" 0 4 (fontified nil)) . -119858) (119862 . 119866) (#("aqua" 0 4 (fontified nil)) . -119850) (119854 . 119858) (#("aqua" 0 4 (fontified nil)) . -119735) (119739 . 119743) (119715 . 119719) (#("tera" 0 4 (fontified nil)) . -119715) (#("Aqua" 0 4 (fontified nil)) . -119715) (119719 . 119723) (#("aqua" 0 4 (fontified nil)) . -104371) (104375 . 104379) (#("aqua" 0 4 (fontified nil)) . -104334) (104338 . 104342) (#("aqua" 0 4 (fontified nil)) . -103969) (103973 . 103977) (#("aqua" 0 4 (fontified nil)) . -103962) (103966 . 103970) (#("aqua" 0 4 (fontified nil)) . -103912) (103916 . 103920) (#("aqua" 0 4 (fontified nil)) . -103868) (103872 . 103876) (#("aqua" 0 4 (fontified nil)) . -103862) (103866 . 103870) (#("aqua" 0 4 (fontified nil)) . -103854) (103858 . 103862) (#("aqua" 0 4 (fontified nil)) . -103832) (103836 . 103840) (#("aqua" 0 4 (fontified nil)) . -103694) (103698 . 103702) (#("aqua" 0 4 (fontified nil)) . -103559) (103563 . 103567) (#("aqua" 0 4 (fontified nil)) . -103527) (103531 . 103535) (#("aqua" 0 4 (fontified nil)) . -103520) (103524 . 103528) (#("aqua" 0 4 (fontified nil)) . -103486) (103490 . 103494) (#("aqua" 0 4 (fontified nil)) . -103481) (103485 . 103489) (#("aqua" 0 4 (fontified nil)) . -103473) (103477 . 103481) (#("aqua" 0 4 (fontified nil)) . -103358) (103362 . 103366) (103338 . 103342) (#("tera" 0 4 (fontified nil)) . -103338) (#("Aqua" 0 4 (fontified nil)) . -103338) (103342 . 103346) (#("aqua" 0 4 (fontified nil)) . -87976) (87980 . 87984) (#("aqua" 0 4 (fontified nil)) . -87939) (87943 . 87947) (#("aqua" 0 4 (fontified nil)) . -87574) (87578 . 87582) (#("aqua" 0 4 (fontified nil)) . -87567) (87571 . 87575) (#("aqua" 0 4 (fontified nil)) . -87517) (87521 . 87525) (#("aqua" 0 4 (fontified nil)) . -87473) (87477 . 87481) (#("aqua" 0 4 (fontified nil)) . -87467) (87471 . 87475) (#("aqua" 0 4 (fontified nil)) . -87459) (87463 . 87467) (#("aqua" 0 4 (fontified nil)) . -87437) (87441 . 87445) (#("aqua" 0 4 (fontified nil)) . -87299) (87303 . 87307) (#("aqua" 0 4 (fontified nil)) . -87164) (87168 . 87172) (#("aqua" 0 4 (fontified nil)) . -87132) (87136 . 87140) (#("aqua" 0 4 (fontified nil)) . -87125) (87129 . 87133) (#("aqua" 0 4 (fontified nil)) . -87091) (87095 . 87099) (#("aqua" 0 4 (fontified nil)) . -87086) (87090 . 87094) (#("aqua" 0 4 (fontified nil)) . -87078) (87082 . 87086) (#("aqua" 0 4 (fontified nil)) . -86963) (86967 . 86971) (86943 . 86947) (#("tera" 0 4 (fontified nil)) . -86943) (#("Aqua" 0 4 (fontified nil)) . -86943) (86947 . 86951) (#("aqua" 0 4 (fontified nil)) . -71599) (71603 . 71607) (#("aqua" 0 4 (fontified nil)) . -71562) (71566 . 71570) (#("aqua" 0 4 (fontified nil)) . -71197) (71201 . 71205) (#("aqua" 0 4 (fontified nil)) . -71190) (71194 . 71198) (#("aqua" 0 4 (fontified nil)) . -71140) (71144 . 71148) (#("aqua" 0 4 (fontified nil)) . -71096) (71100 . 71104) (#("aqua" 0 4 (fontified nil)) . -71090) (71094 . 71098) (#("aqua" 0 4 (fontified nil)) . -71082) (71086 . 71090) (#("aqua" 0 4 (fontified nil)) . -71060) (71064 . 71068) (#("aqua" 0 4 (fontified nil)) . -70922) (70926 . 70930) (#("aqua" 0 4 (fontified nil)) . -70787) (70791 . 70795) (#("aqua" 0 4 (fontified nil)) . -70755) (70759 . 70763) (#("aqua" 0 4 (fontified nil)) . -70748) (70752 . 70756) (#("aqua" 0 4 (fontified nil)) . -70714) (70718 . 70722) (#("aqua" 0 4 (fontified nil)) . -70709) (70713 . 70717) (#("aqua" 0 4 (fontified nil)) . -70701) (70705 . 70709) (#("aqua" 0 4 (fontified nil)) . -70586) (70590 . 70594) (70566 . 70570) (#("tera" 0 4 (fontified nil)) . -70566) (#("Aqua" 0 4 (fontified nil)) . -70566) (70570 . 70574) (#("aqua" 0 4 (fontified nil)) . -55222) (55226 . 55230) (#("aqua" 0 4 (fontified nil)) . -55185) (55189 . 55193) (#("aqua" 0 4 (fontified nil)) . -54820) (54824 . 54828) (#("aqua" 0 4 (fontified nil)) . -54813) (54817 . 54821) (#("aqua" 0 4 (fontified nil)) . -54763) (54767 . 54771) (#("aqua" 0 4 (fontified nil)) . -54719) (54723 . 54727) (#("aqua" 0 4 (fontified nil)) . -54713) (54717 . 54721) (#("aqua" 0 4 (fontified nil)) . -54705) (54709 . 54713) (#("aqua" 0 4 (fontified nil)) . -54683) (54687 . 54691) (#("aqua" 0 4 (fontified nil)) . -54545) (54549 . 54553) (#("aqua" 0 4 (fontified nil)) . -54410) (54414 . 54418) (#("aqua" 0 4 (fontified nil)) . -54378) (54382 . 54386) (#("aqua" 0 4 (fontified nil)) . -54371) (54375 . 54379) (#("aqua" 0 4 (fontified nil)) . -54337) (54341 . 54345) (#("aqua" 0 4 (fontified nil)) . -54332) (54336 . 54340) (#("aqua" 0 4 (fontified nil)) . -54324) (54328 . 54332) (#("aqua" 0 4 (fontified nil)) . -54209) (54213 . 54217) (54189 . 54193) (#("tera" 0 4 (fontified nil)) . -54189) (#("Aqua" 0 4 (fontified nil)) . -54189) (54193 . 54197) (#("aqua" 0 4 (fontified nil)) . -38845) (38849 . 38853) (#("aqua" 0 4 (fontified nil)) . -38808) (38812 . 38816) (#("aqua" 0 4 (fontified nil)) . -38443) (38447 . 38451) (#("aqua" 0 4 (fontified nil)) . -38436) (38440 . 38444) (#("aqua" 0 4 (fontified nil)) . -38386) (38390 . 38394) (#("aqua" 0 4 (fontified nil)) . -38342) (38346 . 38350) (#("aqua" 0 4 (fontified nil)) . -38336) (38340 . 38344) (#("aqua" 0 4 (fontified nil)) . -38328) (38332 . 38336) (#("aqua" 0 4 (fontified nil)) . -38306) (38310 . 38314) (#("aqua" 0 4 (fontified nil)) . -38168) (38172 . 38176) (#("aqua" 0 4 (fontified nil)) . -38033) (38037 . 38041) (#("aqua" 0 4 (fontified nil)) . -38001) (38005 . 38009) (#("aqua" 0 4 (fontified nil)) . -37994) (37998 . 38002) (#("aqua" 0 4 (fontified nil)) . -37960) (37964 . 37968) (#("aqua" 0 4 (fontified nil)) . -37955) (37959 . 37963) (#("aqua" 0 4 (fontified nil)) . -37947) (37951 . 37955) (#("aqua" 0 4 (fontified nil)) . -37832) (37836 . 37840) (37812 . 37816) (#("tera" 0 4 (fontified nil)) . -37812) (#("Aqua" 0 4 (fontified nil)) . -37812) (37816 . 37820) (#("aqua" 0 4 (fontified nil)) . -22468) (22472 . 22476) (#("aqua" 0 4 (fontified nil)) . -22431) (22435 . 22439) (#("aqua" 0 4 (fontified nil)) . -22066) (22070 . 22074) (#("aqua" 0 4 (fontified nil)) . -22059) (22063 . 22067) (#("aqua" 0 4 (fontified nil)) . -22009) (22013 . 22017) (#("aqua" 0 4 (fontified nil)) . -21965) (21969 . 21973) (nil fontified nil 21959 . 21963) (#("aqua" 0 4 (fontified nil)) . -21959) (21963 . 21967) (#("aqua" 0 4 (fontified nil)) . -21951) (21955 . 21959) (#("aqua" 0 4 (fontified nil)) . -21929) (21933 . 21937) (#("aqua" 0 4 (fontified nil)) . -21791) (21795 . 21799) (#("aqua" 0 4 (fontified nil)) . -21656) (21660 . 21664) (#("aqua" 0 4 (fontified nil)) . -21624) (21628 . 21632) (#("aqua" 0 4 (fontified nil)) . -21617) (21621 . 21625) (#("aqua" 0 4 (fontified nil)) . -21583) (21587 . 21591) (#("aqua" 0 4 (fontified nil)) . -21578) (21582 . 21586) (#("aqua" 0 4 (fontified nil)) . -21570) (21574 . 21578) (nil fontified nil 21455 . 21459) (#("aqua" 0 4 (fontified nil)) . -21455) (21459 . 21463) (21435 . 21439) (#("tera" 0 4 (fontified nil)) . -21435) (#("Aqua" 0 4 (fontified nil)) . -21435) (21439 . 21443) (#("aqua" 0 4 (fontified t)) . -6091) (6095 . 6099) (#("aqua" 0 4 (fontified t)) . -6054) (6058 . 6062) (#("aqua" 0 4 (fontified nil)) . -5689) (5693 . 5697) (#("aqua" 0 4 (fontified t)) . -5682) (5686 . 5690) (#("aqua" 0 4 (fontified t face font-lock-comment-face)) . -5632) (5636 . 5640) (#("aqua" 0 4 (fontified nil)) . -5588) (5592 . 5596) (nil fontified t 5582 . 5586) (#("aqua" 0 4 (fontified t)) . -5582) (5586 . 5590) (#("aqua" 0 4 (fontified nil)) . -5574) (5578 . 5582) (#("aqua" 0 4 (fontified t)) . -5552) (5556 . 5560) (#("aqua" 0 4 (fontified t)) . -5414) (5418 . 5422) (#("aqua" 0 4 (fontified t face font-lock-comment-face)) . -5279) (5283 . 5287) (#("aqua" 0 4 (fontified nil)) . -5247) (5251 . 5255) (nil fontified t 5240 . 5244) (#("aqua" 0 4 (fontified t)) . -5240) (5244 . 5248) (#("aqua" 0 4 (fontified nil)) . -5206) (5210 . 5214) (#("aqua" 0 4 (fontified nil)) . -5201) (5205 . 5209) (#("aqua" 0 4 (fontified t)) . -5193) (5197 . 5201) (nil fontified t 5078 . 5082) (#("aqua" 0 4 (fontified t)) . -5078) (5082 . 5086) (5058 . 5062) (#("tera" 0 4 (fontified nil)) . -5058) (#("Aqua" 0 4 (fontified t face font-lock-comment-face)) . -5058) (t 21657 21603 833004 626000) (5062 . 5066) (t 21657 21603 833004 626000)) nil (21657 31852 60497 276000) 0 nil]) ((#("#add dust days" 0 14 (fontified nil)) . -206079) (206093 . 206165) (#("#add dust days" 0 14 (fontified nil)) . -189702) (189716 . 189788) (#("#add dust days" 0 14 (fontified nil)) . -173325) (173339 . 173411) (#("#add dust days" 0 14 (fontified nil)) . -156948) (156962 . 157034) (#("#add dust days" 0 14 (fontified nil)) . -140571) (140585 . 140657) (#("#add dust days" 0 14 (fontified nil)) . -124194) (124208 . 124280) (#("#add dust days" 0 14 (fontified nil)) . -107817) (107831 . 107903) (#("#add dust days" 0 14 (fontified nil)) . -91422) (91436 . 91508) (#("#add dust days" 0 14 (fontified nil)) . -75045) (75059 . 75131) (#("#add dust days" 0 14 (fontified nil)) . -58668) (58682 . 58754) (#("#add dust days" 0 14 (fontified nil)) . -42291) (42305 . 42377) (#("#add dust days" 0 14 (fontified nil)) . -25914) (25928 . 26000) (nil fontified t 9595 . 9596) (t 21656 62278 240008 14000) (nil face font-lock-comment-delimiter-face 9595 . 9596) (t 21656 62278 240008 14000) (#("#add dust days" 0 1 (fontified t face font-lock-comment-delimiter-face) 1 14 (fontified t face font-lock-comment-face)) . -9537) (t 21656 62278 240008 14000) (9551 . 9623) (t 21656 62278 240008 14000)) nil (21657 29174 313574 438000) 0 nil]) nil nil (21657 29174 313586 27000) 0 nil] #1# 56336 5 nil]
