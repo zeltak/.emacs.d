@@ -2636,7 +2636,7 @@ take care of the wrapping of each item for me"
 (defun z-year-increment  (buffer max-year)
   (interactive "b\nsMax year (yy): ")
   (setq max-year (string-to-number max-year))
-  (let ((year 2000)
+  (let ((year 2003)
         (newbuf (get-buffer-create "increment-year")))
     (let ((s (with-current-buffer buffer
                (buffer-substring (point-min) (point-max)))))
@@ -2649,6 +2649,9 @@ take care of the wrapping of each item for me"
                                             s)))))
     (switch-to-buffer newbuf)))
 #+END_SRC
+
+#+RESULTS:
+: z-year-increment
 
 *** Get rid of blank lines
 #+BEGIN_SRC emacs-lisp :results none
