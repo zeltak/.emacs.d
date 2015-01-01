@@ -152,6 +152,8 @@
                                         (interactive)
                                         (kill-line 0)))
 
+(global-set-key (kbd "M-2") 'er/expand-region)
+
 (global-set-key (kbd "<f5> g") 'gnus)
 
 (global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
@@ -310,7 +312,8 @@
 (global-set-key (kbd "<f12> z") 'delete-other-windows)  
 (global-set-key (kbd "<f12> v") 'split-window-vertically)  
 (global-set-key (kbd "<f12> l") 'split-window-right)  
-(global-set-key (kbd "<f12> j") 'split-window-below)
+(global-set-key (kbd "<f12> j") 'split-window-below)  
+(global-set-key (kbd "<f12> r") 'resize-window)
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -1971,7 +1974,7 @@ take care of the wrapping of each item for me"
 (defun z-year-increment  (buffer max-year)
   (interactive "b\nsMax year (yy): ")
   (setq max-year (string-to-number max-year))
-  (let ((year 2000)
+  (let ((year 2003)
         (newbuf (get-buffer-create "increment-year")))
     (let ((s (with-current-buffer buffer
                (buffer-substring (point-min) (point-max)))))
@@ -2186,6 +2189,31 @@ Repeated invocations toggle between the two most recently open buffers."
     (save-buffer )
     (delete-frame)
   )
+
+(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
+  "*Resize window interactively."
+  (interactive "p")
+  (if (one-window-p) (error "Cannot resize sole window"))
+  (or arg (setq arg 1))
+  (let (c)
+    (catch 'done
+      (while t
+        (message
+         "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
+         arg)
+        (setq c (read-char))
+        (condition-case ()
+            (cond
+             ((= c ?h) (enlarge-window arg))
+             ((= c ?s) (shrink-window arg))
+             ((= c ?w) (enlarge-window-horizontally arg))
+             ((= c ?n) (shrink-window-horizontally arg))
+             ((= c ?\^G) (keyboard-quit))
+             ((= c ?q) (throw 'done t))
+             ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
+             (t (beep)))
+          (error (beep)))))
+    (message "Done.")))
 
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
@@ -2471,6 +2499,8 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
 (load "ess-site")
 
+(setq ess-ask-about-transfile nil)
+
 (setq ess-ask-for-ess-directory "/home/zeltak/ZH_tmp/")
 
 (setq ess-local-process-name "Runi")
@@ -2494,8 +2524,6 @@ With prefix P, create local abbrev. Otherwise it will be global."
  )
 
 (setq ess-eval-visibly 'nowait)
-
-(setq ess-ask-about-transfile t)
 
 (defgroup helm-org-wiki nil
       "Simple jump-to-org-file package."
