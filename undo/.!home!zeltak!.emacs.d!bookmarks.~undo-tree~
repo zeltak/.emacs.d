@@ -1,5 +1,23 @@
-"83152777b7a2f186db111a17c9b142e036678b84"
-[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 23963) ("#1=(#(\"sxhkdrc\" 0 7
+"73979ccfac079e68d374e77d578e8d1b8fca9d82"
+[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 24775) ("#1=(#(\".teamocil\" 0 9
+      (bmkp-full-record #1#))
+    (buffer-name . \".teamocil\")
+    (front-context-string . \"..\\n  -rw-r--r-- \")
+    (rear-context-string . \"2K Jan  2 09:03 \")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21670 17098 114871 497000))
+    (created . #2#)
+    (position . 175)
+    (filename . \"/home/zeltak/.teamocil/\")
+    (dired-directory . \"~/.teamocil/\")
+    (dired-marked)
+    (dired-switches . \"-aBhl  --group-directories-first\")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#(\"sxhkdrc\" 0 7
       (bmkp-full-record #1#))
     (filename . \"~/dotfiles/LAPTOP/.config/sxhkd/sxhkdrc\")
     (buffer-name . \"sxhkdrc\")
@@ -726,4 +744,4 @@
     (created 20810 11202 246448)
     (position . 39)
     (end-position . 39))
-" . 208) (t 21653 5428 0 0)) nil (21670 17103 415059 988000) 0 nil]) nil nil (21670 17103 415064 808000) 0 nil] #1# 23194 1 nil]
+" . 208) (t 21670 17103 498725 490000)) nil (21670 27696 666727 284000) 0 nil]) nil nil (21670 27696 666733 789000) 0 nil] #1# 23779 1 nil]
