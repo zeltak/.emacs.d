@@ -23,4 +23,4 @@
     (\"/home/zeltak/org/files/agenda/Research.org\" \"/home/zeltak/org/files/agenda/TODO.org\" \"/home/zeltak/org/files/agenda/dl.org\" \"/home/zeltak/org/files/agenda/food.org\" \"/home/zeltak/org/files/agenda/travel.org\")))
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
- '(org-download-screenshot-method \"gm import %s\"))" 0 910 (fontified nil)) . -1) 1 (t 21670 17103 275393 901000)) nil (21670 27695 948924 677000) 0 nil]) nil nil (21670 27695 948937 424000) 0 nil] #1# 1513 1 nil]
+ '(org-download-screenshot-method \"gm import %s\"))" 0 910 (fontified nil)) . -1) 1 (t 21670 28956 173253 551000)) nil (21670 28970 933526 646000) 0 nil]) nil nil (21670 28970 933543 704000) 0 nil] #1# 1513 1 nil]
