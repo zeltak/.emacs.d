@@ -2,7 +2,25 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("sxhkdrc" 0 7
+(#1=(#(".teamocil" 0 9
+      (bmkp-full-record #1#))
+    (buffer-name . ".teamocil")
+    (front-context-string . "..\n  -rw-r--r-- ")
+    (rear-context-string . "2K Jan  2 09:03 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21670 17098 114871 497000))
+    (created . #2#)
+    (position . 175)
+    (filename . "/home/zeltak/.teamocil/")
+    (dired-directory . "~/.teamocil/")
+    (dired-marked)
+    (dired-switches . "-aBhl  --group-directories-first")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("sxhkdrc" 0 7
       (bmkp-full-record #1#))
     (filename . "~/dotfiles/LAPTOP/.config/sxhkd/sxhkdrc")
     (buffer-name . "sxhkdrc")

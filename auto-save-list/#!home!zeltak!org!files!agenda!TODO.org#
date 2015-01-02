@@ -1,0 +1,920 @@
+#+LAST_MOBILE_CHANGE: 2014-08-15 17:03:15
+#+TITLE: TODO
+#+TAGS: Fav(f) Most_used(m) PreR(p)
+#+STARTUP: overview  inlineimages eval: (org-columns)
+
+* @TODAY@
+** help file revison  
+try to find a way to do a refile/archive/function like thing that will copy a line/header to a defined file
+idealy: a function to copy current line, ask which file to copy to (like refile) and open file in next buffer. bonus check if that line start already exist and if so warn and paste below  that line.
+
+zeltak: good. we celebrated the birth of our lord and savior the last two days               
+ zeltak: source("blah.r",verbose=TRUE) ?                                                      
+ yeah happy holidays etc etc                                                                  
+ bosie: thx ill try that :)                                                                   
+ zeltak: source("blah.r",verbose=TRUE, print.eval=TRUE) maybe
+
+** a new Emacs pop up window for helm chrome bookmarks
+** TODO top 
+   SCHEDULED: <2014-11-30 Sun>
+:PROPERTIES:
+:STYLE: habit
+:END:
+bodrom
+change stow so no more common
+check patst.sh in ZH_tmp
+check tarman
+org habits 
+** tmux
+*** why isn't TAB working in Emacs (org mode)
+** org sparese
+punchagan | zeltak: it looks like properties need to be all upper case. 
+ punchagan | zeltak: for instance I changed Ammount to AMMOUNT
+ punchagan | and it workd.. 
+    zeltak | wow ok let me try
+    zeltak | holy crap
+    zeltak | it worked
+    zeltak | so what was it..wow i guess i missed it in the manual
+ punchagan | zeltak: and it's a bug.. :)
+    zeltak | hehe :)
+ punchagan | zeltak: I don't think there is a hard and fast rule specified anywhere in the manual
+ punchagan | in face the properties section in the manual has an example .. that doesn't do this
+ punchagan | Imagine maintaining a file where you document bugs and plan releases for a piece of software. Instead of using
+           | tags like ‘:release_1:’, ‘:release_2:’, you can use a property, say ‘:Release:’, that in different subtrees has |
+           | different values, such as ‘1.0’ or ‘2.0’                                                                        |
+    zeltak | punchagan: i see
+    zeltak | ok good to know its a bug :)
+    zeltak | appriciate the help!
+    zeltak | can one sparese tree match on 2 properties?
+ punchagan | zeltak: no problem! and thanks for the recipes.. I see you have an Indian tag. me checks out.. 
+    zeltak | punchagan: your welcome! :)
+ punchagan | zeltak: you can do all kinds of stuff with `C-c / m' or `C-c \'. 
+ punchagan | zeltak: FAV="y"+Indian+TODO="SHOP"
+ punchagan | would work.. 
+ punchagan | (modulo the bug..)
+    zeltak | punchagan: cool thx!
+-mode
+** sync//backup project
+*** Uni IP's
+
+| Machine      |             IP | Ports open                                                                       | Comments |
+|--------------+----------------+----------------------------------------------------------------------------------+----------|
+| Linux PC     | 132.72.155.204 | github,                                                                          |          |
+| Synology NAS | 132.72.152.204 | FTP into machine,github, ssh (22), btsync (UDP/TCP 9999 ,UDP/TCP 8888, UDP 3000) |          |
+| Linux Laptop | 132.72.154.204 | github                                                                           |          |
+|              |                |                                                                                  |          |
+
+*** backends > files
+**** for all textfile-git
+***** what is currently synced
+      -dotfiles (including my linux scripts under bin/scripts)
+      -org files(including my work scripts)
+      -.emacs.d special directory
+?keepass
+
+***** create a central bare repo (or use github)
+****** using github as a central repo
+-create a repo (named zorg) on github
+-cuurently this repo is private
+****** daily workflow for work/lapop
+******* for work
+every morning when i get to work:
+run the ugs.sh script
+
+file:/home/zeltak/bin/ugs.sh
+
+@do not use laptop during the day to edit@
+all editing should be done on work PC
+
+before leaving work run the same script
+
+file:/home/zeltak/bin/ugs.sh
+
+******* for laptop
+once i get home run this script
+
+file:/home/zeltak/bin/lgs.sh
+
+then before i leave home in the morning run the same script again
+
+file:/home/zeltak/bin/lgs.sh
+
+also at work i connect it to the LAN:
+ip: 132.72.153.174
+
+******* mobile (android phone/tablet)
+******** read only access (sgit)
+I use sgit for android to pull my hole git repo (zorg) and have a copy of it on my mobile device
+
+******** Mobile org 
+i used that for agenda notes to have a more accesable way to quick read notes from there
+
+**** images/attachments
+**** browser realated
+user chrome/firefox built in sync mechanisms
+**** family photos 
+**** daily backups
+***** rsync 
+****** TODO rsync to push data from laptop to synology nas (use urs.sh)
+       :PROPERTIES:
+       :ID:       b35e3749-464e-4465-b927-3b1cf5f1385f
+       :END:
+
+       #+BEGIN_SRC sh
+rsync -aRPz --delete -e ssh /home/zeltak/dotfiles/  root@132.72.152.204:/volume1/rsync/    
+       #+END_SRC
+
+****** TODO rsync to push data from laptop to QNAP nas
+       :PROPERTIES:
+       :ID:       d4f672c5-6ced-4670-ae67-4e785f17ea79
+       :END:
+use this script created in ~bin:
+file:/home/zeltak/bin/lrs
+
+**** keepass
+save to ftp site (NAS)
+add rsync at uni/laptop to overwrite local file each type
+*** TODO CRON!!! talk to rasi
+    :PROPERTIES:
+    :ID:       8638e3da-4bdb-41dc-a980-c7c02dc3dddb
+    :END:
+    
+*** keepass
+
+ftp://132.72.152.204/rsync/keepass/zpass.kbsx
+
+
+** find out how to create org table with manual breaks
+** TODO a way to auto exce a command on specific file save emacs
+   :PROPERTIES:
+   :ID:       bd2d30ef-83b2-4c10-b2c2-d04b4d02b04e
+   :END:
+#+BEGIN_EXAMPLE
+well, it wouldn't be trivial. you'd need to add an after-save-hook that looks for the specific file and then do     │
+what you want then.                                                                                                 │
+but my tip jar is looking a bit sad right now                                                                       │
+hehe OK thx nicferrier                                                                                              │
+but that's what you'd do.                                                                                           │
+nicferrier: perhaps than a simple function to save and exe command that i can run manually?                         │
+no.                                                                                                                 │
+so id dosent need to be file aware                                                                                  │
+but you could make one of those easily                                                                              │
+save-buffer and shell-command-to-string look good.                                                                  │
+nicferrier: ok ill look them up thx!                                                                                │
+np!                                                                                                                 │
+zeltak_:  (add-hook 'after-save-hook (lambda () (when (string= "/tmp/your-file" (buffer-file-name                   │
+(current-buffer))) (shell-command "ls"))))                                                                          │
+pjb: cool ill try it now :)                                                                                         │
+zeltak_: but you should rather do what you want to do in emacs lisp.  This will have the advantage of working even  │
+on MS-Windows and in different unix environments.                                                                   │
+Instead of (shell-command "whatever") write (whatever) and (defun whatever () …) in elisp.                          │
+I'm with Bastien and see no need for namespaces in Emacs Lisp.                                                      │
+https://lists.gnu.org/archive/html/emacs-devel/2013-07/msg00801.html                                                │
+[http://is.gd/GEilTO]                                                                                               │
+pjb: perhaps a simpler method then. as save buffer, exit buffer (but not emacs) and run bash command. would you     │
+mind shwoing me the elisp code for that                                                                             │
+zeltak_: what does your bash command do?                                                                            │
+pjb: pkill -USR1 -x sxhkd                                                                                           │
+pjb: that was silly. I told zeltak_ most of what was needed. it was a learning opportunity.                         │
+instead of that you gave a lecture.                                                                                 │
+nicferrier: hehe i am learning this way                                                                             │
+:)                                                                                                                  │
+i learn best via examples                                                                                           │
+kensanata: The only reason I'd like to see namespaces is better compositability. I don't think that's in any of the │
+Lisp-based namespace thingies, so not really relevant. Having a de-facto standard for namespace separation vs. word │
+divider would be great, though.                                                                                     │
+Working in MS-Windows encourages users to use proprietary software.                                                 │
+i will read about the commands as well                                                                              │
+/mode -rms                                                                                                          │
+Ok, emacs cannot easily send a unix signal to another random process.  So shell-command will do in this case.       │
+lol.                                                                                                                │
+forcer: What do you mean by compositability?                                                                        │
+zeltak_: you should also consider that you often save files that are half edited.  So you may not really want to    │
+systematically have it processed after C-x C-s.                                                                     │
+It may be dangerous.                                                                                                │
+pjb: true. thats why maybe the 2nd option of manually executing the save&pkill would be safer                       │
+its an app that you need to send a user sig1 to refreash it every time toy edit a config which i find annoying :)   │
+If you don't want to get out of emacs to kill, you can write a emacs command to do it: (defun update-sxhkd ()       │
+(interactive) (shell-command "pkill …"))  So you can C-x C-s and when you want M-x update-sxhkd RET                 │
+pjb: thx that could work well, appriciate the help!                                                                 │
+
+#+END_EXAMPLE
+
+** jabref
+** Worker
+**** ssh into a remote and issue a command 
+tried this but didn't send the command (its waiting for a password)
+**** configure dunst notification colors specifacly for worker commands including short timeout
+** Emacs
+jabref-ebib etc
+bbdb
+gnus
+Emacs org term blocks
+Bookmark the shit and backup
+*** dp wrap blocks 
+Hi List,
+
+I've written the "eierlegende Wollmilchsau" of wrap-in-block functions
+(i.e. the 'all-inclusive mother of all wrap-in-block functions').
+
+To check it out, you need to
+jjk 1. Clone or fork the git repo (https://github.com/tj64/org-dp)
+ 2. (add-to-list 'load-path "/path/to/org-dp/") and
+ 3. (require 'org-dp-lib') in your init file
+
+`org-dp-wrap-in-block' works on/with all kinds of Org blocks, and can be
+called interactively or non-interactively.
+
+It
+
+ - inserts a new block when called on an empty line without arguments
+
+ - wraps sexp or region or '+/- X lines from point' into a newly created
+   block
+
+ - when called with point inside a block, it either
+
+   + unwraps the blocks content, i.e. deletes the surrounding block or
+
+   + replaces the surrounding block with a different block
+
+It takes full account of affiliated keywords. In case of src-blocks,
+it puts src-block parameters on the block's headline, but with
+`org-dp-toggle-headers' its easy to toggle between parameters
+
+,----
+| #+begin_src R :noweb yes |
+`----
+
+and headers
+
+,----
+| #+header: :noweb yes |
+| #+begin_src R        |
+`----
+
+This function takes into account so many options that combinatorics hits
+you badly when trying to test all of them. Everything I tried works now
+with the current version, but its not unlikely that daily usage will
+discover some bugs or untreated corner cases. Please report them with
+backtrace.
+
+The good news is that besides its complexity, its not one
+mega-convoluted monolithic function for a single task only. Instead I
+outfactored the core functionality into the 'org-dp.el' library
+("Declarative Programming with Org Elements") which offers potentially
+massive time (and headache) savings when programming with Org Elements
+on the local level.
+
+'org-dp' acts on the internal representation of Org elements, and due to
+the total uniformity of this representation it is possible to do diverse
+actions on diverse elements in a very uniform way, thus the 3 functions
+
+ - `org-dp-create'
+
+ - `org-dp-rewire'
+
+ - `org-dp-prompt'
+
+should be all you need for all kinds of programming
+tasks. `org-dp-wrap-in-block' is one example of how to program with
+org-dp, `org-dp-toggle-headers' is another one.
+
+Hope that this is useful.
+
+PS
+
+For the sake of completeness, here the docstring of
+`org-dp-wrap-in-block':
+
+,----[ C-h f org-dp-wrap-in-block RET ]
+| org-dp-wrap-in-block is an interactive Lisp function in              |
+| `org-dp-lib.el'.                                                     |
+|                                                                      |
+| It is bound to C-c w w.                                              |
+|                                                                      |
+| (org-dp-wrap-in-block &optional LINES USER-INFO)                     |
+|                                                                      |
+| Wrap sexp-at-point or region in Org block.                           |
+|                                                                      |
+| A region instead of the sexp-at-point is wrapped if either           |
+|                                                                      |
+| - optional arg LINES is an (positive or negative) integer or         |
+|                                                                      |
+| - the region is active                                               |
+|                                                                      |
+| In the first case the region is determined by moving +/- LINES       |
+| forward/backward from point using `forward-line', in the second      |
+| case the active region is used.                                      |
+|                                                                      |
+| If point is already inside of a block, modify it or unwrap its       |
+| content/value instead of wrapping it in another block, except if     |
+| explicitly asked for by user.                                        |
+|                                                                      |
+| If USER-INFO is given, it should be a list in the format returned by |
+| `org-dp-prompt', i.e.                                                |
+|                                                                      |
+| (elem-type contents replace affiliated args)                         |
+|                                                                      |
+| Look up that function's docstring for more information about the     |
+| list's elements. A non-nil USER-INFO suppresses calls to             |
+| `org-dp-prompt' and is used instead of its return value.             |
+|                                                                      |
+
+
+
+** clerk
+select rating has to have a album/track indicator in rofi..confusing
+the rating mpd/beets issue, is it solvable?
+the recent albums also needs header as in 'recent albums'
+track replace like album replace
+   
+** org
+** TODO create same level header
+how does one map universal header (c-u) before a command
+** search text in all orgfiles    
+** i3 REVAMP
+*** fix grid
+*** cretae a nag menu of move to workspace    
+** CRON!!!!
+** Emacs TRAMP
+  
+** sdf
+Login      : zeltak
+Name       : itai
+YoB        : 1975
+Origin     : 01800
+E-mail     : zeltak@sdfeu.org
+IRC        : irc.sdf.org
+Jabber     : jabber.sdfeu.org                      (after validation)
+WWW URL    : http://zeltak.sdfeu.org            (after 'mkhomepg')
+WWW Gopher : gopher://sdfeu.org/users/zeltak       (after 'mkgopher')
+Webmail    : https://sdfeu.org/webmail             (after validation)
+Twitter    : http://twitter.com/sdf_pubnix
+
+
+* Linux
+** Org
+*** TODO Chain babel blocks, ₆In example₆ launch multiple blocks togheter 
+    :PROPERTIES:
+    :ID:       fb029f96-1704-475c-9083-14b7e3855130
+    :END:
+*** TODO explore #+CALL
+    :PROPERTIES:
+    :ID:       9c99a02a-1d60-4802-8c7e-c5ff032d2259
+    :END:
+*** TODO why is org-capture taking ~ 10-20 seconds to come up?
+    :PROPERTIES:
+    :ID:       f7b6a3d8-b1b4-422f-a05f-4e71ca03dc9e
+    :END:
+*** TODO org babel terminal
+    :PROPERTIES:
+    :ID:       938c0de7-3df3-49e1-9e7b-3932a978d410
+    :END:
+
+#+begin_src emacs-lisp
+(defadvice org-babel-execute:sh (around sacha activate)
+  (if (assoc-default :term (ad-get-arg 1) nil)
+    (let ((buffer (make-term "babel" "/bin/bash")))
+      (with-current-buffer buffer
+        (insert (org-babel-expand-body:generic
+             body params (org-babel-variable-assignments:sh params)))
+        (term-send-input)))
+    ad-do-it))
+#+end_src
+
+
+#+begin_src sh :term t
+ls -l
+#+end_src
+*** TODO C-u C-c C-l solves all problems. Now I can link any file (PDF etc.) from anywhere within org and with tab completion. Thanks.
+    :PROPERTIES:
+    :ID:       6810f526-f19c-400a-923f-44951a00d963
+    :END:
+*** jump to parent
+ how can you jump to the parent node of whatever area │ elik         
+               │                         | you're in?                                           │ farn         
+               │12:48:23         nslater | so if you have:                                      │ framling     
+               │12:48:24         nslater | * A                                                  │ frumious-    
+               │12:48:27         nslater | ** 1                                                 │ fsbot        
+               │12:48:43         nslater | and you're on ** 1, then this function would take    │ Fuco         
+               │                         | you to * A                                           │ funnel       
+               │12:50:27       YoungFrog | perhaps C-c C-p                                      │ garrison     
+               │12:50:53       YoungFrog | oh, parent.                                          │ gds          
+               │12:51:01       YoungFrog | then C-c C-u                                         │ gko          
+               │13:22:26         nslater | found it. thanks!                                    │ iderrick
+*** capture via gmail
+You could also use a %x in a capture template to assist in capturing a   
+selection made on your gmail message.  Eg, select Subject: line, then    
+capture that to a TODO.                                                  
+The other thing that might help would be custom links. Is there a way to form a URL to a gmail message on the web?  If so, you  
+could make a "gmail:XXXXX" link that org would expand to a full URL
+
+*** look at hippie expand and add A-/ shortcut
+*** change date in header
+    :PROPERTIES:
+    :ID:       a13f3051-ec0b-4b6e-bd55-65a5c4526d38
+    :END:
+Try setting before-save-hook.  See "(elisp) Saving Buffers".
+catz and baicye 
+-Dave
+
+http://lists.gnu.org/archive/html/emacs-orgmode/2013-07/msg01015.html
+*** send to "kitchen tablet" recipe
+*** make a disable/enable org-inline function (refresh images)
+*** check org sync with goog using webdav
+    :PRO:PROPERTIES:
+
+           eb0b0883-9d41-4e9d-8d10-7a86532ef458
+    :
+httpww.osomac.com/2013/09/23/org-mode-moving-forward/
+*** export to odf dosent work 
+*** make a code block read only
+    :PROPERTIES:
+    :ID:       5e59de3b-e7ec-4a8d-b1a1-b2d6dbf8cd01
+    :END: 
+*** correct commenting out in bable org mode
+*** google calander sync
+    :PROPERTIES:
+           dd512bb5-813c-4311-a8a4-1f6b651b6e9a
+    :
+httpgithub.com/dengste/org-caldav
+*** Habits mod
+    :PROPERTIES:
+           b1454b3b-887a-4c7c-8be9-2ab7135ed2d9
+    :
+httprgmode.org/manual/Tracking-your-habits.html
+
+*** Remember last posiiton of file when reopen/jump to last position
+    :PROPERTIES:
+           206142d8-4b8c-46e1-aa7c-dad5091871d8
+    :
+*** C-x 5 0 > other key
+    :PROPERTIES:
+           2b274086-00f1-4ec7-90c7-dfaf7c92f876
+    :
+*** org_build a menu of faces to choose from, or snippets for it (maybe Mymenu)?
+*** auto close capture windows
+*** style the tags with colors in theme
+*** org scrape capture/scrape text areas and text+images (In Example a recipe)
+*** org scraper project
+    :PRO:PROPERTIES:
+
+           4f2569ae-ffb3-4936-b08d-06a614d52b1e
+    :
+!ide
+saveebpage (inluding images)
+delell non png and jpeg files
+convthat html to org using pandoc
+rech the image pathes from XXX to a subfolder with same name as org doc ~/orgfile.org/scrape1
+
+for ', open in emacs to manually scrape with pandoc:
+#+besrc js
+//!jcript
+
+var ctClone = function()
+{
+    type = arguments[0];
+    root;
+    image_count = 0;
+    imageMapping = null;
+
+    type == "selection")
+    
+    var fragment = window.getSelection().getRangeAt(0).cloneContents();
+    if (fragment)
+    {
+        root = document.createElement("span");
+        root.appendChild(fragment);
+    }
+    
+    
+    
+    doc = document.implementation.createDocument(document.namespaceURI, null, null);
+    root = doc.importNode(document.documentElement, true);
+    
+    !root)
+    
+    return null;
+    
+
+    y.prototype.forEach.call(root.querySelectorAll("img"), function(img) {
+    imageMapping = imageMapping || {};
+    var image = "image_" + image_count++;
+    if (/^\/\//.test(img.src))
+        imageMapping["http:" + img.src] = image;
+    else if (/https?:\/\//.test(img.src))
+    {
+        imageMapping[img.src] = image;
+    }
+    else
+    {
+        imageMapping[location.protocol + "//" + location.hostname + img.src] = image;
+    }
+    img.setAttribute("src",  image);
+    
+
+    rn {
+    html : root.innerHTML,
+    images : imageMapping
+    
+};
+
+func spawn(directory, selection)
+{
+    tmpfile = "/tmp/" + script.generateId() + ".html";
+    output = directory + "/tmp.org";
+    rite(tmpfile, "w", selection);
+    em.spawn("sh -c 'pandoc -s -S " + tmpfile + " -o " + output + "; emacs " + output + "'");
+    em.spawn("rm " + tmpfile);
+}
+
+func clone(type)
+{
+    selection = JSON.parse(tabs.current.focusedFrame.inject(injectClone, type));
+    !selection)
+    return;
+
+    directory = "/tmp/emacs_org_" + tabs.current.mainFrame.domain;
+    em.mkdir(directory, 0700);
+
+    pending = 0;
+    selection.images)
+    
+    for (var link in selection.images) {
+        var d = new WebKitDownload(link);
+        d.destinationUri = "file:///" + directory + "/" + selection.images[link];
+        pending++;
+        d.start(function(download) {
+            switch (download.status)
+            {
+            case DownloadStatus.finished:
+            case DownloadStatus.error:
+            case DownloadStatus.cancelled:
+                pending--;
+                break;
+                default : return;
+            }
+            if (pending == 0)
+            {
+                spawn(directory, selection.html);
+            }
+        });
+    }
+    
+    
+    
+    spawn(directory, selection.html);
+    
+}
+binds", clone.bind(null, "selection").debug(script), "clone_selection");
+bindf", clone.bind(null, "full").debug(script), "clone_full");
+#+enc
+
+#+BESRC js
+//!jcript
+
+func org_protocol_store_link () {
+    cmd = 'emacsclient';
+    title = tabs.current.title || "" ;
+    uri = tabs.current.uri || "";
+    args = "'2f6d720053b5240c19cc9c7b35feef5d846ba3a6quot;org-protocol://store-link://" +
+    encodeURIComponent(uri) +
+    "/" +
+    encodeURIComponent(title) +
+    "2f6d720053b5240c19cc9c7b35feef5d846ba3a6quot;'";
+    em.spawn(cmd + " " + args);
+}
+
+func org_protocol_capture (w) {
+    cmd = 'emacsclient';
+    sel = clipboard.get(Selection.primary) || "";
+    title = tabs.current.title || "";
+    uri = tabs.current.uri || "";
+    args = "-n '" +
+    "2f6d720053b5240c19cc9c7b35feef5d846ba3a6quot;org-protocol://capture://" +
+    encodeURIComponent(uri) +
+    "/" +
+    encodeURIComponent(title) +
+    "/" +
+    encodeURIComponent(sel) +
+    "2f6d720053b5240c19cc9c7b35feef5d846ba3a6quot;'";
+    em.spawn(cmd + " " + args);
+}
+
+bind", org_protocol_store_link, "orgstring");
+bind", org_protocol_capture, "orgcapture");
+#+ENC
+
+*** org sync files
+**** sol1
+With Dropbox I've had a some "conflicted copy" issues; this is annoying (and is
+the sort of thing that would have been solved much more easily with version
+control) but happens very rarely. What I like about this is that my frequent
+changes in org files get propagated without the need for an explicit version
+control command.
+
+
+However, for safety and for tracking, I run a nightly job with bazaar where I
+commit all changes (this is done in only one of the machines, of course). This
+has actually proven extremely useful when, by mistake, I have deleted a complete
+subtree and only realized maybe a month later.
+**** sol 2
+https://github.com/simonthum/git-sync
+**** s3
+     http://translate.google.com/translate?hl=en&sl=auto&tl=en&u=http://www.mkblog.org/2011/12/zwei-rechner-daten-verloren-dokumente-fehlen/
+** Emacs
+*** keys for kill buffer C-x k
+*** emacs mode on a specific frame   
+*** auto complete load dictnionary and load specific dictnionary per mode/file
+*** explore terminal integration 
+*** TODO Emacs 24.4 has the new command isearch-forward-symbol-at-point
+    :PROPERTIES:
+    :ID:       06883f77-7f39-4327-8ef3-ae5fb7355f23
+    :END:
+this is like vimes C-*
+*** emacs add dunst support/notify
+*** customize menus/toolbar (color,bold other)
+*** ess-sas an r
+    :PRO:PROPERTIES:
+
+           7cf88c53-5680-4944-b8b4-5e6a68590d8a
+    :
+*** crash recvocery
+** org-download
+** Misc
+*** revise password global system
+passes> keepss
+docs-org
+internt pass -last pass
+
+2 pass system
+
+weak-salt21salar
+strong-
+
+*** A fantastic font
+I've tried several fonts, and all of them were nice, but came up short on some way. Some didn't have italic variants, some had dotted zeroes instead of dashed zeroes, some even had entirely clear zeroes which make them look like O's, others had boring-looking parentheses4. Not Fantasque Sans Mono5, 6, it is awesome. If your web browser supports web fonts you should also see it used in the code blocks here.
+
+For normal Emacs setups you might use the set-frame-font function like so:
+
+(set-frame-font "Fantasque Sans Mono 13" nil t)
+*** Look at synergy for sharing betwee office pc and laptopz 
+*** automate git commit with script_cron daily 
+*** Dunst color per application
+   :PRO:PROPERTIES:
+
+          6948b8bf-bf06-4491-8b91-415161f29cf3
+   :
+*** clipboad sense
+   :PRO:PROPERTIES:
+
+          f5dd9e7d-f91a-4515-b72e-7925fe0d9ae5
+   :
+   oclip currently shows primary- IE classic copy commad
+*** gmvalut laptop work>transfer to Server
+   :PRO:PROPERTIES:
+
+          097eb08f-ef41-43d1-b3fa-08b774b2205c
+   :
+
+*** look at lan wakeup for laptop for backup/rsync?
+   :PRO:PROPERTIES:
+
+          45239772-46d4-4acc-a505-57c52816f0db
+   :
+*** Flexget
+   :PRO:PROPERTIES:
+
+          21e79f5e-7652-42de-b0e7-5022c6098124
+   :
+*** Xdotool-gui
+   :PRO:PROPERTIES:
+
+          d3c75d51-8439-4f8b-bbbc-a2a7172db86d
+   :
+** Cantata
+*** requests
+**** file type on player upper bar
+**** crashes in cantata when issuin mpc commands
+**** keyboard only interface
+**** dynamic mode -> add critereas not played in last 2 weeks, from specific playlist etc
+** beets
+  - cant get original_year: yes to work , ₆In Example₆ aqualung jethro tull always defaults to 1984
+  -create a rating field
+  -copy comments to that field
+  -create a demnu entry to my mpd script to rate the current playing song
+  - get switches for beet import for multiple scenarios (₆In example₆ single:)
+** worker
+*** filter by date
+  i tried looking for documentation on the set filter command but only found general filtering commands. is there a way to filter views by date (modified time etc) that could be very useful. 
+*** DONE colored tabs
+  option to color tab by name/location/other
+*** DONE copy to clip/paste from clip?
+*** NEXT Filter indicator
+      :PROPERTIES:
+      :ID:       0c51d716-e089-4b64-bda8-d0ee9c9bd81c
+      :END:
+  i know there is a star but can i request an option make the listview or modtime/name bar different colored when filtered
+  perhaps clearer syntax ₆In example₆ (N)
+*** DONE Toggle sort mode
+  is there a way toggle a sort mode, so that the same button pressed once would sort asecding and then second press descinding? if not is there a way to maybe script this
+*** tmep pnames
+
+
+
+
+** cvim
+  visual mode, act start visual block/line option
+  VIUSAL clues to some command like : copied link to clip (yy) etc
+  `extensiuon to mark in numbers tabs?`
+  :bookmarks /<folder> (autocomplete) , how does that work, can we browse bookmark with levels so you can manually enter folders?
+  add retsart chrome
+  add reload all tabs
+  keybind to quickly enable/disable cvim
+* Home
+** flight ROME
+
+
+El Al Israel Airlines
+	Flight 	LY383
+Depart 	Tel Aviv Ben Gurion International Apt, IL (TLV)
+	14-Nov-14 (Fri) 10:45a
+Arrive 	Rome Fiumicino Apt, IT (FCO)
+	14-Nov-14 (Fri) 01:35p
+Flight Time 	03hr 50min | Economy
+Aircraft 	Boeing 737-800
+Stops 	nonstop
+
+El Al Israel Airlines
+	Flight 	LY386
+Depart 	Rome Fiumicino Apt, IT (FCO)
+	18-Nov-14 (Tue) 10:10a
+Arrive 	Tel Aviv Ben Gurion International Apt, IL (TLV)
+	18-Nov-14 (Tue) 02:40p
+Flight Time 	03hr 30min | Economy
+Aircraft 	Boeing 737-900
+Stops 	nonstop 
+Airline	Confirmation Code	Phone Number
+El Al Israel Airlines (LY)	5TI6L5	1.800.223.6700
+  
+** el al frequent flyer
+** hack airport wifi
+
+Scan for wireless networks at the airport and you'll probably find a Boingo hotspot. You may already know that you can very easily access some sites without paying. Connect to the network and click the The Good Stuff box. This gives you access to a limited number of complementary sites, but after clicking it, try opening a new tab in your browser and going somewhere else—you might just find it works.
+
+ 
+Get Free Airport Wi-Fi with a Simple URL Hack
+Blogger Felix Geisendorfer points out a clever URL hack that scored him free Wi-Fi at the Atlanta…
+Read more
+But there's another trick to free airport Wi-Fi. WonderHowTo explains:
+
+Many paywall sites, Boingo or not, simply block the address bar so that you can't freely roam the web. This is great news for you, because you can access a website without an address bar via your web console and inserting window.location.href="https://www.sitename.com" for instant access. Web developer tools are a great way to get around blocked content, and in some cases, they can also help you get around blocked Wi-Fi access.
+You'll need to access your browser's developer tools to try this. In Firefox, click the menu button and select Developer > Web Console, or press Ctrl+Shift+K. Click next to the double blue arrow to the bottom left of the screen and type window.location.href="URL of site to visit" and press Enter.
+
+In Chrome, click the menu button and select Tools > Developer tools, or press Ctrl+Shift+I, and then head to the Console section. Use the same syntax to bypass any paywall that may be in place. You may notice that a security warning appears when connecting to sites in this way.
+
+This technique is not guaranteed to work with every hotspot in every airport, but it's definitely worth a try before you shell out for pricey airport Wi-Fi. Click the link below for more information.
+
+
+Blogger Felix Geisendorfer points out a clever URL hack that scored him free Wi-Fi at the Atlanta airport.
+I found that I could easily visit sites like slashdot, Google, or even this weblog, when adding a at the end of the url. The next logical step was to automate that. I downloaded Greasemonkey and wrote a 4 line script that would add ?.jpg to every link in a document. That way I was able to browse most sites without a hassle.
+This trick will only work on Wi-Fi networks that allow images to go through without a redirect, and though it may seem like a bit of a stretch, it's better than shelling out $7 for 30 minutes of Wi-Fi. Unfortunately the author didn't make the Greasemonkey script available, but even without it you could get in some decent browsing. The post isn't new, and I haven't tested this, so if you've ever used this trick or you're at an airport or Wi-Fi hotspot and can give it a try, let's hear how it worked for you in the comments
+
+** diet
+*** Low cal veggies
+  cauliflour
+  zucchini
+  mushrooms
+  brussel sprouts
+  brocolli
+  spinich
+  pumpkin
+  fennel
+  celery
+  carrots
+
+
+  added flavour:
+  lemons-added flavour with no calories
+  garlic-same flavour no calories
+  onions
+  chili
+*** other food to try
+  beans
+  qinoa
+*** low cal fruits
+  apples
+  citrus
+*** snacks?
+  low calorie candies? werters original etc
+** TODO austrian citizenship
+     :PROPERTIES:
+     :ID:       538d140d-e984-4740-85e7-0eba8264b45f
+     :END:
+  dan asan
+  03-56636006
+  mailto:citizenship2@danassan.com
+
+
+** freedns
+  zeltak.mooo.com
+** Gnus
+  Gnus can connect to the gmail server in two ways: by POP3, or by IMAP. Each protocol behaves in a different way, so you can select the one which better suits your needs. Furthermore, as a third solution you can download your mail with an external program like fetchmail and let Gnus handle it locally.
+
+  This page describes how to configure Gnus to read and send mails from your gmail account, and should also explain how to do in Gnus what you’re able to do through the web interface.
+
+** GARDEN
+*** TODO place to order stuff for garden kimhi
+    :PROPERTIES:
+    :ID:       7a396cc0-0df9-4a59-81ec-fc5acebc2b70
+    :END:
+  קמחי ובניו חומרי בניין
+
+   כתובת הפלס 9 עמק שרה באר שבע הגדל מפה שעות פעילות
+  יום א' - יום ה'	17:30 - 07:00
+  יום שישי	13:30 - 07:00
+phone 08-6232172  
+
+somsomit 135 for 450 kg
+*** TODO rahat gardning
+    :PROPERTIES:
+    :ID:       97481008-e279-40a8-9c99-b0b2cd3deaa4
+    :END:
+Ahmhed:
+08-9912099
+050-4566004  
+*** renting equipment
+  http://www.brener.co.il/
+
+  ברנר שמעון - מחירון 2014
+  ציוד להשכרה, חשמל ובנזין לבנין ולתעשיה
+  באר שבע, רח. מורדי הגיטאות 70, טל. בעבודה: 08-6277737 נייד שמעון: 050-5284031 
+  נייד משה: 050-5408724 * טלפון חינם: 1-800-200-330 * פקס: 08-6278249
+*** שתילי בזיליקום תאי אפשר לקנות ברוב המשתלות שמחזיקות צמחי תבלין, לפעמים תחת השם מלכת סיאם.
+*** Pini
+**** last piece of deck+painting
+**** make water tap permanent on the wall
+**** ceramics all around the road 
+**** pest grass keep coming back time and time again, also under Hipoi (palrig)
+**** pest greass in the spice plant rows, grow very fast, what can be done?
+**** the lichi tree, make it grow staight
+**** taftafot in adaniot
+**** fix the ugly black seperator 
+**** grass is totally not leveld, fix it and make permemnant with nails
+**** take old shoe adanit
+**** check taftafot bear pomela
+
+*** home paint color is 016
+** Pikod haoref
+  הנך משוייך לאזור התרעה: באר שבע 286 (45 שניו
+** mom ows me
+  NIS 377
+** add to uni
+  outdoor comes indoor
+  studies indoor are done but expensive and short period
+  this 
+
+
+
+
+
+* T
+
+
+set org mode block color
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-src-color-blocks-light ()
+  "Colors the block headers and footers to make them stand out more for lighter themes"
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+    ((t (:underline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+   '(org-block-background
+     ((t (:background "#FFFFEA"))))
+   '(org-block-end-line
+     ((t (:overline "#A7A6AA" :foreground "#008ED1" :background "#EAEAFF"))))
+
+   '(mode-line-buffer-id ((t (:foreground "#005000" :bold t))))
+   '(which-func ((t (:foreground "#008000")))))
+)
+
+(defun org-src-color-blocks-dark ()
+  "Colors the block headers and footers to make them stand out more for dark themes"
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+   '(org-block-background
+     ((t (:background "#111111"))))
+   '(org-block-end-line
+     ((t (:foreground "#008ED1" :background "#002E41"))))
+
+   '(mode-line-buffer-id ((t (:foreground "black" :bold t))))
+   '(which-func ((t (:foreground "green")))))
+
+   ;; Looks like the minibuffer issues are only for v23
+   ; (set-face-foreground 'minibuffer "white")
+   ; (set-face-foreground 'minibuffer-prompt "white")
+)
+#+END_SRC

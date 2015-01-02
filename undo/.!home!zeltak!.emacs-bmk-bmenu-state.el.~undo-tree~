@@ -1,5 +1,5 @@
-"9a45633bd5fd6f16ad5c6260cd784f83080efd32"
-[cl-struct-undo-tree [nil (#1=[nil nil ((1 . 25606) (#("((last-sort-comparer
+"226333e3a3054ab3698aeccfb5effcc5d7365701"
+[cl-struct-undo-tree [nil (#1=[nil nil ((1 . 26259) (#("((last-sort-comparer
   (bmkp-visited-more-cp)
   bmkp-alpha-p)
  (last-reverse-sort-p . t)
@@ -320,18 +320,18 @@
 				  (time . #37=(21486 57907 847434 512000))
 				  (created . #37#)
 				  (position . 1))
-			     #38=(#(\"grpahics.org\" 0 12
-				    (bmkp-full-record #38#))
-				  (filename . \"~/org/files/Tech/grpahics.org\")
-				  (buffer-name . \"grpahics.org\")
-				  (front-context-string . \"#+TITLE: Graphic\")
-				  (rear-context-string)
-				  (front-context-region-string)
-				  (rear-context-region-string)
-				  (visits . 0)
-				  (time . #39=(21605 59659 740487 508000))
-				  (created . #39#)
-				  (position . 1))
+			     #38=(#70=#(\"grpahics.org\" 0 12
+					(bmkp-full-record #38#))
+				      (filename . \"~/org/files/Tech/grpahics.org\")
+				      (buffer-name . \"grpahics.org\")
+				      (front-context-string . \"#+TITLE: Graphic\")
+				      (rear-context-string)
+				      (front-context-region-string)
+				      (rear-context-region-string)
+				      (visits . 0)
+				      (time . #39=(21605 59659 740487 508000))
+				      (created . #39#)
+				      (position . 1))
 			     #40=(#(\"keys.org\" 0 8
 				    (bmkp-full-record #40#))
 				  (end-position . 23606)
@@ -736,11 +736,11 @@
  (last-bmenu-filter-function)
  (last-bmenu-filter-pattern . \"org\")
  (last-bmenu-title . \"All Bookmarks\")
- (last-bmenu-bookmark)
- (last-specific-buffer . #70=\"\")
- (last-specific-file . #70#)
+ (last-bmenu-bookmark . #70#)
+ (last-specific-buffer . #71=\"\")
+ (last-specific-file . #71#)
  (last-bmenu-toggle-filenames . t)
  (last-bmenu-before-hide-marked-alist)
  (last-bmenu-before-hide-unmarked-alist)
  (last-bookmark-file . \"/home/zeltak/.emacs.d/bookmarks\"))
-" 0 25557 (fontified nil)) . 1) (t 21651 56629 593624 568000)) nil (21653 40952 237421 419000) 0 nil]) nil nil (21653 40952 237427 6000) 0 nil] #1# 25581 1 nil]
+" 0 25605 (fontified nil)) . 1) (t 21670 17081 602228 696000)) nil (21670 17114 530026 425000) 0 nil]) nil nil (21670 17114 530031 265000) 0 nil] #1# 25629 1 nil]

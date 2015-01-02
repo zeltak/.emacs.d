@@ -1,5 +1,5 @@
-"67b246fe951dfbe5b92826cd8430a520178abb6e"
-[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 23378) ("#1=(#(\"sxhkdrc\" 0 7
+"83152777b7a2f186db111a17c9b142e036678b84"
+[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 23963) ("#1=(#(\"sxhkdrc\" 0 7
       (bmkp-full-record #1#))
     (filename . \"~/dotfiles/LAPTOP/.config/sxhkd/sxhkdrc\")
     (buffer-name . \"sxhkdrc\")
@@ -73,9 +73,9 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21605 59730 471650 800000))
-    (created . #2#)
+    (visits . 1)
+    (time 21653 5217 522629 358000)
+    (created 21605 59730 471650 800000)
     (position . 1))
 #1=(#(\"Research.org\" 0 12
       (bmkp-full-record #1#))
@@ -183,8 +183,8 @@
     (rear-context-string . \"\\\")))\\n#+END_SRC\\n\\n\")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 4)
-    (time 21626 7047 522123 166000)
+    (visits . 5)
+    (time 21653 5234 599276 519000)
     (created 21599 19295 302181 721000)
     (position . 1232))
 #1=(#(\"code_uni\" 0 8
@@ -279,17 +279,17 @@
     (position . 1))
 #1=(#(\"linux.org\" 0 9
       (bmkp-full-record #1#))
-    (end-position . 86548)
+    (end-position . 87274)
     (filename . \"~/org/files/Tech/linux.org\")
     (buffer-name . \"linux.org\")
     (front-context-string . \"** gnome\\n*** Gno\")
     (rear-context-string . \"\\nfc-cache -f -v\\n\")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 4)
-    (time 21611 2817 617515 898000)
+    (visits . 5)
+    (time 21653 5254 952087 301000)
     (created 21542 42258 858913 14000)
-    (position . 86548))
+    (position . 87274))
 #1=(#(\".pentadactylrc\" 0 14
       (bmkp-full-record #1#))
     (end-position . 3)
@@ -726,4 +726,4 @@
     (created 20810 11202 246448)
     (position . 39)
     (end-position . 39))
-" . 208) (t 21651 56628 770282 98000)) nil (21653 5428 867824 836000) 0 nil]) nil nil (21653 5428 867830 860000) 0 nil] #1# 23182 1 nil]
+" . 208) (t 21653 5428 0 0)) nil (21670 17103 415059 988000) 0 nil]) nil nil (21670 17103 415064 808000) 0 nil] #1# 23194 1 nil]
