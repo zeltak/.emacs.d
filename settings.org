@@ -408,9 +408,9 @@ needed for the form to be bound to the key.
 (global-set-key (kbd "<f12> <f12>") 'other-window)  
 (global-set-key (kbd "<f12> x") 'delete-window)  
 (global-set-key (kbd "<f12> z") 'delete-other-windows)  
-(global-set-key (kbd "<f12> v") 'split-window-vertically)  
-(global-set-key (kbd "<f12> l") 'split-window-right)  
-(global-set-key (kbd "<f12> j") 'split-window-below)  
+(global-set-key (kbd "<f12> -") 'split-window-vertically)  
+(global-set-key (kbd "<f12> =") 'split-window-right)  
+(global-set-key (kbd "<f12> +") 'split-window-below)  
 (global-set-key (kbd "<f12> r") 'resize-window)
 #+END_SRC
 
