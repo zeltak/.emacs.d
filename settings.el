@@ -310,10 +310,11 @@
 (global-set-key (kbd "<f12> <f12>") 'other-window)  
 (global-set-key (kbd "<f12> x") 'delete-window)  
 (global-set-key (kbd "<f12> z") 'delete-other-windows)  
-(global-set-key (kbd "<f12> v") 'split-window-vertically)  
-(global-set-key (kbd "<f12> l") 'split-window-right)  
-(global-set-key (kbd "<f12> j") 'split-window-below)  
+(global-set-key (kbd "<f12> -") 'split-window-vertically)  
+(global-set-key (kbd "<f12> =") 'split-window-right)  
+(global-set-key (kbd "<f12> +") 'split-window-below)  
 (global-set-key (kbd "<f12> r") 'resize-window)
+(global-set-key (kbd "<f12> ]") 'transpose-windows)
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -2214,6 +2215,18 @@ Repeated invocations toggle between the two most recently open buffers."
              (t (beep)))
           (error (beep)))))
     (message "Done.")))
+
+(defun transpose-windows (arg)
+   "Transpose the buffers shown in two windows."
+   (interactive "p")
+   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+     (while (/= arg 0)
+       (let ((this-win (window-buffer))
+             (next-win (window-buffer (funcall selector))))
+         (set-window-buffer (selected-window) next-win)
+         (set-window-buffer (funcall selector) this-win)
+         (select-window (funcall selector)))
+       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
 
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
