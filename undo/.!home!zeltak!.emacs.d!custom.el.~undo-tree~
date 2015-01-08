@@ -1,13 +1,10 @@
-"6cd4df9106e0db2bc5e68197b3e739f8302d041b"
-[cl-struct-undo-tree [nil (#1=[nil nil ((912 . 1265) (#("(custom-set-faces
+"7f2f2418057faff8e78bd2ea697f78fade8330b5"
+[cl-struct-undo-tree [nil (#1=[nil nil ((884 . 1237) (#("(custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(org-mode-line-clock ((t (:background \"grey75\" :foreground \"red\" :box (:line-width -1 :style released-button))))))" 0 353 (fontified nil)) . -912) (786 . 911) (571 . 575) (#(" " 0 1 (fontified nil)) . -571) (#("
-" 0 1 (fontified nil)) . -783) (571 . 572) (782 . 783) (570 . 571) (#(" " 0 1 (fontified nil)) . 570) (560 . 782) (#(" " 0 1 (fontified nil)) . 560) (539 . 561) (462 . 466) (#(" " 0 1 (fontified nil)) . -462) (#("
-" 0 1 (fontified nil)) . -536) (462 . 463) (535 . 536) (461 . 462) (#(" " 0 1 (fontified nil)) . 461) (451 . 535) (#(" " 0 1 (fontified nil)) . 451) (357 . 452) (#("
-" 0 1 (fontified nil)) . -357) (272 . 358) (#(" " 0 1 (fontified nil)) . 272) (1 . 273) (#("(custom-set-variables
+ '(org-mode-line-clock ((t (:background \"grey75\" :foreground \"red\" :box (:line-width -1 :style released-button))))))" 0 353 (fontified nil)) . -884) (1 . 883) (#("(custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
@@ -23,4 +20,4 @@
     (\"/home/zeltak/org/files/agenda/Research.org\" \"/home/zeltak/org/files/agenda/TODO.org\" \"/home/zeltak/org/files/agenda/dl.org\" \"/home/zeltak/org/files/agenda/food.org\" \"/home/zeltak/org/files/agenda/travel.org\")))
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
- '(org-download-screenshot-method \"gm import %s\"))" 0 910 (fontified nil)) . -1) 1 (t 21670 28956 173253 551000)) nil (21670 28970 933526 646000) 0 nil]) nil nil (21670 28970 933543 704000) 0 nil] #1# 1513 1 nil]
+ '(org-download-screenshot-method \"gm import %s\"))" 0 910 (fontified nil)) . -1) 1 (t 21674 48776 448891 135000)) nil (21678 18533 957572 754000) 0 nil]) nil nil (21678 18533 957579 794000) 0 nil] #1# 1311 1 nil]
