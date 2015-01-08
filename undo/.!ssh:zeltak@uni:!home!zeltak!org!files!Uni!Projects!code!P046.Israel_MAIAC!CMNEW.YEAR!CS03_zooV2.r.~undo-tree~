@@ -1,0 +1,53 @@
+"275e24aafe94376dd5c18368c71896d6733e909d"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil (#1=[nil nil ((nil rear-nonsticky nil 4844 . 4845) (nil fontified nil 4844 . 4845) (#("
+" 0 1 (fontified nil)) . -7256) (4844 . 7257)) nil (21676 12944 874530 173000) 0 nil]) ((4843 . 4845)) nil (21676 12944 874537 840000) 0 nil]) ((#("########### import datasets
+#import NDVI
+ndvid<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN007_Key_tables/ndviid_aodid.csv\")
+ndvi<-readRDS(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN006_NDVI_yearly/ndvi.rds\")
+allbestpredlist <- list()
+path.data<-\"/media/NAS/Uni/Data/Europe/PBL_Europe/dailymeanpbl/\"
+
+for(i in 2003:2013){
+  allbestpredlist[[paste0(\"year_\", i)]] <- fread(paste0(path.data, \"fianlpblXY_\", i, \".csv\"))
+  print(i)
+} 
+allbestpred <- rbindlist(allbestpredlist)
+rm(allbestpredlist)
+
+pbl <-  allbestpred[ longitude > 32 & longitude < 37 & latitude < 34 & latitude > 29, ]
+pbl <- pbl [, day:=as.Date(strptime(date, \"%m/%d/%Y\"))]
+
+#import LU
+lu1<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/LU1.csv\")
+#add Land cover to LU
+p_os<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_os.csv\")
+p_dev<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devHG.csv\")
+p_dos<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_devOS.csv\")
+p_farm<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_farming.csv\")
+p_for<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_forest.csv\")
+p_ind<-fread(\"/media/NAS/Uni/Projects/P046_Israel_MAIAC/3.Work/2.Gather_data/FN004_LU_full_dataset/p_industry.csv\")
+
+lu1 <- merge(lu1, p_os[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_os:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dev[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dev:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_dos[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_dos:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_farm[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_farm:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_for[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_for:=MEAN*100]
+lu1[,MEAN:=NULL]
+lu1 <- merge(lu1, p_ind[, list(aodid,MEAN)], all.x= T, by = c(\"aodid\"))
+lu1[,p_ind:=MEAN*100]
+lu1[,MEAN:=NULL]
+#delete \"palestine\"
+wlu<-lu1[!is.na(p_for)]
+l=seq(names(wlu));names(l)=names(wlu);l
+wlu[,c(\"OBJECTID\",\"Join_Count\" ,\"TARGET_FID\",\"longitude\", \"latitude\",\"lat_aod\", \"long_aod\" ,\"x_aod_ITM\",\"y_aod_ITM\",\"x_stn_ITM\" ,\"y_stn_ITM\"):=NULL]
+
+" 0 12 (fontified t face font-lock-comment-delimiter-face) 12 28 (fontified t face font-lock-comment-face) 28 29 (fontified t face font-lock-comment-delimiter-face) 29 41 (fontified t face font-lock-comment-face) 41 46 (fontified t) 46 48 (fontified t face font-lock-constant-face) 48 54 (fontified t) 54 152 (fontified t face font-lock-string-face) 152 154 (fontified t) 154 158 (fontified t) 158 160 (fontified t face font-lock-constant-face) 160 168 (fontified t) 168 259 (fontified t face font-lock-string-face) 259 277 (fontified t) 277 279 (fontified t face font-lock-constant-face) 279 296 (fontified t) 296 298 (fontified t face font-lock-constant-face) 298 351 (fontified t face font-lock-string-face) 351 353 (fontified t) 353 356 (fontified t face font-lock-keyword-face) 356 359 (fontified t) 359 361 (fontified t face font-lock-keyword-face) 361 400 (fontified t) 400 407 (fontified t face font-lock-string-face) 407 414 (fontified t) 414 416 (fontified t face font-lock-constant-face) 416 441 (fontified t) 441 454 (fontified t face font-lock-string-face) 454 459 (fontified t) 459 465 (fontified t face font-lock-string-face) 465 494 (fontified t) 494 496 (fontified t face font-lock-constant-face) 496 549 (fontified t) 549 551 (fontified t face font-lock-constant-face) 551 637 (fontified t) 637 639 (fontified t face font-lock-constant-face) 639 675 (fontified t) 675 685 (fontified t face font-lock-string-face) 685 689 (fontified t) 689 690 (fontified t) 690 691 (fontified t face font-lock-comment-delimiter-face) 691 701 (fontified t face font-lock-comment-face) 701 704 (fontified t) 704 706 (fontified t face font-lock-constant-face) 706 712 (fontified t) 712 806 (fontified t face font-lock-string-face) 806 808 (fontified t) 808 809 (fontified t face font-lock-comment-delimiter-face) 809 830 (fontified t face font-lock-comment-face) 830 834 (fontified t) 834 836 (fontified t face font-lock-constant-face) 836 842 (fontified t) 842 937 (fontified t face font-lock-string-face) 937 944 (fontified t) 944 946 (fontified t face font-lock-constant-face) 946 952 (fontified t) 952 1050 (fontified t face font-lock-string-face) 1050 1057 (fontified t) 1057 1059 (fontified t face font-lock-constant-face) 1059 1065 (fontified t) 1065 1163 (fontified t face font-lock-string-face) 1163 1171 (fontified t) 1171 1173 (fontified t face font-lock-constant-face) 1173 1179 (fontified t) 1179 1279 (fontified t face font-lock-string-face) 1279 1281 (fontified t) 1281 1286 (fontified t) 1286 1288 (fontified t face font-lock-constant-face) 1288 1294 (fontified t) 1294 1393 (fontified t face font-lock-string-face) 1393 1400 (fontified t) 1400 1402 (fontified t face font-lock-constant-face) 1402 1408 (fontified t) 1408 1509 (fontified t face font-lock-string-face) 1509 1516 (fontified t) 1516 1518 (fontified t face font-lock-constant-face) 1518 1573 (fontified t) 1573 1580 (fontified t face font-lock-string-face) 1580 1615 (fontified t) 1615 1619 (fontified t face font-lock-type-face) 1619 1625 (fontified t) 1625 1627 (fontified t face font-lock-constant-face) 1627 1683 (fontified t) 1683 1690 (fontified t face font-lock-string-face) 1690 1726 (fontified t) 1726 1730 (fontified t face font-lock-type-face) 1730 1736 (fontified t) 1736 1738 (fontified t face font-lock-constant-face) 1738 1794 (fontified t) 1794 1801 (fontified t face font-lock-string-face) 1801 1804 (fontified t) 1804 1837 (fontified t) 1837 1841 (fontified t face font-lock-type-face) 1841 1847 (fontified t) 1847 1849 (fontified t face font-lock-constant-face) 1849 1906 (fontified t) 1906 1913 (fontified t face font-lock-string-face) 1913 1950 (fontified t) 1950 1954 (fontified t face font-lock-type-face) 1954 1960 (fontified t) 1960 1962 (fontified t face font-lock-constant-face) 1962 2018 (fontified t) 2018 2025 (fontified t face font-lock-string-face) 2025 2061 (fontified t) 2061 2065 (fontified t face font-lock-type-face) 2065 2071 (fontified t) 2071 2073 (fontified t face font-lock-constant-face) 2073 2129 (fontified t) 2129 2136 (fontified t face font-lock-string-face) 2136 2172 (fontified t) 2172 2176 (fontified t face font-lock-type-face) 2176 2178 (fontified t) 2178 2179 (fontified t face font-lock-comment-delimiter-face) 2179 2198 (fontified t face font-lock-comment-face) 2198 2201 (fontified t) 2201 2203 (fontified t face font-lock-constant-face) 2203 2269 (fontified t) 2269 2279 (fontified t face font-lock-string-face) 2279 2280 (fontified t) 2280 2292 (fontified t face font-lock-string-face) 2292 2294 (fontified t) 2294 2306 (fontified t face font-lock-string-face) 2306 2307 (fontified t) 2307 2318 (fontified t face font-lock-string-face) 2318 2320 (fontified t) 2320 2330 (fontified t face font-lock-string-face) 2330 2331 (fontified t) 2331 2340 (fontified t face font-lock-string-face) 2340 2342 (fontified t) 2342 2352 (fontified t face font-lock-string-face) 2352 2354 (fontified t) 2354 2365 (fontified t face font-lock-string-face) 2365 2366 (fontified t) 2366 2377 (fontified t face font-lock-string-face) 2377 2378 (fontified t) 2378 2389 (fontified t face font-lock-string-face) 2389 2391 (fontified t) 2391 2402 (fontified t face font-lock-string-face) 2402 2405 (fontified t) 2405 2409 (fontified t face font-lock-type-face) 2409 2411 (fontified t) 2411 2412 (fontified t)) . 435) (undo-tree-id0 . -2411) (undo-tree-id1 . -2411) (undo-tree-id2 . -1512) (undo-tree-id3 . -2412) (undo-tree-id4 . -2411) (undo-tree-id5 . -1512) (undo-tree-id6 . -1512) (undo-tree-id7 . -1512) (undo-tree-id8 . -1512) (undo-tree-id9 . -1512) (undo-tree-id10 . -1512) (undo-tree-id11 . -1512) (undo-tree-id12 . -1512) (undo-tree-id13 . -1512) (undo-tree-id14 . -1512) (undo-tree-id15 . -1512) (undo-tree-id16 . -1512) (undo-tree-id17 . -1512) (undo-tree-id18 . -1512) (undo-tree-id19 . -1512) (undo-tree-id20 . 1) (undo-tree-id21 . -1512) 2846) nil (21676 12944 874615 945000) 0 nil]) ((11184 . 11187)) nil (21676 12944 874624 48000) 0 nil]) ((11718 . 11721) (t 21675 53912 0 0)) nil (21676 12944 874627 521000) 0 nil]) nil nil (21676 12944 874630 62000) 0 nil] #1# 2669 5 nil]
