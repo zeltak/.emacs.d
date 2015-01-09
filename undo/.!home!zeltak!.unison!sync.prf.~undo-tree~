@@ -1,0 +1,81 @@
+"b9280258075d73e180c864af69433ed22daf21d1"
+[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((4483 . 4485) (4434 . 4436) (4357 . 4359) (4342 . 4344) (4320 . 4322) (4244 . 4246) (4174 . 4176) (4097 . 4099) (4081 . 4083) (4048 . 4050) (3974 . 3976) (3898 . 3900) (3822 . 3824) (3746 . 3748) (3674 . 3676) (3599 . 3601) (3585 . 3587) (3557 . 3559) (3490 . 3492) (3416 . 3418) (3344 . 3346) (3330 . 3332) (3253 . 3255) (3179 . 3181) (3107 . 3109) (3089 . 3091) (3063 . 3065) (2986 . 2988) (2913 . 2915) (2848 . 2850) (2771 . 2773) (2700 . 2702) (2625 . 2627) (2550 . 2552) (2476 . 2478) (2399 . 2401) (2327 . 2329) (2255 . 2257) (2185 . 2187) (2110 . 2112) (2034 . 2036) (1958 . 1960) (1887 . 1889) (1817 . 1819) (1795 . 1797) (1724 . 1726) (1651 . 1653) (1574 . 1576) (1504 . 1506) (1430 . 1432) (1357 . 1359) (1288 . 1290) (1274 . 1276) (1234 . 1236) (1159 . 1161) (1089 . 1091) (1076 . 1078) (1031 . 1033) (959 . 961) (882 . 884) (814 . 816) (742 . 744) (667 . 669) (595 . 597) (512 . 514) (431 . 433) (341 . 343) (287 . 289) (235 . 237) (181 . 183)) nil (21680 5611 919766 765000) 0 nil] [nil nil (("# Some regexps specifying names and paths to ignore
+#ignore = Path stats    ## ignores /var/www/stats
+#ignore = Path stats/*  ## ignores /var/www/stats/*
+#ignore = Path */stats  ## ignores /var/www/somedir/stats, but not /var/www/a/b/c/stats
+#ignore = Name *stats   ## ignores all files/directories that end with \"stats\"
+#ignore = Name stats*   ## ignores all files/directories that begin with \"stats\"
+#ignore = Name *.tmp    ## ignores all files with the extension .tmp
+
+#          When set to true, this flag causes the user interface to skip
+#          asking for confirmations on non-conflicting changes. (More
+#          precisely, when the user interface is done setting the
+#          propagation direction for one entry and is about to move to the
+#          next, it will skip over all non-conflicting entries and go
+#          directly to the next conflict.)
+auto=true
+
+#          When this is set to true, the user interface will ask no
+#          questions at all. Non-conflicting changes will be propagated;
+#          conflicts will be skipped.
+batch=true
+
+#          !When this is set to true, Unison will request an extra
+#          confirmation if it appears that the entire replica has been
+#          deleted, before propagating the change. If the batch flag is
+#          also set, synchronization will be aborted. When the path
+#          preference is used, the same confirmation will be requested for
+#          top-level paths. (At the moment, this flag only affects the
+#          text user interface.) See also the mountpoint preference.
+confirmbigdel=true
+
+#          When this preference is set to true, Unison will use the
+#          modification time and length of a file as a `pseudo inode
+#          number' when scanning replicas for updates, instead of reading
+#          the full contents of every file. Under Windows, this may cause
+#          Unison to miss propagating an update if the modification time
+#          and length of the file are both unchanged by the update.
+#          However, Unison will never overwrite such an update with a
+#          change from the other replica, since it always does a safe
+#          check for updates just before propagating a change. Thus, it is
+#          reasonable to use this switch under Windows most of the time
+#          and occasionally run Unison once with fastcheck set to false,
+#          if you are worried that Unison may have overlooked an update.
+#          The default value of the preference is auto, which causes
+#          Unison to use fast checking on Unix replicas (where it is safe)
+#          and slow checking on Windows replicas. For backward
+#          compatibility, yes, no, and default can be used in place of
+#          true, false, and auto. See the section \"Fast Checking\" for more
+#          information.
+fastcheck=true
+
+#          When this flag is set to true, the group attributes of the
+#          files are synchronized. Whether the group names or the group
+#          identifiers are synchronizeddepends on the preference numerids.
+group=true
+
+#          When this flag is set to true, the owner attributes of the
+#          files are synchronized. Whether the owner names or the owner
+#          identifiers are synchronizeddepends on the preference
+#          extttnumerids.
+owner=true
+
+#          Including the preference -prefer root causes Unison always to
+#          resolve conflicts in favor of root, rather than asking for
+#          guidance from the user. (The syntax of root is the same as for
+#          the root preference, plus the special values newer and older.)
+#          This preference is overridden by the preferpartial preference.
+#          This preference should be used only if you are sure you know
+#          what you are doing!
+prefer=newer
+
+#          When this preference is set to true, the textual user interface
+#          will print nothing at all, except in the case of errors.
+#          Setting silent to true automatically sets the batch preference
+#          to true.
+silent=true
+
+#          When this flag is set to true, file modification times (but not
+#          directory modtimes) are propagated.
+times=true
+" . 181) (undo-tree-id0 . -4175) (undo-tree-id1 . -4175) (undo-tree-id2 . -2443) (undo-tree-id3 . 4175) (undo-tree-id4 . -4175) (undo-tree-id5 . 4175) (undo-tree-id6 . -4175) (undo-tree-id7 . 4123) (undo-tree-id8 . 4073) (undo-tree-id9 . 4021) (undo-tree-id10 . 3933) (undo-tree-id11 . 3854) (undo-tree-id12 . 3773) (undo-tree-id13 . 3704) (undo-tree-id14 . 3703) (undo-tree-id15 . 3630) (undo-tree-id16 . 3560) (undo-tree-id17 . 3494) (undo-tree-id18 . 3419) (undo-tree-id19 . 3349) (undo-tree-id20 . 3306) (undo-tree-id21 . 3296) (undo-tree-id22 . 3295) (undo-tree-id23 . 3227) (undo-tree-id24 . 3154) (undo-tree-id25 . 3116) (undo-tree-id26 . 3105) (undo-tree-id27 . 3104) (undo-tree-id28 . 3037) (undo-tree-id29 . 2966) (undo-tree-id30 . 2894) (undo-tree-id31 . 2826) (undo-tree-id32 . 2751) (undo-tree-id33 . 2680) (undo-tree-id34 . 2611) (undo-tree-id35 . 2592) (undo-tree-id36 . 2591) (undo-tree-id37 . 2523) (undo-tree-id38 . 2454) (undo-tree-id39 . 2380) (undo-tree-id40 . 2306) (undo-tree-id41 . 2233) (undo-tree-id42 . 2165) (undo-tree-id43 . 2095) (undo-tree-id44 . 2025) (undo-tree-id45 . 1950) (undo-tree-id46 . -52) (undo-tree-id47 . 1878) (undo-tree-id48 . -102) (undo-tree-id49 . 1805) (undo-tree-id50 . -154) (undo-tree-id51 . 1732) (undo-tree-id52 . -242) (undo-tree-id53 . 1663) (undo-tree-id54 . -321) (undo-tree-id55 . 1588) (undo-tree-id56 . -402) (undo-tree-id57 . 1525) (undo-tree-id58 . -471) (undo-tree-id59 . 1454) (undo-tree-id60 . -472) (undo-tree-id61 . 1379) (undo-tree-id62 . -545) (undo-tree-id63 . 1355) (undo-tree-id64 . -615) (undo-tree-id65 . 1340) (undo-tree-id66 . -681) (undo-tree-id67 . 1339) (undo-tree-id68 . -756) (undo-tree-id69 . 1269) (undo-tree-id70 . -826) (undo-tree-id71 . 1197) (undo-tree-id72 . -869) (undo-tree-id73 . 1122) (undo-tree-id74 . -879) (undo-tree-id75 . 1111) (undo-tree-id76 . -880) (undo-tree-id77 . 1110) (undo-tree-id78 . -948) (undo-tree-id79 . 1040) (undo-tree-id80 . -1021) (undo-tree-id81 . 968) (undo-tree-id82 . -1059) (undo-tree-id83 . 903) (undo-tree-id84 . -1070) (undo-tree-id85 . 877) (undo-tree-id86 . -1071) (undo-tree-id87 . 866) (undo-tree-id88 . -1138) (undo-tree-id89 . 865) (undo-tree-id90 . -1209) (undo-tree-id91 . 792) (undo-tree-id92 . -1281) (undo-tree-id93 . 722) (undo-tree-id94 . -1349) (undo-tree-id95 . 648) (undo-tree-id96 . -1424) (undo-tree-id97 . 574) (undo-tree-id98 . -1495) (undo-tree-id99 . 500) (undo-tree-id100 . -1564) (undo-tree-id101 . 428) (undo-tree-id102 . -1583) (undo-tree-id103 . 397) (undo-tree-id104 . -1584) (undo-tree-id105 . 384) (undo-tree-id106 . -1652) (undo-tree-id107 . 383) (undo-tree-id108 . -1721) (undo-tree-id109 . 308) (undo-tree-id110 . -1795) (undo-tree-id111 . 240) (undo-tree-id112 . -1869) (undo-tree-id113 . 166) (undo-tree-id114 . -1942) (undo-tree-id115 . 146) (undo-tree-id116 . -2010) (undo-tree-id117 . 134) (undo-tree-id118 . -2080) (undo-tree-id119 . 133) (undo-tree-id120 . -2150) (undo-tree-id121 . 58) (undo-tree-id122 . -2225) (undo-tree-id123 . 11) (undo-tree-id124 . -2297) (undo-tree-id125 . -2370) (undo-tree-id126 . -2443) (undo-tree-id127 . -2443) (undo-tree-id128 . -2443) (undo-tree-id129 . -2443) (undo-tree-id130 . -2443) (undo-tree-id131 . -2443) (undo-tree-id132 . -2443) (undo-tree-id133 . -2443) (undo-tree-id134 . -2443) 4356) ((181 . 4356)) (21680 5603 927 28000) 0 nil]) ((1 . 3) (t 21680 4999 804958 21000)) nil (21680 5603 1508 900000) 0 nil]) nil nil (21680 5603 966 134000) 0 nil] #1# 5855 3 nil]

@@ -1,40 +1,951 @@
-"e49aa83eafb02183fc05592c44b3c23ee6b8e1d8"
-[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#1=[nil nil ((386019 . 386020)) nil (21672 17233 396359 410000) 0 nil]) ((385941 . 385942) (t 21672 17016 432830 453000)) nil (21672 17233 396370 728000) 0 nil] [nil nil ((385940 . 385941) (t 21672 17016 432830 453000)) ((#("
-" 0 1 (fontified t font-lock-fontified t)) . 385940)) (21672 17023 321867 188000) 0 nil]) ((385936 . 385937)) nil (21672 17023 322656 190000) 0 nil]) ((#("3" 0 1 (fontified t font-lock-fontified t face org-meta-line)) . -385936)) nil (21672 17016 249740 148000) 0 nil]) ((385859 . 386017)) nil (21672 17016 249744 656000) 0 nil] [nil nil ((nil rear-nonsticky nil 386141 . 386142) (nil fontified nil 385859 . 386142) (385859 . 386142)) ((#("Text-based window manager
-tmux	“Desktop”-Speak	Plain English
-Multiplexer	Multi-tasking	Multiple applications simulataneously.
-Session	Desktop	Applications are visible here
-Window	Virtual Desktop or applications	A desktop that stores it own screen
-Pane	Application	Performs operations" 0 247 (fontified nil) 247 282 (fontified nil) 282 283 (fontified nil rear-nonsticky nil)) . 385859) (undo-tree-id51 . 1) (undo-tree-id52 . 1) (nil fontified t 385859 . 386106) (nil rear-nonsticky t 386141 . 386142)) (21672 16991 734040 483000) 0 nil]) ((385858 . 385859)) nil (21672 16991 735086 119000) 0 nil]) ((385847 . 385858)) nil (21672 16991 734060 34000) 0 nil]) ((385847 . 385848) (t 21672 15873 862334 477000)) nil (21672 16991 734064 785000) 0 nil] [nil nil ((387401 . 387407) 385847 (t 21672 15873 862334 477000)) ((#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 387401) (undo-tree-id49 . 1) (undo-tree-id50 . 1)) (21672 16979 731019 138000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772596)) nil (21672 16979 731690 173000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772596)) nil (21672 15873 704218 486000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772596) (t 21672 14853 614928 166000)) nil (21672 15873 704224 5000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333712) (undo-tree-id47 . 1)) nil (21672 14853 448900 166000) 0 nil]) ((333704 . 333705)) nil (21672 14853 448910 632000) 0 nil]) ((333698 . 333699)) nil (21672 14853 448929 777000) 0 nil]) ((333688 . 333703)) nil (21672 14853 448933 901000) 0 nil]) ((#("*" 0 1 (fontified t)) . -333688)) nil (21672 14853 448938 241000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-7)) . -333689)) nil (21672 14853 448942 454000) 0 nil]) ((333682 . 333690)) nil (21672 14853 448946 936000) 0 nil]) ((#("
-" 0 1 (fontified t)) . -333682)) nil (21672 14853 448950 862000) 0 nil]) ((#("(" 0 1 (fontified t)) . -333683)) nil (21672 14853 448955 5000) 0 nil]) ((333683 . 333684)) nil (21672 14853 448959 77000) 0 nil]) ((333682 . 333684)) nil (21672 14853 448962 709000) 0 nil]) ((#("i" 0 1 (fontified t)) . -333682)) nil (21672 14853 448966 406000) 0 nil]) ((333682 . 333683)) nil (21672 14853 448970 918000) 0 nil]) ((#("
-" 0 1 (fontified t)) . -333655) (undo-tree-id48 . -1)) nil (21672 14853 448980 39000) 0 nil]) ((nil rear-nonsticky nil 333681 . 333682) (nil fontified nil 333656 . 333682) (333656 . 333682) 333655) nil (21672 14853 448987 536000) 0 nil]) ((333652 . 333655)) nil (21672 14853 448992 745000) 0 nil]) ((#("e" 0 1 (fontified t)) . -333652)) nil (21672 14853 448997 27000) 0 nil]) ((333650 . 333653)) nil (21672 14853 449016 843000) 0 nil]) ((333648 . 333650)) nil (21672 14853 449020 220000) 0 nil]) ((333628 . 333648)) nil (21672 14853 449023 370000) 0 nil]) ((#("e" 0 1 (fontified t)) . -333628)) nil (21672 14853 449026 658000) 0 nil]) ((333622 . 333629)) nil (21672 14853 449030 389000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333604)) nil (21672 14853 449033 598000) 0 nil]) ((333603 . 333604)) nil (21672 14853 449037 539000) 0 nil]) ((333598 . 333603)) nil (21672 14853 449040 735000) 0 nil]) ((#(" " 0 1 (fontified t)) . -333598)) nil (21672 14853 449043 919000) 0 nil]) ((333593 . 333599)) nil (21672 14853 449047 590000) 0 nil]) ((#("u" 0 1 (fontified t)) . -333593)) nil (21672 14853 449050 672000) 0 nil]) ((#("r" 0 1 (fontified t)) . -333594)) nil (21672 14853 449054 358000) 0 nil]) ((#(" " 0 1 (fontified t)) . -333595)) nil (21672 14853 449058 33000) 0 nil]) ((333593 . 333596)) nil (21672 14853 449076 248000) 0 nil]) ((333587 . 333593)) nil (21672 14853 449080 57000) 0 nil]) ((333567 . 333587)) nil (21672 14853 449083 688000) 0 nil]) ((333568 . 333586)) nil (21672 14853 449087 281000) 0 nil]) ((333567 . 333568)) nil (21672 14853 449090 956000) 0 nil]) ((333566 . 333567)) nil (21672 14853 449094 366000) 0 nil]) ((333554 . 333566)) nil (21672 14853 449097 694000) 0 nil]) ((#("n" 0 1 (fontified t)) . -333554)) nil (21672 14853 449101 513000) 0 nil]) ((#("e" 0 1 (fontified t)) . -333555)) nil (21672 14853 449105 603000) 0 nil]) ((333536 . 333556)) nil (21672 14853 449123 987000) 0 nil]) ((#("i" 0 1 (fontified t)) . -333536)) nil (21672 14853 449127 307000) 0 nil]) ((333536 . 333537)) nil (21672 14853 449130 934000) 0 nil]) ((333535 . 333536)) nil (21672 14853 449134 146000) 0 nil]) ((333519 . 333535)) nil (21672 14853 449137 450000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-6)) . -333519)) nil (21672 14853 449140 775000) 0 nil]) ((#("d" 0 1 (fontified t face org-level-6)) . -333520)) nil (21672 14853 449144 228000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-6)) . -333521)) nil (21672 14853 449147 744000) 0 nil]) ((333503 . 333522)) nil (21672 14853 449151 498000) 0 nil]) ((333503 . 333505)) nil (21672 14853 449169 201000) 0 nil]) ((333786 . 333787)) nil (21672 14853 449186 622000) 0 nil] [nil nil ((334106 . 334112) 333786) ((#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 334106) (undo-tree-id45 . 1) (undo-tree-id46 . 1)) (21672 14778 584811 886000) 0 nil]) ((#(" " 0 1 (fontified t)) . 333761) (undo-tree-id9 . 1) (undo-tree-id10 . 1) (undo-tree-id11 . 1) (undo-tree-id12 . 1) (undo-tree-id13 . 1) (undo-tree-id14 . 1)) nil (21672 14778 585965 486000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333761) (undo-tree-id15 . 1) (undo-tree-id16 . 1)) nil (21672 14778 584913 295000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333788) (undo-tree-id17 . 1)) nil (21672 14778 584923 137000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333692) (undo-tree-id18 . 1)) nil (21672 14778 584932 178000) 0 nil]) ((#(" " 0 1 (fontified t)) . 333655) (undo-tree-id19 . 1)) nil (21672 14778 584940 920000) 0 nil]) ((#(" " 0 1 (fontified t)) . 333617) (undo-tree-id20 . 1)) nil (21672 14778 584950 582000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333503) (undo-tree-id21 . 1)) nil (21672 14778 584959 372000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 333478) (undo-tree-id22 . 1)) nil (21672 14778 584968 523000) 0 nil]) ((772157 . 772158)) nil (21672 14778 584973 908000) 0 nil]) ((772142 . 772157)) nil (21672 14778 584978 385000) 0 nil]) ((#("w" 0 1 (fontified t face org-level-6)) . -772142) (undo-tree-id23 . -1)) nil (21672 14778 584985 972000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-6)) . -772143) (undo-tree-id24 . -1)) nil (21672 14778 584994 478000) 0 nil]) ((#("t" 0 1 (fontified t face org-level-6)) . -772144) (undo-tree-id25 . -1)) nil (21672 14778 585003 605000) 0 nil]) ((#("h" 0 1 (fontified t face org-level-6)) . -772145) (undo-tree-id26 . -1)) nil (21672 14778 585017 130000) 0 nil]) ((#("o" 0 1 (fontified nil face org-level-6)) . -772146) (undo-tree-id27 . -1)) nil (21672 14778 585026 180000) 0 nil]) ((#("u" 0 1 (fontified t face org-level-6)) . -772147) (undo-tree-id28 . -1)) nil (21672 14778 585035 100000) 0 nil]) ((#("t" 0 1 (fontified t face org-level-6)) . -772148) (undo-tree-id29 . -1)) nil (21672 14778 585043 846000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-6)) . -772149) (undo-tree-id30 . -1)) nil (21672 14778 585052 463000) 0 nil]) ((#("e" 0 1 (fontified t face org-level-6)) . -772150) (undo-tree-id31 . -1)) nil (21672 14778 585061 75000) 0 nil]) ((#("n" 0 1 (fontified t face org-level-6)) . -772151) (undo-tree-id32 . -1)) nil (21672 14778 585070 136000) 0 nil]) ((#("t" 0 1 (fontified t face org-level-6)) . -772152) (undo-tree-id33 . -1)) nil (21672 14778 585078 762000) 0 nil]) ((#("e" 0 1 (fontified t face org-level-6)) . -772153) (undo-tree-id34 . -1)) nil (21672 14778 585087 231000) 0 nil]) ((#("r" 0 1 (fontified t face org-level-6)) . -772154) (undo-tree-id35 . -1)) nil (21672 14778 585095 964000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-6)) . -772155) (undo-tree-id36 . -1)) nil (21672 14778 585104 848000) 0 nil]) ((#("n" 0 1 (fontified t face org-level-6)) . -772156) (undo-tree-id37 . -1)) nil (21672 14778 585113 547000) 0 nil]) ((#("g" 0 1 (fontified t face org-level-6)) . -772157) (undo-tree-id38 . -1)) nil (21672 14778 585122 57000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-6)) . -772158)) nil (21672 14778 585127 268000) 0 nil]) ((772158 . 772159)) nil (21672 14778 585131 805000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585135 991000) 0 nil]) ((#("n" 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585140 592000) 0 nil]) ((#("e" 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585145 212000) 0 nil]) ((#("h" 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585150 90000) 0 nil]) ((#("w" 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585154 296000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-6)) . 772099)) nil (21672 14778 585158 940000) 0 nil]) ((772357 . 772358) (#("     " 0 5 (fontified nil)) . 772357) (#("
-" 0 1 (fontified t)) . -772357) 772290) nil (21672 14778 585165 605000) 0 nil]) ((772290 . 772291) (#("     " 0 5 (fontified nil)) . 772290) (#("
-" 0 1 (fontified t)) . -772290) 772229) nil (21672 14778 585173 920000) 0 nil]) ((772229 . 772230) (#("  " 0 2 (fontified nil)) . 772229) (#("
-" 0 1 (fontified t)) . -772229) 772165) nil (21672 14778 585182 142000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772230)) nil (21672 14778 585187 979000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772230)) nil (21672 14778 585192 339000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772230)) nil (21672 14778 585196 846000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772165)) nil (21672 14778 585201 249000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772165)) nil (21672 14778 585205 859000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772165)) nil (21672 14778 585210 376000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772165)) nil (21672 14778 585214 749000) 0 nil]) ((#(" " 0 1 (fontified t)) . 772165)) nil (21672 14778 585219 503000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772165)) nil (21672 14778 585223 980000) 0 nil]) ((#("
-" 0 1 (fontified t rear-nonsticky t)) . 772165)) nil (21672 14778 585228 490000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772165)) nil (21672 14778 585233 181000) 0 nil]) ((772164 . 772165) 772100) nil (21672 14778 585238 616000) 0 nil]) ((772099 . 772100)) nil (21672 14778 585243 73000) 0 nil]) ((772163 . 772164) 772099) nil (21672 14778 585248 28000) 0 nil]) ((772377 . 772378) (772305 . 772306) (772239 . 772240) (772169 . 772170) (nil fontified t 772097 . 772099) (nil face org-level-5 772097 . 772099) (nil fontified t 772093 . 772097) (nil face org-level-5 772093 . 772097) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 772092) (772098 . 772105) 772092) nil (21672 14778 585258 946000) 0 nil]) ((#(" " 0 1 (fontified t)) . -772373) (#(" " 0 1 (fontified t)) . -772302) (#(" " 0 1 (fontified t)) . -772237) (#(" " 0 1 (fontified t)) . -772168) (nil fontified t 772096 . 772098) (nil face org-level-6 772096 . 772098) (nil fontified t 772092 . 772096) (nil face org-level-6 772092 . 772096) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 772092) (772099 . 772105) 772092) nil (21672 14778 585273 81000) 0 nil]) ((#("w" 0 1 (fontified t)) . 772092) (772093 . 772101) 772092) nil (21672 14778 585283 515000) 0 nil]) ((nil rear-nonsticky nil 772156 . 772157) (nil fontified nil 772092 . 772157) (772092 . 772157)) nil (21672 14778 585290 130000) 0 nil]) ((#("when activating the search entry mode two times without entering
-" 0 64 (fontified t face org-level-5) 64 65 (fontified t)) . 772091) (undo-tree-id39 . -64) (undo-tree-id40 . -64) (undo-tree-id41 . -64) 772155) nil (21672 14778 585305 511000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-5)) . 772090)) nil (21672 14778 585322 199000) 0 nil]) ((772156 . 772157) 772091) nil (21672 14778 585327 577000) 0 nil]) ((772090 . 772091)) nil (21672 14778 585332 74000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 772156)) nil (21672 14778 585336 287000) 0 nil]) ((772155 . 772156) 772090) nil (21672 14778 585353 709000) 0 nil]) ((772087 . 772090)) nil (21672 14778 585360 209000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-5)) . -772087)) nil (21672 14778 585365 309000) 0 nil]) ((#("n" 0 1 (fontified t face org-level-5)) . -772088)) nil (21672 14778 585370 334000) 0 nil]) ((#("g" 0 1 (fontified t face org-level-5)) . -772089)) nil (21672 14778 585375 217000) 0 nil]) ((772088 . 772090)) nil (21672 14778 585380 618000) 0 nil]) ((772087 . 772088)) nil (21672 14778 585386 167000) 0 nil]) ((772152 . 772153) 772088) nil (21672 14778 585392 822000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-5)) . -772088)) nil (21672 14778 585398 458000) 0 nil]) ((772088 . 772089)) nil (21672 14778 585403 985000) 0 nil]) ((772365 . 772366) (772293 . 772294) (772227 . 772228) (772157 . 772158) (nil fontified t 772079 . 772081) (nil face org-level-4 772079 . 772081) (nil fontified t 772076 . 772079) (nil face org-level-4 772076 . 772079) (#("**** " 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 772075) (772080 . 772086) 772087) nil (21672 14778 585415 310000) 0 nil]) ((772085 . 772087)) nil (21672 14778 585421 882000) 0 nil]) ((#("g" 0 1 (fontified t face org-level-4)) . -772085)) nil (21672 14778 585425 375000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-4)) . -772086)) nil (21672 14778 585429 354000) 0 nil]) ((772075 . 772087)) nil (21672 14778 585433 850000) 0 nil]) ((#("to the next match.
-" 0 19 (fontified t)) . 772400) (undo-tree-id42 . 19)) nil (21672 14778 585443 597000) 0 nil]) ((#(" Ctrl+s- You can enter a search pattern and press, Ctrl+s again to jump
-" 0 72 (fontified t)) . 772400) (undo-tree-id43 . 72) 772401) nil (21672 14778 585452 821000) 0 nil]) ((#("open dir cahce alt+enter
-" 0 25 (fontified t)) . 772400) (undo-tree-id44 . 1) 772423) nil (21672 14778 585462 245000) 0 nil]) ((nil rear-nonsticky nil 772396 . 772397) (nil fontified nil 772075 . 772397) (772075 . 772397)) nil (21672 14778 585480 279000) 0 nil] [nil nil ((nil rear-nonsticky nil 772396 . 772397) (nil fontified nil 772075 . 772397) (772075 . 772397)) ((#("when activating the search entry mode two times without entering
-    anything in between (usually by just pressing Ctrl-s twice), the
-    previously used filter string is inserted. This is useful to
-    re-apply a filter to the same or different directory, or to refine
-    a filter (like the new expression based filter)." 0 270 (fontified nil) 270 321 (fontified nil) 321 322 (fontified nil rear-nonsticky nil)) . 772075) (nil fontified t 772075 . 772345) (nil rear-nonsticky t 772396 . 772397)) (21672 14183 902457 134000) 0 nil]) ((772075 . 772077) (t 21672 13976 781206 509000)) nil (21672 14183 903013 988000) 0 nil] [nil nil ((nil rear-nonsticky nil 772396 . 772397) (nil fontified nil 772075 . 772397) (772075 . 772397) (t 21672 13976 781206 509000)) ((#("when activating the search entry mode two times without entering
-    anything in between (usually by just pressing Ctrl-s twice), the
-    previously used filter string is inserted. This is useful to
-    re-apply a filter to the same or different directory, or to refine
-    a filter (like the new expression based filter)." 0 270 (fontified nil) 270 321 (fontified nil) 321 322 (fontified nil rear-nonsticky nil)) . 772075) (undo-tree-id3 . 1) (undo-tree-id4 . 72) (undo-tree-id5 . 137) (undo-tree-id6 . 72) (undo-tree-id7 . 72) (undo-tree-id8 . 72) (nil fontified t 772075 . 772345) (nil rear-nonsticky t 772396 . 772397)) (21672 14177 297521 108000) 0 nil]) ((#("
-" 0 1 (fontified t rear-nonsticky t)) . 776594) (undo-tree-id0 . 1) (undo-tree-id1 . 1)) nil (21672 14177 298885 875000) 0 nil]) ((#(" " 0 1 (fontified t)) . 776532) (undo-tree-id2 . 1)) nil (21672 13975 210835 725000) 0 nil]) ((nil rear-nonsticky nil 776595 . 776596) (nil fontified nil 776532 . 776596) (776532 . 776596)) nil (21672 13975 210843 15000) 0 nil]) ((776532 . 776533) (t 21672 13479 661273 151000)) nil (21672 13975 210848 196000) 0 nil]) nil nil (21672 13975 210851 163000) 0 nil] #1# 3559 151 nil]
+"6c8747643baec6a76fbf321310ceeee91152591d"
+[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#85=[nil nil ((nil fontified nil 882214 . 882220) (#("****** " 0 7 (fontified nil)) . 882214) (882221 . 882227) (nil fontified nil 882204 . 882209) (#("***** " 0 6 (fontified nil)) . 882204) (882210 . 882215) (nil fontified nil 882189 . 882193) (#("**** " 0 5 (fontified nil)) . 882189) (882194 . 882198) (nil fontified nil 881340 . 881345) (#("***** " 0 6 (fontified nil)) . 881340) (881346 . 881351) (nil fontified nil 881327 . 881331) (#("**** " 0 5 (fontified nil)) . 881327) (881332 . 881336) (nil fontified nil 881199 . 881205) (#("****** " 0 7 (fontified nil)) . 881199) (881206 . 881212) (nil fontified nil 880926 . 880932) (#("****** " 0 7 (fontified nil)) . 880926) (880933 . 880939) (nil fontified nil 878333 . 878339) (#("****** " 0 7 (fontified nil)) . 878333) (878340 . 878346) (nil fontified nil 878311 . 878316) (#("***** " 0 6 (fontified nil)) . 878311) (878317 . 878322) (nil fontified nil 878008 . 878013) (#("***** " 0 6 (fontified nil)) . 878008) (878014 . 878019) (nil fontified nil 877607 . 877612) (#("***** " 0 6 (fontified nil)) . 877607) (877613 . 877618) (nil fontified nil 877595 . 877599) (#("**** " 0 5 (fontified nil)) . 877595) (877600 . 877604) (nil fontified nil 877323 . 877328) (#("***** " 0 6 (fontified nil)) . 877323) (877329 . 877334) (nil fontified nil 877030 . 877036) (#("****** " 0 7 (fontified nil)) . 877030) (877037 . 877043) (nil fontified nil 877002 . 877007) (#("***** " 0 6 (fontified nil)) . 877002) (877008 . 877013) (nil fontified nil 876651 . 876657) (#("****** " 0 7 (fontified nil)) . 876651) (876658 . 876664) (nil fontified nil 874434 . 874439) (#("***** " 0 6 (fontified nil)) . 874434) (874440 . 874445) (nil fontified nil 874179 . 874184) (#("***** " 0 6 (fontified nil)) . 874179) (874185 . 874190) (nil fontified nil 874024 . 874029) (#("***** " 0 6 (fontified nil)) . 874024) (874030 . 874035) (nil fontified nil 872549 . 872554) (#("***** " 0 6 (fontified nil)) . 872549) (872555 . 872560) (nil fontified t 871427 . 871429) (nil face org-level-5 871427 . 871429) (nil fontified t 871424 . 871427) (nil face org-level-5 871424 . 871427) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 871424) (871430 . 871435) (nil fontified t 871272 . 871274) (nil face org-level-6 871272 . 871274) (nil fontified t 871268 . 871272) (nil face org-level-6 871268 . 871272) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 871268) (871275 . 871281) (nil fontified t 871253 . 871255) (nil face org-level-5 871253 . 871255) (nil fontified t 871250 . 871253) (nil face org-level-5 871250 . 871253) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 871250) (871256 . 871261) (nil fontified t 871237 . 871239) (nil face org-level-4 871237 . 871239) (nil fontified t 871235 . 871237) (nil face org-level-4 871235 . 871237) (#("**** " 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 871235) (871240 . 871244) (nil fontified t 871217 . 871219) (nil face org-level-3 871217 . 871219) (nil fontified t 871216 . 871217) (nil face org-level-3 871216 . 871217) (#("*** " 0 2 (fontified t face org-level-3) 2 4 (fontified t face org-level-3)) . 871216) (871220 . 871223) 871216) nil (21680 9291 371794 26000) 0 nil]) ((nil fontified nil 882238 . 882245) (#("******* " 0 8 (fontified nil)) . 882238) (882246 . 882253) (nil fontified nil 882227 . 882233) (#("****** " 0 7 (fontified nil)) . 882227) (882234 . 882240) (nil fontified nil 882211 . 882216) (#("***** " 0 6 (fontified nil)) . 882211) (882217 . 882222) (nil fontified nil 881361 . 881367) (#("****** " 0 7 (fontified nil)) . 881361) (881368 . 881374) (nil fontified nil 881347 . 881352) (#("***** " 0 6 (fontified nil)) . 881347) (881353 . 881358) (nil fontified nil 881218 . 881225) (#("******* " 0 8 (fontified nil)) . 881218) (881226 . 881233) (nil fontified nil 880944 . 880951) (#("******* " 0 8 (fontified nil)) . 880944) (880952 . 880959) (nil fontified nil 878350 . 878357) (#("******* " 0 8 (fontified nil)) . 878350) (878358 . 878365) (nil fontified nil 878327 . 878333) (#("****** " 0 7 (fontified nil)) . 878327) (878334 . 878340) (nil fontified nil 878023 . 878029) (#("****** " 0 7 (fontified nil)) . 878023) (878030 . 878036) (nil fontified nil 877621 . 877627) (#("****** " 0 7 (fontified nil)) . 877621) (877628 . 877634) (nil fontified nil 877608 . 877613) (#("***** " 0 6 (fontified nil)) . 877608) (877614 . 877619) (nil fontified nil 877335 . 877341) (#("****** " 0 7 (fontified nil)) . 877335) (877342 . 877348) (nil fontified nil 877041 . 877048) (#("******* " 0 8 (fontified nil)) . 877041) (877049 . 877056) (nil fontified nil 877012 . 877018) (#("****** " 0 7 (fontified nil)) . 877012) (877019 . 877025) (nil fontified nil 876660 . 876667) (#("******* " 0 8 (fontified nil)) . 876660) (876668 . 876675) (nil fontified nil 874442 . 874448) (#("****** " 0 7 (fontified nil)) . 874442) (874449 . 874455) (nil fontified nil 874186 . 874192) (#("****** " 0 7 (fontified nil)) . 874186) (874193 . 874199) (nil fontified nil 874030 . 874036) (#("****** " 0 7 (fontified nil)) . 874030) (874037 . 874043) (nil fontified nil 872554 . 872560) (#("****** " 0 7 (fontified nil)) . 872554) (872561 . 872567) (nil fontified t 871432 . 871434) (nil face org-level-6 871432 . 871434) (nil fontified t 871428 . 871432) (nil face org-level-6 871428 . 871432) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 871428) (871435 . 871441) (nil fontified t 871276 . 871278) (nil face org-level-7 871276 . 871278) (nil fontified t 871271 . 871276) (nil face org-level-7 871271 . 871276) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 871271) (871279 . 871286) (nil fontified t 871256 . 871258) (nil face org-level-6 871256 . 871258) (nil fontified t 871252 . 871256) (nil face org-level-6 871252 . 871256) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 871252) (871259 . 871265) (nil fontified t 871239 . 871241) (nil face org-level-5 871239 . 871241) (nil fontified t 871236 . 871239) (nil face org-level-5 871236 . 871239) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 871236) (871242 . 871247) (nil fontified t 871218 . 871220) (nil face org-level-4 871218 . 871220) (nil fontified t 871216 . 871218) (nil face org-level-4 871216 . 871218) (#("**** " 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 871216) (871221 . 871225) 871216) nil (21680 9291 371946 647000) 0 nil]) ((nil fontified t 882268 . 882270) (nil face org-level-8 882268 . 882270) (nil fontified t 882262 . 882268) (nil face org-level-8 882262 . 882268) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 882262) (882271 . 882279) (nil fontified t 882255 . 882257) (nil face org-level-7 882255 . 882257) (nil fontified t 882250 . 882255) (nil face org-level-7 882250 . 882255) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 882250) (882258 . 882265) (nil fontified t 882237 . 882239) (nil face org-level-6 882237 . 882239) (nil fontified t 882233 . 882237) (nil face org-level-6 882233 . 882237) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 882233) (882240 . 882246) (nil fontified t 881387 . 881389) (nil face org-level-7 881387 . 881389) (nil fontified t 881382 . 881387) (nil face org-level-7 881382 . 881387) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 881382) (881390 . 881397) (nil fontified t 881371 . 881373) (nil face org-level-6 881371 . 881373) (nil fontified t 881367 . 881371) (nil face org-level-6 881367 . 881371) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 881367) (881374 . 881380) (nil fontified t 881243 . 881245) (nil face org-level-8 881243 . 881245) (nil fontified t 881237 . 881243) (nil face org-level-8 881237 . 881243) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 881237) (881246 . 881254) (nil fontified t 880968 . 880970) (nil face org-level-8 880968 . 880970) (nil fontified t 880962 . 880968) (nil face org-level-8 880962 . 880968) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 880962) (880971 . 880979) (nil fontified t 878373 . 878375) (nil face org-level-8 878373 . 878375) (nil fontified t 878367 . 878373) (nil face org-level-8 878367 . 878373) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 878367) (878376 . 878384) (nil fontified t 878348 . 878350) (nil face org-level-7 878348 . 878350) (nil fontified t 878343 . 878348) (nil face org-level-7 878343 . 878348) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 878343) (878351 . 878358) (nil fontified t 878043 . 878045) (nil face org-level-7 878043 . 878045) (nil fontified t 878038 . 878043) (nil face org-level-7 878038 . 878043) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 878038) (878046 . 878053) (nil fontified t 877640 . 877642) (nil face org-level-7 877640 . 877642) (nil fontified t 877635 . 877640) (nil face org-level-7 877635 . 877640) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 877635) (877643 . 877650) (nil fontified t 877625 . 877627) (nil face org-level-6 877625 . 877627) (nil fontified t 877621 . 877625) (nil face org-level-6 877621 . 877625) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 877621) (877628 . 877634) (nil fontified t 877352 . 877354) (nil face org-level-7 877352 . 877354) (nil fontified t 877347 . 877352) (nil face org-level-7 877347 . 877352) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 877347) (877355 . 877362) (nil fontified t 877058 . 877060) (nil face org-level-8 877058 . 877060) (nil fontified t 877052 . 877058) (nil face org-level-8 877052 . 877058) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 877052) (877061 . 877069) (nil fontified t 877027 . 877029) (nil face org-level-7 877027 . 877029) (nil fontified t 877022 . 877027) (nil face org-level-7 877022 . 877027) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 877022) (877030 . 877037) (nil fontified t 876675 . 876677) (nil face org-level-8 876675 . 876677) (nil fontified t 876669 . 876675) (nil face org-level-8 876669 . 876675) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 876669) (876678 . 876686) (nil fontified t 874455 . 874457) (nil face org-level-7 874455 . 874457) (nil fontified t 874450 . 874455) (nil face org-level-7 874450 . 874455) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 874450) (874458 . 874465) (nil fontified t 874198 . 874200) (nil face org-level-7 874198 . 874200) (nil fontified t 874193 . 874198) (nil face org-level-7 874193 . 874198) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 874193) (874201 . 874208) (nil fontified t 874041 . 874043) (nil face org-level-7 874041 . 874043) (nil fontified t 874036 . 874041) (nil face org-level-7 874036 . 874041) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 874036) (874044 . 874051) (nil fontified t 872564 . 872566) (nil face org-level-7 872564 . 872566) (nil fontified t 872559 . 872564) (nil face org-level-7 872559 . 872564) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 872559) (872567 . 872574) (nil fontified t 871437 . 871439) (nil face org-level-7 871437 . 871439) (nil fontified t 871432 . 871437) (nil face org-level-7 871432 . 871437) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 871432) (871440 . 871447) (nil fontified t 871280 . 871282) (nil face org-level-8 871280 . 871282) (nil fontified t 871274 . 871280) (nil face org-level-8 871274 . 871280) (#("******** " 0 7 (fontified t face org-level-8) 7 9 (fontified t face org-level-8)) . 871274) (871283 . 871291) (nil fontified t 871259 . 871261) (nil face org-level-7 871259 . 871261) (nil fontified t 871254 . 871259) (nil face org-level-7 871254 . 871259) (#("******* " 0 6 (fontified t face org-level-7) 6 8 (fontified t face org-level-7)) . 871254) (871262 . 871269) (nil fontified t 871241 . 871243) (nil face org-level-6 871241 . 871243) (nil fontified t 871237 . 871241) (nil face org-level-6 871237 . 871241) (#("****** " 0 5 (fontified t face org-level-6) 5 7 (fontified t face org-level-6)) . 871237) (871244 . 871250) (nil fontified t 871219 . 871221) (nil face org-level-5 871219 . 871221) (nil fontified t 871216 . 871219) (nil face org-level-5 871216 . 871219) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 871216) (871222 . 871227) 871216) nil (21680 9291 372145 886000) 0 nil]) ((nil rear-nonsticky nil 883296 . 883297) (nil fontified nil 871216 . 883297) (871216 . 883297)) nil (21680 9291 372234 642000) 0 nil]) ((871215 . 871216) 771738) nil (21680 9291 372242 640000) 0 nil]) ((#("***** virtualizations
+****** virtualbox
+******* vbox on arch
+******** install
+install from community repo
+
+#+begin_src sh
+pacman -S virtualbox
+#+end_src
+
+
+then load the module
+
+#+BEGIN_SRC sh
+modprobe vboxdrv
+#+END_SRC
+
+******* virtual machine cloning
+
+Virtual Machine Cloning
+
+ I once spent a lot of time setting up one of my virtual machine guest
+environments to the exact specifications that I needed. I downloaded
+tons of software, added bash aliases, and tweaked various configurations
+to suit my needs. Then an interesting thing happened. I ended up needing
+another VM with the exact same specifications. Taking the time to
+manually configure another VM wasn't really an option. Fortunately
+VirtualBox has built in VM cloning support. All I had to do was run the
+following command:
+ VBoxManage clonehd /path/source.vdi> </path/target.vdi> -format VDI
+ This saves a lot of time by reducing the effort needed to reproduce the
+guest virtual machines that you have previously set up using VirtualBox.
+This also allows you to share your environment with other people by
+simply giving them access to your .vdi file (VirtualBox VM instance) and
+configuration settings. In addition, once you set up a pristine
+environment you can clone it and always have it stored as a backup
+incase you mess something up with the VM you are currently working with.
+******* move a virtual machine
+
+`VirtualBox v4.0.0 and later`
+
+The basic procedure for moving VMs created by VirtualBox v4.0.0 or later is to copy the VM folder (with contents) to your preferred location, then use the GUI's Machine|Add menu item to register the .vbox file (found in the VM folder) from its new location.
+
+Of course, if the copy is on the same host as the original VM then VirtualBox will object to your attempt to register the same UUID twice. You must remove the original VM from the manager before the copy can be added ().
+
+() There was a bug in VirtualBox versions prior to v4.3.0 in which the background VBoxSVC process retains a memory of media filenames and UUIDs even after the front end has apparantly removed them. If using an affected version then to work around this then you must shut down VirtualBox entirely, wait several seconds or until VBoxSVC unloads, then you can run the GUI again. At this point you should be able to add the VM back without complaint.
+
+If you want the original and the copy to be registered at the same time on the same host then you actually need to make a clone rather than a simple copy. To clone a VM you right click it in the GUI and select \"Clone\". [ VirtualBox v4.1.0 and later ].
+
+If you are running on a Windows host then be wary of moving VMs to removable storage. Windows has a nasty habit of changing the drive letters of removable drives, which will invalidate the VM path stored when you used Machine|Add.
+ 
+******* launch vm from cli
+
+Launch a VirtualBox virtual machine from the command line
+VBoxManage startvm \"name\"
+ foe example
+ VBoxManage startvm \"Xp Stable\"
+
+******* install-upgrade
+
+Reinstalling virtual box after kernel upgrade
+
+ sudo /etc/init.d/vboxdrv setup
+ Allow for usb devices to work:
+
+you are having trouble accessing USB devices in a guest, make sure that
+you are a member of the vboxusers system group.
+
+******* errors
+
+The VirtualBox kernel driver is not accessible to the current user
+error
+
+ go to system -->Administration---->User/become Root commands and Groups
+ click on 'manage groups'
+ Scan down the list, there should be a group called 'vboxusers'. If
+there is, double click on it and make sure that your username is ticked
+so that you are a member of the group. If there is no group, create one
+by clicking on 'Add Group', typing vboxusers in the group name field and
+making sure that your user name is ticked so that you are a member.
+Then, log out and log back in again. When you a start your virtual
+machine, everything should work!
+ Fix screen resolution in Ubuntu Virtualbox Host
+
+ Start up your Ubuntu 8.04 guest. In VirtualBox, click Devices->Install
+Guest Additions and your virtual Ubuntu should recognize a new CD. Open
+a terminal and run this command:
+ sudo /media/cdrom/VBoxLinuxAdditions.run
+ The installer should prompt you that it's time to restart the virtual
+machine once it's done. Just logging out and back in should work.
+ This is where things get sticky. For Ubuntu 8.04 guests, the VirtualBox
+video driver will not be enabled because of the minimalistic xorg.conf
+file.
+ Open your guest machine's xorg.conf file:
+ gksu gedit /etc/X11/xorg.conf
+ Find the device section, which should look like this:
+ Section \"Device\"
+ Identifier\"Configured Video Device\"
+ EndSection
+ And replace it with this to enable the VirtualBox driver:
+ Section \"Device\"
+ Identifier\"Configured Video Device\"
+ Driver\"vboxvideo\"
+ EndSection
+ Changing screen resolutions in Ubuntu 8.04 is done with RandR, which is
+not supported by VirtualBox. So you'll also need to set a resolution
+manually. Find the screen section, which should look like this:
+ Section \"Screen\"
+ Identifier\"Default Screen\"
+ Monitor\"Configured Monitor\"
+ Device\"Configured Video Device\"
+ EndSection
+ And replace it with this, but change 1024768 to your preferred
+resolution:
+ Section \"Screen\"
+ Identifier\"Default Screen\"
+ Device\"VirtualBox graphics card\"
+ Monitor\"Generic Monitor\"
+ DefaultDepth24
+ SubSection \"Display\"
+ Depth24
+ Modes\"1024x768\"
+ EndSubSection
+ EndSection
+ Save, exit the editor, and log out. You should now have a large virtual
+machine
+
+******** virtualbox cant operate in vmx root mode
+
+ Failed to start the virtual machine Xp Testing ATD (about to die
+Edition).
+ VirtualBox can't operate in VMX root mode. Please disable the KVM
+kernel extension, recompile your kernel and reboot
+(VERR VMX IN VMX ROOT MODE)
+ The workaround:
+
+ sudo modprobe -r kvm-intel
+ or
+ sudo apt-get remove qemu-kvm
+
+******* Virtualbox on windowz
+
+******** mount a windows share drive in a linux guest
+
+You should remove the spaces between mount, ., and vboxsf. If that still
+doesn't work, this should work:
+ mount -t vboxsf win share /mnt/share
+ Make sure the name of the folder and the share are not equal, otherwise
+you get a protocol error
+******* expand a virtualbox hardrive
+in the CLI issue the following:
+
+#+BEGIN_SRC sh
+VBoxManage modifyhd /home/zeltak/VirtualBox\\ VMs/Windowz/Windowz.vdi --resize 121920
+#+END_SRC
+
+note: the new size is in MB
+
+then use gparted live to enlarge the drive for the OS to see it
+
+****** vmware
+
+******* tips
+
+Installing vmware from scratch or after Linux Kernel Upgrade
+
+ 1) If not installed yet, download and install VMware workstartion
+ 
+ 2) In terminal:
+ Sudo apt-get install linux-headers-2.6.17-XX-386 g++
+ where XX is the Kernel version.
+ if not sure about kernel version type
+ 
+ uname -a
+ 3) Enter in terminal:
+ sudo /usr/bin/vmware-config.pl
+ 
+ and press enter to all Questions, that's it!
+
+******* import from virtualbox
+
+issue this :
+ VBoxManage clonehd /home/zeltak/.VirtualBox/VDI/Xp Uni.vdi
+/home/zeltak/ -format VMDK
+ copy a .vmx file from an existing vm machine (create an empty one if
+needed) to the vmdk folder
+ edit with editor to fit new machine
+ open the vmx file from vm workstation
+
+******* Vmware7 on arch
+
+******** VMware Workstation or VMware Player
+
+To install Workstation or Player on a Linux host using a bundle:
+ 1. Download
+VMware-Workstation-<version>.<release>.<architecture>.bundle or
+VMware-Player-<version>-<release>.<architecture>.bundle from the VMware
+site.
+ 2. In a terminal cd to the directory where you downloaded the file.
+ 3. Become root and create a fake System V init style directory for
+VMware and start the installation
+ (the --console flag uses terminal instead of the GUI and the --custom
+asks all the unnecessary questions that nobody cares about):
+
+------------------------------------------------------------------------------------------------------------------
+ # mkdir -p /etc/rc.d/vmware.d/{rc{0..6},init}.d
+
+------------------------------------------------------------------------------------------------------------------
+ then
+
+------------------------------------------------------------------------------------------------------------------
+ # sh VMware-<edition>-<version>.<release>.<architecture>.bundle
+--console --custom
+
+------------------------------------------------------------------------------------------------------------------
+ 4. (Read &) accept the EULA to continue.
+ 5. Accept the default settings until it prompts for System service run
+levels then set to:
+ /etc/rc.d/vmware.d/
+ 6. For System service scripts set to:
+ /etc/rc.d
+ Press enter to install.
+ Note that if nothing happens at this point and you are returned to
+the prompt, try re-running the installation without the --console
+option.
+ 8. At this point you would want to install the modules.
+ First you need to either:
+ create a symlink from /bin/lsmod to /sbin/lsmod with:
+
+------------------------------------------------------------------------------------------------------------------
+ # ln -s /bin/lsmod /sbin/lsmod
+
+------------------------------------------------------------------------------------------------------------------
+ or (try above first)
+ change the lsmod binary path in
+ /etc/rc.d/vmware
+ at the lines 88 and 108 from:
+ /sbin/lsmod
+ to:
+ /bin/lsmod
+ 9. Now you can install the modules:
+
+------------------------------------------------------------------------------------------------------------------
+ # vmware-modconfig --console --install-all
+
+------------------------------------------------------------------------------------------------------------------
+ 10. (Optional) Add vmware to the DAEMONS array in /etc/rc.conf so that
+the service is started automatically on boot.
+ 11. Now, open your VMware Workstation (vmware in the console) to
+configure & use!
+
+******** uninstall
+
+Uninstallation
+ Check the product name
+ # vmware-installer -l
+ uninstall product
+ # vmware-installer -u <vmware-product>
+ Manually included parts in /etc/rc.d have to be deleted manually. Don't
+forget to remove vmware from the /etc/rc.conf DAEMONS array.
+
+******** recompile after kernel change arch
+
+issue this after every kernel change:
+ sudo vmware-modconfig --console --install-all
+
+****** Android
+
+******* Enable market place
+
+[[http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html][download]]
+or use your already dl copy (see zeltak backup files) the new Android
+Virtual Machine that has the Android Market installed
+ Extract the files, and Copy the files and folder you just extracted to
+ /home/zeltak/.android/avd
+ In your .android/avd folder, open the new AndEmu.ini file in Notepad.
+We need to change the path to our Android folder
+ (Zeltak edit: the only way i got it runing was to change android-3 to 8
+for some resaon)
+ target=android-8
+ path=/home/zeltak/.android/avd/AndEmu.avd
+ You're now ready to start the new virtual Android. Open the Android SDK
+Manager, and you should see your new AndEmu listed along with your other
+Android virtual machines. Click Start to run it.
+ [[~/Dropbox/Org/Tech/linux_files/image186.png]]
+****** Teamviewer
+******* Bugs
+******** fix wierd issues on debian with VPN in BGU
+
+@note-on arch make aure latest version of `snx` package is installed thorugh AUR@
+
+https://aur.archlinux.org/packages/snx/
+
+
+1)log in with VPN in browser
+
+https://vpn.bgu.ac.il/extender.html
+
+U:ikloog@vpn
+Pass:4862
+
+2)log into machine with ssh
+
+#+BEGIN_SRC sh :term t
+ssh -X -C zeltak@132.72.155.204
+#+END_SRC
+
+#+RESULTS:
+
+3)stop the TV processes and deamon (with htop,init or systemd)
+
+#+BEGIN_SRC sh :term t
+sudo teamviewer --daemon stop
+#+END_SRC
+
+4)use 'htop' to kill all non deamon TV processes
+
+5)and start the TV deamon again:
+#+NAME: 
+#+BEGIN_SRC sh
+sudo teamviewer --daemon start
+#+END_SRC
+$Note- this maybe done with systemd in future debian releases when systemd takes over$
+
+$Note$ you can skip VNC and try this if it works:
+
+
+#+NAME: 
+#+BEGIN_SRC sh
+DISPLAY=:0 teamviwer
+#+END_SRC
+
+with VNC connect to debian machine:
+issue:
+#+NAME: 
+#+BEGIN_SRC sh
+x11vnc -display :0
+#+END_SRC
+then connect with vinagre or any VNC viwer and start TV through GUI
+" 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5) 6 21 (fontified t face org-level-5) 21 22 (fontified t) 22 27 (fontified t face org-level-6) 27 29 (fontified t face org-level-6) 29 39 (fontified t face org-level-6) 39 40 (fontified t) 40 46 (fontified t face org-level-7) 46 48 (fontified t face org-level-7) 48 60 (fontified t face org-level-7) 60 61 (fontified t) 61 68 (fontified t face org-level-8) 68 70 (fontified t face org-level-8) 70 77 (fontified t face org-level-8) 77 107 (fontified t) 107 121 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 121 122 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 122 142 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 142 143 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 143 152 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 152 153 (fontified t face org-block-end-line) 153 177 (fontified t) 177 191 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 191 192 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 192 208 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 208 209 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 209 218 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 218 219 (fontified t face org-block-end-line) 219 220 (fontified t) 220 226 (fontified t face org-level-7) 226 228 (fontified t face org-level-7) 228 251 (fontified t face org-level-7) 251 564 (fontified t) 564 930 (fontified t) 930 1348 (fontified t) 1348 1354 (fontified t face org-level-7) 1354 1356 (fontified t face org-level-7) 1356 1378 (fontified t face org-level-7) 1378 1380 (fontified t) 1380 1409 (fontified t face #72=(:foreground "#000000" :weight ultra-bold :background "#FBFF00")) 1409 1669 (fontified t) 1669 2339 (fontified t) 2339 2826 (fontified t) 2826 2832 (fontified t face org-level-7) 2832 2834 (fontified t face org-level-7) 2834 2852 (fontified t face org-level-7) 2852 2853 (fontified t) 2853 2984 (fontified t) 2984 2990 (fontified t face org-level-7) 2990 2992 (fontified t face org-level-7) 2992 3007 (fontified t face org-level-7) 3007 3241 (fontified t) 3241 3242 (fontified t) 3242 3248 (fontified t face org-level-7) 3248 3250 (fontified t face org-level-7) 3250 3256 (fontified t face org-level-7) 3256 3415 (fontified t) 3415 3430 (fontified t face #1=(:background "#35FF00" :weight ultra-bold)) 3430 3483 (fontified t) 3483 3494 (fontified t face #1#) 3494 3658 (fontified t) 3658 3669 (fontified t face #1#) 3669 3784 (fontified t) 3784 4290 (fontified t) 4290 4769 (fontified t) 4769 5289 (fontified t) 5289 5462 (fontified t) 5462 5469 (fontified t face org-level-8) 5469 5471 (fontified t face org-level-8) 5471 5511 (fontified t face org-level-8) 5511 5815 (fontified t) 5815 5816 (fontified t) 5816 5822 (fontified t face org-level-7) 5822 5824 (fontified t face org-level-7) 5824 5845 (fontified t face org-level-7) 5845 5847 (fontified t) 5847 5854 (fontified t face org-level-8) 5854 5856 (fontified t face org-level-8) 5856 5900 (fontified t face org-level-8) 5900 6143 (fontified t) 6143 6149 (fontified t face org-level-7) 6149 6151 (fontified t face org-level-7) 6151 6179 (fontified t face org-level-7) 6179 6213 (fontified t) 6213 6227 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 6227 6228 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 6228 6271 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 6271 6273 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-string-face src-block t) 6273 6312 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 6312 6313 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 6313 6322 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 6322 6323 (fontified t face org-block-end-line) 6323 6418 (fontified t) 6418 6423 (fontified t face org-level-6) 6423 6425 (fontified t face org-level-6) 6425 6431 (fontified t face org-level-6) 6431 6433 (fontified t) 6433 6439 (fontified t face org-level-7) 6439 6441 (fontified t face org-level-7) 6441 6445 (fontified t face org-level-7) 6445 6756 (fontified t) 6756 6837 (fontified t) 6837 6843 (fontified t face org-level-7) 6843 6845 (fontified t face org-level-7) 6845 6867 (fontified t face org-level-7) 6867 6902 (fontified t) 6902 6915 (fontified t face (italic) font-lock-multiline t org-emphasis t) 6915 6942 (fontified t) 6942 6955 (fontified t face (italic) font-lock-multiline t org-emphasis t) 6955 7143 (fontified t) 7143 7149 (fontified t face org-level-7) 7149 7151 (fontified t face org-level-7) 7151 7166 (fontified t face org-level-7) 7166 7168 (fontified t) 7168 7175 (fontified t face org-level-8) 7175 7177 (fontified t face org-level-8) 7177 7212 (fontified t face org-level-8) 7212 7279 (fontified t) 7279 7853 (fontified t) 7853 7901 (fontified t font-lock-fontified t face font-lock-comment-face) 7901 8140 (fontified t) 8140 8204 (fontified t font-lock-fontified t face font-lock-comment-face) 8204 8704 (fontified t) 8704 8967 (fontified t) 8967 8998 (fontified t font-lock-fontified t face font-lock-comment-face) 8998 9219 (fontified t) 9219 9402 (fontified t) 9402 9445 (fontified t font-lock-fontified t face font-lock-comment-face) 9445 9634 (fontified t) 9634 9764 (fontified t) 9764 9771 (fontified t face org-level-8) 9771 9773 (fontified t face org-level-8) 9773 9782 (fontified t face org-level-8) 9782 9823 (fontified t) 9823 9845 (fontified t font-lock-fontified t face font-lock-comment-face) 9845 9865 (fontified t) 9865 9904 (fontified t font-lock-fontified t face font-lock-comment-face) 9904 10040 (fontified t) 10040 10047 (fontified t face org-level-8) 10047 10049 (fontified t face org-level-8) 10049 10083 (fontified t face org-level-8) 10083 10170 (fontified t) 10170 10171 (fontified t) 10171 10176 (fontified t face org-level-6) 10176 10178 (fontified t face org-level-6) 10178 10185 (fontified t face org-level-6) 10185 10187 (fontified t) 10187 10193 (fontified t face org-level-7) 10193 10195 (fontified t face org-level-7) 10195 10214 (fontified t face org-level-7) 10214 10216 (fontified t) 10216 10218 (fontified t invisible org-link keymap #4=(keymap (follow-link . mouse-face) (mouse-3 . org-find-file-at-mouse) (mouse-2 . org-open-at-mouse)) mouse-face highlight font-lock-multiline t help-echo #3="LINK: http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html" htmlize-link #2=(:uri #5="http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html") face org-link) 10218 10289 (fontified t mouse-face highlight face org-link htmlize-link #2# keymap #4# invisible org-link font-lock-multiline t help-echo #3#) 10289 10290 (fontified t mouse-face highlight face org-link htmlize-link #2# keymap #4# invisible org-link font-lock-multiline t help-echo #3# rear-nonsticky #6=(mouse-face highlight keymap invisible intangible help-echo org-linked-text htmlize-link)) 10290 10297 (fontified t mouse-face highlight face org-link htmlize-link #7=(:uri #5#) keymap #4# font-lock-multiline t help-echo #3#) 10297 10298 (fontified t mouse-face highlight face org-link htmlize-link #7# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #3#) 10298 10299 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #3# htmlize-link #2# face org-link) 10299 10300 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #3# htmlize-link #2# rear-nonsticky #6# face org-link) 10300 10498 (fontified t) 10498 10511 (fontified t face (italic) font-lock-multiline t org-emphasis t) 10511 10717 (fontified t) 10717 10941 (fontified t) 10941 10991 (fontified t) 10991 10992 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #9="LINK: ~/Dropbox/Org/Tech/linux_files/image186.png" htmlize-link #10=(:uri #8="~/Dropbox/Org/Tech/linux_files/image186.png") face org-link) 10992 10993 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #9# htmlize-link #10# rear-nonsticky #6# face org-link) 10993 11035 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #9# htmlize-link #11=(:uri #8#) face org-link) 11035 11036 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #9# htmlize-link #11# rear-nonsticky #6# face org-link) 11036 11037 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #9# htmlize-link #10# face org-link) 11037 11038 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #9# htmlize-link #10# rear-nonsticky #6# face org-link) 11038 11039 (fontified t) 11039 11044 (fontified t face org-level-6) 11044 11046 (fontified t face org-level-6) 11046 11056 (fontified t face org-level-6) 11056 11057 (fontified t) 11057 11063 (fontified t face org-level-7) 11063 11065 (fontified t face org-level-7) 11065 11069 (fontified t face org-level-7) 11069 11070 (fontified t) 11070 11077 (fontified t face org-level-8) 11077 11079 (fontified t face org-level-8) 11079 11121 (fontified t face org-level-8) 11121 11123 (fontified t) 11123 11165 (fontified t face #12=(:foreground "#B40000" :background "#FFDDDD" :weight bold)) 11165 11170 (fontified t face #12#) 11170 11204 (fontified t face #12#) 11204 11206 (fontified t) 11206 11244 (fontified t mouse-face highlight face org-link htmlize-link #13=(:uri "https://aur.archlinux.org/packages/snx/") keymap #4#) 11244 11245 (fontified t mouse-face highlight face org-link htmlize-link #13# keymap #4# rear-nonsticky #6#) 11245 11278 (fontified t) 11278 11312 (fontified t mouse-face highlight face org-link htmlize-link #14=(:uri "https://vpn.bgu.ac.il/extender.html") keymap #4#) 11312 11313 (fontified t mouse-face highlight face org-link htmlize-link #14# keymap #4# rear-nonsticky #6#) 11313 11368 (fontified t) 11368 11390 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11390 11391 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11391 11422 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11422 11423 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11423 11432 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 11432 11433 (fontified t face org-block-end-line) 11433 11434 (fontified t) 11434 11444 (fontified t font-lock-fontified t face org-meta-line) 11444 11445 (fontified t) 11445 11510 (fontified t) 11510 11532 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11532 11533 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11533 11562 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11562 11563 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11563 11572 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 11572 11573 (fontified t face org-block-end-line) 11573 11580 (fontified t) 11580 11586 (fontified t face #1#) 11586 11657 (fontified t) 11657 11665 (fontified t font-lock-fontified t face org-meta-line) 11665 11666 (fontified t) 11666 11680 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11680 11681 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11681 11711 (fontified t font-lock-fontified t src-block t font-lock-multiline t) 11711 11712 (fontified t font-lock-fontified t src-block t font-lock-multiline t) 11712 11721 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 11721 11722 (fontified t face org-block-end-line) 11722 11808 (fontified t face #15=(:background "#DDDDFF" :foreground "#000000" :weight ultra-bold)) 11808 11810 (fontified t) 11810 11816 (fontified t face #15#) 11816 11862 (fontified t) 11862 11870 (fontified t font-lock-fontified t face org-meta-line) 11870 11871 (fontified t) 11871 11885 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11885 11886 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11886 11893 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-variable-name-face src-block t) 11893 11906 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11906 11907 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 11907 11916 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 11916 11917 (fontified t face org-block-end-line) 11917 11961 (fontified t) 11961 11969 (fontified t font-lock-fontified t face org-meta-line) 11969 11970 (fontified t) 11970 11984 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11984 11985 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 11985 12003 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 12003 12004 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 12004 12013 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 12013 12014 (fontified t face org-block-end-line) 12014 12080 (fontified t) 12080 12081 (fontified t rear-nonsticky t) 12081 12082 (fontified t)) . 1301883) (undo-tree-id148 . -12080)) nil (21680 9291 372263 60000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1299333)) nil (21680 9291 372270 274000) 0 nil]) ((#(" section on roots]] for further details.)
+" 0 16 (fontified t help-echo #17="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots" htmlize-link #18=(:uri #16="http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots")) 16 17 (fontified t help-echo #17# htmlize-link #18# rear-nonsticky #6#) 17 18 (fontified t help-echo #17# htmlize-link #19=(:uri #16#)) 18 19 (fontified t help-echo #17# htmlize-link #19# rear-nonsticky #6#) 19 42 (fontified t)) . 1299333) 1299334) nil (21680 9291 372276 886000) 0 nil]) ((#("[[http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots][manual
+" 0 2 (fontified t help-echo #17# htmlize-link #19# invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 2 94 (fontified t htmlize-link #19# help-echo #17# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 94 95 (fontified t htmlize-link #19# help-echo #17# rear-nonsticky #6# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 95 100 (fontified t htmlize-link #18# help-echo #17# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 100 101 (fontified t htmlize-link #18# rear-nonsticky #6# help-echo #17# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 101 102 (fontified t help-echo #17# htmlize-link #18# keymap #4# mouse-face highlight font-lock-multiline t face org-link)) . 1299333) (undo-tree-id149 . 102) (undo-tree-id150 . -1)) nil (21680 9291 372293 255000) 0 nil]) ((#("(Please see the 
+" 0 17 (fontified t)) . 1299333) (undo-tree-id151 . 17) (undo-tree-id152 . -1)) nil (21680 9291 372320 170000) 0 nil]) ((#("***** Prerequisites
+
+
+      You should have Unison up and running. Binaries can be found 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download.html][here]] and the
+documentation is 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html][here]].
+
+" 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5) 6 19 (fontified t face org-level-5) 19 21 (fontified t) 21 90 (fontified t) 90 92 (fontified t help-echo #21="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download.html" htmlize-link #20=(:uri #22="http://www.cis.upenn.edu/~bcpierce/unison/download.html") invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 92 148 (fontified t htmlize-link #20# help-echo #21# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 148 149 (fontified t htmlize-link #20# help-echo #21# rear-nonsticky #6# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 149 152 (fontified t htmlize-link #23=(:uri #22#) help-echo #21# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 152 153 (fontified t htmlize-link #23# rear-nonsticky #6# help-echo #21# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 153 154 (fontified t help-echo #21# htmlize-link #20# invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 154 155 (fontified t help-echo #21# htmlize-link #20# rear-nonsticky #6# invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 155 182 (fontified t) 182 184 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #25="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html" htmlize-link #24=(:uri #26="http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html") face org-link) 184 270 (fontified t mouse-face highlight face org-link htmlize-link #24# keymap #4# invisible org-link font-lock-multiline t help-echo #25#) 270 271 (fontified t mouse-face highlight face org-link htmlize-link #24# keymap #4# invisible org-link font-lock-multiline t help-echo #25# rear-nonsticky #6#) 271 274 (fontified t mouse-face highlight face org-link htmlize-link #27=(:uri #26#) keymap #4# font-lock-multiline t help-echo #25#) 274 275 (fontified t mouse-face highlight face org-link htmlize-link #27# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #25#) 275 276 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #25# htmlize-link #24# face org-link) 276 277 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #25# htmlize-link #24# rear-nonsticky #6# face org-link) 277 280 (fontified t)) . 1298414) (undo-tree-id153 . 252) 1298419) nil (21680 9291 372330 102000) 0 nil]) ((1298435 . 1298442)) nil (21680 9291 372336 129000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1298348)) nil (21680 9291 372342 157000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1298192)) nil (21680 9291 372349 323000) 0 nil]) ((#(" " 0 1 (fontified t)) . 1298191) (1298192 . 1298193) 1298191) nil (21680 9291 372394 926000) 0 nil]) ((nil rear-nonsticky nil 1314400 . 1314401) (nil fontified nil 1298086 . 1314401) (1298086 . 1314401)) nil (21680 9291 372403 795000) 0 nil]) ((#("     " 0 5 (fontified t)) . 1298086) 1298091) nil (21680 9291 372410 954000) 0 nil]) ((1298085 . 1298091)) nil (21680 9291 372417 228000) 0 nil]) ((#("*** unsion
+**** Synchronizing org files with Unison
+This describes how to synchronize org files using the 
+[[http://www.cis.upenn.edu/~bcpierce/unison/][Unisonfile synchronizer]],
+as well as how to configure it to use an external tool to merge conflicting
+edits.
+
+also see:
+http://orgmode.org/worg/org-tutorials/unison-sync.html
+
+***** Prerequisites
+
+You should have Unison up and running. Binaries can be found 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download.html][here]] and the
+documentation is 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html][here]].
+
+***** Synchronization
+
+Unison is a file synchronizer, thus it may be used to synchronize org files. To
+configure Unison, on uses a /profile/ which states where the things to
+synchronize are as well as some options. Assuming I want to synchronize the
+files in ~/Users/schmitta/dir1~ and ~/Users/schmitta/dir2~, the profile would
+look like this
+
+#+BEGIN_EXAMPLE
+root = /Users/schmitta/dir1
+root = /Users/schmitta/dir2
+#+END_EXAMPLE
+
+In most cases Unison will be used with a remote machine. The local machine is
+called the /client/ and the remote one the /server/. For such remote
+synchronization, the ~unison~ binary must be installed in the server as
+well. The simplest way to connect to the machine is using ssh. One should check
+that unison can be found there by doing ~ssh address@hidden unison -version~. If
+~unison~ cannot be found in the path, one may set the ~servercmd~ option as
+indicated in the next example.
+
+(Please see the 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots][manual
+ section on roots]] for further details.)
+
+#+BEGIN_EXAMPLE
+root = /Users/schmitta/dir1
+root = ssh://address@hidden/relative/path/to/dir2
+
+servercmd = /usr/bin/unison
+#+END_EXAMPLE
+
+***** Merging
+
+As Unison works on the level of files, it will trigger a /conflict/ if both
+files have changed since the last synchronization. In that case one can only
+choose which file to keep, which is not satisfying. Unison offers the
+possibility to use external tools to merge the files. There is an 
+[[http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#merge][extensive
+manual section]] regarding this, we'll just describe how to use emacs and ediff 
+to
+do it.
+
+For better merging, we will ask unison to keep the last synchronized version of
+every org file on the client; this way we can use ediff with ancestor. These
+~currentbackup~ files may live alongside the synchronized files (with names of
+the form ~.bak.version.name~, which is configurable) or in a central location.
+
+Here is the modified configuration file.
+
+#+BEGIN_EXAMPLE
+root = /Users/schmitta/dir1
+root = ssh://address@hidden/relative/path/to/dir2
+
+servercmd = /usr/bin/unison
+
+backupcurrent = Name .org
+backuplocation = local
+maxbackups = 0
+
+merge = Name .org -> emacsclient -c --eval '(ediff-merge-files-with-ancestor 
+\"CURRENT1\" \"CURRENT2\" \"CURRENTARCH\" nil \"NEW\")'
+
+#+END_EXAMPLE
+
+The ~backupcurrent~ option tells unison to keep a backup of the last
+synchronized version of ever file with an ~org~ extension. The location of the
+backup should be local (alongside the file). Finally, no other backup should be
+created.
+
+Next follows the merge command. For every org file in conflict, use the command
+that launches a new emacs frame calling the ediff with ancestor function. The
+~CURRENT1~, ~CURRENT2~, and ~CURRENTARCH~ strings are  replaced with the file
+from the first root, the file from the second root, and the last synchronized
+version. The ~NEW~ file is where Unison expects the file to be saved (which will
+be done by the ediff session).
+
+Thus, when an org file has been modified on both hosts, an ediff session will be
+launched in a new frame. Closing the frame will make Unison commit the merge (it
+waits until the command has finished).
+
+If one does not want to use backups, it's possible to use the simpler ediff
+(without ancestor) command as follows.
+
+#+BEGIN_EXAMPLE
+root = /Users/schmitta/dir1
+root = ssh://address@hidden/relative/path/to/dir2
+
+servercmd = /usr/bin/unison
+
+merge = Name .org -> emacsclient -c --eval '(ediff-merge-files \"CURRENT1\" 
+\"CURRENT2\" nil \"NEW\")'
+
+#+END_EXAMPLE
+
+***** virtualizations
+****** virtualbox
+******* vbox on arch
+******** install
+install from community repo
+
+#+begin_src sh
+pacman -S virtualbox
+#+end_src
+
+
+then load the module
+
+#+BEGIN_SRC sh
+modprobe vboxdrv
+#+END_SRC
+
+******* virtual machine cloning
+
+Virtual Machine Cloning
+
+ I once spent a lot of time setting up one of my virtual machine guest
+environments to the exact specifications that I needed. I downloaded
+tons of software, added bash aliases, and tweaked various configurations
+to suit my needs. Then an interesting thing happened. I ended up needing
+another VM with the exact same specifications. Taking the time to
+manually configure another VM wasn't really an option. Fortunately
+VirtualBox has built in VM cloning support. All I had to do was run the
+following command:
+ VBoxManage clonehd /path/source.vdi> </path/target.vdi> -format VDI
+ This saves a lot of time by reducing the effort needed to reproduce the
+guest virtual machines that you have previously set up using VirtualBox.
+This also allows you to share your environment with other people by
+simply giving them access to your .vdi file (VirtualBox VM instance) and
+configuration settings. In addition, once you set up a pristine
+environment you can clone it and always have it stored as a backup
+incase you mess something up with the VM you are currently working with.
+******* move a virtual machine
+
+`VirtualBox v4.0.0 and later`
+
+The basic procedure for moving VMs created by VirtualBox v4.0.0 or later is to copy the VM folder (with contents) to your preferred location, then use the GUI's Machine|Add menu item to register the .vbox file (found in the VM folder) from its new location.
+
+Of course, if the copy is on the same host as the original VM then VirtualBox will object to your attempt to register the same UUID twice. You must remove the original VM from the manager before the copy can be added ().
+
+() There was a bug in VirtualBox versions prior to v4.3.0 in which the background VBoxSVC process retains a memory of media filenames and UUIDs even after the front end has apparantly removed them. If using an affected version then to work around this then you must shut down VirtualBox entirely, wait several seconds or until VBoxSVC unloads, then you can run the GUI again. At this point you should be able to add the VM back without complaint.
+
+If you want the original and the copy to be registered at the same time on the same host then you actually need to make a clone rather than a simple copy. To clone a VM you right click it in the GUI and select \"Clone\". [ VirtualBox v4.1.0 and later ].
+
+If you are running on a Windows host then be wary of moving VMs to removable storage. Windows has a nasty habit of changing the drive letters of removable drives, which will invalidate the VM path stored when you used Machine|Add.
+ 
+******* launch vm from cli
+
+Launch a VirtualBox virtual machine from the command line
+VBoxManage startvm \"name\"
+ foe example
+ VBoxManage startvm \"Xp Stable\"
+
+******* install-upgrade
+
+Reinstalling virtual box after kernel upgrade
+
+ sudo /etc/init.d/vboxdrv setup
+ Allow for usb devices to work:
+
+you are having trouble accessing USB devices in a guest, make sure that
+you are a member of the vboxusers system group.
+
+******* errors
+
+The VirtualBox kernel driver is not accessible to the current user
+error
+
+ go to system -->Administration---->User/become Root commands and Groups
+ click on 'manage groups'
+ Scan down the list, there should be a group called 'vboxusers'. If
+there is, double click on it and make sure that your username is ticked
+so that you are a member of the group. If there is no group, create one
+by clicking on 'Add Group', typing vboxusers in the group name field and
+making sure that your user name is ticked so that you are a member.
+Then, log out and log back in again. When you a start your virtual
+machine, everything should work!
+ Fix screen resolution in Ubuntu Virtualbox Host
+
+ Start up your Ubuntu 8.04 guest. In VirtualBox, click Devices->Install
+Guest Additions and your virtual Ubuntu should recognize a new CD. Open
+a terminal and run this command:
+ sudo /media/cdrom/VBoxLinuxAdditions.run
+ The installer should prompt you that it's time to restart the virtual
+machine once it's done. Just logging out and back in should work.
+ This is where things get sticky. For Ubuntu 8.04 guests, the VirtualBox
+video driver will not be enabled because of the minimalistic xorg.conf
+file.
+ Open your guest machine's xorg.conf file:
+ gksu gedit /etc/X11/xorg.conf
+ Find the device section, which should look like this:
+ Section \"Device\"
+ Identifier\"Configured Video Device\"
+ EndSection
+ And replace it with this to enable the VirtualBox driver:
+ Section \"Device\"
+ Identifier\"Configured Video Device\"
+ Driver\"vboxvideo\"
+ EndSection
+ Changing screen resolutions in Ubuntu 8.04 is done with RandR, which is
+not supported by VirtualBox. So you'll also need to set a resolution
+manually. Find the screen section, which should look like this:
+ Section \"Screen\"
+ Identifier\"Default Screen\"
+ Monitor\"Configured Monitor\"
+ Device\"Configured Video Device\"
+ EndSection
+ And replace it with this, but change 1024768 to your preferred
+resolution:
+ Section \"Screen\"
+ Identifier\"Default Screen\"
+ Device\"VirtualBox graphics card\"
+ Monitor\"Generic Monitor\"
+ DefaultDepth24
+ SubSection \"Display\"
+ Depth24
+ Modes\"1024x768\"
+ EndSubSection
+ EndSection
+ Save, exit the editor, and log out. You should now have a large virtual
+machine
+
+******** virtualbox cant operate in vmx root mode
+
+ Failed to start the virtual machine Xp Testing ATD (about to die
+Edition).
+ VirtualBox can't operate in VMX root mode. Please disable the KVM
+kernel extension, recompile your kernel and reboot
+(VERR VMX IN VMX ROOT MODE)
+ The workaround:
+
+ sudo modprobe -r kvm-intel
+ or
+ sudo apt-get remove qemu-kvm
+
+******* Virtualbox on windowz
+
+******** mount a windows share drive in a linux guest
+
+You should remove the spaces between mount, ., and vboxsf. If that still
+doesn't work, this should work:
+ mount -t vboxsf win share /mnt/share
+ Make sure the name of the folder and the share are not equal, otherwise
+you get a protocol error
+******* expand a virtualbox hardrive
+in the CLI issue the following:
+
+#+BEGIN_SRC sh
+VBoxManage modifyhd /home/zeltak/VirtualBox\\ VMs/Windowz/Windowz.vdi --resize 121920
+#+END_SRC
+
+note: the new size is in MB
+
+then use gparted live to enlarge the drive for the OS to see it
+
+****** vmware
+
+******* tips
+
+Installing vmware from scratch or after Linux Kernel Upgrade
+
+ 1) If not installed yet, download and install VMware workstartion
+ 
+ 2) In terminal:
+ Sudo apt-get install linux-headers-2.6.17-XX-386 g++
+ where XX is the Kernel version.
+ if not sure about kernel version type
+ 
+ uname -a
+ 3) Enter in terminal:
+ sudo /usr/bin/vmware-config.pl
+ 
+ and press enter to all Questions, that's it!
+
+******* import from virtualbox
+
+issue this :
+ VBoxManage clonehd /home/zeltak/.VirtualBox/VDI/Xp Uni.vdi
+/home/zeltak/ -format VMDK
+ copy a .vmx file from an existing vm machine (create an empty one if
+needed) to the vmdk folder
+ edit with editor to fit new machine
+ open the vmx file from vm workstation
+
+******* Vmware7 on arch
+
+******** VMware Workstation or VMware Player
+
+To install Workstation or Player on a Linux host using a bundle:
+ 1. Download
+VMware-Workstation-<version>.<release>.<architecture>.bundle or
+VMware-Player-<version>-<release>.<architecture>.bundle from the VMware
+site.
+ 2. In a terminal cd to the directory where you downloaded the file.
+ 3. Become root and create a fake System V init style directory for
+VMware and start the installation
+ (the --console flag uses terminal instead of the GUI and the --custom
+asks all the unnecessary questions that nobody cares about):
+
+------------------------------------------------------------------------------------------------------------------
+ # mkdir -p /etc/rc.d/vmware.d/{rc{0..6},init}.d
+
+------------------------------------------------------------------------------------------------------------------
+ then
+
+------------------------------------------------------------------------------------------------------------------
+ # sh VMware-<edition>-<version>.<release>.<architecture>.bundle
+--console --custom
+
+------------------------------------------------------------------------------------------------------------------
+ 4. (Read &) accept the EULA to continue.
+ 5. Accept the default settings until it prompts for System service run
+levels then set to:
+ /etc/rc.d/vmware.d/
+ 6. For System service scripts set to:
+ /etc/rc.d
+ Press enter to install.
+ Note that if nothing happens at this point and you are returned to
+the prompt, try re-running the installation without the --console
+option.
+ 8. At this point you would want to install the modules.
+ First you need to either:
+ create a symlink from /bin/lsmod to /sbin/lsmod with:
+
+------------------------------------------------------------------------------------------------------------------
+ # ln -s /bin/lsmod /sbin/lsmod
+
+------------------------------------------------------------------------------------------------------------------
+ or (try above first)
+ change the lsmod binary path in
+ /etc/rc.d/vmware
+ at the lines 88 and 108 from:
+ /sbin/lsmod
+ to:
+ /bin/lsmod
+ 9. Now you can install the modules:
+
+------------------------------------------------------------------------------------------------------------------
+ # vmware-modconfig --console --install-all
+
+------------------------------------------------------------------------------------------------------------------
+ 10. (Optional) Add vmware to the DAEMONS array in /etc/rc.conf so that
+the service is started automatically on boot.
+ 11. Now, open your VMware Workstation (vmware in the console) to
+configure & use!
+
+******** uninstall
+
+Uninstallation
+ Check the product name
+ # vmware-installer -l
+ uninstall product
+ # vmware-installer -u <vmware-product>
+ Manually included parts in /etc/rc.d have to be deleted manually. Don't
+forget to remove vmware from the /etc/rc.conf DAEMONS array.
+
+******** recompile after kernel change arch
+
+issue this after every kernel change:
+ sudo vmware-modconfig --console --install-all
+
+****** Android
+
+******* Enable market place
+
+[[http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html][download]]
+or use your already dl copy (see zeltak backup files) the new Android
+Virtual Machine that has the Android Market installed
+ Extract the files, and Copy the files and folder you just extracted to
+ /home/zeltak/.android/avd
+ In your .android/avd folder, open the new AndEmu.ini file in Notepad.
+We need to change the path to our Android folder
+ (Zeltak edit: the only way i got it runing was to change android-3 to 8
+for some resaon)
+ target=android-8
+ path=/home/zeltak/.android/avd/AndEmu.avd
+ You're now ready to start the new virtual Android. Open the Android SDK
+Manager, and you should see your new AndEmu listed along with your other
+Android virtual machines. Click Start to run it.
+ [[~/Dropbox/Org/Tech/linux_files/image186.png]]
+****** Teamviewer
+******* Bugs
+******** fix wierd issues on debian with VPN in BGU
+
+@note-on arch make aure latest version of `snx` package is installed thorugh AUR@
+
+https://aur.archlinux.org/packages/snx/
+
+
+1)log in with VPN in browser
+
+https://vpn.bgu.ac.il/extender.html
+
+U:ikloog@vpn
+Pass:4862
+
+2)log into machine with ssh
+
+#+BEGIN_SRC sh :term t
+ssh -X -C zeltak@132.72.155.204
+#+END_SRC
+
+#+RESULTS:
+
+3)stop the TV processes and deamon (with htop,init or systemd)
+
+#+BEGIN_SRC sh :term t
+sudo teamviewer --daemon stop
+#+END_SRC
+
+4)use 'htop' to kill all non deamon TV processes
+
+5)and start the TV deamon again:
+#+NAME: 
+#+BEGIN_SRC sh
+sudo teamviewer --daemon start
+#+END_SRC
+$Note- this maybe done with systemd in future debian releases when systemd takes over$
+
+$Note$ you can skip VNC and try this if it works:
+
+
+#+NAME: 
+#+BEGIN_SRC sh
+DISPLAY=:0 teamviwer
+#+END_SRC
+
+with VNC connect to debian machine:
+issue:
+#+NAME: 
+#+BEGIN_SRC sh
+x11vnc -display :0
+#+END_SRC
+then connect with vinagre or any VNC viwer and start TV through GUI
+
+" 0 2 (fontified t face org-level-3) 2 4 (fontified t face org-level-3) 4 10 (fontified t face org-level-3) 10 11 (fontified t) 11 14 (fontified t face org-level-4) 14 16 (fontified t face org-level-4) 16 51 (fontified t face org-level-4) 51 52 (fontified t) 52 107 (fontified t) 107 109 (fontified t help-echo #29="LINK: http://www.cis.upenn.edu/~bcpierce/unison/" htmlize-link #28=(:uri #30="http://www.cis.upenn.edu/~bcpierce/unison/") invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 109 152 (fontified t htmlize-link #28# help-echo #29# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 152 153 (fontified t htmlize-link #28# help-echo #29# rear-nonsticky #6# mouse-face highlight face org-link keymap #4# invisible org-link font-lock-multiline t) 153 162 (fontified t htmlize-link #31=(:uri #30#) help-echo #29# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 162 163 (fontified t htmlize-link #31# rear-nonsticky #6# help-echo #29# mouse-face highlight face org-link keymap #4# font-lock-multiline t) 163 175 (fontified t help-echo #29# htmlize-link #31# keymap #4# mouse-face highlight font-lock-multiline t face org-link) 175 176 (fontified t help-echo #29# htmlize-link #31# rear-nonsticky #6# keymap #4# mouse-face highlight font-lock-multiline t face org-link) 176 177 (fontified t help-echo #29# htmlize-link #28# invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 177 178 (fontified t help-echo #29# htmlize-link #28# rear-nonsticky #6# invisible org-link keymap #4# mouse-face highlight font-lock-multiline t face org-link) 178 180 (fontified t) 180 256 (fontified t) 256 274 (fontified t) 274 327 (fontified t mouse-face highlight face org-link htmlize-link #32=(:uri "http://orgmode.org/worg/org-tutorials/unison-sync.html") keymap #4#) 327 328 (fontified t mouse-face highlight face org-link htmlize-link #32# keymap #4# rear-nonsticky #6#) 328 329 (fontified t) 329 330 (fontified t) 330 334 (fontified t face org-level-5) 334 336 (fontified t face org-level-5) 336 349 (fontified t face org-level-5) 349 413 (fontified t) 413 415 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #34="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download.html" htmlize-link #33=(:uri #35="http://www.cis.upenn.edu/~bcpierce/unison/download.html") face org-link) 415 471 (fontified t mouse-face highlight face org-link htmlize-link #33# keymap #4# invisible org-link font-lock-multiline t help-echo #34#) 471 472 (fontified t mouse-face highlight face org-link htmlize-link #33# keymap #4# invisible org-link font-lock-multiline t help-echo #34# rear-nonsticky #6#) 472 475 (fontified t mouse-face highlight face org-link htmlize-link #36=(:uri #35#) keymap #4# font-lock-multiline t help-echo #34#) 475 476 (fontified t mouse-face highlight face org-link htmlize-link #36# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #34#) 476 477 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #34# htmlize-link #33# face org-link) 477 478 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #34# htmlize-link #33# rear-nonsticky #6# face org-link) 478 505 (fontified t) 505 507 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #38="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html" htmlize-link #37=(:uri #39="http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html") face org-link) 507 593 (fontified t mouse-face highlight face org-link htmlize-link #37# keymap #4# invisible org-link font-lock-multiline t help-echo #38#) 593 594 (fontified t mouse-face highlight face org-link htmlize-link #37# keymap #4# invisible org-link font-lock-multiline t help-echo #38# rear-nonsticky #6#) 594 597 (fontified t mouse-face highlight face org-link htmlize-link #40=(:uri #39#) keymap #4# font-lock-multiline t help-echo #38#) 597 598 (fontified t mouse-face highlight face org-link htmlize-link #40# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #38#) 598 599 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #38# htmlize-link #37# face org-link) 599 600 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #38# htmlize-link #37# rear-nonsticky #6# face org-link) 600 603 (fontified t) 603 607 (fontified t face org-level-5) 607 609 (fontified t face org-level-5) 609 624 (fontified t face org-level-5) 624 734 (fontified t) 734 743 (fontified t face (italic) font-lock-multiline t org-emphasis t) 743 853 (fontified t) 853 862 (fontified t) 862 884 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 884 889 (fontified t) 889 911 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 911 947 (fontified t) 947 963 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 963 1018 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1018 1019 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1019 1032 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 1032 1033 (fontified t face org-block-end-line) 1033 1123 (fontified t) 1123 1124 (fontified t face (italic) font-lock-multiline t org-emphasis t) 1124 1130 (fontified t face (italic (:weight ultra-bold :foreground "#0044FF")) font-lock-multiline t org-emphasis t) 1130 1131 (fontified t face (italic) font-lock-multiline t org-emphasis t) 1131 1155 (fontified t) 1155 1156 (fontified t face (italic) font-lock-multiline t org-emphasis t) 1156 1162 (fontified t face (italic #41=(:weight ultra-bold :foreground "#FF9800")) font-lock-multiline t org-emphasis t) 1162 1163 (fontified t face (italic) font-lock-multiline t org-emphasis t) 1163 1202 (fontified t) 1202 1210 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 1210 1243 (fontified t) 1243 1249 (fontified t face #41#) 1249 1373 (fontified t) 1373 1409 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 1409 1414 (fontified t) 1414 1422 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 1422 1468 (fontified t) 1468 1479 (fontified t face (org-code) font-lock-multiline t org-emphasis t) 1479 1539 (fontified t) 1539 1541 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #43="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots" htmlize-link #42=(:uri #44="http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#roots") face org-link) 1541 1633 (fontified t mouse-face highlight face org-link htmlize-link #42# keymap #4# invisible org-link font-lock-multiline t help-echo #43#) 1633 1634 (fontified t mouse-face highlight face org-link htmlize-link #42# keymap #4# invisible org-link font-lock-multiline t help-echo #43# rear-nonsticky #6#) 1634 1639 (fontified t mouse-face highlight face org-link htmlize-link #45=(:uri #44#) keymap #4# font-lock-multiline t help-echo #43#) 1639 1640 (fontified t mouse-face highlight face org-link htmlize-link #45# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #43#) 1640 1657 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #43# htmlize-link #45# face org-link) 1657 1658 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #43# htmlize-link #45# rear-nonsticky #6# face org-link) 1658 1659 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #43# htmlize-link #42# face org-link) 1659 1660 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #43# htmlize-link #42# rear-nonsticky #6# face org-link) 1660 1684 (fontified t) 1684 1700 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 1700 1806 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1806 1807 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1807 1820 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 1820 1821 (fontified t face org-block-end-line) 1821 1822 (fontified t) 1822 1826 (fontified t face org-level-5) 1826 1828 (fontified t face org-level-5) 1828 1835 (fontified t face org-level-5) 1835 1894 (fontified t) 1894 1904 (fontified t face (italic) font-lock-multiline t org-emphasis t) 1904 2127 (fontified t) 2127 2129 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #47="LINK: http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#merge" htmlize-link #46=(:uri #48="http://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html#merge") face org-link) 2129 2221 (fontified t mouse-face highlight face org-link htmlize-link #46# keymap #4# invisible org-link font-lock-multiline t help-echo #47#) 2221 2222 (fontified t mouse-face highlight face org-link htmlize-link #46# keymap #4# invisible org-link font-lock-multiline t help-echo #47# rear-nonsticky #6#) 2222 2230 (fontified t mouse-face highlight face org-link htmlize-link #49=(:uri #48#) keymap #4# font-lock-multiline t help-echo #47#) 2230 2231 (fontified t mouse-face highlight face org-link htmlize-link #49# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #47#) 2231 2245 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #47# htmlize-link #49# face org-link) 2245 2246 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #47# htmlize-link #49# rear-nonsticky #6# face org-link) 2246 2247 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #47# htmlize-link #46# face org-link) 2247 2248 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #47# htmlize-link #46# rear-nonsticky #6# face org-link) 2248 2323 (fontified t) 2323 4233 (fontified nil) 4233 4234 (fontified t) 4234 4238 (fontified t face org-level-5) 4238 4240 (fontified t face org-level-5) 4240 4255 (fontified t face org-level-5) 4255 4256 (fontified t) 4256 4261 (fontified t face org-level-6) 4261 4263 (fontified t face org-level-6) 4263 4273 (fontified t face org-level-6) 4273 4274 (fontified t) 4274 4280 (fontified t face org-level-7) 4280 4282 (fontified t face org-level-7) 4282 4294 (fontified t face org-level-7) 4294 4295 (fontified t) 4295 4302 (fontified t face org-level-8) 4302 4304 (fontified t face org-level-8) 4304 4311 (fontified t face org-level-8) 4311 4341 (fontified t) 4341 4355 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 4355 4356 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 4356 4376 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 4376 4377 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 4377 4386 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 4386 4387 (fontified t face org-block-end-line) 4387 4411 (fontified t) 4411 4425 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 4425 4426 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 4426 4442 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 4442 4443 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 4443 4452 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 4452 4453 (fontified t face org-block-end-line) 4453 4454 (fontified t) 4454 4460 (fontified t face org-level-7) 4460 4462 (fontified t face org-level-7) 4462 4485 (fontified t face org-level-7) 4485 4798 (fontified t) 4798 10651 (fontified nil) 10651 10652 (fontified t) 10652 10657 (fontified t face org-level-6) 10657 10659 (fontified t face org-level-6) 10659 10665 (fontified t face org-level-6) 10665 10667 (fontified t) 10667 10673 (fontified t face org-level-7) 10673 10675 (fontified t face org-level-7) 10675 10679 (fontified t face org-level-7) 10679 11071 (fontified t) 11071 11077 (fontified t face org-level-7) 11077 11079 (fontified t face org-level-7) 11079 11101 (fontified t face org-level-7) 11101 11136 (fontified t) 11136 11149 (fontified t face (italic) font-lock-multiline t org-emphasis t) 11149 11176 (fontified t) 11176 11376 (fontified nil) 11376 11377 (fontified t) 11377 11383 (fontified t face org-level-7) 11383 11385 (fontified t face org-level-7) 11385 11400 (fontified t face org-level-7) 11400 11402 (fontified t) 11402 11409 (fontified t face org-level-8) 11409 11411 (fontified t face org-level-8) 11411 11446 (fontified t face org-level-8) 11446 11910 (fontified t) 11910 12087 (fontified t) 12087 12135 (fontified t font-lock-fontified t face font-lock-comment-face) 12135 12374 (fontified t) 12374 12438 (fontified t font-lock-fontified t face font-lock-comment-face) 12438 12439 (fontified t) 12439 12779 (fontified t) 12779 12804 (fontified t) 12804 13201 (fontified t) 13201 13232 (fontified t font-lock-fontified t face font-lock-comment-face) 13232 13349 (fontified t) 13349 13483 (fontified t) 13483 13636 (fontified t) 13636 13679 (fontified t font-lock-fontified t face font-lock-comment-face) 13679 13997 (fontified t) 13997 13998 (fontified t) 13998 14005 (fontified t face org-level-8) 14005 14007 (fontified t face org-level-8) 14007 14016 (fontified t face org-level-8) 14016 14057 (fontified t) 14057 14079 (fontified t font-lock-fontified t face font-lock-comment-face) 14079 14099 (fontified t) 14099 14138 (fontified t font-lock-fontified t face font-lock-comment-face) 14138 14274 (fontified t) 14274 14281 (fontified t face org-level-8) 14281 14283 (fontified t face org-level-8) 14283 14317 (fontified t face org-level-8) 14317 14405 (fontified t) 14405 14410 (fontified t face org-level-6) 14410 14412 (fontified t face org-level-6) 14412 14419 (fontified t face org-level-6) 14419 14421 (fontified t) 14421 14427 (fontified t face org-level-7) 14427 14429 (fontified t face org-level-7) 14429 14448 (fontified t face org-level-7) 14448 14450 (fontified t) 14450 14452 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #51="LINK: http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html" htmlize-link #50=(:uri #52="http://tech-droid.blogspot.com/2009/11/android-market-on-emulator.html") face org-link) 14452 14523 (fontified t mouse-face highlight face org-link htmlize-link #50# keymap #4# invisible org-link font-lock-multiline t help-echo #51#) 14523 14524 (fontified t mouse-face highlight face org-link htmlize-link #50# keymap #4# invisible org-link font-lock-multiline t help-echo #51# rear-nonsticky #6#) 14524 14531 (fontified t mouse-face highlight face org-link htmlize-link #53=(:uri #52#) keymap #4# font-lock-multiline t help-echo #51#) 14531 14532 (fontified t mouse-face highlight face org-link htmlize-link #53# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #51#) 14532 14533 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #51# htmlize-link #50# face org-link) 14533 14534 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #51# htmlize-link #50# rear-nonsticky #6# face org-link) 14534 14535 (fontified t) 14535 15224 (fontified nil) 15224 15225 (fontified t) 15225 15226 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #55="LINK: ~/Dropbox/Org/Tech/linux_files/image186.png" htmlize-link #56=(:uri #54="~/Dropbox/Org/Tech/linux_files/image186.png") face org-link) 15226 15227 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #55# htmlize-link #56# rear-nonsticky #6# face org-link) 15227 15269 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #55# htmlize-link #57=(:uri #54#) face org-link) 15269 15270 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #55# htmlize-link #57# rear-nonsticky #6# face org-link) 15270 15271 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #55# htmlize-link #56# face org-link) 15271 15272 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #55# htmlize-link #56# rear-nonsticky #6# face org-link) 15272 15273 (fontified t) 15273 15278 (fontified t face org-level-6) 15278 15280 (fontified t face org-level-6) 15280 15290 (fontified t face org-level-6) 15290 15291 (fontified t) 15291 15297 (fontified t face org-level-7) 15297 15299 (fontified t face org-level-7) 15299 15303 (fontified t face org-level-7) 15303 15304 (fontified t) 15304 15311 (fontified t face org-level-8) 15311 15313 (fontified t face org-level-8) 15313 15355 (fontified t face org-level-8) 15355 15357 (fontified t) 15357 15399 (fontified t face #12#) 15399 15404 (fontified t face #12#) 15404 15438 (fontified t face #12#) 15438 15440 (fontified t) 15440 15478 (fontified t mouse-face highlight face org-link htmlize-link #58=(:uri "https://aur.archlinux.org/packages/snx/") keymap #4#) 15478 15479 (fontified t mouse-face highlight face org-link htmlize-link #58# keymap #4# rear-nonsticky #6#) 15479 15512 (fontified t) 15512 15546 (fontified t mouse-face highlight face org-link htmlize-link #59=(:uri "https://vpn.bgu.ac.il/extender.html") keymap #4#) 15546 15547 (fontified t mouse-face highlight face org-link htmlize-link #59# keymap #4# rear-nonsticky #6#) 15547 15602 (fontified t) 15602 15624 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 15624 15625 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 15625 15656 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 15656 15657 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 15657 15666 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 15666 15667 (fontified t face org-block-end-line) 15667 15668 (fontified t) 15668 15678 (fontified t font-lock-fontified t face org-meta-line) 15678 15744 (fontified t) 15744 15766 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 15766 15767 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 15767 15796 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 15796 15797 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 15797 15806 (fontified nil font-lock-fontified t font-lock-multiline t face org-block-end-line) 15806 15807 (fontified nil face org-block-end-line) 15807 16316 (fontified nil) 16316 16317 (fontified t)) . 871216) (undo-tree-id154 . -11) (t 21679 43826 597346 726000)) nil (21680 9291 372431 335000) 0 nil]) ((865522 . 865523)) nil (21679 43826 334072 238000) 0 nil]) ((#("o" 0 1 (fontified t face org-level-5)) . -865522)) nil (21679 43826 334080 953000) 0 nil]) ((#("p" 0 1 (fontified t face org-level-5)) . -865523)) nil (21679 43826 334086 603000) 0 nil]) ((#("o" 0 1 (fontified t face org-level-5)) . -865524)) nil (21679 43826 334090 675000) 0 nil]) ((865524 . 865525)) nil (21679 43826 334094 323000) 0 nil]) ((865523 . 865524)) nil (21679 43826 334097 591000) 0 nil]) ((865522 . 865523)) nil (21679 43826 334100 918000) 0 nil]) ((865521 . 865522)) nil (21679 43826 334104 216000) 0 nil]) ((865520 . 865521)) nil (21679 43826 334107 455000) 0 nil]) ((865519 . 865520)) nil (21679 43826 334110 836000) 0 nil]) ((#("p" 0 1 (fontified t face org-level-5)) . -865519)) nil (21679 43826 334114 211000) 0 nil]) ((865519 . 865520)) nil (21679 43826 334118 52000) 0 nil]) ((865518 . 865519)) nil (21679 43826 334121 730000) 0 nil]) ((865517 . 865518)) nil (21679 43826 334124 877000) 0 nil]) ((865516 . 865517)) nil (21679 43826 334128 183000) 0 nil]) ((865515 . 865516)) nil (21679 43826 334131 448000) 0 nil]) ((865514 . 865515)) nil (21679 43826 334135 126000) 0 nil]) ((865513 . 865514)) nil (21679 43826 334138 388000) 0 nil]) ((865512 . 865513)) nil (21679 43826 334141 718000) 0 nil]) ((865511 . 865512)) nil (21679 43826 334144 923000) 0 nil]) ((#("i" 0 1 (fontified t face org-level-5)) . -865511)) nil (21679 43826 334148 70000) 0 nil]) ((865511 . 865512)) nil (21679 43826 334151 578000) 0 nil]) ((865510 . 865511)) nil (21679 43826 334154 678000) 0 nil]) ((865509 . 865510)) nil (21679 43826 334158 218000) 0 nil]) ((865508 . 865509)) nil (21679 43826 334161 546000) 0 nil]) ((865507 . 865508)) nil (21679 43826 334164 884000) 0 nil]) ((865506 . 865507)) nil (21679 43826 334182 692000) 0 nil]) ((865505 . 865506)) nil (21679 43826 334185 946000) 0 nil]) ((865504 . 865505)) nil (21679 43826 334189 6000) 0 nil]) ((865503 . 865504)) nil (21679 43826 334192 53000) 0 nil]) ((865502 . 865503)) nil (21679 43826 334195 132000) 0 nil]) ((865501 . 865502)) nil (21679 43826 334198 380000) 0 nil]) ((865500 . 865501)) nil (21679 43826 334201 635000) 0 nil]) ((865499 . 865500)) nil (21679 43826 334204 807000) 0 nil]) ((865498 . 865499)) nil (21679 43826 334207 776000) 0 nil]) ((865497 . 865498)) nil (21679 43826 334210 810000) 0 nil]) ((#("*" 0 1 (fontified t)) . -865497)) nil (21679 43826 334213 850000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-6)) . -865498)) nil (21679 43826 334217 501000) 0 nil]) ((865498 . 865499)) nil (21679 43826 334221 99000) 0 nil]) ((#("*" 0 1 (fontified t)) . -865498)) nil (21679 43826 334224 186000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-7)) . -865499)) nil (21679 43826 334227 729000) 0 nil]) ((865499 . 865500)) nil (21679 43826 334231 202000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-7)) . -865499)) nil (21679 43826 334234 179000) 0 nil]) ((865492 . 865500)) nil (21679 43826 334237 471000) 0 nil]) ((865492 . 865493)) nil (21679 43826 334240 405000) 0 nil]) ((#("i" 0 1 (fontified t)) . -865492)) nil (21679 43826 334243 339000) 0 nil]) ((865492 . 865493)) nil (21679 43826 334246 694000) 0 nil]) ((865156 . 865157)) nil (21679 43826 334249 561000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 865156) (undo-tree-id132 . 1)) nil (21679 43826 334261 10000) 0 nil]) ((#("  
+" 0 2 (fontified t) 2 3 (fontified t)) . 871195) (undo-tree-id133 . 3) (undo-tree-id134 . 1) (undo-tree-id135 . 2) (undo-tree-id136 . 3) (undo-tree-id137 . 3) (undo-tree-id138 . 3) (undo-tree-id139 . 3) (undo-tree-id140 . 3) (undo-tree-id141 . 3) (undo-tree-id142 . 3)) nil (21679 43826 334287 222000) 0 nil]) ((#(" " 0 1 (fontified t)) . 871195) (undo-tree-id143 . 1) (undo-tree-id144 . 1) (undo-tree-id145 . 1) (undo-tree-id146 . 1)) nil (21679 43826 334304 596000) 0 nil]) ((#(" " 0 1 (fontified t)) . 871195) (undo-tree-id147 . 1)) nil (21679 43826 334311 615000) 0 nil]) ((871194 . 871199) 871184 (t 21679 39539 4583 111000)) nil (21679 43826 334316 741000) 0 nil]) ((868447 . 868448)) nil (21679 39538 704079 867000) 0 nil]) ((#("*** initial setup 
+" 0 2 (fontified t face org-level-3) 2 4 (fontified t face org-level-3) 4 18 (fontified t face org-level-3) 18 19 (fontified t)) . 865701) (undo-tree-id124 . -19) (undo-tree-id125 . -19)) nil (21679 39538 704120 800000) 0 nil]) ((#(" " 0 1 (fontified t)) . -871178) (#(" " 0 1 (fontified t)) . -871146) (#(" " 0 1 (fontified nil font-lock-fontified t src-block t font-lock-multiline t face org-block-end-line)) . -871135) (#(" " 0 1 (fontified nil font-lock-fontified t src-block t font-lock-multiline t)) . -871094) (#(" " 0 1 (fontified nil font-lock-fontified t src-block t font-lock-multiline t)) . -871052) (#(" " 0 1 (fontified nil font-lock-fontified t font-lock-multiline t src-block t)) . -871009) (#(" " 0 1 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line)) . -870994) (#(" " 0 1 (fontified t font-lock-fontified t face org-meta-line)) . -870985) (#(" " 0 1 (fontified t)) . -870941) (#(" " 0 1 (fontified t)) . -870899) (nil fontified t 870875 . 870877) (nil face org-level-5 870875 . 870877) (nil fontified t 870872 . 870875) (nil face org-level-5 870872 . 870875) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 870872) (870878 . 870883) (nil fontified t 868452 . 868454) (nil face org-level-5 868452 . 868454) (nil fontified t 868449 . 868452) (nil face org-level-5 868449 . 868452) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 868449) (868455 . 868460) (nil fontified t 866288 . 866290) (nil face org-level-5 866288 . 866290) (nil fontified t 866285 . 866288) (nil face org-level-5 866285 . 866288) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 866285) (866291 . 866296) (nil fontified t 865723 . 865725) (nil face org-level-5 865723 . 865725) (nil fontified t 865720 . 865723) (nil face org-level-5 865720 . 865723) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 865720) (865726 . 865731) (nil fontified t 865703 . 865705) (nil face org-level-4 865703 . 865705) (nil fontified t 865702 . 865703) (nil face org-level-4 865702 . 865703) (nil fontified t 865701 . 865702) (nil face org-level-4 865701 . 865702) (#("**** " 0 2 (fontified t face org-level-4) 2 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 865701) (865706 . 865710) 865701) nil (21679 39538 704154 69000) 0 nil]) ((871192 . 871193) (871159 . 871160) (871147 . 871148) (871105 . 871106) (871062 . 871063) (871018 . 871019) (871002 . 871003) (870992 . 870993) (870947 . 870948) (870904 . 870905) (nil fontified t 870880 . 870882) (nil face org-level-4 870880 . 870882) (nil fontified t 870877 . 870880) (nil face org-level-4 870877 . 870880) (#("**** " 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 870876) (870881 . 870887) 870876) nil (21679 39538 704184 849000) 0 nil]) ((#("**** basic sync
+For two nodes two sync a repository, the following must be true on each node:
+
+1.The other node has been added to the config (+add device):
+
+#+DOWNLOADED: /tmp/screenshot.png @ 2014-10-21 17:24:02
+#+attr_html: :width 300px
+ [[/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:24:02.png]]
+
+$Note- you need the KEY from the other machine you are trying to pair$
+
+2.after you add a device you need to add each repo you want to sync seperatly:
+
+click add folder :
+
+
+#+DOWNLOADED: /tmp/screenshot.png @ 2014-10-21 17:23:42
+#+attr_html: :width 300px
+ [[/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:23:42.png]]
+
+'FolderID' and 'Folder Path' need to be identical to the partner machine you are trying to sync
+
+then make sure the other node (machines) you want to share have been checked under \"Share With Nodes\" in the repository configuration
+
+#+DOWNLOADED: /tmp/screenshot.png @ 2014-10-21 17:27:16
+#+attr_html: :width 300px
+
+ [[/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:27:16.png]]
+
+finally `restart`
+
+in example: 
+
+#+BEGIN_EXAMPLE
+Folder ID: sync
+Repository Path:/home/zeltak/Sync
+#+END_EXAMPLE
+
+" 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4) 5 15 (fontified t face org-level-4) 15 16 (fontified t) 16 157 (fontified t) 157 212 (fontified t font-lock-fontified t face org-meta-line) 212 213 (fontified t) 213 238 (fontified t font-lock-fontified t face org-meta-line) 238 240 (fontified t) 240 241 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #61="LINK: /home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:24:02.png" htmlize-link #62=(:uri #60="/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:24:02.png") face org-link) 241 242 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #61# htmlize-link #62# rear-nonsticky #6# face org-link) 242 311 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #61# htmlize-link #63=(:uri #60#) face org-link) 311 312 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #61# htmlize-link #63# rear-nonsticky #6# face org-link) 312 313 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #61# htmlize-link #62# face org-link) 313 314 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #61# htmlize-link #62# rear-nonsticky #6# face org-link) 314 316 (fontified t) 316 386 (fontified t face #15#) 386 487 (fontified t) 487 489 (fontified t) 489 544 (fontified t font-lock-fontified t face org-meta-line) 544 545 (fontified t) 545 570 (fontified t font-lock-fontified t face org-meta-line) 570 572 (fontified t) 572 573 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #65="LINK: /home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:23:42.png" htmlize-link #66=(:uri #64="/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:23:42.png") face org-link) 573 574 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #65# htmlize-link #66# rear-nonsticky #6# face org-link) 574 643 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #65# htmlize-link #67=(:uri #64#) face org-link) 643 644 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #65# htmlize-link #67# rear-nonsticky #6# face org-link) 644 645 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #65# htmlize-link #66# face org-link) 645 646 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #65# htmlize-link #66# rear-nonsticky #6# face org-link) 646 648 (fontified t) 648 658 (fontified t face #1#) 658 663 (fontified t) 663 676 (fontified t face #1#) 676 880 (fontified t) 880 935 (fontified t font-lock-fontified t face org-meta-line) 935 936 (fontified t) 936 961 (fontified t font-lock-fontified t face org-meta-line) 961 964 (fontified t) 964 965 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #69="LINK: /home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:27:16.png" htmlize-link #70=(:uri #68="/home/zeltak/org/attach/images_2014/screenshot_2014-10-21_17:27:16.png") face org-link) 965 966 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #69# htmlize-link #70# rear-nonsticky #6# face org-link) 966 1035 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #69# htmlize-link #71=(:uri #68#) face org-link) 1035 1036 (fontified t keymap #4# mouse-face highlight font-lock-multiline t help-echo #69# htmlize-link #71# rear-nonsticky #6# face org-link) 1036 1037 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #69# htmlize-link #70# face org-link) 1037 1038 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #69# htmlize-link #70# rear-nonsticky #6# face org-link) 1038 1039 (fontified t) 1039 1048 (fontified t) 1048 1057 (fontified t face #72#) 1057 1059 (fontified t) 1059 1069 (fontified t face (:foreground "#000000" :underline t :background "#FF9AEA" :weight ultra-bold)) 1069 1073 (fontified t) 1073 1089 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 1089 1138 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1138 1139 (fontified t font-lock-fontified t font-lock-multiline t face org-block) 1139 1152 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 1152 1153 (fontified t face org-block-end-line) 1153 1154 (fontified t)) . 870876) (undo-tree-id126 . -240) (undo-tree-id127 . -314) (undo-tree-id128 . -572) (undo-tree-id129 . -646) (undo-tree-id130 . -964) (undo-tree-id131 . -1038)) nil (21679 39538 704211 493000) 0 nil]) ((#(" ---
+" 0 1 (fontified t) 1 3 (fontified t) 3 4 (fontified t rear-nonsticky t) 4 5 (fontified t)) . 870876) (t 21679 39035 978147 130000)) nil (21679 39538 704218 739000) 0 nil]) ((#(" " 0 1 (fontified t)) . 870596) (undo-tree-id66 . 1) (undo-tree-id67 . 1) (undo-tree-id68 . 1) (undo-tree-id69 . 1) (undo-tree-id70 . 1) (undo-tree-id71 . 1)) nil (21679 39035 629245 109000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 870596) (undo-tree-id72 . 1) (undo-tree-id73 . 1) (undo-tree-id74 . 1) (undo-tree-id75 . 1) (undo-tree-id76 . 1)) nil (21679 39035 629266 806000) 0 nil]) ((#(" ![img/gs5.png](img/gs5.png)
+" 0 29 (fontified t)) . 870596) (undo-tree-id77 . 1) (undo-tree-id78 . 1) (undo-tree-id79 . 1) (undo-tree-id80 . 2) (undo-tree-id81 . -28) (undo-tree-id82 . 14) (undo-tree-id83 . -16) (undo-tree-id84 . 2) 870623) nil (21679 39035 629287 912000) 0 nil]) ((870345 . 870363)) nil (21679 39035 629292 791000) 0 nil]) ((#(" " 0 1 (fontified t)) . -870359)) nil (21679 39035 629295 535000) 0 nil]) ((870352 . 870360)) nil (21679 39035 629298 793000) 0 nil]) ((870345 . 870352)) nil (21679 39035 629301 491000) 0 nil]) ((#("i" 0 1 (fontified t)) . -870345)) nil (21679 39035 629304 81000) 0 nil]) ((#("n" 0 1 (fontified t)) . -870346) (undo-tree-id85 . 1) (undo-tree-id86 . 1) (undo-tree-id87 . 1)) nil (21679 39035 629313 25000) 0 nil]) ((#("e" 0 1 (fontified t)) . 870346) (undo-tree-id88 . 1) (undo-tree-id89 . 1)) nil (21679 39035 629320 885000) 0 nil]) ((#("h" 0 1 (fontified t)) . 870346) (undo-tree-id90 . 1)) nil (21679 39035 629326 732000) 0 nil]) ((#("t" 0 1 (fontified t)) . 870346) (undo-tree-id91 . 1)) nil (21679 39035 629332 305000) 0 nil]) ((870345 . 870346)) nil (21679 39035 629336 182000) 0 nil]) ((870343 . 870345)) nil (21679 39035 629339 165000) 0 nil]) ((#(" " 0 1 (fontified t)) . 870343) (undo-tree-id92 . 1)) nil (21679 39035 629343 925000) 0 nil]) ((#("." 0 1 (fontified t)) . 870343) (undo-tree-id93 . 1)) nil (21679 39035 629349 548000) 0 nil]) ((#("." 0 1 (fontified t)) . 870343) (undo-tree-id94 . 1)) nil (21679 39035 629357 378000) 0 nil]) ((#("." 0 1 (fontified t)) . 870343) (undo-tree-id95 . 1)) nil (21679 39035 629363 409000) 0 nil]) ((#(" " 0 1 (fontified t)) . 870343) (undo-tree-id96 . 1)) nil (21679 39035 629368 956000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 870343) (undo-tree-id97 . 1)) nil (21679 39035 629374 491000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 870343)) nil (21679 39035 629378 33000) 0 nil]) ((#(":" 0 1 (fontified t)) . -870342)) nil (21679 39035 629381 20000) 0 nil]) ((#(" ![img/gs4.png](img/gs4.png)
+" 0 29 (fontified t)) . 870345) (undo-tree-id98 . 22) 870351) nil (21679 39035 629386 709000) 0 nil]) ((870171 . 870172) (#("note" 0 4 (fontified nil)) . 870171) (870165 . 870171) 870169) nil (21679 39035 629391 319000) 0 nil]) ((870168 . 870169)) nil (21679 39035 629395 81000) 0 nil]) ((#("r" 0 1 (fontified t)) . -870168)) nil (21679 39035 629397 691000) 0 nil]) ((870165 . 870169)) nil (21679 39035 629400 791000) 0 nil]) ((#(" " 0 1 (fontified t)) . 870165)) nil (21679 39035 629403 473000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 870004) (undo-tree-id99 . -1)) nil (21679 39035 629408 652000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 870005) (undo-tree-id100 . 1)) nil (21679 39035 629414 528000) 0 nil]) ((#(" " 0 1 (fontified t)) . 870006)) nil (21679 39035 629418 48000) 0 nil]) ((#(" ![img/gs3.png](img/gs3.png)
+" 0 29 (fontified t)) . 870167)) nil (21679 39035 629421 235000) 0 nil]) ((#(" ![img/gs2.png](img/gs2.png)
+" 0 29 (fontified t)) . 870005) (undo-tree-id101 . 9)) nil (21679 39035 629426 325000) 0 nil]) ((869646 . 869804)) nil (21679 39035 629429 917000) 0 nil]) ((869645 . 869647)) nil (21679 39035 629432 724000) 0 nil]) ((868446 . 868448)) nil (21679 39035 629435 343000) 0 nil]) ((868442 . 868446)) nil (21679 39035 629437 981000) 0 nil]) ((868422 . 868442)) nil (21679 39035 629440 589000) 0 nil]) ((868417 . 868418)) nil (21679 39035 629443 205000) 0 nil]) ((868409 . 868410)) nil (21679 39035 629445 907000) 0 nil]) ((#("n" 0 1 (fontified t face #73=(:weight ultra-bold :background "#DDFFDD" :foreground "#000000"))) . -868409)) nil (21679 39035 629448 459000) 0 nil]) ((868407 . 868410)) nil (21679 39035 629451 512000) 0 nil]) ((868402 . 868407)) nil (21679 39035 629454 445000) 0 nil]) ((868396 . 868402)) nil (21679 39035 629457 125000) 0 nil]) ((868394 . 868396)) nil (21679 39035 629459 616000) 0 nil]) ((868391 . 868394)) nil (21679 39035 629462 489000) 0 nil]) ((#("u" 0 1 (fontified t face #73#)) . -868391)) nil (21679 39035 629464 991000) 0 nil]) ((#("n" 0 1 (fontified t face #73#)) . -868392)) nil (21679 39035 629467 939000) 0 nil]) ((#("c" 0 1 (fontified t face #73#)) . -868393)) nil (21679 39035 629471 54000) 0 nil]) ((868390 . 868394)) nil (21679 39035 629473 927000) 0 nil]) ((868396 . 868402)) nil (21679 39035 629476 430000) 0 nil]) ((868392 . 868396)) nil (21679 39035 629479 468000) 0 nil]) ((868376 . 868392)) nil (21679 39035 629483 104000) 0 nil]) ((868356 . 868376)) nil (21679 39035 629486 736000) 0 nil]) ((868354 . 868356) (#("I" 0 1 (fontified nil)) . -868354) (#("I" 0 1 (fontified nil face #73#)) . 868355) (868354 . 868355) 868355) nil (21679 39035 629492 880000) 0 nil]) ((868352 . 868355)) nil (21679 39035 629498 311000) 0 nil]) ((#("0" 0 1 (fontified t face #73#)) . -868352)) nil (21679 39035 629502 530000) 0 nil]) ((#(" " 0 1 (fontified t face #73#)) . -868353)) nil (21679 39035 629505 799000) 0 nil]) ((#("I" 0 1 (fontified t face #73#)) . -868354)) nil (21679 39035 629508 746000) 0 nil]) ((#(" " 0 1 (fontified t face #73#)) . -868355)) nil (21679 39035 629511 646000) 0 nil]) ((#("i" 0 1 (fontified t face #73#)) . -868356)) nil (21679 39035 629514 882000) 0 nil]) ((868356 . 868357)) nil (21679 39035 629517 793000) 0 nil]) ((868355 . 868356) (#("i" 0 1 (fontified nil face #73#)) . 868355) (868354 . 868355) 868355) nil (21679 39035 629521 982000) 0 nil]) ((868352 . 868355)) nil (21679 39035 629525 729000) 0 nil]) ((868353 . 868354) (#("tip" 0 3 (fontified nil)) . 868353) (868348 . 868353) 868351) nil (21679 39035 629529 573000) 0 nil]) ((#("o" 0 1 (fontified t)) . -868351)) nil (21679 39035 629533 580000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868352)) nil (21679 39035 629536 531000) 0 nil]) ((868349 . 868353)) nil (21679 39035 629539 382000) 0 nil]) ((#("u" 0 1 (fontified t)) . -868349)) nil (21679 39035 629541 895000) 0 nil]) ((#("i" 0 1 (fontified t)) . -868350)) nil (21679 39035 629545 51000) 0 nil]) ((#("p" 0 1 (fontified t)) . -868351)) nil (21679 39035 629548 109000) 0 nil]) ((868350 . 868352)) nil (21679 39035 629550 982000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 868350)) nil (21679 39035 629553 937000) 0 nil]) ((868348 . 868350)) nil (21679 39035 629556 942000) 0 nil]) ((868347 . 868348)) nil (21679 39035 629559 483000) 0 nil]) ((#(" " 0 1 (fontified t)) . 869544)) nil (21679 39035 629562 198000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 869543)) nil (21679 39035 629565 283000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 869543)) nil (21679 39035 629568 255000) 0 nil]) ((869542 . 869543)) nil (21679 39035 629571 196000) 0 nil]) ((869541 . 869545)) nil (21679 39035 629573 778000) 0 nil]) ((#("." 0 1 (fontified t)) . -869541)) nil (21679 39035 629576 388000) 0 nil]) ((#(" " 0 1 (fontified t)) . 869452)) nil (21679 39035 629579 417000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 869451)) nil (21679 39035 629582 440000) 0 nil]) ((869450 . 869453)) nil (21679 39035 629585 402000) 0 nil]) ((869448 . 869450)) nil (21679 39035 629587 960000) 0 nil]) ((#("
+" 0 1 (fontified t)) . -869448)) nil (21679 39035 629590 766000) 0 nil]) ((#("%" 0 1 (fontified t)) . -869449)) nil (21679 39035 629594 156000) 0 nil]) ((869449 . 869450)) nil (21679 39035 629597 203000) 0 nil]) ((869448 . 869449)) nil (21679 39035 629599 893000) 0 nil]) ((#("," 0 1 (fontified t)) . 869448)) nil (21679 39035 629602 754000) 0 nil]) ((869402 . 869403)) nil (21679 39035 629605 767000) 0 nil]) ((#("t" 0 1 (fontified t)) . -869402)) nil (21679 39035 629608 535000) 0 nil]) ((#("u" 0 1 (fontified t)) . -869403)) nil (21679 39035 629611 513000) 0 nil]) ((869402 . 869404)) nil (21679 39035 629614 853000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 868367)) nil (21679 39035 629617 447000) 0 nil]) ((#(" " 0 1 (fontified t)) . 869403)) nil (21679 39035 629620 326000) 0 nil]) ((#("'" 0 1 (fontified t face #1#)) . 869282)) nil (21679 39035 629623 433000) 0 nil]) ((#(" " 0 1 (fontified t)) . 869193)) nil (21679 39035 629626 251000) 0 nil]) ((#(" " 0 1 (fontified t)) . 868774)) nil (21679 39035 629629 154000) 0 nil]) ((#("'" 0 1 (fontified t face #1#)) . 868583)) nil (21679 39035 629632 82000) 0 nil]) ((#(" " 0 1 (fontified t)) . 868454) (undo-tree-id102 . 1)) nil (21679 39035 629638 870000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 868454) (undo-tree-id103 . 1)) nil (21679 39035 629644 553000) 0 nil]) ((#("![img/gs1.png](img/gs1.png)
+" 0 28 (fontified t)) . 868454) (undo-tree-id104 . 1) (undo-tree-id105 . -27) (undo-tree-id106 . 2) (undo-tree-id107 . -27) (undo-tree-id108 . 14) (undo-tree-id109 . -15) 868480) nil (21679 39035 629660 642000) 0 nil]) ((#("I" 0 1 (fontified t)) . -868452)) nil (21679 39035 629665 130000) 0 nil]) ((#("t" 0 1 (fontified t)) . -868453)) nil (21679 39035 629668 16000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868454)) nil (21679 39035 629671 144000) 0 nil]) ((#("s" 0 1 (fontified t)) . -868455)) nil (21679 39035 629674 224000) 0 nil]) ((#("h" 0 1 (fontified t)) . -868456)) nil (21679 39035 629677 35000) 0 nil]) ((#("o" 0 1 (fontified t)) . -868457)) nil (21679 39035 629680 89000) 0 nil]) ((#("u" 0 1 (fontified t)) . -868458)) nil (21679 39035 629682 930000) 0 nil]) ((#("l" 0 1 (fontified t)) . -868459)) nil (21679 39035 629685 799000) 0 nil]) ((#("d" 0 1 (fontified t)) . -868460)) nil (21679 39035 629688 593000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868461)) nil (21679 39035 629691 522000) 0 nil]) ((#("l" 0 1 (fontified t)) . -868462)) nil (21679 39035 629694 310000) 0 nil]) ((#("o" 0 1 (fontified t)) . -868463)) nil (21679 39035 629697 235000) 0 nil]) ((#("o" 0 1 (fontified t)) . -868464)) nil (21679 39035 629700 420000) 0 nil]) ((#("k" 0 1 (fontified t)) . -868465)) nil (21679 39035 629703 237000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868466)) nil (21679 39035 629706 271000) 0 nil]) ((#("s" 0 1 (fontified t)) . -868467)) nil (21679 39035 629709 328000) 0 nil]) ((#("o" 0 1 (fontified t)) . -868468)) nil (21679 39035 629712 179000) 0 nil]) ((#("m" 0 1 (fontified t)) . -868469)) nil (21679 39035 629715 440000) 0 nil]) ((#("e" 0 1 (fontified t)) . -868470)) nil (21679 39035 629718 363000) 0 nil]) ((#("t" 0 1 (fontified t)) . -868471)) nil (21679 39035 629721 423000) 0 nil]) ((#("h" 0 1 (fontified t)) . -868472)) nil (21679 39035 629724 497000) 0 nil]) ((#("i" 0 1 (fontified t)) . -868473)) nil (21679 39035 629727 470000) 0 nil]) ((#("n" 0 1 (fontified t)) . -868474)) nil (21679 39035 629730 432000) 0 nil]) ((#("g" 0 1 (fontified t)) . -868475)) nil (21679 39035 629733 345000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868476)) nil (21679 39035 629736 181000) 0 nil]) ((#("l" 0 1 (fontified t)) . -868477)) nil (21679 39035 629739 48000) 0 nil]) ((#("i" 0 1 (fontified t)) . -868478)) nil (21679 39035 629741 854000) 0 nil]) ((#("k" 0 1 (fontified t)) . -868479)) nil (21679 39035 629744 698000) 0 nil]) ((#("e" 0 1 (fontified t)) . -868480)) nil (21679 39035 629747 511000) 0 nil]) ((#(" " 0 1 (fontified t)) . -868481)) nil (21679 39035 629750 458000) 0 nil]) ((#("t" 0 1 (fontified t)) . -868482)) nil (21679 39035 629753 276000) 0 nil]) ((#("h" 0 1 (fontified t)) . -868483)) nil (21679 39035 629756 167000) 0 nil]) ((#("i" 0 1 (fontified t)) . -868484)) nil (21679 39035 629759 292000) 0 nil]) ((#("s" 0 1 (fontified t)) . -868485)) nil (21679 39035 629762 122000) 0 nil]) ((#(":" 0 1 (fontified t)) . -868486)) nil (21679 39035 629765 436000) 0 nil]) ((#("i" 0 1 (fontified t)) . -868487)) nil (21679 39035 629768 555000) 0 nil]) ((868487 . 868488)) nil (21679 39035 629771 510000) 0 nil]) ((868367 . 868368)) nil (21679 39035 629774 304000) 0 nil]) ((#(" " 0 1 (fontified t)) . 868488)) nil (21679 39035 629776 926000) 0 nil]) ((#(" " 0 1 (fontified t)) . 868367)) nil (21679 39035 629780 214000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 868367)) nil (21679 39035 629797 663000) 0 nil]) ((#(" " 0 1 (fontified t)) . 868134)) nil (21679 39035 629802 531000) 0 nil]) ((#(" ```
+" 0 1 (fontified t) 1 5 (fontified t)) . 868133) (undo-tree-id110 . 5)) nil (21679 39035 629810 863000) 0 nil]) ((868119 . 868133) (866875 . 866891) 868103) nil (21679 39035 629817 262000) 0 nil]) ((866874 . 866875)) nil (21679 39035 629821 992000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866874)) nil (21679 39035 629825 851000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866874)) nil (21679 39035 629830 247000) 0 nil]) ((#("`" 0 1 (fontified t)) . 866874)) nil (21679 39035 629834 711000) 0 nil]) ((#("`" 0 1 (fontified t)) . 866874)) nil (21679 39035 629838 951000) 0 nil]) ((#("`" 0 1 (fontified t)) . 866874)) nil (21679 39035 629843 334000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866874)) nil (21679 39035 629847 714000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866874)) nil (21679 39035 629851 907000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866386)) nil (21679 39035 629856 86000) 0 nil]) ((866384 . 866386)) nil (21679 39035 629860 560000) 0 nil]) ((#(")" 0 1 (fontified t)) . 866384)) nil (21679 39035 629864 345000) 0 nil]) ((#("(" 0 1 (fontified t)) . -866330)) nil (21679 39035 629868 725000) 0 nil]) ((866329 . 866330)) nil (21679 39035 629873 59000) 0 nil]) ((866328 . 866329)) nil (21679 39035 629876 753000) 0 nil]) ((#("]" 0 1 (fontified t)) . -866328) (undo-tree-id111 . 1) (undo-tree-id112 . -1)) nil (21679 39035 629886 923000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866304)) nil (21679 39035 629892 352000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866304)) nil (21679 39035 629896 575000) 0 nil]) ((#("'" 0 1 (fontified t face #1#)) . 866185)) nil (21679 39035 629900 982000) 0 nil]) ((#("x" 0 1 (fontified t)) . -866185)) nil (21679 39035 629905 192000) 0 nil]) ((866185 . 866186)) nil (21679 39035 629909 578000) 0 nil]) ((866059 . 866060)) nil (21679 39035 629913 283000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866059) (undo-tree-id113 . -1)) nil (21679 39035 629920 526000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866060) (undo-tree-id114 . 1) (undo-tree-id115 . 1) (undo-tree-id116 . 1)) nil (21679 39035 629938 16000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866060) (undo-tree-id117 . 1) (undo-tree-id118 . 1) (undo-tree-id119 . 1)) nil (21679 39035 629953 414000) 0 nil]) ((#(" " 0 1 (fontified t)) . 866060) (undo-tree-id120 . 1) (undo-tree-id121 . 1) (undo-tree-id122 . 1)) nil (21679 39035 629974 509000) 0 nil]) ((#(" " 0 1 (fontified t)) . 865826)) nil (21679 39035 629980 305000) 0 nil]) ((865825 . 865826)) nil (21679 39035 629984 682000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866060)) nil (21679 39035 629988 648000) 0 nil]) ((866059 . 866060)) nil (21679 39035 629993 38000) 0 nil]) ((865891 . 865892)) nil (21679 39035 629997 421000) 0 nil]) ((#(" " 0 1 (fontified t)) . -865891)) nil (21679 39035 630001 306000) 0 nil]) ((#("
+" 0 1 (fontified t)) . -865892)) nil (21679 39035 630005 736000) 0 nil]) ((#("
+" 0 1 (fontified t)) . -865893)) nil (21679 39035 630009 973000) 0 nil]) ((865892 . 865894)) nil (21679 39035 630014 250000) 0 nil]) ((#("i" 0 1 (fontified t)) . -865892)) nil (21679 39035 630017 958000) 0 nil]) ((865892 . 865893)) nil (21679 39035 630022 528000) 0 nil]) ((866058 . 866060)) nil (21679 39035 630026 517000) 0 nil]) ((866058 . 866059) (#("
+" 0 1 (fontified t)) . -866058) 865740) nil (21679 39035 630031 816000) 0 nil]) ((#(" " 0 1 (fontified t)) . 865740)) nil (21679 39035 630037 85000) 0 nil]) ((#("*" 0 1 (fontified t face org-level-6)) . 868336)) nil (21679 39035 630041 532000) 0 nil]) ((868336 . 868344) (#("****** C" 0 7 (fontified nil) 7 8 (font-lock-fontified t fontified nil)) . 868336) (#("C" 0 1 (fontified t font-lock-fontified t)) . 868336) (868337 . 868345) 868336) nil (21679 39035 630048 778000) 0 nil]) ((#(" " 0 1 (fontified t font-lock-fontified t)) . 868336)) nil (21679 39035 630054 792000) 0 nil]) ((#("#" 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . 868336) (undo-tree-id123 . -1)) nil (21679 39035 630062 710000) 0 nil]) ((#(" " 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . 868336)) nil (21679 39035 630067 797000) 0 nil]) ((870759 . 870760) (870478 . 870479) (870448 . 870449) (870220 . 870221) (870190 . 870191) (870016 . 870017) (869986 . 869987) (869825 . 869826) (869795 . 869796) (869458 . 869459) (869246 . 869247) (868826 . 868827) (868504 . 868505) (868474 . 868475) (868352 . 868353) (868336 . 868337) (868120 . 868121) (868114 . 868115) (868044 . 868045) (867961 . 867962) (867897 . 867898) (867833 . 867834) (867771 . 867772) (867708 . 867709) (867641 . 867642) (867590 . 867591) (867519 . 867520) (867464 . 867465) (867381 . 867382) (867314 . 867315) (867246 . 867247) (867177 . 867178) (867094 . 867095) (867011 . 867012) (866943 . 866944) (866898 . 866899) (866885 . 866886) (866880 . 866881) (866308 . 866309) (nil fontified t 866295 . 866296) (nil font-lock-fontified t 866295 . 866296) (nil face org-level-4 866295 . 866296) (nil fontified t 866294 . 866295) (nil face org-level-4 866294 . 866295) (nil fontified t 866291 . 866294) (nil face org-level-4 866291 . 866294) (#("**** " 0 3 (fontified t face org-level-4) 3 4 (fontified t face org-level-4) 4 5 (fontified t font-lock-fontified t face org-level-4)) . 866290) (866295 . 866301) 866290) nil (21679 39035 630104 217000) 0 nil]) ((866061 . 866062) (865740 . 865741) (nil fontified t 865726 . 865727) (nil font-lock-fontified t 865726 . 865727) (nil face org-level-4 865726 . 865727) (nil fontified t 865725 . 865726) (nil face org-level-4 865725 . 865726) (nil fontified t 865722 . 865725) (nil face org-level-4 865722 . 865725) (#("**** " 0 3 (fontified t face org-level-4) 3 4 (fontified t face org-level-4) 4 5 (fontified t font-lock-fontified t face org-level-4)) . 865721) (865726 . 865732) 865721) nil (21679 39035 630125 362000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 865739)) nil (21679 39035 630132 234000) 0 nil] [nil nil ((nil fontified t 868314 . 868315) (nil font-lock-fontified t 868314 . 868315) (nil face font-lock-comment-face 868314 . 868315) (#("#" 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . -868310) (868311 . 868316)) ((#("*****" 0 4 (fontified nil face org-level-5) 4 5 (fontified nil face font-lock-comment-face font-lock-fontified t)) . 868311) (undo-tree-id65 . -5) (868310 . 868311) (nil face org-level-5 868314 . 868315) (nil font-lock-fontified nil 868314 . 868315)) (21679 38003 327064 842000) 0 nil] [nil ([nil nil ((868118 . 868119) (868112 . 868113) (868042 . 868043) (867959 . 867960) (867895 . 867896) (867831 . 867832) (867769 . 867770) (867706 . 867707) (867639 . 867640) (867588 . 867589) (867517 . 867518) (867462 . 867463) (867379 . 867380) (867312 . 867313) (867244 . 867245) (867175 . 867176) (867092 . 867093) (867009 . 867010) (866941 . 866942) (866896 . 866897) (866883 . 866884) (866878 . 866879) (866306 . 866307) (nil fontified t 866293 . 866294) (nil font-lock-fontified t 866293 . 866294) (nil face org-level-4 866293 . 866294) (nil fontified t 866292 . 866293) (nil face org-level-4 866292 . 866293) (nil fontified t 866289 . 866292) (nil face org-level-4 866289 . 866292) (#("**** " 0 3 (fontified t face org-level-4) 3 4 (fontified t face org-level-4) 4 5 (fontified t font-lock-fontified t face org-level-4)) . 866288) (866293 . 866299) 866302) ((#("***** " 0 1 (fontified nil face org-level-5) 1 4 (fontified nil face org-level-4) 4 5 (fontified nil face org-level-4) 5 6 (fontified nil face org-level-4 font-lock-fontified t)) . 866293) (866288 . 866293) (nil face org-level-5 866289 . 866292) (nil fontified nil 866289 . 866292) (nil face org-level-5 866292 . 866293) (nil fontified nil 866292 . 866293) (nil face org-level-5 866293 . 866294) (nil font-lock-fontified nil 866293 . 866294) (#(" " 0 1 (fontified t)) . 866306) (#(" " 0 1 (fontified t)) . 866878) (#(" " 0 1 (fontified t)) . 866883) (#(" " 0 1 (fontified t)) . 866896) (#(" " 0 1 (fontified t)) . 866941) (#(" " 0 1 (fontified t)) . 867009) (#(" " 0 1 (fontified t)) . 867092) (#(" " 0 1 (fontified t)) . 867175) (#(" " 0 1 (fontified t)) . 867244) (#(" " 0 1 (fontified t)) . 867312) (#(" " 0 1 (fontified t)) . 867379) (#(" " 0 1 (fontified t)) . 867462) (#(" " 0 1 (fontified t)) . 867517) (#(" " 0 1 (fontified t)) . 867588) (#(" " 0 1 (fontified t)) . 867639) (#(" " 0 1 (fontified t)) . 867706) (#(" " 0 1 (fontified t)) . 867769) (#(" " 0 1 (fontified t)) . 867831) (#(" " 0 1 (fontified nil)) . 867895) (#(" " 0 1 (fontified nil)) . 867959) (#(" " 0 1 (fontified nil)) . 868042) (#(" " 0 1 (fontified nil)) . 868112) (#(" " 0 1 (fontified nil)) . 868118)) (21679 37972 509651 220000) 0 nil]) ((#("#" 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . -868310) (868311 . 868315)) ((#("****" 0 3 (fontified nil face org-level-4) 3 4 (fontified nil face org-level-4)) . 868311) (868310 . 868311)) (21679 37972 513306 270000) 0 nil]) ((#("#" 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . -866288) (866289 . 866293)) nil (21679 38003 328019 667000) 0 nil]) ((#("#" 0 1 (fontified t font-lock-fontified t face font-lock-comment-face)) . -865721) (865722 . 865726)) nil (21679 37972 509667 798000) 0 nil]) ((nil rear-nonsticky nil 870714 . 870715) (nil fontified nil 865721 . 870715) (865721 . 870715)) nil (21679 37972 509671 94000) 0 nil]) ((865720 . 865721)) nil (21679 37972 509673 280000) 0 nil]) ((865716 . 865720)) nil (21679 37972 509675 257000) 0 nil]) ((865714 . 865716)) nil (21679 37972 509677 62000) 0 nil]) ((865713 . 865714) (#("inital" 0 6 (fontified nil face org-level-4)) . 865713) (865706 . 865713) 865712) nil (21679 37972 509680 79000) 0 nil]) ((865709 . 865712)) nil (21679 37972 509682 544000) 0 nil]) ((865704 . 865709)) nil (21679 37972 509684 359000) 0 nil]) ((#(" " 0 1 (fontified t face org-level-3)) . -865704)) nil (21679 37972 509686 243000) 0 nil]) ((865701 . 865705)) nil (21679 37972 509688 605000) 0 nil]) ((865701 . 865702)) nil (21679 37972 509690 386000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 866855) (t 21679 32250 130631 735000)) nil (21679 37972 509692 483000) 0 nil]) ((1574296 . 1574306) (1574217 . 1574232) 1574281) nil (21679 32249 622438 713000) 0 nil]) ((1574464 . 1574465)) nil (21679 32249 622446 928000) 0 nil]) ((1574281 . 1574282)) nil (21679 32249 622451 416000) 0 nil]) ((#(" " 0 1 (fontified t)) . 1574217) (undo-tree-id5 . 1) (undo-tree-id6 . 1)) nil (21679 32249 622467 940000) 0 nil]) ((#("$" 0 1 (fontified t)) . 1574217) (undo-tree-id7 . 1)) nil (21679 32249 622477 273000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1574092) (undo-tree-id8 . 1) (undo-tree-id9 . 1) (undo-tree-id10 . 1) (undo-tree-id11 . 1) (undo-tree-id12 . 1) (undo-tree-id13 . 1) (undo-tree-id14 . 1) (undo-tree-id15 . 1) (undo-tree-id16 . 1) (undo-tree-id17 . 1) (undo-tree-id18 . 1) (undo-tree-id19 . 1) (undo-tree-id20 . 1) (undo-tree-id21 . 1) (undo-tree-id22 . 1) (undo-tree-id23 . 1) (undo-tree-id24 . 1) (undo-tree-id25 . 1) (undo-tree-id26 . 1) (undo-tree-id27 . 1) (undo-tree-id28 . 1)) nil (21679 32249 622543 118000) 0 nil]) ((#(" % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+ 66 1215k   66  805k    0     0  33060      0  0:00:37  0:00:24  0:00:13 45900
+100 1215k  100 1215k    0     0  39474      0  0:00:31  0:00:31 --:--:-- 68987
+" 0 1 (fontified t) 1 13 (fontified t face #73#) 13 79 (fontified t) 79 315 (fontified t)) . -1574092) (undo-tree-id29 . 315) (undo-tree-id30 . 53) (undo-tree-id31 . 132) (undo-tree-id32 . 210) (undo-tree-id33 . 290) (undo-tree-id34 . -236) (undo-tree-id35 . 315) (undo-tree-id36 . 315) (undo-tree-id37 . 236) (undo-tree-id38 . 158) (undo-tree-id39 . 79) (undo-tree-id40 . 79) (undo-tree-id41 . 158) (undo-tree-id42 . 236) (undo-tree-id43 . 315) (undo-tree-id44 . 315) (undo-tree-id45 . -315) (undo-tree-id46 . 315) (undo-tree-id47 . -236) (undo-tree-id48 . 236) (undo-tree-id49 . 158) (undo-tree-id50 . 79)) nil (21679 32249 622628 495000) 0 nil]) ((1574407 . 1574409)) nil (21679 32249 622638 428000) 0 nil]) ((#(" " 0 1 (fontified t)) . 1574092) (undo-tree-id51 . 1)) nil (21679 32249 622647 552000) 0 nil]) ((1573887 . 1573897) (1573793 . 1573808) 1573872) nil (21679 32249 622655 638000) 0 nil]) ((#(" " 0 1 (fontified t)) . 1573793) (undo-tree-id52 . 1) (undo-tree-id53 . 1) (undo-tree-id54 . 1) (undo-tree-id55 . 1) (undo-tree-id56 . 1) (undo-tree-id57 . 1) (undo-tree-id58 . 1)) nil (21679 32249 622679 450000) 0 nil]) ((#("$" 0 1 (fontified t)) . 1573793) (undo-tree-id59 . 1) (undo-tree-id60 . 1) (undo-tree-id61 . 1) (undo-tree-id62 . 1) (undo-tree-id63 . 1) (undo-tree-id64 . 1)) nil (21679 32249 622704 267000) 0 nil]) ((1573792 . 1573793)) nil (21679 32249 622710 731000) 0 nil]) ((1573873 . 1573874)) nil (21679 32249 622714 656000) 0 nil] [nil nil ((#("N" 0 1 (fontified t)) . 1573873) (undo-tree-id0 . 1)) ((1573873 . 1573874)) (21679 32225 776119 500000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1573516) (undo-tree-id1 . 1) (undo-tree-id2 . 1)) nil (21679 32225 776496 248000) 0 nil]) ((1573480 . 1573486) (#("**** S" 0 5 (fontified nil) 5 6 (fontified nil)) . 1573480) (#("S" 0 1 (fontified t)) . 1573480) (1573481 . 1573487) 1573506) nil (21679 32225 776139 128000) 0 nil]) ((nil rear-nonsticky nil 1574749 . 1574750) (nil fontified nil 1573480 . 1574750) (1573480 . 1574750)) nil (21679 32225 776144 83000) 0 nil]) ((1573479 . 1573480)) nil (21679 32225 776147 252000) 0 nil]) ((1573475 . 1573479)) nil (21679 32225 776149 901000) 0 nil]) ((#("c" 0 1 (fontified t face org-level-3)) . -1573475)) nil (21679 32225 776152 473000) 0 nil]) ((1573471 . 1573476)) nil (21679 32225 776155 484000) 0 nil]) ((1573470 . 1573471)) nil (21679 32225 776157 985000) 0 nil]) ((nil face org-level-5 1573248 . 1573250) (nil fontified nil 1573248 . 1573250) (nil face org-level-5 1573245 . 1573248) (nil fontified nil 1573245 . 1573248) (#("***** " 0 4 (face org-level-5 fontified nil) 4 6 (face org-level-5 fontified nil)) . 1573245) (1573251 . 1573256) (nil face org-level-5 1573096 . 1573098) (nil fontified nil 1573096 . 1573098) (nil face org-level-5 1573093 . 1573096) (nil fontified nil 1573093 . 1573096) (#("***** " 0 4 (face org-level-5 fontified nil) 4 6 (face org-level-5 fontified nil)) . 1573093) (1573099 . 1573104) (nil face org-level-5 1572830 . 1572832) (nil fontified nil 1572830 . 1572832) (nil face org-level-5 1572827 . 1572830) (nil fontified nil 1572827 . 1572830) (#("***** " 0 4 (face org-level-5 fontified nil) 4 6 (face org-level-5 fontified nil)) . 1572827) (1572833 . 1572838) (nil face org-level-5 1572417 . 1572419) (nil fontified nil 1572417 . 1572419) (nil face org-level-5 1572414 . 1572417) (nil fontified nil 1572414 . 1572417) (#("***** " 0 4 (face org-level-5 fontified nil) 4 6 (face org-level-5 fontified nil)) . 1572414) (1572420 . 1572425) (nil fontified t 1572087 . 1572089) (nil face org-level-5 1572087 . 1572089) (nil fontified t 1572084 . 1572087) (nil face org-level-5 1572084 . 1572087) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 1572084) (1572090 . 1572095) (nil fontified t 1571787 . 1571789) (nil face org-level-5 1571787 . 1571789) (nil fontified t 1571784 . 1571787) (nil face org-level-5 1571784 . 1571787) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 1571784) (1571790 . 1571795) (nil fontified t 1571592 . 1571594) (nil face org-level-5 1571592 . 1571594) (nil fontified t 1571589 . 1571592) (nil face org-level-5 1571589 . 1571592) (#("***** " 0 4 (fontified t face org-level-5) 4 6 (fontified t face org-level-5)) . 1571589) (1571595 . 1571600) (nil fontified t 1571582 . 1571584) (nil face org-level-4 1571582 . 1571584) (nil fontified t 1571580 . 1571582) (nil face org-level-4 1571580 . 1571582) (#("**** " 0 3 (fontified t face org-level-4) 3 5 (fontified t face org-level-4)) . 1571580) (1571585 . 1571589) 1571580) nil (21679 32225 776180 373000) 0 nil]) ((#("
+" 0 1 (fontified t rear-nonsticky t)) . 1571580) (undo-tree-id3 . -1)) nil (21679 32225 776194 633000) 0 nil]) ((#("
+" 0 1 (fontified t)) . 1571581)) nil (21679 32225 776198 81000) 0 nil]) ((#("*** internet
+" 0 2 (fontified t face org-level-3) 2 4 (fontified t face org-level-3) 4 12 (fontified t face org-level-3) 12 13 (fontified t)) . 1571581)) nil (21679 32225 776200 828000) 0 nil]) ((nil rear-nonsticky nil 1571580 . 1571581) (nil fontified nil 1571580 . 1571581) (#("
+" 0 1 (fontified nil)) . -1573493) (1571580 . 1573494)) nil (21679 32225 776205 321000) 0 nil]) ((1571579 . 1571580) 1571113) nil (21679 32225 776209 201000) 0 nil]) ((#("*** internet
+
+**** Wget
+***** Specify a download Path for wget putput
+      
+      #+NAME: wget_output_path
+      #+BEGIN_SRC sh
+wget -P/PATH  http://URL/
+#example
+wget -P/tmp  http://www.cnn.com/
+      #+END_SRC
+      
+***** Download an entire website
+Download an entire website:
+
+wget --random-wait -r -p -e robots=off -U mozilla [[http://www.example.com][http://www.example.com]]
+
+#or try
+
+wget --recursive --no-clobber --page-requisites --html-extension --convert-links --restrict-file-names=windows --no-parent URL
+
+***** Mirror a site
+      
+      #+NAME: mirror a site with wget
+      #+BEGIN_SRC sh
+wget --mirror -p --adjust-extension --no-parent --convert-links -P yii_doc http://www.yiiframework.com/doc/api/1.1
+#for password site
+wget -e robots=off --wait 1 -x --user=xxx --password=xxx -m -k http://domain.to.mirror/
+      #+END_SRC
+      
+***** download all links to a specific file type
+
+wget -r -np -l 1 -A zip http://site.com/download/
+wget -r -A '.pdf' url/path
+wget -r -A '.mp3' url/path/dir/ 
+
+
+ Options meaning:
+ -r, --recursive specify recursive download.
+ -np, --no-parent don't ascend to the parent directory.
+ -l, --level=NUMBER maximum recursion depth (inf or 0 for infinite).
+ -A, --accept=LIST comma-separated list of accepted extensions.
+***** use wget to download a ftp site
+use the following command (the -m is for mirror)
+
+#+BEGIN_SRC sh
+wget -m ftp://username:password@ip.of.old.host
+#if you need a passwordless login leave the passworld field empty
+wget -m ftp://username:@ip.of.old.host
+#+END_SRC 
+
+***** dl per file type wget
+The easiest way to download all pdf or mp3 files from given url:
+
+wget -r -A '.pdf' url/path
+wget -r -A '.mp3'url/path/dir/
+
+***** dl files recursivly by part of string
+in this example we want to downlaod all files containing 'AOD'
+#+BEGIN_SRC sh
+wget -r  -np ftp://maiac:@dataportal.nccs.nasa.gov/DataRelease/NorthAmerica/  -A \"*AOT*.hdf\"  
+#+END_SRC
+" 0 2 (fontified t face org-level-3) 2 4 (fontified t face org-level-3) 4 12 (fontified t face org-level-3) 12 14 (fontified t) 14 17 (fontified t face org-level-4) 17 19 (fontified t face org-level-4) 19 23 (fontified t face org-level-4) 23 24 (fontified t) 24 28 (fontified t face org-level-5) 28 30 (fontified t face org-level-5) 30 69 (fontified t face org-level-5) 69 77 (fontified t) 77 107 (fontified t font-lock-fontified t face org-meta-line) 107 108 (fontified t) 108 128 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 128 129 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 129 143 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 143 153 (fontified t mouse-face highlight htmlize-link #74=(:uri "http://URL/") keymap #4# font-lock-fontified t font-lock-multiline t face nil src-block t) 153 154 (fontified t mouse-face highlight htmlize-link #74# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t face nil src-block t) 154 155 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 155 156 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-delimiter-face src-block t) 156 164 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-face src-block t) 164 177 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 177 195 (fontified t mouse-face highlight htmlize-link #75=(:uri "http://www.cnn.com/") keymap #4# font-lock-fontified t font-lock-multiline t src-block t) 195 196 (fontified t mouse-face highlight htmlize-link #75# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t src-block t) 196 197 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 197 212 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 212 213 (fontified t face org-block-end-line) 213 220 (fontified t) 220 224 (fontified t face org-level-5) 224 226 (fontified t face org-level-5) 226 252 (fontified t face org-level-5) 252 332 (fontified t) 332 334 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #77="LINK: http://www.example.com" htmlize-link #76=(:uri #78="http://www.example.com") face org-link) 334 357 (fontified t mouse-face highlight face org-link htmlize-link #76# keymap #4# invisible org-link font-lock-multiline t help-echo #77#) 357 358 (fontified t mouse-face highlight face org-link htmlize-link #76# keymap #4# invisible org-link font-lock-multiline t help-echo #77# rear-nonsticky #6#) 358 379 (fontified t mouse-face highlight face org-link htmlize-link #79=(:uri #78#) keymap #4# font-lock-multiline t help-echo #77#) 379 380 (fontified t mouse-face highlight face org-link htmlize-link #79# keymap #4# rear-nonsticky #6# font-lock-multiline t help-echo #77#) 380 381 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #77# htmlize-link #76# face org-link) 381 382 (fontified t invisible org-link keymap #4# mouse-face highlight font-lock-multiline t help-echo #77# htmlize-link #76# rear-nonsticky #6# face org-link) 382 520 (fontified t) 520 521 (fontified t) 521 525 (fontified t face org-level-5) 525 527 (fontified t face org-level-5) 527 540 (fontified t face org-level-5) 540 548 (fontified t) 548 585 (fontified t font-lock-fontified t face org-meta-line) 585 586 (fontified t) 586 606 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 606 607 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 607 682 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 682 720 (fontified t mouse-face highlight htmlize-link #80=(:uri "http://www.yiiframework.com/doc/api/1.1") keymap #4# font-lock-fontified t font-lock-multiline t face nil src-block t) 720 721 (fontified t mouse-face highlight htmlize-link #80# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t face nil src-block t) 721 722 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 722 723 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-delimiter-face src-block t) 723 741 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-face src-block t) 741 749 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 749 755 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-variable-name-face src-block t) 755 804 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 804 827 (fontified t mouse-face highlight htmlize-link #81=(:uri "http://domain.to.mirror/") keymap #4# font-lock-fontified t font-lock-multiline t src-block t) 827 828 (fontified t mouse-face highlight htmlize-link #81# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t src-block t) 828 829 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 829 844 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 844 845 (fontified t face org-block-end-line) 845 852 (fontified t) 852 856 (fontified t face org-level-5) 856 858 (fontified t face org-level-5) 858 900 (fontified t face org-level-5) 900 926 (fontified t) 926 950 (fontified t mouse-face highlight face org-link htmlize-link #82=(:uri "http://site.com/download/") keymap #4#) 950 951 (fontified t mouse-face highlight face org-link htmlize-link #82# keymap #4# rear-nonsticky #6#) 951 963 (fontified t) 963 969 (fontified t face #1#) 969 990 (fontified t) 990 996 (fontified t face #1#) 996 1032 (fontified t) 1032 1202 (fontified nil) 1202 1266 (fontified t) 1266 1270 (fontified t face org-level-5) 1270 1272 (fontified t face org-level-5) 1272 1303 (fontified t face org-level-5) 1303 1354 (fontified t) 1354 1368 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 1368 1369 (fontified t font-lock-fontified t font-lock-multiline t face org-block-begin-line) 1369 1377 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 1377 1414 (fontified t mouse-face highlight htmlize-link #83=(:uri "ftp://username:password@ip.of.old.host") keymap #4# font-lock-fontified t font-lock-multiline t face nil src-block t) 1414 1415 (fontified t mouse-face highlight htmlize-link #83# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t face nil src-block t) 1415 1416 (fontified t font-lock-fontified t font-lock-multiline t face nil src-block t) 1416 1417 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-delimiter-face src-block t) 1417 1482 (fontified t font-lock-fontified t font-lock-multiline t face font-lock-comment-face src-block t) 1482 1490 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 1490 1519 (fontified t mouse-face highlight htmlize-link #84=(:uri "ftp://username:@ip.of.old.host") keymap #4# font-lock-fontified t font-lock-multiline t src-block t) 1519 1520 (fontified t mouse-face highlight htmlize-link #84# keymap #4# rear-nonsticky #6# font-lock-fontified t font-lock-multiline t src-block t) 1520 1521 (fontified t font-lock-fontified t font-lock-multiline t src-block t) 1521 1531 (fontified t font-lock-fontified t font-lock-multiline t face org-block-end-line) 1531 1532 (fontified t face org-block-end-line) 1532 1533 (fontified t) 1533 1537 (fontified t face org-level-5) 1537 1539 (fontified t face org-level-5) 1539 1560 (fontified t face org-level-5) 1560 1638 (fontified t) 1638 1644 (fontified t face #1#) 1644 1665 (fontified t) 1665 1671 (fontified t face #1#) 1671 1686 (fontified t) 1686 1690 (fontified t face org-level-5) 1690 1692 (fontified t face org-level-5) 1692 1729 (fontified t face org-level-5) 1729 1787 (fontified t) 1787 1792 (fontified t face #1#) 1792 1793 (fontified t) 1793 1903 (fontified nil) 1903 1912 (fontified t font-lock-fontified t face org-meta-line) 1912 1913 (fontified t)) . 1376750) (undo-tree-id4 . -14) (t 21672 17233 675163 401000)) nil (21679 32225 776214 857000) 0 nil]) nil nil (21679 32225 776217 859000) 0 nil] #85# 42115 318 nil]
