@@ -15,3 +15,5 @@ ssh zeltak@132.72.155.204
 ssh zeltak@132.72.155.204
 export TERM=screen-256color-bce
 ssh uni 
+free
+watch -d free
