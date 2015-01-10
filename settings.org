@@ -693,7 +693,7 @@ $Note$ this requires package async to be installed, @async must be loaded before
 (load-file "~/.emacs.g/extra/org-download/org-download.el")
 
 (setq-default org-download-heading-lvl nil)
-(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014")
+(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none

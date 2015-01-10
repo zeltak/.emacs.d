@@ -1,5 +1,5 @@
-"3ae06e2d97e235e3b4151fc302205d80fc7445ef"
-[cl-struct-undo-tree [nil (#1=[nil nil ((1 . 27052) (#("((last-sort-comparer
+"40fd0006c8bdf5bc8f912e2b2cdca00523506200"
+[cl-struct-undo-tree [nil (#1=[nil nil ((1 . 27595) (#("((last-sort-comparer
   (bmkp-visited-more-cp)
   bmkp-alpha-p)
  (last-reverse-sort-p . t)
@@ -254,14 +254,14 @@
 				  (handler . bmkp-jump-dired))
 			     #25=(#(\"rofi_help\" 0 9
 				    (bmkp-full-record #25#))
-				  (filename . \"~/dotfiles/COMMON/bin/rofi_help\")
+				  (filename . \"~/dotfiles/LAPTOP/bin/rofi_help\")
 				  (buffer-name . \"rofi_help\")
 				  (front-context-string . \"#!/bin/bash\\nshop\")
 				  (rear-context-string)
 				  (front-context-region-string)
 				  (rear-context-region-string)
 				  (visits . 0)
-				  (time . #26=(21587 41698 622744 657000))
+				  (time . #26=(21670 28398 612731 587000))
 				  (created . #26#)
 				  (position . 1))
 			     #27=(#(\"TV deleted\" 0 10
@@ -785,4 +785,4 @@
  (last-bmenu-before-hide-marked-alist)
  (last-bmenu-before-hide-unmarked-alist)
  (last-bookmark-file . \"/home/zeltak/.emacs.d/bookmarks\"))
-" 0 27051 (fontified nil)) . 1) (t 21670 27698 5507 138000)) nil (21670 28408 188020 569000) 0 nil]) nil nil (21670 28408 188025 984000) 0 nil] #1# 27075 1 nil]
+" 0 27051 (fontified nil)) . 1) (t 21670 28408 484808 380000)) nil (21680 59214 797968 200000) 0 nil]) nil nil (21680 59214 797973 14000) 0 nil] #1# 27075 1 nil]

@@ -1,5 +1,5 @@
-"64e35db36d5264eeab80fcd6803776994df335cf"
-[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 24487) ("#1=(#(\".tmux\" 0 5
+"69ac6898266c28766fe60b989da1981560c7c05a"
+[cl-struct-undo-tree [nil (#1=[nil nil ((208 . 25258) ("#1=(#(\".tmux\" 0 5
       (bmkp-full-record #1#))
     (buffer-name . \".tmux\")
     (front-context-string . \"..\\n  drwxr-xr-x \")
@@ -640,20 +640,6 @@
     (created 20863 45232 65810 85000)
     (position . 23704)
     (end-position . 23704))
-#1=(#(\"raid_rsync\" 0 10
-      (bmkp-full-record #1#))
-    (tags \"server\")
-    (filename . \"/ssh:192.168.0.2:/home/zeltak/bin/rsync_server\")
-    (buffer-name . \"rsync_server\")
-    (front-context-string . \"#!/bin/bash\\n\\n#co\")
-    (rear-context-string)
-    (front-context-region-string)
-    (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(20813 2920 850856 433000))
-    (created . #2#)
-    (position . 1)
-    (end-position . 1))
 #1=(#(\"raid_tmux\" 0 9
       (bmkp-full-record #1#))
     (tags \"server\")
@@ -744,20 +730,6 @@
     (created 20810 11236 425837)
     (position . 1)
     (end-position . 1))
-#1=(#(\"raid_tmux\" 0 9
-      (bmkp-full-record #1#))
-    (tags \"server\")
-    (filename . \"/ssh:192.168.0.2:/home/zeltak/.tmux.conf\")
-    (buffer-name . \".tmux.conf\")
-    (front-context-string . \"################\")
-    (rear-context-string)
-    (front-context-region-string)
-    (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(20813 2894 968965 243000))
-    (created . #2#)
-    (position . 1)
-    (end-position . 1))
 #1=(#(\".xinitrc\" 0 8
       (bmkp-full-record #1#))
     (tags \"zpref\")
@@ -786,4 +758,4 @@
     (created 20810 11202 246448)
     (position . 39)
     (end-position . 39))
-" . 208) (t 21670 28956 443256 123000)) nil (21670 28971 283599 89000) 0 nil]) nil nil (21670 28971 283608 632000) 0 nil] #1# 25173 1 nil]
+" . 208) (t 21670 28971 373398 449000)) nil (21680 59212 69477 413000) 0 nil]) nil nil (21680 59212 69483 392000) 0 nil] #1# 24303 1 nil]
