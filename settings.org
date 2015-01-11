@@ -846,13 +846,11 @@ $note its built into emacs no intsall needed$
 ** Undo tree
 
 #+BEGIN_SRC emacs-lisp :results none
-  (require 'undo-tree)
-   ;automatically save and restore undo-tree history along with buffer (disabled by default)
-   (global-undo-tree-mode 1)
-   ;Eable the undo-tree-auto-save-history customization option to automatically save and load undo history in undo-tree buffers 
-   (setq undo-tree-auto-save-history t)
-   (setq undo-tree-history-directory-alist
-         `((".*" . ,(concat user-emacs-directory "undo"))))
+(require 'undo-tree)
+(global-undo-tree-mode 1)
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory-alist '((".*" . "~/.emacs.t/undo-files")))
+(setq undo-tree-mode-lighter "")	 
 #+END_SRC
 
 ** !hippie expand! 
@@ -978,6 +976,25 @@ if installed through package manager no extra config is needed
   ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
   
 #+END_SRC
+** ace-isearch
+*** start ace-isearch
+#+BEGIN_SRC emacs-lisp :results none
+(require 'ace-isearch)
+(ace-isearch-mode +1)
+(global-ace-isearch-mode +1)
+#+END_SRC
+*** customize 
+#+BEGIN_SRC emacs-lisp :results none
+(custom-set-variables
+ '(ace-isearch-input-length 7)
+ '(ace-isearch-input-idle-delay 0.2)
+ '(ace-isearch-submode 'ace-jump-char-mode)
+ '(ace-isearch-use-ace-jump 'printing-char))
+
+(ace-isearch-set-ace-jump-after-isearch-exit t)
+#+END_SRC
+
+
 ** auctex
 #+BEGIN_SRC emacs-lisp :results none
 ;(require 'tex)

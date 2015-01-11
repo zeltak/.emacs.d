@@ -1,9 +1,0 @@
-"269c53d2bd4ea348f8a3b4d5613f22c01b490207"
-[cl-struct-undo-tree [nil ([nil (#1=[nil nil ((485 . 502) (#("* F(edit:addheading) [[olp:agenda/TODO.org][agenda/TODO.org]]
-** Old value
-
-** New value
-Switch from priority to next
-** End of edit
-
-" 0 134 (fontified nil)) . -483) (t 21486 4899 201708 226000) (undo-tree-id0 . -2)) nil (21486 4899 990429 357000) 0 nil]) ((180 . 790) (t 21281 17373 379600 505000)) nil (21486 4899 129831 293000) 0 nil]) nil nil (21486 4899 129835 577000) 0 nil] #1# 182 2 nil]

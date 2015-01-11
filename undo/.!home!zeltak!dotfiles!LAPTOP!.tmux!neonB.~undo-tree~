@@ -1,3 +1,0 @@
-"f84ba722fd23828b3f01b87f61a15ad87adcc448"
-[cl-struct-undo-tree [nil ([nil ([nil ([nil (#1=[nil nil ((379 . 380)) nil (21671 64317 645919 813000) 0 nil]) ((321 . 322)) nil (21671 64317 645930 225000) 0 nil]) (("
-" . 299) (undo-tree-id448 . 1) (undo-tree-id449 . -1) (undo-tree-id450 . -1) (undo-tree-id451 . -1) (undo-tree-id452 . -1) (undo-tree-id453 . -1) (undo-tree-id454 . -1) (undo-tree-id455 . -1) (undo-tree-id456 . -1) (undo-tree-id457 . 1) (t 21671 64284 197834 494000)) nil (21671 64317 646028 830000) 0 nil]) ((300 . 431) 299) nil (21671 64284 130312 825000) 0 nil]) nil nil (21671 64279 796206 74000) 0 nil] #1# 129 4 nil]
