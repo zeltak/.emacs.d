@@ -423,17 +423,15 @@ needed for the form to be bound to the key.
 (setq browse-url-generic-program "chromium")
 #+END_SRC
 ** Backup
+Auto-backup is triggered when you save a file - it will keep the old version of the file around, adding a ~ to its name. 
+auto-save-mode auto-saves a file every few seconds 
+here we put these files in the /tmp dir
+
 #+BEGIN_SRC emacs-lisp :results none
-(setq backup-directory-alist '(("." . "/home/zeltak/.cache/emacs/bk")))
-
-;Make backups of files, even when they're in version control
-(setq vc-make-backup-files nil)
-
-(setq delete-old-versions -1)
-(setq version-control t)
-(setq vc-make-backup-files t)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
-
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 #+END_SRC
 
 ** Save and sessions
@@ -473,17 +471,11 @@ needed for the form to be bound to the key.
 $note its built into emacs no intsall needed$
 
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (require 'recentf)
-  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-  ;; (recentf-mode 1)
-  ;; (setq recentf-max-menu-items 25)
-  ;; ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-;(recentf-mode 1) ; keep a list of recently opened files
-;(setq recentf-max-menu-items 500)
+(setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 50)
 ;(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-
-
 #+END_SRC
 
 ** Remote
@@ -684,6 +676,26 @@ $Note this is needed for org-download$
 
 Dired+ also provides commands †¡diredp-find-file-reuse-dir-buffer†¢ and †¡diredp-mouse-find-file-reuse-dir-buffer†¢ that open a directory in the same buffer •¡¹ bind them as you like.
 
+*** dired rainbow
+color files by extension 
+
+#+BEGIN_SRC emacs-lisp :results none
+(require 'dired-rainbow)
+
+(defconst dired-audio-files-extensions
+  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+  "Dired Audio files extensions")
+(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+(defconst dired-video-files-extensions
+    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+    "Dired Video files extensions")
+(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+#+END_SRC
+*** image dired
+#+BEGIN_SRC emacs-lisp :results none
+#+END_SRC
 ** org-downlaod
 
 provides function to drag images from browser and link address

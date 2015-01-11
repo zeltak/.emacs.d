@@ -319,15 +319,10 @@
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
 
-(setq backup-directory-alist '(("." . "/home/zeltak/.cache/emacs/bk")))
-
-;Make backups of files, even when they're in version control
-(setq vc-make-backup-files nil)
-
-(setq delete-old-versions -1)
-(setq version-control t)
-(setq vc-make-backup-files t)
-(setq auto-save-file-name-transforms '((".*" "~/.emacs.d/auto-save-list/" t)))
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 ;If I reopen a file, I want to start at the line at which I was when I closed it.
 ; save the place in files
@@ -353,14 +348,10 @@
         search-ring
         regexp-search-ring))
 
-;; (require 'recentf)
-  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-  ;; (recentf-mode 1)
-  ;; (setq recentf-max-menu-items 25)
-  ;; ;(global-set-key "\C-x\ \C-r" 'recentf-open-files)
-
-;(recentf-mode 1) ; keep a list of recently opened files
-;(setq recentf-max-menu-items 500)
+(setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 50)
 ;(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
 
 (require 'tramp) ; Remote file editing via ssh
@@ -483,10 +474,25 @@ Usage: (package-require 'package)"
 
 (toggle-diredp-find-file-reuse-dir 1)
 
+(require 'dired-rainbow)
+
+(defconst dired-audio-files-extensions
+  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+  "Dired Audio files extensions")
+(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+(defconst dired-video-files-extensions
+    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+    "Dired Video files extensions")
+(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+
+
+
 (load-file "~/.emacs.g/extra/org-download/org-download.el")
 
 (setq-default org-download-heading-lvl nil)
-(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014")
+(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
@@ -599,12 +605,10 @@ Usage: (package-require 'package)"
 (setq bmkp-prompt-for-tags-flag nil)
 
 (require 'undo-tree)
- ;automatically save and restore undo-tree history along with buffer (disabled by default)
- (global-undo-tree-mode 1)
- ;Eable the undo-tree-auto-save-history customization option to automatically save and load undo history in undo-tree buffers 
- (setq undo-tree-auto-save-history t)
- (setq undo-tree-history-directory-alist
-       `((".*" . ,(concat user-emacs-directory "undo"))))
+(global-undo-tree-mode 1)
+(setq undo-tree-auto-save-history t)
+(setq undo-tree-history-directory-alist '((".*" . "~/.emacs.t/undo-files")))
+(setq undo-tree-mode-lighter "")
 
 ;; (setq dcsh-command-list '("all_registers"
 ;;                               "check_design" "check_test" "compile" "current_design"
@@ -709,6 +713,18 @@ Usage: (package-require 'package)"
 ;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
 ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
 ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
+
+(require 'ace-isearch)
+(ace-isearch-mode +1)
+(global-ace-isearch-mode +1)
+
+(custom-set-variables
+ '(ace-isearch-input-length 7)
+ '(ace-isearch-input-idle-delay 0.2)
+ '(ace-isearch-submode 'ace-jump-char-mode)
+ '(ace-isearch-use-ace-jump 'printing-char))
+
+(ace-isearch-set-ace-jump-after-isearch-exit t)
 
 ;(require 'tex)
 ;(setq preview-scale-function 1.1)
@@ -2512,11 +2528,21 @@ With prefix P, create local abbrev. Otherwise it will be global."
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
 (load "ess-site")
 
-(setq ess-ask-about-transfile nil)
+(setq comint-scroll-to-bottom-on-input t)
+(setq comint-scroll-to-bottom-on-output t)
+(setq comint-move-point-for-output t)
 
-(setq ess-ask-for-ess-directory "/home/zeltak/ZH_tmp/")
+;don't ask to save file
+;(setq ess-ask-about-transfile nil)
+(setq ess-ask-about-transfile t)
+
+(setq ess-ask-for-ess-directory nil)
+;define deault ess dir
+(setq ess-directory "/home/zeltak/ZH_tmp/")
 
 (setq ess-local-process-name "Runi")
+
+(setq ess-history-directory "~/.essrhist/")
 
 (defun clear-shell ()
    (interactive)
