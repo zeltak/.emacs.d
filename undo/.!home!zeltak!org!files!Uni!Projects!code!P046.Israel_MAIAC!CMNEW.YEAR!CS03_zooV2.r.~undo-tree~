@@ -1,3 +1,0 @@
-"7b03c6d689bbe18562d521c352bb2fa4b9b664b9"
-[cl-struct-undo-tree [nil ([nil ([nil ([nil (#1=[nil nil ((11702 . 11703) (#("3" 0 1 (fontified t)) . 11702)) nil (21675 50054 148164 293000) 0 nil]) ((11645 . 11646) (#("3" 0 1 (fontified t)) . 11645)) nil (21675 50054 148170 555000) 0 nil]) ((#("m.2003<-m3[c==2003]
-" 0 6 (fontified t) 6 8 (fontified t face font-lock-constant-face) 8 20 (fontified t)) . 10570) (undo-tree-id0 . 20) (undo-tree-id1 . 20)) nil (21675 50054 148183 52000) 0 nil]) ((10465 . 10466) (t 21675 38894 756005 464000)) nil (21675 50054 148186 423000) 0 nil]) nil nil (21675 50054 148188 99000) 0 nil] #1# 94 4 nil]

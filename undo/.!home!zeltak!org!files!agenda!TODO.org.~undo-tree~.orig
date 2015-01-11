@@ -1,8 +1,0 @@
-"d2fd6cbfbef8e04beccbda916b857bf3770ed701"
-[cl-struct-undo-tree [nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil ([nil (#2=[nil nil ((842 . 857)) nil (21476 27140 935706 889000) 0 nil]) ((838 . 839) (#("
-" 0 1 (fontified nil)) . -838) (839 . 839) (838 . 842) (#(" " 0 1 (fontified t face org-level-2)) . 838) (839 . 839) 838) nil (21476 27140 935718 157000) 0 nil]) ((834 . 838)) nil (21476 27140 935724 645000) 0 nil]) ((820 . 834)) nil (21476 27140 935728 90000) 0 nil]) ((814 . 820)) nil (21476 27140 935731 315000) 0 nil]) ((811 . 812) (#("
-
-" 0 2 (fontified t)) . -811) (813 . 813) (813 . 816) (813 . 814)) nil (21476 27140 935736 762000) 0 nil]) ((#("
-" 0 1 (fontified t)) . 813)) nil (21476 27140 935741 367000) 0 nil]) ((#("** sync org mode
-" 0 1 (fontified t face #1=(bold org-level-2) font-lock-multiline t org-emphasis t) 1 2 (fontified t face #1# font-lock-multiline t org-emphasis t) 2 3 (fontified t face org-level-2) 3 16 (fontified t face org-level-2) 16 17 (fontified t)) . 375)) nil (21476 27140 935746 406000) 0 nil]) ((#("** dotfile sync
-" 0 1 (fontified t face org-level-2) 1 3 (fontified t face org-level-2) 3 15 (fontified t face org-level-2) 15 16 (fontified t)) . 186) (t 21476 25998 219674 511000)) nil (21476 27140 935750 802000) 0 nil]) nil nil (21476 27140 935753 918000) 0 nil] #2# 198 9 nil]
