@@ -2610,7 +2610,7 @@ turn on off toolbars with icons
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 #+END_SRC
 
-* Editing
+* TODO Editing
 ** spelling
 #+begin_src emacs-lisp results none
 ;Spelling
@@ -3020,7 +3020,7 @@ Repeated invocations toggle between the two most recently open buffers."
     (if mark-active
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
-#+END_SRC
+#+END_SR
 * Macros
 ** org faces
 
@@ -3391,7 +3391,7 @@ COMMAND2
 #+BEGIN_SRC emacs-lisp :results none
 ;don't ask to save file
 ;(setq ess-ask-about-transfile nil)
-(setq ess-ask-about-transfile t)
+(setq ess-ask-about-transfile nil)
 #+END_SRC
 
 *** default directory 
