@@ -2271,7 +2271,11 @@ Repeated invocations toggle between the two most recently open buffers."
     (if mark-active
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
+#+END_SR
+* Macros
+** org faces
 
+#+BEGIN_SRC emacs-lisp :results none
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -2534,7 +2538,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 ;don't ask to save file
 ;(setq ess-ask-about-transfile nil)
-(setq ess-ask-about-transfile t)
+(setq ess-ask-about-transfile nil)
 
 (setq ess-ask-for-ess-directory nil)
 ;define deault ess dir
