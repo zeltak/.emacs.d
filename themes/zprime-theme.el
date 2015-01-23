@@ -91,13 +91,26 @@ more...")
    `(whitespace-tab ((,class ,tab)))
    `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFF57"))))
 
-   ;; Mode line faces
-   `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#008ED1" :background "#002E41"))))
-   `(mode-line-inactive ((,class (:box (:line-width 1 :color "#4E4E4C") :foreground "#F0F0EF" :background "#F0F0EF"))))
-   `(mode-line-buffer-id ((,class (:weight bold :foreground "#008ED1"))))
-   `(mode-line-emphasis ((,class (:weight bold :foreground "#008ED1"))))
-   `(mode-line-highlight ((,class (:foreground "green"))))
+   ;; ;; Mode line faces
+   ;; `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#008ED1" :background "#002E41"))))
+   ;; `(mode-line-inactive ((,class (:box (:line-width 1 :color "#4E4E4C") :foreground "#F0F0EF" :background "#F0F0EF"))))
+   ;; `(mode-line-buffer-id ((,class (:weight bold :foreground "#008ED1"))))
+   ;; `(mode-line-emphasis ((,class (:weight bold :foreground "#008ED1"))))
+   ;; `(mode-line-highlight ((,class (:foreground "green"))))
 
+(set-face-attribute  'mode-line
+                 nil 
+                 :foreground "#008ED1"
+                 :background "#002E41" 
+                 :box '(:line-width 1 :color "#1A2F54" :style released-button))
+(set-face-attribute  'mode-line-inactive
+                 nil 
+                 :foreground "gray80"
+                 :background "gray80" 
+                 :box '(:line-width 1 :style released-button))
+
+
+   
    ;; Escape and prompt faces
    `(minibuffer-prompt ((,class (:weight bold :foreground "black" :background "gold"))))
    `(minibuffer-noticeable-prompt ((,class (:weight bold :foreground "black" :background "gold"))))

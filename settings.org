@@ -76,6 +76,10 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
 ** modline
+** Cua mode
+#+BEGIN_SRC emacs-lisp :results none
+
+#+END_SRC
 * Keybinds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
@@ -624,35 +628,33 @@ $Note this is needed for org-download$
 ** EVIL
 
 #+begin_src emacs-lisp results none
-(require 'evil)
-(evil-mode 1)
+  ;; (require 'evil)
+  ;; (evil-mode 1)
 
-;for normal undo
-(setq evil-want-fine-undo t)
+  ;; ;for normal undo
+  ;; (setq evil-want-fine-undo t)
 
-;;; esc quits
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+  ;; ;;; esc quits
+  ;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
+  ;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
+  ;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+  ;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+  ;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+  ;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+  ;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
-;searches
-(global-set-key (kbd "C-*") 'evil-search-symbol-forward)
-(global-set-key (kbd "C-#") 'evil-search-symbol-backward)
+  ;; ;searches
+  ;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
+  ;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
 
 
 
 #+end_src
 
-
-
 ** EVIL NERD Commenter
 #+BEGIN_SRC emacs-lisp :results none
-(evilnc-default-hotkeys)
-(setq evilnc-hotkey-comment-operator ",,")
+;(evilnc-default-hotkeys)
+;(setq evilnc-hotkey-comment-operator ",,")
 #+END_SRC
 ** edit-server (for chrome interaction)
 #+BEGIN_SRC emacs-lisp :results none
@@ -972,16 +974,74 @@ $note its built into emacs no intsall needed$
 
 #+END_SRC
 
+** key-chord
+*** repeatable command
+#+BEGIN_SRC emacs-lisp :results none
+  (defun zeltak/def-rep-command (alist)
+      "Return a lambda that calls the first function of ALIST.
+  It sets the transient map to all functions of ALIST,
+  allowing you to repeat those functions as needed."
+      (lexical-let ((keymap (make-sparse-keymap))
+                    (func (cdar alist)))
+        (mapc (lambda (x)
+                (when x
+                  (define-key keymap (kbd (car x)) (cdr x))))
+              alist)
+        (lambda (arg)
+          (interactive "p")
+          (when func
+            (funcall func arg))
+          (set-transient-map keymap t))))
+#+END_SRC
+*** start key-chord by default
+#+BEGIN_SRC emacs-lisp :results none
+;; key chords
+(require 'key-chord)
+(key-chord-mode +1)
+#+END_SRC
+*** test 
+
+#+BEGIN_SRC emacs-lisp :results none
+(key-chord-define-global "yy"   
+      (zeltak/def-rep-command
+       '(nil
+         ("<left>" . windmove-left)
+         ("<right>" . windmove-right)
+         ("down>" . windmove-down)
+         ("<up>" . windmove-up)
+         ("y" . other-window)
+         ("h" . ace-window)
+         ("s" . (lambda () (interactive) (ace-window 4)))
+         ("d" . (lambda () (interactive) (ace-window 16)))
+         )))
+#+END_SRC
+*** orgmode
+#+BEGIN_SRC emacs-lisp :results none
+(key-chord-define-global "oo"   
+      (zeltak/def-rep-command
+       '(nil
+         ("d" . org-download-screenshot)
+         ("<right>" . org-download-screenshot)
+         ("<down>" . windmove-down)
+         ("<up>" . windmove-up)
+         ("y" . other-window)
+         ("h" . ace-window)
+         ("s" . (lambda () (interactive) (ace-window 4)))
+         ("d" . (lambda () (interactive) (ace-window 16)))
+         )))
+#+END_SRC
+
 ** TODO expnad region
 https://github.com/magnars/expand-region.el
-if installed through package manager no extra config is needed 
+if installed through package manager no extra config is needed
 ** Ace jump
+*** evil mode specifics 
 #+BEGIN_SRC emacs-lisp :results none 
   ;; some proposals for binding:
-  
-  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
-  (define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
-  (define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
+ 
+;  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
+;  (define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
+;  (define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
    
   ;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
   ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
@@ -1277,7 +1337,14 @@ https://github.com/dfeich/org-screenshot
   ;; (add-hook 'org-mode-hook 'tj/reset-view-mode)
 #+end_src
 
-
+*** enable shift selection 
+use setq org-support-shift-select:
+'always- to always use it
+'nil- to disable on org mode
+'t- for When outside special context
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-support-shift-select 't)
+#+END_SRC
 ** custom link types
 *** grep link
 #+BEGIN_SRC emacs-lisp :results none
@@ -1340,10 +1407,6 @@ make sure child headers don't get the header tags
   ;;      ("israeli"  . (:foreground "#C0a000"))))
 #+end_src
 
-#+RESULTS:
-| Indian  | :foreground | #00000  |
-| Asian   | :foreground | #C00000 |
-| israeli | :foreground | #C0a000 |
 
 *** tag searches function  
 #+BEGIN_SRC emacs-lisp :results none
@@ -2222,35 +2285,35 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 *** look and feel
 
 #+BEGIN_SRC emacs-lisp :results none
-  ;; Do not dim blocked tasks
-  (setq org-agenda-dim-blocked-tasks nil)
-  ;; Compact the block agenda view
-  (setq org-agenda-compact-blocks t)
+   ;; Do not dim blocked tasks
+   (setq org-agenda-dim-blocked-tasks nil)
+   ;; Compact the block agenda view
+   (setq org-agenda-compact-blocks t)
 
 
-  ;; Always hilight the current agenda line
-  (add-hook 'org-agenda-mode-hook
-            '(lambda () (hl-line-mode 1))
-            'append)
+   ;; Always hilight the current agenda line
+   (add-hook 'org-agenda-mode-hook
+             '(lambda () (hl-line-mode 1))
+             'append)
 
-  ;; The following custom-set-faces create the highlights
-  ;; (custom-set-faces
-  ;;   ;; custom-set-faces was added by Custom.
-  ;;   ;; If you edit it by hand, you could mess it up so be careful.
-  ;;   ;; Your init file should contain only one such instance.
-  ;;   ;; If there is more than one, they won't work right.
-  ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
+   ;; The following custom-set-faces create the highlights
+   ;; (custom-set-faces
+   ;;   ;; custom-set-faces was added by Custom.
+   ;;   ;; If you edit it by hand, you could mess it up so be careful.
+   ;;   ;; Your init file should contain only one such instance.
+   ;;   ;; If there is more than one, they won't work right.
+   ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
 
-  ;; Show all agenda dates - even if they are empty
-  (setq org-agenda-show-all-dates t)
+   ;; Show all agenda dates - even if they are empty
+   (setq org-agenda-show-all-dates t)
 
-  ;; Enable display of the time grid so we can see the marker for the current time
+   ;;   Enable display of the time grid so we can see the marker for the current time
   (setq org-agenda-time-grid (quote ((daily today remove-match)
                                      #("----------------" 0 16 (org-heading t))
                                      (0900 1100 1300 1500 1700))))
 
-  ;; Display tags farther right
-  (setq org-agenda-tags-column -102)
+   ;; Display tags farther right
+   (setq org-agenda-tags-column -102)
 
 
 #+END_SRC
@@ -2660,6 +2723,8 @@ take care of the wrapping of each item for me"
     (query-replace-regexp "[^\t\n\r\f -~]" "")
     ))
 #+END_SRC
+** system
+
 ** Editing
 *** Increment years
 
@@ -2852,9 +2917,22 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 *** TODO search replace all document
 @currently below code broken@
 #+BEGIN_SRC emacs-lisp :results none
-(defun search-replace-file (&rest rest) (interactive) (save-excursion    
- (goto-char (point-min)) (apply #'query-replace-regexp rest)))                            
+;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
+; (goto-char (point-min)) (apply #'query-replace-regexp rest)))                            
 
+#+END_SRC
+*** duplicate line
+#+BEGIN_SRC emacs-lisp :results none
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank)
+)
+;(global-set-key (kbd "C-d") 'duplicate-line)
 #+END_SRC
 ** Root actions
 *** edit file as root
@@ -3020,11 +3098,13 @@ Repeated invocations toggle between the two most recently open buffers."
     (if mark-active
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
-#+END_SR
+#+END_SRC
+
 * Macros
 ** org faces
 
 #+BEGIN_SRC emacs-lisp :results none
+
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -3086,6 +3166,7 @@ Repeated invocations toggle between the two most recently open buffers."
    [?\M-% ?\걽 return return ?!])
 
 #+END_SRC
+
 ** org wraps
 ** Editing
 *** lines not paragraphs
@@ -3456,7 +3537,7 @@ This recalls the R statement from your R statement history, but it tries to matc
     (defun helm-org-wiki-files ()
       "Return .org files in `helm-org-wiki-directory'."
       (let ((default-directory helm-org-wiki-directory))
-        (mapcar #'file-name-sans-extension
+        (mapcar 'file-name-sans-extension
                 (file-expand-wildcards "*.org"))))
     (defvar helm-source-org-wiki
       `((name . "Projects")
@@ -3482,7 +3563,38 @@ This recalls the R statement from your R statement history, but it tries to matc
               helm-source-org-wiki-not-found)))
     (provide 'helm-org-wiki)
 #+END_SRC
-** org ref
+** helm agenda
+#+BEGIN_SRC emacs-lisp :results none
+(defun helm-agenda-candidates (query)
+  (let ((results '()))
+    (mapc (lambda (f)
+      (with-current-buffer (find-file-noselect f)
+        (org-map-entries
+         (lambda ()
+           (add-to-list 'results
+                        (cons
+                         (concat
+                          (file-name-nondirectory f) " | "
+                          (make-string (nth 1 (org-heading-components)) ?*)
+                          " "
+                          (org-get-heading))
+                         (point-marker))))
+         query))) (org-agenda-files))
+    results))
+
+
+(defun helm-query-agenda (query)
+  "Helm interface to headlines with TODO status in current buffer."
+  (interactive "sQuery: ")
+  (let ((candidates (helm-agenda-candidates query)))
+    (helm :sources '(((name . "TODO headlines")
+                      (candidates . candidates)
+                      (action . (("open" . (lambda (m)
+                                             (switch-to-buffer (marker-buffer m))
+                                             (goto-char m)
+                                             (show-children))))))))))
+#+END_SRC
+#+END_SRCi** org ref
 
 http://kitchingroup.cheme.cmu.edu/blog/2014/05/13/Using-org-ref-for-citations-and-references/
 
@@ -3555,3 +3667,4 @@ If you need to access a lot of random systems you should try this, it has made m
 #+BEGIN_EXAMPLE
 The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs 븸퉐aemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The 븸퉐aemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs 븸퉐aemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The 븸퉐aemon option has the fringe benefit of leaving emacs running even if you log out.
 #+END_EXAMPLE
+

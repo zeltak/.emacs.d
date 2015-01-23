@@ -50,6 +50,8 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
@@ -441,27 +443,27 @@ Usage: (package-require 'package)"
 
 (require 'async)
 
-(require 'evil)
-(evil-mode 1)
+;; (require 'evil)
+;; (evil-mode 1)
 
-;for normal undo
-(setq evil-want-fine-undo t)
+;; ;for normal undo
+;; (setq evil-want-fine-undo t)
 
-;;; esc quits
-(define-key evil-normal-state-map [escape] 'keyboard-quit)
-(define-key evil-visual-state-map [escape] 'keyboard-quit)
-(define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-(define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+;; ;;; esc quits
+;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
+;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
+;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
 
-;searches
-(global-set-key (kbd "C-*") 'evil-search-symbol-forward)
-(global-set-key (kbd "C-#") 'evil-search-symbol-backward)
+;; ;searches
+;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
+;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
 
-(evilnc-default-hotkeys)
-(setq evilnc-hotkey-comment-operator ",,")
+;(evilnc-default-hotkeys)
+;(setq evilnc-hotkey-comment-operator ",,")
 
 (require 'edit-server)
  (edit-server-start)
@@ -704,15 +706,61 @@ Usage: (package-require 'package)"
 (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
 (openwith-mode t)
 
-;; some proposals for binding:
+(defun zeltak/def-rep-command (alist)
+    "Return a lambda that calls the first function of ALIST.
+It sets the transient map to all functions of ALIST,
+allowing you to repeat those functions as needed."
+    (lexical-let ((keymap (make-sparse-keymap))
+                  (func (cdar alist)))
+      (mapc (lambda (x)
+              (when x
+                (define-key keymap (kbd (car x)) (cdr x))))
+            alist)
+      (lambda (arg)
+        (interactive "p")
+        (when func
+          (funcall func arg))
+        (set-transient-map keymap t))))
 
-(define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
-(define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
-(define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
+;; key chords
+(require 'key-chord)
+(key-chord-mode +1)
+
+(key-chord-define-global "yy"   
+      (zeltak/def-rep-command
+       '(nil
+         ("<left>" . windmove-left)
+         ("<right>" . windmove-right)
+         ("down>" . windmove-down)
+         ("<up>" . windmove-up)
+         ("y" . other-window)
+         ("h" . ace-window)
+         ("s" . (lambda () (interactive) (ace-window 4)))
+         ("d" . (lambda () (interactive) (ace-window 16)))
+         )))
+
+(key-chord-define-global "oo"   
+      (zeltak/def-rep-command
+       '(nil
+         ("d" . org-download-screenshot)
+         ("<right>" . org-download-screenshot)
+         ("<down>" . windmove-down)
+         ("<up>" . windmove-up)
+         ("y" . other-window)
+         ("h" . ace-window)
+         ("s" . (lambda () (interactive) (ace-window 4)))
+         ("d" . (lambda () (interactive) (ace-window 16)))
+         )))
+
+;; some proposals for binding:
  
-;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
-;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
-;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
+;  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
+;  (define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
+;  (define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
+   
+  ;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
+  ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
+  ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
 
 (require 'ace-isearch)
 (ace-isearch-mode +1)
@@ -912,6 +960,8 @@ Usage: (package-require 'package)"
 ;;                       (view-mode t)))))
 
 ;; (add-hook 'org-mode-hook 'tj/reset-view-mode)
+
+(setq org-support-shift-select 't)
 
 (org-add-link-type
  "grep"
@@ -1660,34 +1710,34 @@ execute speed commands."
 (setq org-agenda-skip-scheduled-if-done t)
 
 ;; Do not dim blocked tasks
-(setq org-agenda-dim-blocked-tasks nil)
-;; Compact the block agenda view
-(setq org-agenda-compact-blocks t)
+ (setq org-agenda-dim-blocked-tasks nil)
+ ;; Compact the block agenda view
+ (setq org-agenda-compact-blocks t)
 
 
-;; Always hilight the current agenda line
-(add-hook 'org-agenda-mode-hook
-          '(lambda () (hl-line-mode 1))
-          'append)
+ ;; Always hilight the current agenda line
+ (add-hook 'org-agenda-mode-hook
+           '(lambda () (hl-line-mode 1))
+           'append)
 
-;; The following custom-set-faces create the highlights
-;; (custom-set-faces
-;;   ;; custom-set-faces was added by Custom.
-;;   ;; If you edit it by hand, you could mess it up so be careful.
-;;   ;; Your init file should contain only one such instance.
-;;   ;; If there is more than one, they won't work right.
-;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
+ ;; The following custom-set-faces create the highlights
+ ;; (custom-set-faces
+ ;;   ;; custom-set-faces was added by Custom.
+ ;;   ;; If you edit it by hand, you could mess it up so be careful.
+ ;;   ;; Your init file should contain only one such instance.
+ ;;   ;; If there is more than one, they won't work right.
+ ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
 
-;; Show all agenda dates - even if they are empty
-(setq org-agenda-show-all-dates t)
+ ;; Show all agenda dates - even if they are empty
+ (setq org-agenda-show-all-dates t)
 
-;; Enable display of the time grid so we can see the marker for the current time
+ ;;   Enable display of the time grid so we can see the marker for the current time
 (setq org-agenda-time-grid (quote ((daily today remove-match)
                                    #("----------------" 0 16 (org-heading t))
                                    (0900 1100 1300 1500 1700))))
 
-;; Display tags farther right
-(setq org-agenda-tags-column -102)
+ ;; Display tags farther right
+ (setq org-agenda-tags-column -102)
 
 (setq org-agenda-custom-commands 
 '(
@@ -2140,8 +2190,19 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
   (interactive "r")
   (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
 
-(defun search-replace-file (&rest rest) (interactive) (save-excursion    
- (goto-char (point-min)) (apply #'query-replace-regexp rest)))
+;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
+; (goto-char (point-min)) (apply #'query-replace-regexp rest)))
+
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank)
+)
+;(global-set-key (kbd "C-d") 'duplicate-line)
 
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
@@ -2534,7 +2595,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
 
 ;don't ask to save file
 ;(setq ess-ask-about-transfile nil)
-(setq ess-ask-about-transfile t)
+(setq ess-ask-about-transfile nil)
 
 (setq ess-ask-for-ess-directory nil)
 ;define deault ess dir
@@ -2575,7 +2636,7 @@ With prefix P, create local abbrev. Otherwise it will be global."
     (defun helm-org-wiki-files ()
       "Return .org files in `helm-org-wiki-directory'."
       (let ((default-directory helm-org-wiki-directory))
-        (mapcar #'file-name-sans-extension
+        (mapcar 'file-name-sans-extension
                 (file-expand-wildcards "*.org"))))
     (defvar helm-source-org-wiki
       `((name . "Projects")
@@ -2600,6 +2661,35 @@ With prefix P, create local abbrev. Otherwise it will be global."
             '(helm-source-org-wiki
               helm-source-org-wiki-not-found)))
     (provide 'helm-org-wiki)
+
+(defun helm-agenda-candidates (query)
+  (let ((results '()))
+    (mapc (lambda (f)
+      (with-current-buffer (find-file-noselect f)
+        (org-map-entries
+         (lambda ()
+           (add-to-list 'results
+                        (cons
+                         (concat
+                          (file-name-nondirectory f) " | "
+                          (make-string (nth 1 (org-heading-components)) ?*)
+                          " "
+                          (org-get-heading))
+                         (point-marker))))
+         query))) (org-agenda-files))
+    results))
+
+
+(defun helm-query-agenda (query)
+  "Helm interface to headlines with TODO status in current buffer."
+  (interactive "sQuery: ")
+  (let ((candidates (helm-agenda-candidates query)))
+    (helm :sources '(((name . "TODO headlines")
+                      (candidates . candidates)
+                      (action . (("open" . (lambda (m)
+                                             (switch-to-buffer (marker-buffer m))
+                                             (goto-char m)
+                                             (show-children))))))))))
 
 (org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 
