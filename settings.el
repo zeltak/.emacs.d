@@ -708,51 +708,33 @@ Usage: (package-require 'package)"
 (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
 (openwith-mode t)
 
-(defun zeltak/def-rep-command (alist)
-    "Return a lambda that calls the first function of ALIST.
-It sets the transient map to all functions of ALIST,
-allowing you to repeat those functions as needed."
-    (lexical-let ((keymap (make-sparse-keymap))
-                  (func (cdar alist)))
-      (mapc (lambda (x)
-              (when x
-                (define-key keymap (kbd (car x)) (cdr x))))
-            alist)
-      (lambda (arg)
-        (interactive "p")
-        (when func
-          (funcall func arg))
-        (set-transient-map keymap t))))
-
 ;; key chords
 (require 'key-chord)
 (key-chord-mode +1)
 
-(key-chord-define-global "yy"   
-      (zeltak/def-rep-command
-       '(nil
-         ("<left>" . windmove-left)
-         ("<right>" . windmove-right)
-         ("down>" . windmove-down)
-         ("<up>" . windmove-up)
-         ("y" . other-window)
-         ("h" . ace-window)
-         ("s" . (lambda () (interactive) (ace-window 4)))
-         ("d" . (lambda () (interactive) (ace-window 16)))
-         )))
+(require 'hydra)
 
-(key-chord-define-global "oo"   
-      (zeltak/def-rep-command
-       '(nil
-         ("d" . org-download-screenshot)
-         ("<right>" . org-download-screenshot)
-         ("<down>" . windmove-down)
-         ("<up>" . windmove-up)
-         ("y" . other-window)
-         ("h" . ace-window)
-         ("s" . (lambda () (interactive) (ace-window 4)))
-         ("d" . (lambda () (interactive) (ace-window 16)))
-         )))
+(defun hydra-universal-argument (arg)
+  (interactive "P")
+  (setq prefix-arg (if (consp arg)
+                       (list (* 4 (car arg)))
+                     (if (eq arg '-)
+                         (list -4)
+                       '(4)))))
+
+(defhydra hydra-window (global-map "C-M-o")
+  "window"
+  ("h" windmove-left "left")
+  ("j" windmove-down "down")
+  ("k" windmove-up "up")
+  ("l" windmove-right "right")
+  ("a" ace-window "ace")
+  ("u" hydra-universal-argument "universal")
+  ("s" (lambda () (interactive) (ace-window 4)) "swap")
+  ("d" (lambda () (interactive) (ace-window 16)) "delete")
+  ("o"))
+
+(key-chord-define-global "yy" 'hydra-window/body)
 
 ;; some proposals for binding:
  
