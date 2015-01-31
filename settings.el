@@ -50,7 +50,47 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+(require 'package)
+;; use packages from marmalade
+(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
+;; and the old elpa repo
+(add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/"))
+;; and automatically parsed versiontracking repositories.
+(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
+(add-to-list 'package-archives '("SC" . "http://joseito.republika.pl/sunrise-commander/"))
 
+
+
+;; Make sure a package is installed
+(defun package-require (package)
+  "Install a PACKAGE unless it is already installed 
+or a feature with the same name is already active.
+
+Usage: (package-require 'package)"
+  ; try to activate the package with at least version 0.
+  (package-activate package '(0))
+  ; try to just require the package. Maybe the user has it in his local config
+  (condition-case nil
+      (require package)
+    ; if we cannot require it, it does not exist, yet. So install it.
+    (error (package-install package))))
+
+;; Initialize installed packages
+(package-initialize)  
+;; package init not needed, since it is done anyway in emacs 24 after reading the init
+;; but we have to load the list of available packages
+
+(setq package-enable-at-startup nil)
+
+;;uncomment to have emacs refresh all packages on startup-makes emacs very slow
+;(package-refresh-contents)
+
+;; key chords
+(require 'key-chord)
+(key-chord-mode +1)
+;set times for keychords 
+(setq key-chord-two-keys-delay 0.26)
+(setq key-chord-one-key-delay 0.20)
 
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
@@ -66,6 +106,77 @@
 (global-unset-key (kbd "<f12>"))
 (global-unset-key (kbd "C-v "))
 (global-unset-key (kbd "M-p"))
+
+(key-chord-define-global "lu"     'move-text-up)
+(key-chord-define-global "ld"     'move-text-down)
+(key-chord-define-global "lp"     'duplicate-line)
+(key-chord-define-global "lk"     'kill-whole-line)
+(key-chord-define-global "lm"     'kill-line)
+(key-chord-define-global "lr"     'kill-region)
+(key-chord-define-global "lc"     'z-copy-comment-paste)
+(key-chord-define-global "l;"     'comment-or-uncomment-region)
+
+(key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
+(key-chord-define-global "od"     'org-cut-subtree)
+(key-chord-define-global "oy"     'org-copy-subtree)
+(key-chord-define-global "op"     'org-paste-subtree)
+
+(key-chord-define-global "uu"     'undo)
+(key-chord-define-global "ui"     'undo)
+(key-chord-define-global "fj" 'ace-jump-word-mode)
+(key-chord-define-global "fl" 'ace-jump-line-mode)
+(key-chord-define-global "fk" 'ace-jump-char-mode)
+
+;;saving and closing
+(key-chord-define-global "bs" 'save-buffer); Aux save
+(key-chord-define-global "bx" 'kill-this-buffer) ; Close file and buffer
+(key-chord-define-global "bC" 'z-kill-other-buffers ) ; close all buffers but current-based on user script
+(key-chord-define-global "bX" 'save-buffers-kill-terminl)
+(key-chord-define-global "bi" 'kill-buffer) ; ido kill buffer
+(key-chord-define-global "bS" 'z-save-file-close-window) ; 
+(key-chord-define-global "bp" 'previous-user-buffer) ; 
+(key-chord-define-global "bn" 'next-user-buffer) ; 
+(key-chord-define-global "bb" 'switch-to-previous-buffer)
+
+ ;(global-set-key (kbd "C-+") 'text-scale-increase)
+ ;(global-set-key (kbd "C--") 'text-scale-decrease)
+
+(defun hydra-universal-argument (arg)
+  (interactive "P")
+  (setq prefix-arg (if (consp arg)
+                       (list (* 4 (car arg)))
+                     (if (eq arg '-)
+                         (list -4)
+                       '(4)))))
+
+(defhydra hydra-window (global-map "C-M-o")
+  "window"
+  ("h" windmove-left "left")
+  ("j" windmove-down "down")
+  ("g" windmove-up "up")
+  ("l" windmove-right "right")
+  ("a" ace-window "ace")
+  ("k" other-window)
+  ("x" delete-window) 
+  ("-" split-window-vertically) 
+  ("=" split-window-right) 
+  ("t" transpose-windows) 
+  ("v" transpose-windows) 
+  ("u" hydra-universal-argument "universal")
+  ("s" (lambda () (interactive) (ace-window 4)) "swap")
+  ("d" (lambda () (interactive) (ace-window 16)) "delete")
+  ("o"))
+
+(key-chord-define-global "kk" 'hydra-window/body)
+
+(require 'hydra-examples)
+(hydra-create "C-M-o" hydra-example-move-window-splitter)
+
+(hydra-create "C-M-o"
+  '(("h" hydra-move-splitter-left)
+    ("j" hydra-move-splitter-down)
+    ("k" hydra-move-splitter-up)
+    ("l" hydra-move-splitter-right)))
 
 (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
 ;;below code for by type and todo (cook)
@@ -114,12 +225,6 @@
 (global-set-key (kbd "<f3> m q") 'end-kbd-macro)
 (global-set-key (kbd "<f3> m n") 'name-kbd-macro)
 (global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
-
-
-
-;;; non F3
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
 
 (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
 (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
@@ -366,41 +471,6 @@
 
 (add-hook 'proced-mode-hook 'proced-settings)
 
-(require 'package)
-;; use packages from marmalade
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-;; and the old elpa repo
-(add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/"))
-;; and automatically parsed versiontracking repositories.
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("SC" . "http://joseito.republika.pl/sunrise-commander/"))
-
-
-
-;; Make sure a package is installed
-(defun package-require (package)
-  "Install a PACKAGE unless it is already installed 
-or a feature with the same name is already active.
-
-Usage: (package-require 'package)"
-  ; try to activate the package with at least version 0.
-  (package-activate package '(0))
-  ; try to just require the package. Maybe the user has it in his local config
-  (condition-case nil
-      (require package)
-    ; if we cannot require it, it does not exist, yet. So install it.
-    (error (package-install package))))
-
-;; Initialize installed packages
-(package-initialize)  
-;; package init not needed, since it is done anyway in emacs 24 after reading the init
-;; but we have to load the list of available packages
-
-(setq package-enable-at-startup nil)
-
-;;uncomment to have emacs refresh all packages on startup-makes emacs very slow
-;(package-refresh-contents)
-
 (helm-mode 1)
 
 (global-set-key (kbd "M-x") 'helm-M-x)
@@ -440,8 +510,6 @@ Usage: (package-require 'package)"
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
 (setq helm-locate-fuzzy-match t)
-
-
 
 (require 'async)
 
@@ -598,10 +666,6 @@ Usage: (package-require 'package)"
 ;; This is your old M-x.
 (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
 
-;; (require 'icicles)
-;; ;turn on by default
-;; (icy-mode 1)
-
 (require 'bookmark+)
 (setq bookmark-version-control t
       bookmark-save-flag t)
@@ -708,34 +772,6 @@ Usage: (package-require 'package)"
 (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
 (openwith-mode t)
 
-;; key chords
-(require 'key-chord)
-(key-chord-mode +1)
-
-(require 'hydra)
-
-(defun hydra-universal-argument (arg)
-  (interactive "P")
-  (setq prefix-arg (if (consp arg)
-                       (list (* 4 (car arg)))
-                     (if (eq arg '-)
-                         (list -4)
-                       '(4)))))
-
-(defhydra hydra-window (global-map "C-M-o")
-  "window"
-  ("h" windmove-left "left")
-  ("j" windmove-down "down")
-  ("k" windmove-up "up")
-  ("l" windmove-right "right")
-  ("a" ace-window "ace")
-  ("u" hydra-universal-argument "universal")
-  ("s" (lambda () (interactive) (ace-window 4)) "swap")
-  ("d" (lambda () (interactive) (ace-window 16)) "delete")
-  ("o"))
-
-(key-chord-define-global "yy" 'hydra-window/body)
-
 ;; some proposals for binding:
  
 ;  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
@@ -752,7 +788,7 @@ Usage: (package-require 'package)"
 
 (custom-set-variables
  '(ace-isearch-input-length 7)
- '(ace-isearch-input-idle-delay 0.2)
+ '(ace-isearch-input-idle-delay 0.4)
  '(ace-isearch-submode 'ace-jump-char-mode)
  '(ace-isearch-use-ace-jump 'printing-char))
 
@@ -761,18 +797,16 @@ Usage: (package-require 'package)"
 ;(require 'tex)
 ;(setq preview-scale-function 1.1)
 
-(global-set-key (kbd "C-x o") 'switch-window)
-(require 'switch-window)
+;; (require 'guide-key)
+;; (guide-key-mode 1)  ; Enable guide-key-mode
+;; (setq guide-key/idle-delay 0.1)
 
-(require 'guide-key)
-(guide-key-mode 1)  ; Enable guide-key-mode
-(setq guide-key/idle-delay 0.1)
+;; (setq guide-key/popup-window-position "right")
 
-(setq guide-key/popup-window-position "right")
-
-;(setq guide-key/guide-key-sequence '("C-c" "C-x r" "C-x 4" "f9"))
-(setq guide-key/guide-key-sequence '("<f9>" "<f1>"))
-(setq guide-key/recursive-key-sequence-flag t)
+;; ;(setq guide-key/guide-key-sequence '("C-c" "C-x r" "C-x 4" "f9"))
+;; (setq guide-key/guide-key-sequence '("kk"))
+;; (setq guide-key/guide-key-sequence '("<f4>"))
+;; (setq guide-key/recursive-key-sequence-flag t)
 
 ;; (require 'auto-complete)
 ;; (require 'auto-complete-config)
@@ -864,23 +898,6 @@ Usage: (package-require 'package)"
 
 
 
-;(load-file "/home/zeltak/.emacs.g/extra/org-screenshot/org-screenshot.el")
-;(require 'org-screenshot)
-
-;; (require 'fill-column-indicator)
-;;  (setq fci-rule-width 1)
-;;   (setq fci-rule-color "darkblue")
-
-;; ;to turn it on automatically when visiting a file with C code, put the following line in your init file:
-;; (add-hook 'org-mode-hook 'fci-mode)
-
-;; ;To turn on fci-mode automatically for all files, put the following line in your init file:
-;; ;add-hook 'after-change-major-mode-hook 'fci-mode)
-
-;; ;To enable fci-mode as a global minor mode, put the following code to your init file:
-;; ;(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
-;; ;(global-fci-mode 1)
-
 (if (string= system-name "voices") 
 (progn
 (setq org-directory "~/org/files/")
@@ -897,8 +914,10 @@ Usage: (package-require 'package)"
 
 ;don’t insert blank lines
 (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+
 ;make new headings appear after the content for the current one
 (setq org-insert-heading-respect-content t)
+
 ;allow RETURN to open links
 (setq org-return-follows-link nil)
 ;going to the beginning and end of the heading instead of the current line
@@ -2103,8 +2122,6 @@ This command does the inverse of `fill-region'."
   (forward-line -2)
   (indent-according-to-mode))
 
-
-
 (defun move-line-down ()
   "Move down the current line."
   (interactive)
@@ -2112,6 +2129,39 @@ This command does the inverse of `fill-region'."
   (transpose-lines 1)
   (forward-line -1)
   (indent-according-to-mode))
+
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
+
+(defun move-text-down (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines down."
+   (interactive "*p")
+   (move-text-internal arg))
+
+(defun move-text-up (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines up."
+   (interactive "*p")
+   (move-text-internal (- arg)))
 
 (defun z-insert-date (&optional addTimeStamp-p)
   "Insert current date and or time. In this format yyyy-mm-dd.

@@ -3,7 +3,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ace-isearch-input-idle-delay 0.2)
+ '(ace-isearch-input-idle-delay 0.4)
  '(ace-isearch-input-length 7)
  '(ace-isearch-submode (quote ace-jump-char-mode))
  '(ace-isearch-use-ace-jump (quote printing-char))
