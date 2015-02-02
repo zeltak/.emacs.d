@@ -129,7 +129,12 @@ Usage: (package-require 'package)"
 #+END_SRC
 
 
+*** hydra
+ #+BEGIN_SRC emacs-lisp :results none
+(require 'hydra)
+#+END_SRC
 
+ 
 * Keybinds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
@@ -713,6 +718,19 @@ enable fuzzy
 #+BEGIN_SRC emacs-lisp :results none
 (setq helm-locate-fuzzy-match t)	    
 #+END_SRC
+*** helm bibtex
+https://github.com/tmalsburg/helm-bibtex
+
+#+BEGIN_SRC emacs-lisp :results none
+(autoload 'helm-bibtex "helm-bibtex" "" t)
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(setq helm-bibtex-pdf-open-function
+  (lambda (fpath)
+    (start-process "evince" "*evince*" "evince" fpath)))
+
+#+END_SRC
 ** async
 $Note this is needed for org-download$
 
@@ -1115,6 +1133,25 @@ https://github.com/kai2nenobu/guide-key
 
 #+END_SRC
 
+** lentic mode 
+https://github.com/phillord/lentic
+** TODO 
+** manage-minor-mode  
+https://github.com/ShingoFukuyama/manage-minor-mode
+
+Set minor-modes status for each major-mode in advance
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq manage-minor-mode-default
+      '((global
+         (on   rainbow-mode)
+         (off  line-number-mode))
+        (emacs-lisp-mode
+         (on   rainbow-delimiters-mode eldoc-mode show-paren-mode))
+        (js2-mode
+         (on   color-identifiers-mode)
+         (off  flycheck-mode))))
+#+END_SRC
 
 ** !Auto Complete Mode!
 http://cx4a.org/software/auto-complete/manual.html#Basic_Usage

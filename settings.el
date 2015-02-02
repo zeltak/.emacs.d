@@ -92,6 +92,8 @@ Usage: (package-require 'package)"
 (setq key-chord-two-keys-delay 0.26)
 (setq key-chord-one-key-delay 0.20)
 
+(require 'hydra)
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
@@ -511,6 +513,14 @@ Usage: (package-require 'package)"
 
 (setq helm-locate-fuzzy-match t)
 
+(autoload 'helm-bibtex "helm-bibtex" "" t)
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(setq helm-bibtex-pdf-open-function
+  (lambda (fpath)
+    (start-process "evince" "*evince*" "evince" fpath)))
+
 (require 'async)
 
 ;; (require 'evil)
@@ -807,6 +817,16 @@ Usage: (package-require 'package)"
 ;; (setq guide-key/guide-key-sequence '("kk"))
 ;; (setq guide-key/guide-key-sequence '("<f4>"))
 ;; (setq guide-key/recursive-key-sequence-flag t)
+
+(setq manage-minor-mode-default
+      '((global
+         (on   rainbow-mode)
+         (off  line-number-mode))
+        (emacs-lisp-mode
+         (on   rainbow-delimiters-mode eldoc-mode show-paren-mode))
+        (js2-mode
+         (on   color-identifiers-mode)
+         (off  flycheck-mode))))
 
 ;; (require 'auto-complete)
 ;; (require 'auto-complete-config)
