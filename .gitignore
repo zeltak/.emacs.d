@@ -10,3 +10,8 @@ init.el
 /saved-desktops/.emacs.desktop
 /image-dired/*
 *log
+eshell
+undo
+url
+oauth2.plstore
+var
