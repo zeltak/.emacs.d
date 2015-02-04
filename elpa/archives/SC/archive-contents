@@ -44,7 +44,7 @@
                            "Tree View for the Sunrise Commander file manager"
                            single])
 
- (sunrise-x-w32-addons  . [(1 423)
+ (sunrise-x-w32-addons  . [(1 456)
                            ((sunrise-commander (5 455)))
                            "MS-Windows-specific utilities for the Sunrise Commander file manager"
                            single])

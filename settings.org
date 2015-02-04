@@ -124,16 +124,13 @@ Usage: (package-require 'package)"
 (require 'key-chord)
 (key-chord-mode +1)
 ;set times for keychords 
-(setq key-chord-two-keys-delay 0.26)
+(setq key-chord-two-keys-delay 0.16)
 (setq key-chord-one-key-delay 0.20)
 #+END_SRC
-
-
 *** hydra
  #+BEGIN_SRC emacs-lisp :results none
 (require 'hydra)
 #+END_SRC
-
  
 * Keybinds
   :PROPERTIES:
@@ -160,32 +157,32 @@ Usage: (package-require 'package)"
 *** editing
 
 #+BEGIN_SRC emacs-lisp :results none
-(key-chord-define-global "lu"     'move-text-up)
-(key-chord-define-global "ld"     'move-text-down)
-(key-chord-define-global "lp"     'duplicate-line)
-(key-chord-define-global "lk"     'kill-whole-line)
-(key-chord-define-global "lm"     'kill-line)
-(key-chord-define-global "lr"     'kill-region)
-(key-chord-define-global "lc"     'z-copy-comment-paste)
-(key-chord-define-global "l;"     'comment-or-uncomment-region)
+  ;; (key-chord-define-global "lu"     'move-text-up)
+  ;; (key-chord-define-global "ld"     'move-text-down)
+  ;; (key-chord-define-global "lp"     'duplicate-line)
+  ;; (key-chord-define-global "lk"     'kill-whole-line)
+  ;; (key-chord-define-global "lm"     'kill-line)
+  ;; (key-chord-define-global "lr"     'kill-region)
+  ;; (key-chord-define-global "lc"     'z-copy-comment-paste)
+  ;; (key-chord-define-global "l;"     'comment-or-uncomment-region)
 #+END_SRC
 
 
 *** orgmode
 #+BEGIN_SRC emacs-lisp :results none
-(key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
-(key-chord-define-global "od"     'org-cut-subtree)
-(key-chord-define-global "oy"     'org-copy-subtree)
-(key-chord-define-global "op"     'org-paste-subtree)
+  ;; (key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
+  ;; (key-chord-define-global "od"     'org-cut-subtree)
+  ;; (key-chord-define-global "oy"     'org-copy-subtree)
+  ;; (key-chord-define-global "op"     'org-paste-subtree)
 #+END_SRC
 
 
 #+BEGIN_SRC emacs-lisp :results none
-(key-chord-define-global "uu"     'undo)
-(key-chord-define-global "ui"     'undo)
-(key-chord-define-global "fj" 'ace-jump-word-mode)
-(key-chord-define-global "fl" 'ace-jump-line-mode)
-(key-chord-define-global "fk" 'ace-jump-char-mode)
+  ;; (key-chord-define-global "uu"     'undo)
+  ;; (key-chord-define-global "ui"     'undo)
+  ;; (key-chord-define-global "fj" 'ace-jump-word-mode)
+  ;; (key-chord-define-global "fl" 'ace-jump-line-mode)
+  ;; (key-chord-define-global "fk" 'ace-jump-char-mode)
 #+END_SRC
 
 *** Buffers
@@ -249,6 +246,36 @@ Usage: (package-require 'package)"
      ("k" hydra-move-splitter-up)
      ("l" hydra-move-splitter-right)))
  #+END_SRC
+
+*** hyx
+
+#+BEGIN_SRC  emacs-lisp :results none
+(global-set-key
+ (kbd "C-c 1")
+ (defhydra hydra-toggle (:color blue)
+   "toggle"
+   ("a" abbrev-mode "abbrev")
+   ("d" toggle-debug-on-error "debug")
+   ("f" auto-fill-mode "fill")
+   ("t" toggle-truncate-lines "truncate")
+   ("w" whitespace-mode "whitespace")
+   ("q" nil "cancel")))
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp :results none
+(defhydra hydra-edit (global-map "C-c" :color red)
+   "toggle"
+   ("a" abbrev-mode "abbrev" :color blue)
+   ("d" toggle-debug-on-error "debug" :color blue)
+   ("f" auto-fill-mode "fill" :color blue)
+   ("t" toggle-truncate-lines "truncate" :color blue)
+   ("w" whitespace-mode "whitespace" :color blue)
+   ("v" recenter-top-bottom "recenter" :color red)
+   ("q" nil "cancel" :color blue))
+(global-set-key (kbd "C-c 2") 'hydra-edit/body)
+#+END_SRC
+
 
 ** F1 Agenda/TODO/Search
  
@@ -383,6 +410,8 @@ Usage: (package-require 'package)"
 (global-set-key (kbd "<f7> <f7>") 'helm-mini)
 
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-set-key (kbd "<f7> m") 'helm-mark-ring)
+
 #+END_SRC
 
 ** F8 Bookmarks/Recents
@@ -778,39 +807,6 @@ $Note this is needed for org-download$
 (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
 (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
 #+END_SRC
-** dired
-*** dired sort
-#+BEGIN_SRC emacs-lisp :results none
-(require 'dired-sort)
-#+END_SRC
-*** dired+
-**** don't open new buffer per dir
-#+BEGIN_SRC emacs-lisp :results none
-(toggle-diredp-find-file-reuse-dir 1)
-#+END_SRC
-
-Dired+ also provides commands †¡diredp-find-file-reuse-dir-buffer†¢ and †¡diredp-mouse-find-file-reuse-dir-buffer†¢ that open a directory in the same buffer •¡¹ bind them as you like.
-
-*** dired rainbow
-color files by extension 
-
-#+BEGIN_SRC emacs-lisp :results none
-(require 'dired-rainbow)
-
-(defconst dired-audio-files-extensions
-  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
-  "Dired Audio files extensions")
-(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-
-(defconst dired-video-files-extensions
-    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-    "Dired Video files extensions")
-(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
-#+END_SRC
-*** image dired
-#+BEGIN_SRC emacs-lisp :results none
-#+END_SRC
 ** org-downlaod
 
 provides function to drag images from browser and link address
@@ -1075,9 +1071,11 @@ $note its built into emacs no intsall needed$
 (openwith-mode t)
 
 #+END_SRC
-** TODO expnad region
+** expand region
 https://github.com/magnars/expand-region.el
 if installed through package manager no extra config is needed
+
+
 ** Ace jump
 *** evil mode specifics 
 #+BEGIN_SRC emacs-lisp :results none 
@@ -1264,6 +1262,7 @@ http://julien.danjou.info/projects/emacs-packages#rainbow-mode
 (require 'google-contacts)
 #+END_SRC
 ** TODO magit
+
 
 https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-for-git
 
@@ -1964,27 +1963,27 @@ and the number of lines to be wrapped."
 #+end_src
 
 #+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "C-c w l")
-                (lambda ()
-                  (interactive)
-                  (let ((current-prefix-arg '(4)))
-                     (call-interactively
-                      'org-wrap-in-src-block ))))
+  ;; (global-set-key (kbd "C-c w l")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                   (let ((current-prefix-arg '(4)))
+  ;;                      (call-interactively
+  ;;                       'org-wrap-in-src-block ))))
 
-(global-set-key (kbd "C-c w n")
-                (lambda ()
-                  (interactive)
-                  (let ((current-prefix-arg '(16)))
-                     (call-interactively
-                      'org-wrap-in-src-block))))
+  ;; (global-set-key (kbd "C-c w n")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                   (let ((current-prefix-arg '(16)))
+  ;;                      (call-interactively
+  ;;                       'org-wrap-in-src-block))))
 
-(global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
+  ;; (global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
 
 
-(global-set-key (kbd "C-c w y")
-                (lambda ()
-                  (interactive)
-                      (org-wrap-in-src-block  "shell" 1)))
+  ;; (global-set-key (kbd "C-c w y")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                       (org-wrap-in-src-block  "shell" 1)))
 #+END_SRC
 
 **** read only function
@@ -2489,7 +2488,10 @@ my system:
 | b | todo_shopping       | entry | (file+headline ~/org/files/agenda/food.org shopping)            | * SHOP  %^{Description} |
 | w | Work_short_term     | entry | (file+headline ~/org/files/agenda/Research.org Short term Misc) | * TODO  %^{Description} |
 
-
+** TODO org attach
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-attach-directory "/home/zeltak/org/attach/filest/")
+#+END_SRC
 ** org ref
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2698,7 +2700,79 @@ turn on off toolbars with icons
 #+BEGIN_SRC emacs-lisp :results none
 (setq dired-listing-switches "-aBhl  --group-directories-first")
 #+END_SRC
+**** Auto guess target
+Set this variable to non-nil, Dired will try to guess a default target directory. This means: if there is a dired buffer displayed in the next window, use its current subdir, instead of the current subdir of this dired buffer. The target is used in the prompt for file copy, rename etc.
+#+BEGIN_SRC emacs-lisp :results none
+(setq dired-dwim-target t)
+#+END_SRC
 
+**** dired omit 
+Omitting a file means removing it from the directory listing. Omitting is useful for keeping Dired buffers free of ‘¡°uninteresting‘¡± files (for instance, auto-save, auxiliary, backup, and revision control files) so that the user can concentrate on the interesting files.
+To activate it, add this to your .emacs
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq-default dired-omit-mode t)
+#+END_SRC
+
+To toggle the mode, bind it to a keystroke that you like
+
+(define-key dired-mode-map (kbd "C-o") 'dired-omit-mode)
+
+dired-omit-files contains the regex of the files to hide in Dired Mode. For example, if you want to hide the files that begin with . and #, set that variable like this
+
+(setq-default dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\.")
+
+The variable dired-omit-extensions holds the list of all file extensions to hide in Dired Omit Mode. You can modify the list to add more file extensions to hide or remove the ones that you would like to show.
+
+(add-to-list 'dired-omit-extension ".example")
+(delete 'dired-omit-extension ".example")
+
+**** Always Recursion
+Always recursively delete directory
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq dired-recursive-deletes 'always)
+;Always recursively copy directory
+(setq dired-recursive-copies 'always)
+#+END_SRC
+
+*** plugins
+**** dired sort
+ #+BEGIN_SRC emacs-lisp :results none
+ (require 'dired-sort)
+ #+END_SRC
+**** dired+
+***** don't open new buffer per dir
+ #+BEGIN_SRC emacs-lisp :results none
+ (toggle-diredp-find-file-reuse-dir 1)
+ #+END_SRC
+
+ Dired+ also provides commands †¡diredp-find-file-reuse-dir-buffer†¢ and †¡diredp-mouse-find-file-reuse-dir-buffer†¢ that open a directory in the same buffer •¡¹ bind them as you like.
+
+**** dired rainbow
+ color files by extension 
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (require 'dired-rainbow)
+
+ (defconst dired-audio-files-extensions
+   '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+   "Dired Audio files extensions")
+ (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+ (defconst dired-video-files-extensions
+     '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+       "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+     "Dired Video files extensions")
+ (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+ #+END_SRC
+
+**** dired-details+
+#+BEGIN_SRC emacs-lisp :results none
+(require 'dired-details+)
+;Also in dired-details, to show sym link targets, add this to our .emacs
+(setq dired-details-hide-link-targets nil)
+#+END_SRC
 * TODO Editing
 ** spelling
 #+begin_src emacs-lisp results none

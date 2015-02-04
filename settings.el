@@ -89,7 +89,7 @@ Usage: (package-require 'package)"
 (require 'key-chord)
 (key-chord-mode +1)
 ;set times for keychords 
-(setq key-chord-two-keys-delay 0.26)
+(setq key-chord-two-keys-delay 0.16)
 (setq key-chord-one-key-delay 0.20)
 
 (require 'hydra)
@@ -109,25 +109,25 @@ Usage: (package-require 'package)"
 (global-unset-key (kbd "C-v "))
 (global-unset-key (kbd "M-p"))
 
-(key-chord-define-global "lu"     'move-text-up)
-(key-chord-define-global "ld"     'move-text-down)
-(key-chord-define-global "lp"     'duplicate-line)
-(key-chord-define-global "lk"     'kill-whole-line)
-(key-chord-define-global "lm"     'kill-line)
-(key-chord-define-global "lr"     'kill-region)
-(key-chord-define-global "lc"     'z-copy-comment-paste)
-(key-chord-define-global "l;"     'comment-or-uncomment-region)
+;; (key-chord-define-global "lu"     'move-text-up)
+;; (key-chord-define-global "ld"     'move-text-down)
+;; (key-chord-define-global "lp"     'duplicate-line)
+;; (key-chord-define-global "lk"     'kill-whole-line)
+;; (key-chord-define-global "lm"     'kill-line)
+;; (key-chord-define-global "lr"     'kill-region)
+;; (key-chord-define-global "lc"     'z-copy-comment-paste)
+;; (key-chord-define-global "l;"     'comment-or-uncomment-region)
 
-(key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
-(key-chord-define-global "od"     'org-cut-subtree)
-(key-chord-define-global "oy"     'org-copy-subtree)
-(key-chord-define-global "op"     'org-paste-subtree)
+;; (key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
+;; (key-chord-define-global "od"     'org-cut-subtree)
+;; (key-chord-define-global "oy"     'org-copy-subtree)
+;; (key-chord-define-global "op"     'org-paste-subtree)
 
-(key-chord-define-global "uu"     'undo)
-(key-chord-define-global "ui"     'undo)
-(key-chord-define-global "fj" 'ace-jump-word-mode)
-(key-chord-define-global "fl" 'ace-jump-line-mode)
-(key-chord-define-global "fk" 'ace-jump-char-mode)
+;; (key-chord-define-global "uu"     'undo)
+;; (key-chord-define-global "ui"     'undo)
+;; (key-chord-define-global "fj" 'ace-jump-word-mode)
+;; (key-chord-define-global "fl" 'ace-jump-line-mode)
+;; (key-chord-define-global "fk" 'ace-jump-char-mode)
 
 ;;saving and closing
 (key-chord-define-global "bs" 'save-buffer); Aux save
@@ -179,6 +179,28 @@ Usage: (package-require 'package)"
     ("j" hydra-move-splitter-down)
     ("k" hydra-move-splitter-up)
     ("l" hydra-move-splitter-right)))
+
+(global-set-key
+ (kbd "C-c 1")
+ (defhydra hydra-toggle (:color blue)
+   "toggle"
+   ("a" abbrev-mode "abbrev")
+   ("d" toggle-debug-on-error "debug")
+   ("f" auto-fill-mode "fill")
+   ("t" toggle-truncate-lines "truncate")
+   ("w" whitespace-mode "whitespace")
+   ("q" nil "cancel")))
+
+(defhydra hydra-edit (global-map "C-c" :color red)
+   "toggle"
+   ("a" abbrev-mode "abbrev" :color blue)
+   ("d" toggle-debug-on-error "debug" :color blue)
+   ("f" auto-fill-mode "fill" :color blue)
+   ("t" toggle-truncate-lines "truncate" :color blue)
+   ("w" whitespace-mode "whitespace" :color blue)
+   ("v" recenter-top-bottom "recenter" :color red)
+   ("q" nil "cancel" :color blue))
+(global-set-key (kbd "C-c 2") 'hydra-edit/body)
 
 (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
 ;;below code for by type and todo (cook)
@@ -283,6 +305,7 @@ Usage: (package-require 'package)"
 (global-set-key (kbd "<f7> <f7>") 'helm-mini)
 
 (global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-set-key (kbd "<f7> m") 'helm-mark-ring)
 
 (global-set-key (kbd "<f8> <f8> ") 'bookmark-jump)
 (global-set-key (kbd "<f8> h") 'helm-bookmarks)
@@ -551,25 +574,6 @@ Usage: (package-require 'package)"
 (autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
 (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
 (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
-
-(require 'dired-sort)
-
-(toggle-diredp-find-file-reuse-dir 1)
-
-(require 'dired-rainbow)
-
-(defconst dired-audio-files-extensions
-  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
-  "Dired Audio files extensions")
-(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-
-(defconst dired-video-files-extensions
-    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-    "Dired Video files extensions")
-(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
-
-
 
 (load-file "~/.emacs.g/extra/org-download/org-download.el")
 
@@ -1443,27 +1447,27 @@ and the number of lines to be wrapped."
       (if lines "" "\n")))
     (set-marker marker nil)))
 
-(global-set-key (kbd "C-c w l")
-                (lambda ()
-                  (interactive)
-                  (let ((current-prefix-arg '(4)))
-                     (call-interactively
-                      'org-wrap-in-src-block ))))
+;; (global-set-key (kbd "C-c w l")
+;;                 (lambda ()
+;;                   (interactive)
+;;                   (let ((current-prefix-arg '(4)))
+;;                      (call-interactively
+;;                       'org-wrap-in-src-block ))))
 
-(global-set-key (kbd "C-c w n")
-                (lambda ()
-                  (interactive)
-                  (let ((current-prefix-arg '(16)))
-                     (call-interactively
-                      'org-wrap-in-src-block))))
+;; (global-set-key (kbd "C-c w n")
+;;                 (lambda ()
+;;                   (interactive)
+;;                   (let ((current-prefix-arg '(16)))
+;;                      (call-interactively
+;;                       'org-wrap-in-src-block))))
 
-(global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
+;; (global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
 
 
-(global-set-key (kbd "C-c w y")
-                (lambda ()
-                  (interactive)
-                      (org-wrap-in-src-block  "shell" 1)))
+;; (global-set-key (kbd "C-c w y")
+;;                 (lambda ()
+;;                   (interactive)
+;;                       (org-wrap-in-src-block  "shell" 1)))
 
 (defun org-mark-readonly ()
 (interactive)
@@ -1862,6 +1866,8 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 )))
 
+(setq org-attach-set-directory "/home/zeltak/org/attach/")
+
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 
 ;; Remove splash screen
@@ -2026,6 +2032,35 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 (setq evil-operator-state-cursor '("red" hollow))
 
 (setq dired-listing-switches "-aBhl  --group-directories-first")
+
+(setq dired-dwim-target t)
+
+(setq-default dired-omit-mode t)
+
+(setq dired-recursive-deletes 'always)
+;Always recursively copy directory
+(setq dired-recursive-copies 'always)
+
+(require 'dired-sort)
+
+(toggle-diredp-find-file-reuse-dir 1)
+
+(require 'dired-rainbow)
+
+(defconst dired-audio-files-extensions
+  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+  "Dired Audio files extensions")
+(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+(defconst dired-video-files-extensions
+    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+    "Dired Video files extensions")
+(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
+
+(require 'dired-details+)
+;Also in dired-details, to show sym link targets, add this to our .emacs
+(setq dired-details-hide-link-targets nil)
 
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
