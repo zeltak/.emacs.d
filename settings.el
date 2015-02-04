@@ -50,6 +50,18 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
+
+(unless (require 'el-get nil 'noerror)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
+
+(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
+(el-get 'sync)
+
 (require 'package)
 ;; use packages from marmalade
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
@@ -1866,7 +1878,7 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 )))
 
-(setq org-attach-set-directory "/home/zeltak/org/attach/")
+(setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 

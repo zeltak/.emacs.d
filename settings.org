@@ -79,8 +79,48 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 this contains basic Elpa configurations to make package management better. 
 
 #+begin_src emacs-lisp results none
-
 (require 'package)
+
+; list the packages you want
+(setq package-list '(
+
+yasnippet
+helm
+dired-sort
+dired+
+rainbow-mode
+hydra
+ace-isearch 
+helm-swoop
+ace-jump-mode 
+ace-window 
+ace-jump-mode 
+auctex 
+auto-complete 
+bbdb 
+browse-kill-ring
+dired-details+ 
+evil 
+undo-tree 
+evil-nerd-commenter 
+expand-region 
+flx 
+google-contacts 
+helm-cmd-t 
+key-chord 
+magit 
+openwith 
+smex 
+async 
+bookmark+
+lentic 
+company dired-rainbow
+dired-hacks-utils 
+flx-ido 
+helm-bibtex 
+helm-chrome 
+))
+
 ;; use packages from marmalade
 (add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
 ;; and the old elpa repo
@@ -90,12 +130,10 @@ this contains basic Elpa configurations to make package management better.
 (add-to-list 'package-archives '("SC" . "http://joseito.republika.pl/sunrise-commander/"))
 
 
-
 ;; Make sure a package is installed
 (defun package-require (package)
   "Install a PACKAGE unless it is already installed 
 or a feature with the same name is already active.
-
 Usage: (package-require 'package)"
   ; try to activate the package with at least version 0.
   (package-activate package '(0))
@@ -104,6 +142,18 @@ Usage: (package-require 'package)"
       (require package)
     ; if we cannot require it, it does not exist, yet. So install it.
     (error (package-install package))))
+
+
+; fetch the list of packages available 
+(unless package-archive-contents
+  (package-refresh-contents))
+
+; install the missing packages
+(dolist (package package-list)
+  (unless (package-installed-p package)
+    (package-install package)))
+
+
 
 ;; Initialize installed packages
 (package-initialize)  
@@ -116,6 +166,8 @@ Usage: (package-require 'package)"
 ;(package-refresh-contents)
 
 #+end_src
+
+#+RESULTS:
 
 *** key-chord
 **** start key-chord by default
@@ -673,7 +725,7 @@ $note its built into emacs no intsall needed$
 #+END_SRC
 
 * Packages
-
+  
 $Note$ the sign !package! means the package is disbaled
 
 ** Helm
