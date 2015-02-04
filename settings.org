@@ -2488,9 +2488,9 @@ my system:
 | b | todo_shopping       | entry | (file+headline ~/org/files/agenda/food.org shopping)            | * SHOP  %^{Description} |
 | w | Work_short_term     | entry | (file+headline ~/org/files/agenda/Research.org Short term Misc) | * TODO  %^{Description} |
 
-** TODO org attach
+** org attach
 #+BEGIN_SRC emacs-lisp :results none
-(setq org-attach-directory "/home/zeltak/org/attach/filest/")
+(setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 #+END_SRC
 ** org ref
 
