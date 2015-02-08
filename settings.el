@@ -22,7 +22,7 @@
 ;load the choosen theme at startup 
 (load-theme 'zprime t)
 
-;; fonts in linux
+; fonts in linux
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
@@ -50,61 +50,28 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
-(add-to-list 'load-path "~/.emacs.d/el-get/el-get")
-
-(unless (require 'el-get nil 'noerror)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/dimitri/el-get/master/el-get-install.el")
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-(add-to-list 'el-get-recipe-path "~/.emacs.d/el-get-user/recipes")
-(el-get 'sync)
-
 (require 'package)
-;; use packages from marmalade
-(add-to-list 'package-archives '("marmalade" . "http://marmalade-repo.org/packages/"))
-;; and the old elpa repo
-(add-to-list 'package-archives '("elpa-old" . "http://tromey.com/elpa/"))
-;; and automatically parsed versiontracking repositories.
-(add-to-list 'package-archives '("melpa" . "http://melpa.milkbox.net/packages/"))
-(add-to-list 'package-archives '("SC" . "http://joseito.republika.pl/sunrise-commander/"))
-
-
-
-;; Make sure a package is installed
-(defun package-require (package)
-  "Install a PACKAGE unless it is already installed 
-or a feature with the same name is already active.
-
-Usage: (package-require 'package)"
-  ; try to activate the package with at least version 0.
-  (package-activate package '(0))
-  ; try to just require the package. Maybe the user has it in his local config
-  (condition-case nil
-      (require package)
-    ; if we cannot require it, it does not exist, yet. So install it.
-    (error (package-install package))))
-
-;; Initialize installed packages
-(package-initialize)  
-;; package init not needed, since it is done anyway in emacs 24 after reading the init
-;; but we have to load the list of available packages
-
+;since we are using use-packag-don't autoload anythings
 (setq package-enable-at-startup nil)
 
-;;uncomment to have emacs refresh all packages on startup-makes emacs very slow
-;(package-refresh-contents)
+;sources for package.el 
+(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
+                  ("elpa" . "http://tromey.com/elpa/")
+                  ;; TODO: Maybe, use this after emacs24 is released
+                  ;; (development versions of packages)
+                  ("melpa" . "http://melpa.milkbox.net/packages/")
+                  ))
+  (add-to-list 'package-archives source t))
 
-;; key chords
-(require 'key-chord)
-(key-chord-mode +1)
-;set times for keychords 
-(setq key-chord-two-keys-delay 0.16)
-(setq key-chord-one-key-delay 0.20)
+;; Initialize installed package
+(package-initialize)  
 
-(require 'hydra)
+;; Bootstrap `use-package'
+;(unless (package-installed-p 'use-package)
+;  (package-refresh-contents)
+;  (package-install 'use-package))
+
+(require 'use-package)
 
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
@@ -508,11 +475,203 @@ Usage: (package-require 'package)"
 
 (add-hook 'proced-mode-hook 'proced-settings)
 
-(helm-mode 1)
+(use-package key-chord 
+  :ensure t
+  :config
+(setq key-chord-two-keys-delay 0.16)
+(setq key-chord-one-key-delay 0.20)
+)
 
+(defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+  "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+  (interactive)
+  (setq display-fn (or display-fn 'identity))
+  (if (require 'helm-config)
+      (let (tmpsource cands result rmap)
+        (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+        (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+        (setq tmpsource
+              (list
+               (cons 'name prompt)
+               (cons 'candidates cands)
+               '(action . (("Expand" . (lambda (selection) selection))))
+               ))
+        (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+        (if (null result)
+            (signal 'quit "user quit!")
+          (cdr (assoc result rmap))))
+    nil))
+
+;; (use-package yasnippet
+;; :diminish yas-minor-mode
+;; :commands yas-global-mode
+;; :ensure t
+;;   :bind ("M-=" . yas-insert-snippet)
+;;   :config
+;;   (progn
+;;     (defun my-yas/prompt (prompt choices &optional display-fn)
+;;       (let* ((names (loop for choice in choices
+;;                           collect (or (and display-fn
+;;                                            (funcall display-fn choice))
+;;                                       choice)))
+;;              (selected (helm-other-buffer
+;;                         `(((name . ,(format "%s" prompt))
+;;                            (candidates . names)
+;;                            (action . (("Insert snippet" . (lambda (arg)
+;;                                                             arg))))))
+;;                         "*helm yas/prompt*")))
+;;         (if selected
+;;             (let ((n (position selected names :test 'equal)))
+;;               (nth n choices))
+;;           (signal 'quit "user quit!"))))
+;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
+
+(use-package yasnippet
+)
+
+(yas-global-mode 1)
+;; Use custom snippets.
+;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(yas-reload-all)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+
+(use-package hydra
+:ensure t )
+
+(global-set-key
+ (kbd "C-z")
+ (defhydra hydra-vi
+     (:pre
+      (set-cursor-color "#e52b50")
+      :post
+      (set-cursor-color "green")
+      :color amaranth)
+   "vi"
+   ("l" forward-char)
+   ("h" backward-char)
+   ("j" next-line)
+   ("k" previous-line)
+   ("m" set-mark-command "mark")
+   ("a" move-beginning-of-line "beg")
+   ("e" move-end-of-line "end")
+   ("d" delete-region "del" :color blue)
+   ("y" kill-ring-save "yank" :color blue)
+   ("q" nil "quit")))
+
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-window ()
+   "window"
+   ("h" windmove-left)
+   ("j" windmove-down)
+   ("k" windmove-up)
+   ("l" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "ace")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("x" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("s" (lambda ()
+          (interactive)
+          (ace-window 4)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "swap")
+   ("t" transpose-frame "'")
+   ("d" (lambda ()
+          (interactive)
+          (ace-window 16)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "del")
+   ("o" delete-other-windows "one" :color blue)
+   ("i" ace-maximize-window "ace-one" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-M-y")
+ (defhydra hydra-yas ()
+   "yas command "
+   ("a" yas-activate-extra-mode "add_mode" :color blue)
+   ("n" yas-new-snippet "new_snip" :color blue)
+   ("v" yas-visit-snippet-file "visit" :color blue)
+   ("i" yas-insert-snippet "insert_point" :color blue)
+   ("r" yas-reload-all  "reload" :color blue)
+   ("q" nil "cancel")))
+
+(use-package async
+:ensure t)
+
+(use-package evil
+:ensure t
+:config
+)
+
+;; (require 'evil)
+;; (evil-mode 1)
+
+;; ;for normal undo
+;; (setq evil-want-fine-undo t)
+
+;; ;;; esc quits
+;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
+;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
+;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+
+;; ;searches
+;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
+;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
+
+;(evilnc-default-hotkeys)
+;(setq evilnc-hotkey-comment-operator ",,")
+
+;; (require 'edit-server)
+;;  (edit-server-start)
+;; (autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+;; (autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+;; (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+;; (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+
+;; (use-package org-download 
+;; :ensure t
+;; :config
+;;  (setq-default org-download-heading-lvl nil)
+;;  (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+;; )
+
+; (load-file "~/.emacs.g/extra/org-download/org-download.el")
+; (setq-default org-download-heading-lvl nil)
+; (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+
+;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
+
+;; (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
+;; (require 'org-dp-lib)
+
+(use-package helm
+:ensure t
+:config
 (global-set-key (kbd "M-x") 'helm-M-x)
-
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+)
 
 (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
@@ -523,7 +682,10 @@ Usage: (package-require 'package)"
 (setq helm-buffers-fuzzy-matching t
       helm-recentf-fuzzy-match    t)
 
-(require 'helm-cmd-t)
+(use-package helm-cmd-t
+:ensure t
+:config
+)
 
 (defvar my-org-folders (list  "~/org/files/")
   "my permanent folders for helm-mini")
@@ -556,86 +718,48 @@ Usage: (package-require 'package)"
   (lambda (fpath)
     (start-process "evince" "*evince*" "evince" fpath)))
 
-(require 'async)
+;; (require 'yasnippet)
 
-;; (require 'evil)
-;; (evil-mode 1)
+;; (setq yas-snippet-dirs
+;;       '("~/.emacs.d/snippets"                 ;; personal snippets
+;;         ""           ;; foo-mode and bar-mode snippet collection
+;;         "" ;; the yasmate collection
+;;         ""         ;; the default collection
+;;         ))
 
-;; ;for normal undo
-;; (setq evil-want-fine-undo t)
+;; (yas-global-mode 1)
 
-;; ;;; esc quits
-;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
-;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
-;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+;; ;;; use popup menu for yas-choose-value
+;; (require 'popup)
 
-;; ;searches
-;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
-;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
+;; ;; add some shotcuts in popup menu mode
+;; (define-key popup-menu-keymap (kbd "M-n") 'popup-next)
+;; (define-key popup-menu-keymap (kbd "TAB") 'popup-next)
+;; (define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
+;; (define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
+;; (define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
 
-;(evilnc-default-hotkeys)
-;(setq evilnc-hotkey-comment-operator ",,")
+;; (defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
+;;   (when (featurep 'popup)
+;;     (popup-menu*
+;;      (mapcar
+;;       (lambda (choice)
+;;         (popup-make-item
+;;          (or (and display-fn (funcall display-fn choice))
+;;              choice)
+;;          :value choice))
+;;       choices)
+;;      :prompt prompt
+;;      ;; start isearch mode immediately
+;;      :isearch t
+;;      )))
 
-(require 'edit-server)
- (edit-server-start)
-(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
-(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
-(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
-(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+;; (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 
-(load-file "~/.emacs.g/extra/org-download/org-download.el")
-
-(setq-default org-download-heading-lvl nil)
-(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
-
-;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
-
-(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
-(require 'org-dp-lib)
-
-(require 'yasnippet)
-
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"                 ;; personal snippets
-        ""           ;; foo-mode and bar-mode snippet collection
-        "" ;; the yasmate collection
-        ""         ;; the default collection
-        ))
-
-(yas-global-mode 1)
-
-;;; use popup menu for yas-choose-value
-(require 'popup)
-
-;; add some shotcuts in popup menu mode
-(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
-(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
-(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
-(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
-(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
-
-(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
-  (when (featurep 'popup)
-    (popup-menu*
-     (mapcar
-      (lambda (choice)
-        (popup-make-item
-         (or (and display-fn (funcall display-fn choice))
-             choice)
-         :value choice))
-      choices)
-     :prompt prompt
-     ;; start isearch mode immediately
-     :isearch t
-     )))
-
-(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
-
-(require 'browse-kill-ring)
+(use-package browse-kill-ring
+:ensure t
+:config
+)
 
 ;; (ido-mode 1)
 ;; (require 'flx-ido)
@@ -681,28 +805,28 @@ Usage: (package-require 'package)"
 ;;            (insert "~/")
 ;;          (call-interactively 'self-insert-command))))))
 
-(require 'smex) ; Not needed if you use package.el
-(smex-initialize) ; Can be omitted. This might cause a (minimal) delay
-                  ; when Smex is auto-initialized on its first run.
+(use-package smex
+:ensure t
+:config
+)
 
-;Bind some keys:
-
-;; (global-set-key (kbd "M-x") 'smex)
-;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-;; This is your old M-x.
-(global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-
-(require 'bookmark+)
+(use-package bookmark+
+:ensure t
+:config
 (setq bookmark-version-control t
       bookmark-save-flag t)
 ;ask for tags when saving a bookmark move nil to t to ask each time
 (setq bmkp-prompt-for-tags-flag nil)
+)
 
-(require 'undo-tree)
+(use-package undo-tree 
+:ensure t
+:config
 (global-undo-tree-mode 1)
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-history-directory-alist '((".*" . "~/.emacs.t/undo-files")))
-(setq undo-tree-mode-lighter "")
+(setq undo-tree-mode-lighter "")         
+)
 
 ;; (setq dcsh-command-list '("all_registers"
 ;;                               "check_design" "check_test" "compile" "current_design"
@@ -785,8 +909,9 @@ Usage: (package-require 'package)"
 ;; (global-set-key (kbd "M-/") 'hippie-expand)
 ;; (global-set-key (kbd "TAB") 'hippie-expand)
 
-;;open with
-(require 'openwith)
+(use-package openwith 
+:ensure t
+:config
 (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
 (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
 (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
@@ -797,6 +922,7 @@ Usage: (package-require 'package)"
 (setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
 (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
 (openwith-mode t)
+)
 
 ;; some proposals for binding:
  
@@ -808,9 +934,12 @@ Usage: (package-require 'package)"
   ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
   ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
 
-(require 'ace-isearch)
+(use-package ace-isearch
+:ensure t
+:config
 (ace-isearch-mode +1)
 (global-ace-isearch-mode +1)
+)
 
 (custom-set-variables
  '(ace-isearch-input-length 7)
@@ -897,29 +1026,28 @@ Usage: (package-require 'package)"
 
 ;;   (add-to-list 'ac-modes mode))
 
-(require 'company)
-(global-company-mode 1)
-;To use company-mode in all buffers
-(add-hook 'after-init-hook 'global-company-mode)
+(use-package company
+:ensure t
+:config
+)
 
-;;look and feel
-(setq company-idle-delay 0.3)
-(setq company-tooltip-limit 20)
-(setq company-minimum-prefix-length 2)
-(setq company-echo-delay 0)
-(setq company-auto-complete nil)
-(add-to-list 'company-backends 'company-dabbrev t)
-(add-to-list 'company-backends 'company-ispell t)
-(add-to-list 'company-backends 'company-files t)
+  ;To use company-mode in all buffers
+  (add-hook 'after-init-hook 'global-company-mode)
 
-;; (defun my-pcomplete-capf ()
-;;   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-;; (add-hook 'org-mode-hook #'my-pcomplete-capf)
+  ;;look and feel
+  (setq company-idle-delay 0.3)
+  (setq company-tooltip-limit 20)
+  (setq company-minimum-prefix-length 2)
+  (setq company-echo-delay 0)
+  (setq company-auto-complete nil)
+  (add-to-list 'company-backends 'company-dabbrev t)
+  (add-to-list 'company-backends 'company-ispell t)
+  (add-to-list 'company-backends 'company-files t)
 
-(require 'back-button)
-(back-button-mode 1)
-
-(rainbow-mode 1)
+(use-package rainbow-mode
+:ensure t
+:config
+)
 
 (dolist (hook '(css-mode-hook
                 html-mode-hook
@@ -930,9 +1058,89 @@ Usage: (package-require 'package)"
                 ))
   (add-hook hook 'rainbow-mode))
 
-(require 'google-contacts)
+(use-package google-contacts
+:ensure t
+:config
+)
 
 
+
+(use-package popwin
+  :ensure t
+  :idle (popwin-mode 1))
+(defvar popwin:special-display-config-backup popwin:special-display-config)
+(setq display-buffer-function 'popwin:display-buffer)
+
+;; basic
+(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
+(push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
+(push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
+
+;; magit
+(push '("*magit-process*" :stick t) popwin:special-display-config)
+
+;; quickrun
+(push '("*quickrun*" :stick t) popwin:special-display-config)
+
+;; dictionaly
+(push '("*dict*" :stick t) popwin:special-display-config)
+(push '("*sdic*" :stick t) popwin:special-display-config)
+
+;; popwin for slime
+(push '(slime-repl-mode :stick t) popwin:special-display-config)
+
+;; man
+(push '(Man-mode :stick t :height 20) popwin:special-display-config)
+
+;; Elisp
+(push '("*ielm*" :stick t) popwin:special-display-config)
+(push '("*eshell pop*" :stick t) popwin:special-display-config)
+
+;; pry
+(push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
+
+;; python
+(push '("*Python*"   :stick t) popwin:special-display-config)
+(push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
+(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
+
+;; Haskell
+(push '("*haskell*" :stick t) popwin:special-display-config)
+(push '("*GHC Info*") popwin:special-display-config)
+
+;; sgit
+(push '("*sgit*" :position right :width 0.5 :stick t)
+      popwin:special-display-config)
+
+;; git-gutter
+(push '("*git-gutter:diff*" :width 0.5 :stick t)
+      popwin:special-display-config)
+
+;; direx
+(push '(direx:direx-mode :position left :width 40 :dedicated t)
+      popwin:special-display-config)
+
+(push '("*Occur*" :stick t) popwin:special-display-config)
+
+;; prodigy
+(push '("*prodigy*" :stick t) popwin:special-display-config)
+
+;; malabar-mode
+(push '("*Malabar Compilation*" :stick t :height 30)
+      popwin:special-display-config)
+
+;; org-mode
+(push '("*Org tags*" :stick t :height 30)
+      popwin:special-display-config)
+
+;; Completions
+(push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
+
+;; ggtags
+(push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
+
+;; async shell commands
+(push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 
 (if (string= system-name "voices") 
 (progn

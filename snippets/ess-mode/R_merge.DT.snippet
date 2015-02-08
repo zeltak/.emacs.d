@@ -1,0 +1,8 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: R_merge
+# key: rmrg
+# binding: direct-keybinding
+# --
+setkey($1,$2,$3)
+setkey($4,$2,$3)
+$5 <- merge($1,$4,all.x=TRUE)

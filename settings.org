@@ -45,7 +45,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 
 ** Fonts
 #+begin_src emacs-lisp results none
-;; fonts in linux
+; fonts in linux
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
@@ -75,14 +75,15 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 #+end_src
 ** startup packages
 *** Elpa
-
+**** base
 this contains basic Elpa configurations to make package management better. 
 
 #+begin_src emacs-lisp 
 (require 'package)
+;since we are using use-packag-don't autoload anythings
+(setq package-enable-at-startup nil)
 
-;;; Emacs is not a package manager, and here we load its package manager!
-(require 'package)
+;sources for package.el 
 (dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
                   ("elpa" . "http://tromey.com/elpa/")
                   ;; TODO: Maybe, use this after emacs24 is released
@@ -90,84 +91,25 @@ this contains basic Elpa configurations to make package management better.
                   ("melpa" . "http://melpa.milkbox.net/packages/")
                   ))
   (add-to-list 'package-archives source t))
-(package-initialize)
 
-;;; Required packages
-;;; everytime emacs starts, it will automatically check if those packages are
-;;; missing, it will install them automatically
-(when (not package-archive-contents)
-  (package-refresh-contents))
-(defvar tmtxt/packages
-  '(yasnippet
-helm
-dired-sort
-dired+
-rainbow-mode
-hydra
-ace-isearch 
-helm-swoop
-ace-jump-mode 
-ace-window 
-ace-jump-mode 
-auctex 
-auto-complete 
-bbdb 
-browse-kill-ring
-dired-details+ 
-evil 
-undo-tree 
-evil-nerd-commenter 
-expand-region 
-flx 
-google-contacts 
-helm-cmd-t 
-key-chord 
-magit 
-openwith 
-smex 
-async 
-bookmark+
-lentic 
-company dired-rainbow
-dired-hacks-utils 
-flx-ido 
-helm-bibtex 
-helm-chrome ))
-(dolist (p tmtxt/packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
-
-
-;; Initialize installed packages
+;; Initialize installed package
 (package-initialize)  
-;; package init not needed, since it is done anyway in emacs 24 after reading the init
-;; but we have to load the list of available packages
 
-(setq package-enable-at-startup nil)
-
-;;uncomment to have emacs refresh all packages on startup-makes emacs very slow
-;(package-refresh-contents)
+;; Bootstrap `use-package'
+;(unless (package-installed-p 'use-package)
+;  (package-refresh-contents)
+;  (package-install 'use-package))
 
 #+end_src
 
 #+RESULTS:
 
+*** use-package
+#+BEGIN_SRC emacs-lisp :results none
+(require 'use-package)
+#+END_SRC
 
-*** key-chord
-**** start key-chord by default
- #+BEGIN_SRC emacs-lisp :results none
- ;; key chords
-(require 'key-chord)
-(key-chord-mode +1)
-;set times for keychords 
-(setq key-chord-two-keys-delay 0.16)
-(setq key-chord-one-key-delay 0.20)
-#+END_SRC
-*** hydra
- #+BEGIN_SRC emacs-lisp :results none
-(require 'hydra)
-#+END_SRC
- 
+
 * Keybinds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
@@ -712,172 +654,354 @@ $note its built into emacs no intsall needed$
   
 $Note$ the sign !package! means the package is disbaled
 
-** Helm
-*** start helm as default 
-#+BEGIN_SRC emacs-lisp :results none
-(helm-mode 1)
-#+END_SRC 
-*** take over M-x
+** key-chord
 
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "M-x") 'helm-M-x)
+ #+BEGIN_SRC emacs-lisp :results none
+(use-package key-chord 
+  :ensure t
+  :config
+(setq key-chord-two-keys-delay 0.16)
+(setq key-chord-one-key-delay 0.20)
+)
 #+END_SRC
 
-fuzy search enabled for m-x:
+** yasnippet
+*** function helm 
 #+BEGIN_SRC emacs-lisp :results none
-(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+(defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+  "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+  (interactive)
+  (setq display-fn (or display-fn 'identity))
+  (if (require 'helm-config)
+      (let (tmpsource cands result rmap)
+        (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+        (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+        (setq tmpsource
+              (list
+               (cons 'name prompt)
+               (cons 'candidates cands)
+               '(action . (("Expand" . (lambda (selection) selection))))
+               ))
+        (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+        (if (null result)
+            (signal 'quit "user quit!")
+          (cdr (assoc result rmap))))
+    nil))
 #+END_SRC
 
-*** Helm viewing options config 
-
 #+BEGIN_SRC emacs-lisp :results none
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-
+  ;; (use-package yasnippet
+  ;; :diminish yas-minor-mode
+  ;; :commands yas-global-mode
+  ;; :ensure t
+  ;;   :bind ("M-=" . yas-insert-snippet)
+  ;;   :config
+  ;;   (progn
+  ;;     (defun my-yas/prompt (prompt choices &optional display-fn)
+  ;;       (let* ((names (loop for choice in choices
+  ;;                           collect (or (and display-fn
+  ;;                                            (funcall display-fn choice))
+  ;;                                       choice)))
+  ;;              (selected (helm-other-buffer
+  ;;                         `(((name . ,(format "%s" prompt))
+  ;;                            (candidates . names)
+  ;;                            (action . (("Insert snippet" . (lambda (arg)
+  ;;                                                             arg))))))
+  ;;                         "*helm yas/prompt*")))
+  ;;         (if selected
+  ;;             (let ((n (position selected names :test 'equal)))
+  ;;               (nth n choices))
+  ;;           (signal 'quit "user quit!"))))
+  ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
-*** helm mini
-enable fuzzy matching:
-#+BEGIN_SRC emacs-lisp :results none
-(setq helm-buffers-fuzzy-matching t
-      helm-recentf-fuzzy-match    t)
-#+END_SRC
-*** TODO search org folders
+
+*** load yasnippet
 
 #+BEGIN_SRC emacs-lisp :results none
-(require 'helm-cmd-t)
-
-(defvar my-org-folders (list  "~/org/files/")
-  "my permanent folders for helm-mini")
-
-(defun helm-my-org (&optional arg)
-  "Use C-u arg to work with repos."
-  (interactive "P")
-  (if (consp arg)
-      (call-interactively 'helm-cmd-t-repos)
-    (let ((helm-ff-transformer-show-only-basename nil))
-      (helm :sources (mapcar (lambda (dir)
-                               (helm-cmd-t-get-create-source-dir dir))
-                             my-org-folders)
-            :candidate-number-limit 20
-            :buffer "*helm-my-org:*"
-            :input "org$ "))))
+(use-package yasnippet
+)
 #+END_SRC
-
-*** google suggest 
-#+BEGIN_SRC emacs-lisp :results none
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
-#+END_SRC
-
-*** helm man-woman (man doc reader)
-enable at point
-#+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-#+END_SRC
-*** helm locate
-enable fuzzy 
-#+BEGIN_SRC emacs-lisp :results none
-(setq helm-locate-fuzzy-match t)	    
-#+END_SRC
-*** helm bibtex
-https://github.com/tmalsburg/helm-bibtex
 
 #+BEGIN_SRC emacs-lisp :results none
-(autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
-(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+(yas-global-mode 1)
+;; Use custom snippets.
+;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(yas-reload-all)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+#+END_SRC
 
-(setq helm-bibtex-pdf-open-function
-  (lambda (fpath)
-    (start-process "evince" "*evince*" "evince" fpath)))
+
+** hydra
+*** load
+ #+BEGIN_SRC emacs-lisp :results none
+(use-package hydra
+:ensure t )
+#+END_SRC
+*** functions
+**** vim
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-z")
+ (defhydra hydra-vi
+     (:pre
+      (set-cursor-color "#e52b50")
+      :post
+      (set-cursor-color "green")
+      :color amaranth)
+   "vi"
+   ("l" forward-char)
+   ("h" backward-char)
+   ("j" next-line)
+   ("k" previous-line)
+   ("m" set-mark-command "mark")
+   ("a" move-beginning-of-line "beg")
+   ("e" move-end-of-line "end")
+   ("d" delete-region "del" :color blue)
+   ("y" kill-ring-save "yank" :color blue)
+   ("q" nil "quit")))
+#+END_SRC
+
+**** window switch
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-window ()
+   "window"
+   ("h" windmove-left)
+   ("j" windmove-down)
+   ("k" windmove-up)
+   ("l" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "ace")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("x" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("s" (lambda ()
+          (interactive)
+          (ace-window 4)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "swap")
+   ("t" transpose-frame "'")
+   ("d" (lambda ()
+          (interactive)
+          (ace-window 16)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "del")
+   ("o" delete-other-windows "one" :color blue)
+   ("i" ace-maximize-window "ace-one" :color blue)
+   ("q" nil "cancel")))
 
 #+END_SRC
+**** yas 
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-M-y")
+ (defhydra hydra-yas ()
+   "yas command "
+   ("a" yas-activate-extra-mode "add_mode" :color blue)
+   ("n" yas-new-snippet "new_snip" :color blue)
+   ("v" yas-visit-snippet-file "visit" :color blue)
+   ("i" yas-insert-snippet "insert_point" :color blue)
+   ("r" yas-reload-all  "reload" :color blue)
+   ("q" nil "cancel")))
+#+END_SRC
+
 ** async
-$Note this is needed for org-download$
-
-#+BEGIN_SRC emacs-lisp :results none
-(require 'async)
-#+END_SRC 
+ $Note this is needed for org-download$
+ #+BEGIN_SRC emacs-lisp :results none
+(use-package async
+:ensure t)
+ #+END_SRC 
 
 ** EVIL
 
-#+begin_src emacs-lisp results none
-  ;; (require 'evil)
-  ;; (evil-mode 1)
+#+BEGIN_SRC emacs-lisp :results none
+(use-package evil
+:ensure t
+:config
+)
+#+END_SRC
 
-  ;; ;for normal undo
-  ;; (setq evil-want-fine-undo t)
+ #+begin_src emacs-lisp results none
+   ;; (require 'evil)
+   ;; (evil-mode 1)
 
-  ;; ;;; esc quits
-  ;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
-  ;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
-  ;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
-  ;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
-  ;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
-  ;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
-  ;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+   ;; ;for normal undo
+   ;; (setq evil-want-fine-undo t)
 
-  ;; ;searches
-  ;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
-  ;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
+   ;; ;;; esc quits
+   ;; (define-key evil-normal-state-map [escape] 'keyboard-quit)
+   ;; (define-key evil-visual-state-map [escape] 'keyboard-quit)
+   ;; (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+   ;; (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+   ;; (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+   ;; (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+   ;; (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
+
+   ;; ;searches
+   ;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
+   ;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
 
 
 
-#+end_src
+ #+end_src
 
 ** EVIL NERD Commenter
-#+BEGIN_SRC emacs-lisp :results none
-;(evilnc-default-hotkeys)
-;(setq evilnc-hotkey-comment-operator ",,")
-#+END_SRC
-** edit-server (for chrome interaction)
-#+BEGIN_SRC emacs-lisp :results none
-(require 'edit-server)
- (edit-server-start)
-(autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
-(autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
-(add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
-(add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
-#+END_SRC
-** org-downlaod
-
-provides function to drag images from browser and link address
-$Note$ this requires package async to be installed, @async must be loaded before this package@
-
-#+BEGIN_SRC emacs-lisp :results none
-(load-file "~/.emacs.g/extra/org-download/org-download.el")
-
-(setq-default org-download-heading-lvl nil)
-(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
-#+END_SRC
+ #+BEGIN_SRC emacs-lisp :results none
+ ;(evilnc-default-hotkeys)
+ ;(setq evilnc-hotkey-comment-operator ",,")
+ #+END_SRC
+** TODO edit-server (for chrome interaction)
+ #+BEGIN_SRC emacs-lisp :results none
+   ;; (require 'edit-server)
+   ;;  (edit-server-start)
+   ;; (autoload 'edit-server-maybe-dehtmlize-buffer "edit-server-htmlize" "edit-server-htmlize" t)
+   ;; (autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
+   ;; (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
+   ;; (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+ #+END_SRC
+** TODO org-downlaod
+ provides function to drag images from browser and link address
+ $Note$ this requires package async to be installed, @async must be loaded before this package@
 
 #+BEGIN_SRC emacs-lisp :results none
-;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))                                                           
-#+END_SRC
+  ;; (use-package org-download 
+  ;; :ensure t
+  ;; :config
+  ;;  (setq-default org-download-heading-lvl nil)
+  ;;  (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+  ;; )
+ #+END_SRC
+
+
+ #+BEGIN_SRC emacs-lisp :results none
+; (load-file "~/.emacs.g/extra/org-download/org-download.el")
+; (setq-default org-download-heading-lvl nil)
+; (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+ #+END_SRC
+ #+BEGIN_SRC emacs-lisp :results none
+ ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))                                                           
+ #+END_SRC
 ** org-dp (wrap code blocks functions) 
+ #+BEGIN_SRC emacs-lisp :results none
+   ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
+   ;; (require 'org-dp-lib)
+ #+END_SRC
+ 
 
+
+** Helm
+*** load Helm
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
-(require 'org-dp-lib)
+(use-package helm
+:ensure t
+:config
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+)
 #+END_SRC
+*** Helm configuration 
+**** Helm viewing options config 
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+       helm-ff-file-name-history-use-recentf t)
+ #+END_SRC
+**** helm mini
+ enable fuzzy matching:
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-buffers-fuzzy-matching t
+       helm-recentf-fuzzy-match    t)
+ #+END_SRC
+**** TODO search org folders
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-cmd-t
+ :ensure t
+ :config
+ )
+
+ (defvar my-org-folders (list  "~/org/files/")
+   "my permanent folders for helm-mini")
+
+ (defun helm-my-org (&optional arg)
+   "Use C-u arg to work with repos."
+   (interactive "P")
+   (if (consp arg)
+       (call-interactively 'helm-cmd-t-repos)
+     (let ((helm-ff-transformer-show-only-basename nil))
+       (helm :sources (mapcar (lambda (dir)
+				(helm-cmd-t-get-create-source-dir dir))
+                              my-org-folders)
+             :candidate-number-limit 20
+             :buffer "*helm-my-org:*"
+             :input "org$ "))))
+ #+END_SRC
+
+**** google suggest 
+ #+BEGIN_SRC emacs-lisp :results none
+ (when (executable-find "curl")
+   (setq helm-google-suggest-use-curl-p t))
+ #+END_SRC
+
+**** helm man-woman (man doc reader)
+ enable at point
+ #+BEGIN_SRC emacs-lisp :results none
+ (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+ #+END_SRC
+**** helm locate
+ enable fuzzy 
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-locate-fuzzy-match t)	    
+ #+END_SRC
+**** helm bibtex
+ https://github.com/tmalsburg/helm-bibtex
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (autoload 'helm-bibtex "helm-bibtex" "" t)
+ (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+ (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+ (setq helm-bibtex-pdf-open-function
+   (lambda (fpath)
+     (start-process "evince" "*evince*" "evince" fpath)))
+
+ #+END_SRC
 
 ** Yasnippets 
 *** base
 #+begin_src emacs-lisp results none
-(require 'yasnippet)
+  ;; (require 'yasnippet)
 
-(setq yas-snippet-dirs
-      '("~/.emacs.d/snippets"                 ;; personal snippets
-        ""           ;; foo-mode and bar-mode snippet collection
-        "" ;; the yasmate collection
-        ""         ;; the default collection
-        ))
+  ;; (setq yas-snippet-dirs
+  ;;       '("~/.emacs.d/snippets"                 ;; personal snippets
+  ;;         ""           ;; foo-mode and bar-mode snippet collection
+  ;;         "" ;; the yasmate collection
+  ;;         ""         ;; the default collection
+  ;;         ))
 
-(yas-global-mode 1)
+  ;; (yas-global-mode 1)
 
 #+end_src
 
@@ -886,37 +1010,40 @@ $Note$ this requires package async to be installed, @async must be loaded before
 this requires you to isntall 'popup' from MELPA beforehand
 
 #+BEGIN_SRC emacs-lisp :results none
-;;; use popup menu for yas-choose-value
-(require 'popup)
+  ;; ;;; use popup menu for yas-choose-value
+  ;; (require 'popup)
 
-;; add some shotcuts in popup menu mode
-(define-key popup-menu-keymap (kbd "M-n") 'popup-next)
-(define-key popup-menu-keymap (kbd "TAB") 'popup-next)
-(define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
-(define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
-(define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
+  ;; ;; add some shotcuts in popup menu mode
+  ;; (define-key popup-menu-keymap (kbd "M-n") 'popup-next)
+  ;; (define-key popup-menu-keymap (kbd "TAB") 'popup-next)
+  ;; (define-key popup-menu-keymap (kbd "<tab>") 'popup-next)
+  ;; (define-key popup-menu-keymap (kbd "<backtab>") 'popup-previous)
+  ;; (define-key popup-menu-keymap (kbd "M-p") 'popup-previous)
 
-(defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
-  (when (featurep 'popup)
-    (popup-menu*
-     (mapcar
-      (lambda (choice)
-        (popup-make-item
-         (or (and display-fn (funcall display-fn choice))
-             choice)
-         :value choice))
-      choices)
-     :prompt prompt
-     ;; start isearch mode immediately
-     :isearch t
-     )))
+  ;; (defun yas-popup-isearch-prompt (prompt choices &optional display-fn)
+  ;;   (when (featurep 'popup)
+  ;;     (popup-menu*
+  ;;      (mapcar
+  ;;       (lambda (choice)
+  ;;         (popup-make-item
+  ;;          (or (and display-fn (funcall display-fn choice))
+  ;;              choice)
+  ;;          :value choice))
+  ;;       choices)
+  ;;      :prompt prompt
+  ;;      ;; start isearch mode immediately
+  ;;      :isearch t
+  ;;      )))
 
-(setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
+  ;; (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 #+END_SRC
 
 ** Browse kill ring
 #+BEGIN_SRC emacs-lisp :results none
-(require 'browse-kill-ring)
+(use-package browse-kill-ring
+:ensure t
+:config
+)
 #+END_SRC 
 
 ** !ido!
@@ -973,33 +1100,34 @@ $note its built into emacs no intsall needed$
 
 ** smex
 #+BEGIN_SRC emacs-lisp :results none
-  (require 'smex) ; Not needed if you use package.el
-  (smex-initialize) ; Can be omitted. This might cause a (minimal) delay
-                    ; when Smex is auto-initialized on its first run.
-
-  ;Bind some keys:
-
-  ;; (global-set-key (kbd "M-x") 'smex)
-  ;; (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-  ;; This is your old M-x.
-  (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+(use-package smex
+:ensure t
+:config
+)
 #+END_SRC
 ** Bookmark+
 #+BEGIN_SRC emacs-lisp :results none
-(require 'bookmark+)
+(use-package bookmark+
+:ensure t
+:config
 (setq bookmark-version-control t
       bookmark-save-flag t)
 ;ask for tags when saving a bookmark move nil to t to ask each time
 (setq bmkp-prompt-for-tags-flag nil)
+)
+
 #+END_SRC
 
 ** Undo tree
 #+BEGIN_SRC emacs-lisp :results none
-(require 'undo-tree)
+(use-package undo-tree 
+:ensure t
+:config
 (global-undo-tree-mode 1)
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-history-directory-alist '((".*" . "~/.emacs.t/undo-files")))
 (setq undo-tree-mode-lighter "")	 
+)
 #+END_SRC
 
 ** !hippie expand! 
@@ -1093,8 +1221,9 @@ $note its built into emacs no intsall needed$
 ** open with
 
 #+BEGIN_SRC emacs-lisp :results none
-;;open with
-(require 'openwith)
+(use-package openwith 
+:ensure t
+:config
 (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
 (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
 (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
@@ -1105,7 +1234,7 @@ $note its built into emacs no intsall needed$
 (setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
 (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
 (openwith-mode t)
-
+)
 #+END_SRC
 ** expand region
 https://github.com/magnars/expand-region.el
@@ -1130,9 +1259,12 @@ if installed through package manager no extra config is needed
 https://github.com/tam17aki/ace-isearch
 *** start ace-isearch
 #+BEGIN_SRC emacs-lisp :results none
-(require 'ace-isearch)
+(use-package ace-isearch
+:ensure t
+:config
 (ace-isearch-mode +1)
 (global-ace-isearch-mode +1)
+)
 #+END_SRC
 *** customize 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1167,9 +1299,8 @@ https://github.com/kai2nenobu/guide-key
 
 #+END_SRC
 
-** lentic mode 
+** TODO lentic mode
 https://github.com/phillord/lentic
-** TODO 
 ** manage-minor-mode  
 https://github.com/ShingoFukuyama/manage-minor-mode
 
@@ -1249,8 +1380,11 @@ http://cx4a.org/software/auto-complete/manual.html#Basic_Usage
 ** company
 *** base
 #+BEGIN_SRC emacs-lisp :results none
-  (require 'company)
-  (global-company-mode 1)
+(use-package company
+:ensure t
+:config
+)
+
   ;To use company-mode in all buffers
   (add-hook 'after-init-hook 'global-company-mode)
 
@@ -1264,24 +1398,14 @@ http://cx4a.org/software/auto-complete/manual.html#Basic_Usage
   (add-to-list 'company-backends 'company-ispell t)
   (add-to-list 'company-backends 'company-files t)
 #+END_SRC   
-*** orgmode
-#+BEGIN_SRC emacs-lisp :results none
-  ;; (defun my-pcomplete-capf ()
-  ;;   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-  ;; (add-hook 'org-mode-hook #'my-pcomplete-capf)
-#+END_SRC
-** back button
-https://github.com/rolandwalker/back-button
-
-#+BEGIN_SRC emacs-lisp :results none
-(require 'back-button)
-(back-button-mode 1)
-#+END_SRC
 ** Rainbow mode
 http://julien.danjou.info/projects/emacs-packages#rainbow-mode
 
 #+BEGIN_SRC emacs-lisp :results none
-(rainbow-mode 1)
+(use-package rainbow-mode
+:ensure t
+:config
+)
 
 (dolist (hook '(css-mode-hook
                 html-mode-hook
@@ -1295,7 +1419,10 @@ http://julien.danjou.info/projects/emacs-packages#rainbow-mode
 ** google contacts
 
 #+BEGIN_SRC emacs-lisp :results none
-(require 'google-contacts)
+(use-package google-contacts
+:ensure t
+:config
+)
 #+END_SRC
 ** TODO magit
 
@@ -1305,6 +1432,87 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 #+BEGIN_SRC emacs-lisp :results none
 
 #+END_SRC 
+
+** pop win 
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package popwin
+  :ensure t
+  :idle (popwin-mode 1))
+(defvar popwin:special-display-config-backup popwin:special-display-config)
+(setq display-buffer-function 'popwin:display-buffer)
+
+;; basic
+(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
+(push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
+(push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
+
+;; magit
+(push '("*magit-process*" :stick t) popwin:special-display-config)
+
+;; quickrun
+(push '("*quickrun*" :stick t) popwin:special-display-config)
+
+;; dictionaly
+(push '("*dict*" :stick t) popwin:special-display-config)
+(push '("*sdic*" :stick t) popwin:special-display-config)
+
+;; popwin for slime
+(push '(slime-repl-mode :stick t) popwin:special-display-config)
+
+;; man
+(push '(Man-mode :stick t :height 20) popwin:special-display-config)
+
+;; Elisp
+(push '("*ielm*" :stick t) popwin:special-display-config)
+(push '("*eshell pop*" :stick t) popwin:special-display-config)
+
+;; pry
+(push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
+
+;; python
+(push '("*Python*"   :stick t) popwin:special-display-config)
+(push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
+(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
+
+;; Haskell
+(push '("*haskell*" :stick t) popwin:special-display-config)
+(push '("*GHC Info*") popwin:special-display-config)
+
+;; sgit
+(push '("*sgit*" :position right :width 0.5 :stick t)
+      popwin:special-display-config)
+
+;; git-gutter
+(push '("*git-gutter:diff*" :width 0.5 :stick t)
+      popwin:special-display-config)
+
+;; direx
+(push '(direx:direx-mode :position left :width 40 :dedicated t)
+      popwin:special-display-config)
+
+(push '("*Occur*" :stick t) popwin:special-display-config)
+
+;; prodigy
+(push '("*prodigy*" :stick t) popwin:special-display-config)
+
+;; malabar-mode
+(push '("*Malabar Compilation*" :stick t :height 30)
+      popwin:special-display-config)
+
+;; org-mode
+(push '("*Org tags*" :stick t :height 30)
+      popwin:special-display-config)
+
+;; Completions
+(push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
+
+;; ggtags
+(push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
+
+;; async shell commands
+(push '("*Async Shell Command*" :stick t) popwin:special-display-config)
+#+END_SRC
 
 * Org
 ** Base
