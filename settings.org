@@ -126,6 +126,21 @@ $Note$ the sign !package! means the package is disbaled
 #+END_SRC
 
 ** yasnippet
+*** load yasnippet
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package yasnippet
+)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+(yas-global-mode 1)
+;; Use custom snippets.
+;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(yas-reload-all)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+#+END_SRC
+
 *** function helm 
 #+BEGIN_SRC emacs-lisp :results none
 (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
@@ -173,22 +188,6 @@ $Note$ the sign !package! means the package is disbaled
   ;;               (nth n choices))
   ;;           (signal 'quit "user quit!"))))
   ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
-#+END_SRC
-
-
-*** load yasnippet
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package yasnippet
-)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results none
-(yas-global-mode 1)
-;; Use custom snippets.
-;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-(yas-reload-all)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
 #+END_SRC
 
 

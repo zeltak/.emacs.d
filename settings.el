@@ -689,41 +689,15 @@
 (global-unset-key (kbd "<f11>"))
 (global-unset-key (kbd "<f12>"))
 (global-unset-key (kbd "C-v "))
-(global-unset-key (kbd "M-p"))
-
-;; (key-chord-define-global "lu"     'move-text-up)
-;; (key-chord-define-global "ld"     'move-text-down)
-;; (key-chord-define-global "lp"     'duplicate-line)
-;; (key-chord-define-global "lk"     'kill-whole-line)
-;; (key-chord-define-global "lm"     'kill-line)
-;; (key-chord-define-global "lr"     'kill-region)
-;; (key-chord-define-global "lc"     'z-copy-comment-paste)
-;; (key-chord-define-global "l;"     'comment-or-uncomment-region)
-
-;; (key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
-;; (key-chord-define-global "od"     'org-cut-subtree)
-;; (key-chord-define-global "oy"     'org-copy-subtree)
-;; (key-chord-define-global "op"     'org-paste-subtree)
+(global-unset-key (kbd "C-M-p"))
+(global-unset-key (kbd "C-M-e"))
+(global-unset-key (kbd "C-M-b"))
 
 ;; (key-chord-define-global "uu"     'undo)
 ;; (key-chord-define-global "ui"     'undo)
 ;; (key-chord-define-global "fj" 'ace-jump-word-mode)
 ;; (key-chord-define-global "fl" 'ace-jump-line-mode)
 ;; (key-chord-define-global "fk" 'ace-jump-char-mode)
-
-;;saving and closing
-(key-chord-define-global "bs" 'save-buffer); Aux save
-(key-chord-define-global "bx" 'kill-this-buffer) ; Close file and buffer
-(key-chord-define-global "bC" 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-(key-chord-define-global "bX" 'save-buffers-kill-terminl)
-(key-chord-define-global "bi" 'kill-buffer) ; ido kill buffer
-(key-chord-define-global "bS" 'z-save-file-close-window) ; 
-(key-chord-define-global "bp" 'previous-user-buffer) ; 
-(key-chord-define-global "bn" 'next-user-buffer) ; 
-(key-chord-define-global "bb" 'switch-to-previous-buffer)
-
- ;(global-set-key (kbd "C-+") 'text-scale-increase)
- ;(global-set-key (kbd "C--") 'text-scale-decrease)
 
 (defun hydra-universal-argument (arg)
   (interactive "P")
@@ -857,6 +831,17 @@
    ("v" yas-visit-snippet-file "visit" :color blue)
    ("i" yas-insert-snippet "insert_point" :color blue)
    ("r" yas-reload-all  "reload" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-M-e")
+ (defhydra hydra-editing ()
+   "editing command "
+   ("u" move-text-up  "marked up" :color red)
+   ("d" move-text-down "marked down" :color red)
+   ("p" duplicate-line  "dup line" :color blue)
+   (";" comment-or-uncomment-region  "comment paste" :color blue)
+   ("l" z-copy-comment-paste  "comment paste" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key
