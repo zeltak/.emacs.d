@@ -73,408 +73,6 @@
 
 (require 'use-package)
 
-(global-unset-key (kbd "<f1>"))
-(global-unset-key (kbd "<f2>"))
-(global-unset-key (kbd "<f3>"))
-(global-unset-key (kbd "<f4> "))
-(global-unset-key (kbd "<f5>"))
-(global-unset-key (kbd "<f6>"))
-(global-unset-key (kbd "<f7>"))
-(global-unset-key (kbd "<f8>"))
-(global-unset-key (kbd "<f9>"))
-(global-unset-key (kbd "<f10>"))
-(global-unset-key (kbd "<f11>"))
-(global-unset-key (kbd "<f12>"))
-(global-unset-key (kbd "C-v "))
-(global-unset-key (kbd "M-p"))
-
-;; (key-chord-define-global "lu"     'move-text-up)
-;; (key-chord-define-global "ld"     'move-text-down)
-;; (key-chord-define-global "lp"     'duplicate-line)
-;; (key-chord-define-global "lk"     'kill-whole-line)
-;; (key-chord-define-global "lm"     'kill-line)
-;; (key-chord-define-global "lr"     'kill-region)
-;; (key-chord-define-global "lc"     'z-copy-comment-paste)
-;; (key-chord-define-global "l;"     'comment-or-uncomment-region)
-
-;; (key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
-;; (key-chord-define-global "od"     'org-cut-subtree)
-;; (key-chord-define-global "oy"     'org-copy-subtree)
-;; (key-chord-define-global "op"     'org-paste-subtree)
-
-;; (key-chord-define-global "uu"     'undo)
-;; (key-chord-define-global "ui"     'undo)
-;; (key-chord-define-global "fj" 'ace-jump-word-mode)
-;; (key-chord-define-global "fl" 'ace-jump-line-mode)
-;; (key-chord-define-global "fk" 'ace-jump-char-mode)
-
-;;saving and closing
-(key-chord-define-global "bs" 'save-buffer); Aux save
-(key-chord-define-global "bx" 'kill-this-buffer) ; Close file and buffer
-(key-chord-define-global "bC" 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-(key-chord-define-global "bX" 'save-buffers-kill-terminl)
-(key-chord-define-global "bi" 'kill-buffer) ; ido kill buffer
-(key-chord-define-global "bS" 'z-save-file-close-window) ; 
-(key-chord-define-global "bp" 'previous-user-buffer) ; 
-(key-chord-define-global "bn" 'next-user-buffer) ; 
-(key-chord-define-global "bb" 'switch-to-previous-buffer)
-
- ;(global-set-key (kbd "C-+") 'text-scale-increase)
- ;(global-set-key (kbd "C--") 'text-scale-decrease)
-
-(defun hydra-universal-argument (arg)
-  (interactive "P")
-  (setq prefix-arg (if (consp arg)
-                       (list (* 4 (car arg)))
-                     (if (eq arg '-)
-                         (list -4)
-                       '(4)))))
-
-(defhydra hydra-window (global-map "C-M-o")
-  "window"
-  ("h" windmove-left "left")
-  ("j" windmove-down "down")
-  ("g" windmove-up "up")
-  ("l" windmove-right "right")
-  ("a" ace-window "ace")
-  ("k" other-window)
-  ("x" delete-window) 
-  ("-" split-window-vertically) 
-  ("=" split-window-right) 
-  ("t" transpose-windows) 
-  ("v" transpose-windows) 
-  ("u" hydra-universal-argument "universal")
-  ("s" (lambda () (interactive) (ace-window 4)) "swap")
-  ("d" (lambda () (interactive) (ace-window 16)) "delete")
-  ("o"))
-
-(key-chord-define-global "kk" 'hydra-window/body)
-
-(require 'hydra-examples)
-(hydra-create "C-M-o" hydra-example-move-window-splitter)
-
-(hydra-create "C-M-o"
-  '(("h" hydra-move-splitter-left)
-    ("j" hydra-move-splitter-down)
-    ("k" hydra-move-splitter-up)
-    ("l" hydra-move-splitter-right)))
-
-(global-set-key
- (kbd "C-c 1")
- (defhydra hydra-toggle (:color blue)
-   "toggle"
-   ("a" abbrev-mode "abbrev")
-   ("d" toggle-debug-on-error "debug")
-   ("f" auto-fill-mode "fill")
-   ("t" toggle-truncate-lines "truncate")
-   ("w" whitespace-mode "whitespace")
-   ("q" nil "cancel")))
-
-(defhydra hydra-edit (global-map "C-c" :color red)
-   "toggle"
-   ("a" abbrev-mode "abbrev" :color blue)
-   ("d" toggle-debug-on-error "debug" :color blue)
-   ("f" auto-fill-mode "fill" :color blue)
-   ("t" toggle-truncate-lines "truncate" :color blue)
-   ("w" whitespace-mode "whitespace" :color blue)
-   ("v" recenter-top-bottom "recenter" :color red)
-   ("q" nil "cancel" :color blue))
-(global-set-key (kbd "C-c 2") 'hydra-edit/body)
-
-(define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
-;;below code for by type and todo (cook)
-;+TODO="COOK"+Type="breakfest"
-(define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
-(define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
-(global-set-key (kbd "<f1> h") 'org-goto)
-(global-set-key (kbd "<f1> d d") 'org-timestamp-select)
-(global-set-key (kbd "<f1> d n") 'org-timestamp-now)
-(global-set-key (kbd "<f1> d i") 'z-insert-date)
-(global-set-key (kbd "<f1> d l") 'org-deadline)
-(global-set-key (kbd "<f1> d s") 'org-schedule)
-(global-set-key (kbd "<f1> t") 'org-todo)
-(global-set-key (kbd "<f1> a") 'org-agenda)
-(global-set-key "\C-ca" 'org-agenda)
-
-;;org cookbook
-
-;(global-set-key (kbd "<f1> c") 'my-cooking-sparse-tree-breakfeast)
-(define-key org-mode-map (kbd "<f1> c b") 'cooking-sparse-tree-breakfeast)
-(define-key org-mode-map (kbd "<f1> c m") 'cooking-sparse-tree-main)
-(define-key org-mode-map (kbd "<f1> c r") 'recipe-template)
-(define-key org-mode-map (kbd "<f1> c t") 'travel-template)
-
-(global-set-key (kbd "<f2> e") 'evil-mode)
-;;yas
-(global-set-key (kbd "<f2> y y") 'yas-insert-snippet)
-(global-set-key (kbd "<f2> y n") 'yas-new-snippet)
-(global-set-key (kbd "<f2> y r ") 'yas-reload-all)
-(global-set-key (kbd "<f2> y v ") 'yas-visit-snippet-file)
-
-;dired
-(define-key global-map (kbd "<f3> d") 'dired)
-(global-set-key (kbd "<f3> j") 'dired-jump) 
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root) 
-(global-set-key (kbd "<f3> E") 'view-mode) 
-(global-set-key (kbd "<f3> e") 'read-only-mode) 
-(global-set-key (kbd "<f3> s") 'babcore-shell-execute)
-(global-set-key (kbd "<f3> b") 'create-scratch-buffer)
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root)
-(global-set-key (kbd "<f3> l") 'linium-mode)
-(global-set-key (kbd "<f3> ;") 'comment-region)
-(global-set-key (kbd "<f3> o") 'back-button-global)
-
-(global-set-key (kbd "<f3> m s") 'start-kbd-macro)
-(global-set-key (kbd "<f3> m q") 'end-kbd-macro)
-(global-set-key (kbd "<f3> m n") 'name-kbd-macro)
-(global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
-
-(global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
-(global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
-;convert region to code blocks
-(global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
-(global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
-(global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
-(global-set-key (kbd "<f4> r") 'z-wrap-cblock-r)
-(global-set-key (kbd "<f4> q") 'z-wrap-cblock-quote)
-(global-set-key (kbd "<f4> l") 'z-wrap-cblock-lisp)
-(global-set-key (kbd "<f4> s") 'z-wrap-cblock-sas)
-;; easy spell check
-(global-set-key (kbd "<f4> w") 'ispell-word)
-(global-set-key (kbd "<f4> W") 'ispell)
-(global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
-
-(global-set-key (kbd "<f4> ;") 'z-copy-comment-paste)
-(global-set-key (kbd "<f4> u") 'z-fix-characters)
-(global-set-key (kbd "<f4> 6 u") 'upcase-region)
-(global-set-key (kbd "<f4> 6 l") 'downcase-region)
-
-
-(global-set-key (kbd "<f4> k") 'browse-kill-ring)
-(global-set-key (kbd "<f4> B ") 'flush-blank-lines)
-
-;; move lines up dowb with C-S-pgup/pgdown
-(global-set-key [(control shift prior )]  'move-line-up)
-(global-set-key [(control shift next)]  'move-line-down)
-
-; kill (delete) from word to back of the line
-(global-set-key (kbd "C-<backspace>") (lambda ()
-                                        (interactive)
-                                        (kill-line 0)))
-
-(global-set-key (kbd "M-2") 'er/expand-region)
-
-(global-set-key (kbd "<f5> g") 'gnus)
-
-(global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
-
-(global-set-key (kbd "<f7> y") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> k") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> r") 'helm-recentf)
-(global-set-key (kbd "<f7> l") 'helm-locate)
-(global-set-key (kbd "<f7> x") 'helm-M-x)
-(global-set-key (kbd "<f7> f") 'helm-find-files)
-;to replace native C-x C-f
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "<f7> o") 'helm-occur)
-(global-set-key (kbd "<f7> h") 'helm-apropos)
-(global-set-key (kbd "<f7> t") 'helm-top)
-
-(global-set-key (kbd "<f7> b") 'helm-buffers-list)
-(global-set-key (kbd "<f7> <f7>") 'helm-mini)
-
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-set-key (kbd "<f7> m") 'helm-mark-ring)
-
-(global-set-key (kbd "<f8> <f8> ") 'bookmark-jump)
-(global-set-key (kbd "<f8> h") 'helm-bookmarks)
-(global-set-key (kbd "<f8> m") 'bookmark-bmenu-list)
-(global-set-key (kbd "<f8> r") 'recentf-open-files)
-(global-set-key (kbd "<f8> b") 'bmkp-bookmark-set-confirm-overwrite)
-(global-set-key (kbd "<f8> s") 'bmkp-bmenu-filter-tags-incrementally)
-
-(global-set-key (kbd "<f9> x") 'org-archive-subtree)
-(global-set-key (kbd "<f9> u") 'outline-up-heading)
-(global-set-key (kbd "<f9> e") 'org-export-dispatch)
-(global-set-key (kbd "<f9> t") 'org-toggle-inline-images)
-(global-set-key (kbd "<f9> c") 'org-columns)
-(global-set-key (kbd "<f9> q") 'org-columns-quit)
-(global-set-key (kbd "<f9> b") 'org-bibtex-yank)
-(global-set-key (kbd "<f9> r") 'org-refile)
-(global-set-key (kbd "<f9> B") 'org-bibtex-create)
-(global-set-key (kbd "<f9> s") 'org-sort)
-(global-set-key (kbd "<f9> n") 'org-narrow-to-subtree)
-(global-set-key (kbd "<f9> w") 'widen)
-(global-set-key (kbd "<f9> d") 'org-download-screenshot)
-(global-set-key (kbd "<f9> D") 'org-download-delete)
-;Create an ID for the entry at point if it does not yet have one.
-(global-set-key (kbd "<f9> I") 'org-id-get-create)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "<f9> p") 'org-capture)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key (kbd "<f9> l s") 'org-store-link)
-(global-set-key (kbd "<f9> l i") 'org-insert-link)
-(global-set-key (kbd "<f9> l c") 'org-id-copy)
-(global-set-key (kbd "<f9> l e") 'org-id-copy)
-
-;movies DL
-  (global-set-key (kbd "<f9> <f9> v")
-    (lambda ()
-      (interactive)
-        (org-id-goto "62b49339-cd19-4a3c-a6fd-70dd45be4670")))
-;  emacs
-  (global-set-key (kbd "<f9> <f9> e ")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "38a15adf-f505-4a54-b1d9-f76b22ce1147")
-        (org-narrow-to-subtree)
-))
-  
-  
-  ;org
-  (global-set-key (kbd "<f9> <f9> o")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "be4759e1-2951-4c91-a155-056bc2a16d9f")
-        (org-narrow-to-subtree)
-))
-  
-  ;ssh
-  (global-set-key (kbd "<f9> <f9> s")
-    (lambda ()
-      (interactive)
-        (org-id-goto "bf60adbf-fc3a-4eed-be14-a9244c3fef4e")))
-  
-  ;beets
-  (global-set-key (kbd "<f9> <f9> b")
-    (lambda ()
-      (interactive)
-        (org-id-goto "e0837792-f794-495e-908f-f75bdb4462b3")))
-  
-  
-  ;git
-  (global-set-key (kbd "<f9> <f9> g")
-    (lambda ()
-      (interactive)
-        (org-id-goto "7816c1c8-be9a-4fd5-8121-15c190885cd7")))
-  
-  ;mobileorg
-  (global-set-key (kbd "<f9> <f9> m")
-    (lambda ()
-      (interactive)
-        (org-id-goto "0367963c-9ba2-44ee-9b30-bf5b7200b873")))
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> p")
-    (lambda ()
-      (interactive)
-        (org-id-goto "47bad96f-740c-4b93-b739-a4b925d85514")))
-  
-  ;capture settings
- ; (global-set-key (kbd "<f9> <f9> e c")
-  ;  (lambda ()
-   ;   (interactive)
-    ;    (org-id-goto "dfffbe27-21bc-4fb9-908e-f492f4afeb60")))
-  
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> c c ")
-    (lambda ()
-      (interactive)
-        (org-id-goto "8193566d-2dd5-4368-8238-fac2fc9aa7e9")))
-
-(global-set-key "\C-cs" 'org-babel-execute-subtree)
-(global-set-key (kbd "<f10> b s ") 'org-babel-execute-subtree)
-(global-set-key (kbd "<f10> s d ") 'org-cut-subtree)
-(global-set-key (kbd "<f10> s y ") 'org-copy-subtree)
-(global-set-key (kbd "<f10> s p ") 'org-paste-subtree)
-(global-set-key (kbd "<f10> 8 ") 'org-toggle-heading)
-(global-set-key (kbd "<f10> 7 ") 'org-toggle-heading)
-(global-set-key (kbd "<f10> h ") 'org-insert-heading)
- (global-set-key (kbd "<f10> n ") 'org-indent-mode)
-
-
-(global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
-(global-set-key (kbd "<f10> m s ") 'org-insert-push)
-
-(global-set-key (kbd "<f10> t y") 'org-table-copy-region)
-(global-set-key (kbd "<f10> t d") 'org-table-cut-region)
-(global-set-key (kbd "<f10> t p") 'org-table-paste-rectangle)
-(global-set-key (kbd "<f10> t c") 'org-table-create-or-convert-from-region)
-
-;;saving and closing
-(global-set-key (kbd "<f11> s") 'save-buffer); Aux save
-(global-set-key (kbd "<f11> x") 'kill-this-buffer) ; Close file and buffer
-(global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-(global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
-(global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
-(global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
-(global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
-
-;buffers movment
-(global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
-(global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
-(global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
-(global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
-(global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-(global-set-key (kbd "<f12> <f12>") 'other-window)  
-(global-set-key (kbd "<f12> x") 'delete-window)  
-(global-set-key (kbd "<f12> z") 'delete-other-windows)  
-(global-set-key (kbd "<f12> -") 'split-window-vertically)  
-(global-set-key (kbd "<f12> =") 'split-window-right)  
-(global-set-key (kbd "<f12> +") 'split-window-below)  
-(global-set-key (kbd "<f12> r") 'resize-window)
-(global-set-key (kbd "<f12> ]") 'transpose-windows)
-
-(setq browse-url-browser-function (quote browse-url-generic))
-(setq browse-url-generic-program "chromium")
-
-(setq backup-directory-alist
-      `((".*" . ,temporary-file-directory)))
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
-
-;If I reopen a file, I want to start at the line at which I was when I closed it.
-; save the place in files
-(require 'saveplace)
-(setq-default save-place t)
-
-; save minibuffer history
-(require 'savehist)
-(savehist-mode t)
-
-;;autosave
-;(setq auto-save-visited-file-name t)
-;(setq auto-save-interval 20) ; twenty keystrokes
-(setq auto-save-timeout 60) ; ten idle seconds
-
-(setq savehist-file "/home/zeltak/.cache/emacs/hist/hist.txt")
-(savehist-mode 1)
-(setq history-length t)
-(setq history-delete-duplicates t)
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring
-        search-ring
-        regexp-search-ring))
-
-(setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 50)
-;(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
-
-(require 'tramp) ; Remote file editing via ssh
-(setq tramp-default-method "ssh")
-
-(defun proced-settings ()
-  (proced-toggle-auto-update))
-
-(add-hook 'proced-mode-hook 'proced-settings)
-
 (use-package key-chord 
   :ensure t
   :config
@@ -538,81 +136,6 @@
 (use-package hydra
 :ensure t )
 
-(global-set-key
- (kbd "C-z")
- (defhydra hydra-vi
-     (:pre
-      (set-cursor-color "#e52b50")
-      :post
-      (set-cursor-color "green")
-      :color amaranth)
-   "vi"
-   ("l" forward-char)
-   ("h" backward-char)
-   ("j" next-line)
-   ("k" previous-line)
-   ("m" set-mark-command "mark")
-   ("a" move-beginning-of-line "beg")
-   ("e" move-end-of-line "end")
-   ("d" delete-region "del" :color blue)
-   ("y" kill-ring-save "yank" :color blue)
-   ("q" nil "quit")))
-
-(global-set-key
- (kbd "C-M-o")
- (defhydra hydra-window ()
-   "window"
-   ("h" windmove-left)
-   ("j" windmove-down)
-   ("k" windmove-up)
-   ("l" windmove-right)
-   ("a" (lambda ()
-          (interactive)
-          (ace-window 1)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "ace")
-   ("v" (lambda ()
-          (interactive)
-          (split-window-right)
-          (windmove-right))
-        "vert")
-   ("x" (lambda ()
-          (interactive)
-          (split-window-below)
-          (windmove-down))
-        "horz")
-   ("s" (lambda ()
-          (interactive)
-          (ace-window 4)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "swap")
-   ("t" transpose-frame "'")
-   ("d" (lambda ()
-          (interactive)
-          (ace-window 16)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "del")
-   ("o" delete-other-windows "one" :color blue)
-   ("i" ace-maximize-window "ace-one" :color blue)
-   ("q" nil "cancel")))
-
-(global-set-key
- (kbd "C-M-y")
- (defhydra hydra-yas ()
-   "yas command "
-   ("a" yas-activate-extra-mode "add_mode" :color blue)
-   ("n" yas-new-snippet "new_snip" :color blue)
-   ("v" yas-visit-snippet-file "visit" :color blue)
-   ("i" yas-insert-snippet "insert_point" :color blue)
-   ("r" yas-reload-all  "reload" :color blue)
-   ("q" nil "cancel")))
-
 (use-package async
 :ensure t)
 
@@ -663,8 +186,19 @@
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
-;; (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
-;; (require 'org-dp-lib)
+(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
+(require 'org-dp-lib)
+
+;; (use-package ord-dp-lib
+;;   :load-path "/home/zeltak/.emacs.g/extra/org-dp/"
+;;  )
+
+(org-dp-create 'src-block nil nil
+               '(:name "ex1" :header (":cache no" ":noweb yes"))
+               :language "picolisp"
+               :preserve-indent 1
+               :parameters ":results value"
+               :value "(+ 2 2)")
 
 (use-package helm
 :ensure t
@@ -1141,6 +675,496 @@
 
 ;; async shell commands
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
+
+(global-unset-key (kbd "<f1>"))
+(global-unset-key (kbd "<f2>"))
+(global-unset-key (kbd "<f3>"))
+(global-unset-key (kbd "<f4> "))
+(global-unset-key (kbd "<f5>"))
+(global-unset-key (kbd "<f6>"))
+(global-unset-key (kbd "<f7>"))
+(global-unset-key (kbd "<f8>"))
+(global-unset-key (kbd "<f9>"))
+(global-unset-key (kbd "<f10>"))
+(global-unset-key (kbd "<f11>"))
+(global-unset-key (kbd "<f12>"))
+(global-unset-key (kbd "C-v "))
+(global-unset-key (kbd "M-p"))
+
+;; (key-chord-define-global "lu"     'move-text-up)
+;; (key-chord-define-global "ld"     'move-text-down)
+;; (key-chord-define-global "lp"     'duplicate-line)
+;; (key-chord-define-global "lk"     'kill-whole-line)
+;; (key-chord-define-global "lm"     'kill-line)
+;; (key-chord-define-global "lr"     'kill-region)
+;; (key-chord-define-global "lc"     'z-copy-comment-paste)
+;; (key-chord-define-global "l;"     'comment-or-uncomment-region)
+
+;; (key-chord-define-global "ot"     'org-insert-todo-heading-respect-content)
+;; (key-chord-define-global "od"     'org-cut-subtree)
+;; (key-chord-define-global "oy"     'org-copy-subtree)
+;; (key-chord-define-global "op"     'org-paste-subtree)
+
+;; (key-chord-define-global "uu"     'undo)
+;; (key-chord-define-global "ui"     'undo)
+;; (key-chord-define-global "fj" 'ace-jump-word-mode)
+;; (key-chord-define-global "fl" 'ace-jump-line-mode)
+;; (key-chord-define-global "fk" 'ace-jump-char-mode)
+
+;;saving and closing
+(key-chord-define-global "bs" 'save-buffer); Aux save
+(key-chord-define-global "bx" 'kill-this-buffer) ; Close file and buffer
+(key-chord-define-global "bC" 'z-kill-other-buffers ) ; close all buffers but current-based on user script
+(key-chord-define-global "bX" 'save-buffers-kill-terminl)
+(key-chord-define-global "bi" 'kill-buffer) ; ido kill buffer
+(key-chord-define-global "bS" 'z-save-file-close-window) ; 
+(key-chord-define-global "bp" 'previous-user-buffer) ; 
+(key-chord-define-global "bn" 'next-user-buffer) ; 
+(key-chord-define-global "bb" 'switch-to-previous-buffer)
+
+ ;(global-set-key (kbd "C-+") 'text-scale-increase)
+ ;(global-set-key (kbd "C--") 'text-scale-decrease)
+
+(defun hydra-universal-argument (arg)
+  (interactive "P")
+  (setq prefix-arg (if (consp arg)
+                       (list (* 4 (car arg)))
+                     (if (eq arg '-)
+                         (list -4)
+                       '(4)))))
+
+(defhydra hydra-window (global-map "C-M-o")
+  "window"
+  ("h" windmove-left "left")
+  ("j" windmove-down "down")
+  ("g" windmove-up "up")
+  ("l" windmove-right "right")
+  ("a" ace-window "ace")
+  ("k" other-window)
+  ("x" delete-window) 
+  ("-" split-window-vertically) 
+  ("=" split-window-right) 
+  ("t" transpose-windows) 
+  ("v" transpose-windows) 
+  ("u" hydra-universal-argument "universal")
+  ("s" (lambda () (interactive) (ace-window 4)) "swap")
+  ("d" (lambda () (interactive) (ace-window 16)) "delete")
+  ("o"))
+
+(key-chord-define-global "kk" 'hydra-window/body)
+
+(require 'hydra-examples)
+(hydra-create "C-M-o" hydra-example-move-window-splitter)
+
+(hydra-create "C-M-o"
+  '(("h" hydra-move-splitter-left)
+    ("j" hydra-move-splitter-down)
+    ("k" hydra-move-splitter-up)
+    ("l" hydra-move-splitter-right)))
+
+(global-set-key
+ (kbd "C-c 1")
+ (defhydra hydra-toggle (:color blue)
+   "toggle"
+   ("a" abbrev-mode "abbrev")
+   ("d" toggle-debug-on-error "debug")
+   ("f" auto-fill-mode "fill")
+   ("t" toggle-truncate-lines "truncate")
+   ("w" whitespace-mode "whitespace")
+   ("q" nil "cancel")))
+
+(defhydra hydra-edit (global-map "C-c" :color red)
+   "toggle"
+   ("a" abbrev-mode "abbrev" :color blue)
+   ("d" toggle-debug-on-error "debug" :color blue)
+   ("f" auto-fill-mode "fill" :color blue)
+   ("t" toggle-truncate-lines "truncate" :color blue)
+   ("w" whitespace-mode "whitespace" :color blue)
+   ("v" recenter-top-bottom "recenter" :color red)
+   ("q" nil "cancel" :color blue))
+(global-set-key (kbd "C-c 2") 'hydra-edit/body)
+
+(global-set-key
+ (kbd "C-z")
+ (defhydra hydra-vi
+     (:pre
+      (set-cursor-color "#e52b50")
+      :post
+      (set-cursor-color "green")
+      :color amaranth)
+   "vi"
+   ("l" forward-char)
+   ("h" backward-char)
+   ("j" next-line)
+   ("k" previous-line)
+   ("m" set-mark-command "mark")
+   ("a" move-beginning-of-line "beg")
+   ("e" move-end-of-line "end")
+   ("d" delete-region "del" :color blue)
+   ("y" kill-ring-save "yank" :color blue)
+   ("q" nil "quit")))
+
+(global-set-key
+ (kbd "C-M-w")
+ (defhydra hydra-window ()
+   "window"
+   ("h" windmove-left)
+   ("j" windmove-down)
+   ("k" windmove-up)
+   ("l" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "ace")
+   ("v" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("x" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("s" (lambda ()
+          (interactive)
+          (ace-window 4)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "swap")
+   ("t" transpose-frame "'")
+   ("d" (lambda ()
+          (interactive)
+          (ace-window 16)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "del")
+   ("o" delete-other-windows "one" :color blue)
+   ("i" ace-maximize-window "ace-one" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-M-y")
+ (defhydra hydra-yas ()
+   "yas command "
+   ("a" yas-activate-extra-mode "add_mode" :color blue)
+   ("n" yas-new-snippet "new_snip" :color blue)
+   ("v" yas-visit-snippet-file "visit" :color blue)
+   ("i" yas-insert-snippet "insert_point" :color blue)
+   ("r" yas-reload-all  "reload" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "<f1> c")
+ (defhydra hydra-org-editing ()
+   "yas command "
+   ("b" cooking-sparse-tree-breakfeast "breakfeast_view" :color blue)
+   ("m" cooking-sparse-tree-main "main_view" :color blue)
+   ("r" recipe-template "recipe-template" :color blue)
+   ("t" travel-template  "travel-template" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-org-cook ()
+   "yas command "
+   ("t" org-insert-todo-heading-respect-content "insert TODO" :color blue)
+   ("d" org-cut-subtree  "org cut" :color blue)
+   ("y" org-copy-subtree "org copy" :color blue)
+   ("p" org-paste-subtree  "org paste" :color blue)
+   ("q" nil "cancel")))
+
+(define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
+;;below code for by type and todo (cook)
+;+TODO="COOK"+Type="breakfest"
+(define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
+(define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
+(global-set-key (kbd "<f1> h") 'org-goto)
+(global-set-key (kbd "<f1> d d") 'org-timestamp-select)
+(global-set-key (kbd "<f1> d n") 'org-timestamp-now)
+(global-set-key (kbd "<f1> d i") 'z-insert-date)
+(global-set-key (kbd "<f1> d l") 'org-deadline)
+(global-set-key (kbd "<f1> d s") 'org-schedule)
+(global-set-key (kbd "<f1> t") 'org-todo)
+(global-set-key (kbd "<f1> a") 'org-agenda)
+(global-set-key "\C-ca" 'org-agenda)
+
+(global-set-key (kbd "<f2> e") 'evil-mode)
+;;yas
+(global-set-key (kbd "<f2> y y") 'yas-insert-snippet)
+(global-set-key (kbd "<f2> y n") 'yas-new-snippet)
+(global-set-key (kbd "<f2> y r ") 'yas-reload-all)
+(global-set-key (kbd "<f2> y v ") 'yas-visit-snippet-file)
+
+;dired
+(define-key global-map (kbd "<f3> d") 'dired)
+(global-set-key (kbd "<f3> j") 'dired-jump) 
+(global-set-key (kbd "<f3> r") 'z-edit-file-as-root) 
+(global-set-key (kbd "<f3> E") 'view-mode) 
+(global-set-key (kbd "<f3> e") 'read-only-mode) 
+(global-set-key (kbd "<f3> s") 'babcore-shell-execute)
+(global-set-key (kbd "<f3> b") 'create-scratch-buffer)
+(global-set-key (kbd "<f3> r") 'z-edit-file-as-root)
+(global-set-key (kbd "<f3> l") 'linium-mode)
+(global-set-key (kbd "<f3> ;") 'comment-region)
+(global-set-key (kbd "<f3> o") 'back-button-global)
+
+(global-set-key (kbd "<f3> m s") 'start-kbd-macro)
+(global-set-key (kbd "<f3> m q") 'end-kbd-macro)
+(global-set-key (kbd "<f3> m n") 'name-kbd-macro)
+(global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
+
+(global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
+(global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
+;convert region to code blocks
+(global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
+(global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
+(global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
+(global-set-key (kbd "<f4> r") 'z-wrap-cblock-r)
+(global-set-key (kbd "<f4> q") 'z-wrap-cblock-quote)
+(global-set-key (kbd "<f4> l") 'z-wrap-cblock-lisp)
+(global-set-key (kbd "<f4> s") 'z-wrap-cblock-sas)
+;; easy spell check
+(global-set-key (kbd "<f4> w") 'ispell-word)
+(global-set-key (kbd "<f4> W") 'ispell)
+(global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
+
+(global-set-key (kbd "<f4> ;") 'z-copy-comment-paste)
+(global-set-key (kbd "<f4> u") 'z-fix-characters)
+(global-set-key (kbd "<f4> 6 u") 'upcase-region)
+(global-set-key (kbd "<f4> 6 l") 'downcase-region)
+
+
+(global-set-key (kbd "<f4> k") 'browse-kill-ring)
+(global-set-key (kbd "<f4> B ") 'flush-blank-lines)
+
+;; move lines up dowb with C-S-pgup/pgdown
+(global-set-key [(control shift prior )]  'move-line-up)
+(global-set-key [(control shift next)]  'move-line-down)
+
+; kill (delete) from word to back of the line
+(global-set-key (kbd "C-<backspace>") (lambda ()
+                                        (interactive)
+                                        (kill-line 0)))
+
+(global-set-key (kbd "M-2") 'er/expand-region)
+
+(global-set-key (kbd "<f5> g") 'gnus)
+
+(global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
+
+(global-set-key (kbd "<f7> y") 'helm-show-kill-ring)
+(global-set-key (kbd "<f7> k") 'helm-show-kill-ring)
+(global-set-key (kbd "<f7> r") 'helm-recentf)
+(global-set-key (kbd "<f7> l") 'helm-locate)
+(global-set-key (kbd "<f7> x") 'helm-M-x)
+(global-set-key (kbd "<f7> f") 'helm-find-files)
+;to replace native C-x C-f
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
+(global-set-key (kbd "<f7> o") 'helm-occur)
+(global-set-key (kbd "<f7> h") 'helm-apropos)
+(global-set-key (kbd "<f7> t") 'helm-top)
+
+(global-set-key (kbd "<f7> b") 'helm-buffers-list)
+(global-set-key (kbd "<f7> <f7>") 'helm-mini)
+
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-set-key (kbd "<f7> m") 'helm-mark-ring)
+
+(global-set-key (kbd "<f8> <f8> ") 'helm-bookmarks)
+(global-set-key (kbd "<f8> h") 'bookmarks-jump)
+(global-set-key (kbd "<f8> m") 'bookmark-bmenu-list)
+(global-set-key (kbd "<f8> r") 'helm-recentf)
+(global-set-key (kbd "<f8> b") 'bmkp-bookmark-set-confirm-overwrite)
+(global-set-key (kbd "<f8> s") 'bmkp-bmenu-filter-tags-incrementally)
+(global-set-key (kbd "<f8> c ") 'helm-chrome-bookmarks)
+
+(global-set-key (kbd "<f9> x") 'org-archive-subtree)
+(global-set-key (kbd "<f9> u") 'outline-up-heading)
+(global-set-key (kbd "<f9> e") 'org-export-dispatch)
+(global-set-key (kbd "<f9> t") 'org-toggle-inline-images)
+(global-set-key (kbd "<f9> c") 'org-columns)
+(global-set-key (kbd "<f9> q") 'org-columns-quit)
+(global-set-key (kbd "<f9> b") 'org-bibtex-yank)
+(global-set-key (kbd "<f9> r") 'org-refile)
+(global-set-key (kbd "<f9> B") 'org-bibtex-create)
+(global-set-key (kbd "<f9> s") 'org-sort)
+(global-set-key (kbd "<f9> n") 'org-narrow-to-subtree)
+(global-set-key (kbd "<f9> w") 'widen)
+(global-set-key (kbd "<f9> d") 'org-download-screenshot)
+(global-set-key (kbd "<f9> D") 'org-download-delete)
+;Create an ID for the entry at point if it does not yet have one.
+(global-set-key (kbd "<f9> I") 'org-id-get-create)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "<f9> p") 'org-capture)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key (kbd "<f9> l s") 'org-store-link)
+(global-set-key (kbd "<f9> l i") 'org-insert-link)
+(global-set-key (kbd "<f9> l c") 'org-id-copy)
+(global-set-key (kbd "<f9> l e") 'org-id-copy)
+
+;movies DL
+  (global-set-key (kbd "<f9> <f9> v")
+    (lambda ()
+      (interactive)
+        (org-id-goto "62b49339-cd19-4a3c-a6fd-70dd45be4670")))
+;  emacs
+  (global-set-key (kbd "<f9> <f9> e ")
+    (lambda ()
+      (interactive)
+        (widen)
+        (org-id-goto "38a15adf-f505-4a54-b1d9-f76b22ce1147")
+        (org-narrow-to-subtree)
+))
+  
+  
+  ;org
+  (global-set-key (kbd "<f9> <f9> o")
+    (lambda ()
+      (interactive)
+        (widen)
+        (org-id-goto "be4759e1-2951-4c91-a155-056bc2a16d9f")
+        (org-narrow-to-subtree)
+))
+  
+  ;ssh
+  (global-set-key (kbd "<f9> <f9> s")
+    (lambda ()
+      (interactive)
+        (org-id-goto "bf60adbf-fc3a-4eed-be14-a9244c3fef4e")))
+  
+  ;beets
+  (global-set-key (kbd "<f9> <f9> b")
+    (lambda ()
+      (interactive)
+        (org-id-goto "e0837792-f794-495e-908f-f75bdb4462b3")))
+  
+  
+  ;git
+  (global-set-key (kbd "<f9> <f9> g")
+    (lambda ()
+      (interactive)
+        (org-id-goto "7816c1c8-be9a-4fd5-8121-15c190885cd7")))
+  
+  ;mobileorg
+  (global-set-key (kbd "<f9> <f9> m")
+    (lambda ()
+      (interactive)
+        (org-id-goto "0367963c-9ba2-44ee-9b30-bf5b7200b873")))
+  
+  ;papers
+  (global-set-key (kbd "<f9> <f9> p")
+    (lambda ()
+      (interactive)
+        (org-id-goto "47bad96f-740c-4b93-b739-a4b925d85514")))
+  
+  ;capture settings
+ ; (global-set-key (kbd "<f9> <f9> e c")
+  ;  (lambda ()
+   ;   (interactive)
+    ;    (org-id-goto "dfffbe27-21bc-4fb9-908e-f492f4afeb60")))
+  
+  
+  ;papers
+  (global-set-key (kbd "<f9> <f9> c c ")
+    (lambda ()
+      (interactive)
+        (org-id-goto "8193566d-2dd5-4368-8238-fac2fc9aa7e9")))
+
+(global-set-key "\C-cs" 'org-babel-execute-subtree)
+(global-set-key (kbd "<f10> b s ") 'org-babel-execute-subtree)
+(global-set-key (kbd "<f10> s d ") 'org-cut-subtree)
+(global-set-key (kbd "<f10> s y ") 'org-copy-subtree)
+(global-set-key (kbd "<f10> s p ") 'org-paste-subtree)
+(global-set-key (kbd "<f10> 8 ") 'org-toggle-heading)
+(global-set-key (kbd "<f10> 7 ") 'org-toggle-heading)
+(global-set-key (kbd "<f10> h ") 'org-insert-heading)
+ (global-set-key (kbd "<f10> n ") 'org-indent-mode)
+
+
+(global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
+(global-set-key (kbd "<f10> m s ") 'org-insert-push)
+
+(global-set-key (kbd "<f10> t y") 'org-table-copy-region)
+(global-set-key (kbd "<f10> t d") 'org-table-cut-region)
+(global-set-key (kbd "<f10> t p") 'org-table-paste-rectangle)
+(global-set-key (kbd "<f10> t c") 'org-table-create-or-convert-from-region)
+
+;;saving and closing
+(global-set-key (kbd "<f11> s") 'save-buffer); Aux save
+(global-set-key (kbd "<f11> x") 'kill-this-buffer) ; Close file and buffer
+(global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
+(global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
+(global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
+(global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
+(global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
+
+;buffers movment
+(global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
+(global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
+(global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
+(global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
+(global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
+
+(global-set-key (kbd "<f12> <f12>") 'other-window)  
+(global-set-key (kbd "<f12> x") 'delete-window)  
+(global-set-key (kbd "<f12> z") 'delete-other-windows)  
+(global-set-key (kbd "<f12> -") 'split-window-vertically)  
+(global-set-key (kbd "<f12> =") 'split-window-right)  
+(global-set-key (kbd "<f12> +") 'split-window-below)  
+(global-set-key (kbd "<f12> r") 'resize-window)
+(global-set-key (kbd "<f12> ]") 'transpose-windows)
+
+(setq browse-url-browser-function (quote browse-url-generic))
+(setq browse-url-generic-program "chromium")
+
+(setq backup-directory-alist
+      `((".*" . ,temporary-file-directory)))
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
+
+;If I reopen a file, I want to start at the line at which I was when I closed it.
+; save the place in files
+(require 'saveplace)
+(setq-default save-place t)
+
+; save minibuffer history
+(require 'savehist)
+(savehist-mode t)
+
+;;autosave
+;(setq auto-save-visited-file-name t)
+;(setq auto-save-interval 20) ; twenty keystrokes
+(setq auto-save-timeout 60) ; ten idle seconds
+
+(setq savehist-file "/home/zeltak/.cache/emacs/hist/hist.txt")
+(savehist-mode 1)
+(setq history-length t)
+(setq history-delete-duplicates t)
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring
+        search-ring
+        regexp-search-ring))
+
+(setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+(require 'recentf)
+(recentf-mode 1)
+(setq recentf-max-menu-items 50)
+;(setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+
+(require 'tramp) ; Remote file editing via ssh
+(setq tramp-default-method "ssh")
+
+(defun proced-settings ()
+  (proced-toggle-auto-update))
+
+(add-hook 'proced-mode-hook 'proced-settings)
 
 (if (string= system-name "voices") 
 (progn
