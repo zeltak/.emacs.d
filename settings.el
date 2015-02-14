@@ -80,6 +80,15 @@
 (setq key-chord-one-key-delay 0.20)
 )
 
+(use-package yasnippet
+)
+
+(yas-global-mode 1)
+;; Use custom snippets.
+;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(yas-reload-all)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+
 (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
   "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
   (interactive)
@@ -123,15 +132,6 @@
 ;;               (nth n choices))
 ;;           (signal 'quit "user quit!"))))
 ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
-
-(use-package yasnippet
-)
-
-(yas-global-mode 1)
-;; Use custom snippets.
-;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-(yas-reload-all)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
 
 (use-package hydra
 :ensure t )
@@ -180,9 +180,9 @@
 ;;  (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 ;; )
 
-; (load-file "~/.emacs.g/extra/org-download/org-download.el")
-; (setq-default org-download-heading-lvl nil)
-; (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+(load-file "~/.emacs.g/extra/org-download/org-download.el")
+(setq-default org-download-heading-lvl nil)
+(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
@@ -737,28 +737,6 @@
     ("l" hydra-move-splitter-right)))
 
 (global-set-key
- (kbd "C-c 1")
- (defhydra hydra-toggle (:color blue)
-   "toggle"
-   ("a" abbrev-mode "abbrev")
-   ("d" toggle-debug-on-error "debug")
-   ("f" auto-fill-mode "fill")
-   ("t" toggle-truncate-lines "truncate")
-   ("w" whitespace-mode "whitespace")
-   ("q" nil "cancel")))
-
-(defhydra hydra-edit (global-map "C-c" :color red)
-   "toggle"
-   ("a" abbrev-mode "abbrev" :color blue)
-   ("d" toggle-debug-on-error "debug" :color blue)
-   ("f" auto-fill-mode "fill" :color blue)
-   ("t" toggle-truncate-lines "truncate" :color blue)
-   ("w" whitespace-mode "whitespace" :color blue)
-   ("v" recenter-top-bottom "recenter" :color red)
-   ("q" nil "cancel" :color blue))
-(global-set-key (kbd "C-c 2") 'hydra-edit/body)
-
-(global-set-key
  (kbd "C-z")
  (defhydra hydra-vi
      (:pre
@@ -774,6 +752,7 @@
    ("m" set-mark-command "mark")
    ("a" move-beginning-of-line "beg")
    ("e" move-end-of-line "end")
+   ("v" evil-mode "evil")
    ("d" delete-region "del" :color blue)
    ("y" kill-ring-save "yank" :color blue)
    ("q" nil "quit")))
@@ -842,11 +821,15 @@
    ("p" duplicate-line  "dup line" :color blue)
    (";" comment-or-uncomment-region  "comment paste" :color blue)
    ("l" z-copy-comment-paste  "comment paste" :color blue)
+   ("f" flush-blank-line  "flush blank" :color blue)
+   ("u" z-fix-characters "fix unicode" :color blue)
+   ("U" upcase-region  "upcase" :color blue)
+   ("D" downcase-region  "downcase" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key
  (kbd "<f1> c")
- (defhydra hydra-org-editing ()
+ (defhydra hydra-org-food ()
    "yas command "
    ("b" cooking-sparse-tree-breakfeast "breakfeast_view" :color blue)
    ("m" cooking-sparse-tree-main "main_view" :color blue)
@@ -856,35 +839,57 @@
 
 (global-set-key
  (kbd "C-M-o")
- (defhydra hydra-org-cook ()
+ (defhydra hydra-org-edit ()
    "yas command "
    ("t" org-insert-todo-heading-respect-content "insert TODO" :color blue)
    ("d" org-cut-subtree  "org cut" :color blue)
    ("y" org-copy-subtree "org copy" :color blue)
    ("p" org-paste-subtree  "org paste" :color blue)
+   ("h" org-set-line-headline "line to headline" :color blue)
+   ("c" org-set-line-checkbox  "line to checkbox" :color blue)
+   ("a" hydra-org-time/body   "ins date" :color blue)
    ("q" nil "cancel")))
 
-(define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
-;;below code for by type and todo (cook)
-;+TODO="COOK"+Type="breakfest"
-(define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
-(define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
-(global-set-key (kbd "<f1> h") 'org-goto)
-(global-set-key (kbd "<f1> d d") 'org-timestamp-select)
-(global-set-key (kbd "<f1> d n") 'org-timestamp-now)
-(global-set-key (kbd "<f1> d i") 'z-insert-date)
-(global-set-key (kbd "<f1> d l") 'org-deadline)
-(global-set-key (kbd "<f1> d s") 'org-schedule)
-(global-set-key (kbd "<f1> t") 'org-todo)
-(global-set-key (kbd "<f1> a") 'org-agenda)
-(global-set-key "\C-ca" 'org-agenda)
+(global-set-key
+ (kbd "")
+ (defhydra hydra-org-time ()
+   "time command "
+   ("t" org-insert-todo-heading-respect-content "insert TODO" :color blue)
+   ("d" org-cut-subtree  "org cut" :color blue)
+   ("y" org-copy-subtree "org copy" :color blue)
+   ("p" org-paste-subtree  "org paste" :color blue)
+   ("h" org-set-line-headline "line to headline" :color blue)
+   ("c" org-set-line-checkbox  "line to checkbox" :color blue)
+   ("a" hydra-org2/body   "ins date" :color blue)
+   ("q" nil "cancel")))
 
-(global-set-key (kbd "<f2> e") 'evil-mode)
-;;yas
-(global-set-key (kbd "<f2> y y") 'yas-insert-snippet)
-(global-set-key (kbd "<f2> y n") 'yas-new-snippet)
-(global-set-key (kbd "<f2> y r ") 'yas-reload-all)
-(global-set-key (kbd "<f2> y v ") 'yas-visit-snippet-file)
+(global-set-key
+ (kbd "C-M-b")
+ (defhydra hydra-buffer  ()
+   "buffer commands "
+   ("s" save-buffer "save buffer"  :color blue)
+   ("x" kill-this-buffer "kill buffer"  :color blue)
+   ("o" z-kill-other-buffers "kill all but current" :color blue)
+   ("i" kill-buffer  "ido-kill" :color blue)
+   ("c" z-save-file-close-window "save and close"  :color blue)
+   ("q" nil "cancel")))
+
+;; (global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
+;; (global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
+;; (global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
+;; (global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
+;; (global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
+
+;; ;buffers movment
+;; (global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
+;; (global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
+;; (global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
+;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
+;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
+
+
+
+
 
 ;dired
 (define-key global-map (kbd "<f3> d") 'dired)
