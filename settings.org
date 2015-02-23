@@ -53,7 +53,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (add-to-list 'default-frame-alist '(font . "Pragmata Pro-14"))
 )
 
-;; fonts in Win
+;; fontso in Win
 (if (system-type-is-win)
 (add-to-list 'default-frame-alist '(font . "Consolas-14"))
 )
