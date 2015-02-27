@@ -29,7 +29,7 @@
 (add-to-list 'default-frame-alist '(font . "Pragmata Pro-14"))
 )
 
-;; fonts in Win
+;; fontso in Win
 (if (system-type-is-win)
 (add-to-list 'default-frame-alist '(font . "Consolas-14"))
 )
@@ -699,42 +699,14 @@
 ;; (key-chord-define-global "fl" 'ace-jump-line-mode)
 ;; (key-chord-define-global "fk" 'ace-jump-char-mode)
 
-(defun hydra-universal-argument (arg)
-  (interactive "P")
-  (setq prefix-arg (if (consp arg)
-                       (list (* 4 (car arg)))
-                     (if (eq arg '-)
-                         (list -4)
-                       '(4)))))
+; (require 'hydra-examples)
+; (hydra-create "C-M-o" hydra-example-move-window-splitter)
 
-(defhydra hydra-window (global-map "C-M-o")
-  "window"
-  ("h" windmove-left "left")
-  ("j" windmove-down "down")
-  ("g" windmove-up "up")
-  ("l" windmove-right "right")
-  ("a" ace-window "ace")
-  ("k" other-window)
-  ("x" delete-window) 
-  ("-" split-window-vertically) 
-  ("=" split-window-right) 
-  ("t" transpose-windows) 
-  ("v" transpose-windows) 
-  ("u" hydra-universal-argument "universal")
-  ("s" (lambda () (interactive) (ace-window 4)) "swap")
-  ("d" (lambda () (interactive) (ace-window 16)) "delete")
-  ("o"))
-
-(key-chord-define-global "kk" 'hydra-window/body)
-
-(require 'hydra-examples)
-(hydra-create "C-M-o" hydra-example-move-window-splitter)
-
-(hydra-create "C-M-o"
-  '(("h" hydra-move-splitter-left)
-    ("j" hydra-move-splitter-down)
-    ("k" hydra-move-splitter-up)
-    ("l" hydra-move-splitter-right)))
+; (hydra-create "C-M-o"
+;   '(("h" hydra-move-splitter-left)
+;     ("j" hydra-move-splitter-down)
+;     ("k" hydra-move-splitter-up)
+;     ("l" hydra-move-splitter-right)))
 
 (global-set-key
  (kbd "C-z")
