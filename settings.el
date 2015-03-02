@@ -468,6 +468,15 @@
   ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
   ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
 
+(use-package ace-window
+    :init
+    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+    (setq aw-background nil))
+
+(custom-set-faces
+ '(aw-leading-char-face
+   ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+
 (use-package ace-isearch
 :ensure t
 :config
@@ -1270,48 +1279,7 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-priority-start-cycle-with-default t)
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-
-;; (setq org-refile-targets (quote ((nil :maxlevel . 9)
-;;                                  (org-agenda-files :maxlevel . 9))))
-
-(setq org-refile-targets
-        '((nil :maxlevel . 3)
-          (org-agenda-files :maxlevel . 3)))
-
-
-
-; Use full outline paths for refile targets - we file directly with IDO
-(setq org-refile-use-outline-path t)
-
-; Targets complete directly with IDO
-(setq org-outline-path-complete-in-steps nil)
-
-; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes (quote confirm))
-
-; Use IDO for both buffer and file completion and ido-everywhere to t
-(setq org-completion-use-ido t)
-(setq ido-everywhere t)
-(setq ido-max-directory-size 100000)
-(ido-mode (quote both))
-; Use the current window when visiting files and buffers with ido
-(setq ido-default-file-method 'selected-window)
-(setq ido-default-buffer-method 'selected-window)
-; Use the current window for indirect buffer display
-(setq org-indirect-buffer-display 'current-window)
-
-;;;; Refile settings
-; Exclude DONE state tasks from refile targets
-(defun bh/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-
-(setq org-refile-target-verify-function 'bh/verify-refile-target)
-
-;;; goto/navigate with org-refile (C-u c-c c-w)
-(setq org-goto-max-level 10)
-(setq org-goto-interface 'outline-path-completion)
-(setq org-outline-path-complete-in-steps nil)
+(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
@@ -2066,6 +2034,7 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
                "*   %?\n%T" )
               ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
                "* SHOP  %^{Description} " )
+              ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
               ;;;agenda captures
               ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
                "* TODO  %^{Description} " )
