@@ -133,6 +133,60 @@
 ;;           (signal 'quit "user quit!"))))
 ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 
+(use-package helm
+:ensure t
+:config
+(require 'helm-config)
+(helm-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+)
+
+(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+      helm-ff-file-name-history-use-recentf t)
+
+(setq helm-buffers-fuzzy-matching t
+      helm-recentf-fuzzy-match    t)
+
+(use-package helm-cmd-t
+:ensure t
+:config
+)
+
+(defvar my-org-folders (list  "~/org/files/")
+  "my permanent folders for helm-mini")
+
+(defun helm-my-org (&optional arg)
+  "Use C-u arg to work with repos."
+  (interactive "P")
+  (if (consp arg)
+      (call-interactively 'helm-cmd-t-repos)
+    (let ((helm-ff-transformer-show-only-basename nil))
+      (helm :sources (mapcar (lambda (dir)
+                               (helm-cmd-t-get-create-source-dir dir))
+                             my-org-folders)
+            :candidate-number-limit 20
+            :buffer "*helm-my-org:*"
+            :input "org$ "))))
+
+(when (executable-find "curl")
+  (setq helm-google-suggest-use-curl-p t))
+
+(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+(setq helm-locate-fuzzy-match t)
+
+(autoload 'helm-bibtex "helm-bibtex" "" t)
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(setq helm-bibtex-pdf-open-function
+  (lambda (fpath)
+    (start-process "evince" "*evince*" "evince" fpath)))
+
 (use-package hydra
 :ensure t )
 
@@ -200,57 +254,16 @@
                :parameters ":results value"
                :value "(+ 2 2)")
 
-(use-package helm
+(use-package yasnippet
 :ensure t
 :config
-(global-set-key (kbd "M-x") 'helm-M-x)
-(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+(require 'yasnippet)
+;for orgmode properties fix 
+(setq yas-indent-line 'fixed)
+;set insert at point prompt type- here ido
+(setq yas/prompt-functions '(yas/ido-prompt
+                             yas/completing-prompt))
 )
-
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
-
-(setq helm-buffers-fuzzy-matching t
-      helm-recentf-fuzzy-match    t)
-
-(use-package helm-cmd-t
-:ensure t
-:config
-)
-
-(defvar my-org-folders (list  "~/org/files/")
-  "my permanent folders for helm-mini")
-
-(defun helm-my-org (&optional arg)
-  "Use C-u arg to work with repos."
-  (interactive "P")
-  (if (consp arg)
-      (call-interactively 'helm-cmd-t-repos)
-    (let ((helm-ff-transformer-show-only-basename nil))
-      (helm :sources (mapcar (lambda (dir)
-                               (helm-cmd-t-get-create-source-dir dir))
-                             my-org-folders)
-            :candidate-number-limit 20
-            :buffer "*helm-my-org:*"
-            :input "org$ "))))
-
-(when (executable-find "curl")
-  (setq helm-google-suggest-use-curl-p t))
-
-(add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
-
-(setq helm-locate-fuzzy-match t)
-
-(autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
-(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
-
-(setq helm-bibtex-pdf-open-function
-  (lambda (fpath)
-    (start-process "evince" "*evince*" "evince" fpath)))
 
 ;; (require 'yasnippet)
 
@@ -470,6 +483,7 @@
 
 (use-package ace-window
     :init
+;set keys to only these 
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (setq aw-background nil))
 
@@ -477,20 +491,31 @@
  '(aw-leading-char-face
    ((t (:inherit ace-jump-face-foreground :height 3.0)))))
 
-(use-package ace-isearch
-:ensure t
-:config
-(ace-isearch-mode +1)
-(global-ace-isearch-mode +1)
+(defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+  "Keys for jumping.")
+
+(global-set-key (kbd "C-;") 'avi-goto-char-2)
+
+(setq avi-background t)
+
+;use-package ace-isearch
+;:ensure t
+;:config
+;(ace-isearch-mode +1)
+;(global-ace-isearch-mode +1)
+;)
+
+;(custom-set-variables
+; '(ace-isearch-input-length 7)
+; '(ace-isearch-input-idle-delay 0.4)
+; '(ace-isearch-submode 'ace-jump-char-mode)
+; '(ace-isearch-use-ace-jump 'printing-char))
+
+;(ace-isearch-set-ace-jump-after-isearch-exit t)
+
+(use-package ace-jump-zap
+  :ensure ace-jump-zap
 )
-
-(custom-set-variables
- '(ace-isearch-input-length 7)
- '(ace-isearch-input-idle-delay 0.4)
- '(ace-isearch-submode 'ace-jump-char-mode)
- '(ace-isearch-use-ace-jump 'printing-char))
-
-(ace-isearch-set-ace-jump-after-isearch-exit t)
 
 ;(require 'tex)
 ;(setq preview-scale-function 1.1)
@@ -685,10 +710,452 @@
 ;; async shell commands
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 
+(defun z-fix-characters 
+(start end) 
+(interactive "r") 
+(let ((buffer-invisibility-spec)) (query-replace-regexp "[^\t\n\r\f -~]" ""))
+)
+
+(defun z-fix2-characters ()
+  (interactive)
+  (let ()
+    (query-replace-regexp "[^\t\n\r\f -~]" "")
+    ))
+
+(defun z-year-increment  (buffer max-year)
+  (interactive "b\nsMax year (yy): ")
+  (setq max-year (string-to-number max-year))
+  (let ((year 2003)
+        (newbuf (get-buffer-create "increment-year")))
+    (let ((s (with-current-buffer buffer
+               (buffer-substring (point-min) (point-max)))))
+      (dotimes (n (1+ max-year))
+        (with-current-buffer newbuf
+          (goto-char (point-max))
+          (insert "\n")
+          (insert (replace-regexp-in-string (int-to-string year)
+                                            (int-to-string (+ year n))
+                                            s)))))
+    (switch-to-buffer newbuf)))
+
+(defun flush-blank-lines ()
+    "Removes all blank lines from buffer or region"
+     (interactive)
+     (save-excursion
+       (let (min max)
+         (if (equal (region-active-p) nil)
+             (mark-whole-buffer))
+         (setq min (region-beginning) max (region-end))
+         (flush-lines "^ *$" min max t))))
+
+(global-set-key (kbd "M-j")
+            (lambda ()
+                  (interactive)
+                  (join-line -1)))
+
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
+    (fill-paragraph nil)))
+
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
+(defun z-count-words-region (posBegin posEnd)
+  "Print number of words and chars in region."
+  (interactive "r")
+  (message "Counting …")
+  (save-excursion
+    (let (wordCount charCount)
+      (setq wordCount 0)
+      (setq charCount (- posEnd posBegin))
+      (goto-char posBegin)
+      (while (and (< (point) posEnd)
+                  (re-search-forward "\\w+\\W*" posEnd t))
+        (setq wordCount (1+ wordCount)))
+
+      (message "Words: %d. Chars: %d." wordCount charCount)
+      )))
+
+(defun z/copy-comment-paste ()
+  "copy active region/current line, comment, and then paste"
+  (interactive)
+  (unless (use-region-p)
+    (progn
+      (beginning-of-line 2)
+      (push-mark (line-beginning-position 0))))
+  (kill-ring-save (region-beginning) (region-end))
+  (comment-region (region-beginning) (region-end))
+  (yank)
+  (exchange-point-and-mark)
+  (indent-according-to-mode))
+
+(defun z/comment-line (n)
+  "Comment or uncomment current line and leave point after it.
+With positive prefix, apply to N lines including current one.
+With negative prefix, apply to -N lines above.
+If region is active, apply to active region instead."
+  (interactive "p")
+  (if (use-region-p)
+      (comment-or-uncomment-region
+       (region-beginning) (region-end))
+    (let ((range
+           (list (line-beginning-position)
+                 (goto-char (line-end-position n)))))
+      (comment-or-uncomment-region
+       (apply #'min range)
+       (apply #'max range)))
+    (forward-line 1)
+    (back-to-indentation)))
+
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
+
+(defun move-text-down (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines down."
+   (interactive "*p")
+   (move-text-internal arg))
+
+(defun move-text-up (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines up."
+   (interactive "*p")
+   (move-text-internal (- arg)))
+
+(defun z-insert-date (&optional addTimeStamp-p)
+  "Insert current date and or time. In this format yyyy-mm-dd.
+ When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
+ Replaces text selection.See also `current-date-time-string'."
+  (interactive "P")
+  (when (region-active-p) (delete-region (region-beginning) (region-end) ) )
+  (cond
+   ((equal addTimeStamp-p nil ) (insert (format-time-string "%Y-%m-%d")))
+   (t (insert (current-date-time-string))) ) )
+
+(defun copy-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (cond
+         ((and (display-graphic-p) x-select-enable-clipboard)
+          (x-set-selection 'CLIPBOARD (buffer-substring (region-beginning) (region-end))))
+         (t (shell-command-on-region (region-beginning) (region-end)
+                                     (cond
+                                      (*cygwin* "putclip")
+                                      (*is-a-mac* "pbcopy")
+                                      (*linux* "xsel -ib")))
+            ))
+        (message "Yanked region to clipboard!")
+        (deactivate-mark))
+        (message "No region active; can't yank to clipboard!")))
+
+(defun paste-from-x-clipboard()
+  (interactive)
+  (cond
+   ((and (display-graphic-p) x-select-enable-clipboard)
+    (insert (x-selection 'CLIPBOARD)))
+   (t (shell-command
+       (cond
+        (*cygwin* "getclip")
+        (*is-a-mac* "pbpaste")
+        (t "xsel -ob"))
+       1))
+   ))
+
+(defun prelude-indent-rigidly-and-copy-to-clipboard (begin end indent)
+  "Copy the selected code region to the clipboard, indented according
+to Markdown blockquote rules."
+  (let ((buffer (current-buffer)))
+    (with-temp-buffer
+      (insert-buffer-substring-no-properties buffer begin end)
+      (indent-rigidly (point-min) (point-max) indent)
+      (clipboard-kill-ring-save (point-min) (point-max)))))
+
+(defun prelude-indent-blockquote-and-copy-to-clipboard (begin end)
+  "Copy the selected code region to the clipboard, indented according
+to markdown blockquote rules (useful to copy snippets to StackOverflow, Assembla, Github."
+  (interactive "r")
+  (prelude-indent-rigidly-and-copy-to-clipboard begin end 4))
+
+(defun prelude-indent-nested-blockquote-and-copy-to-clipboard (begin end)
+  "Copy the selected code region to the clipboard, indented according
+to markdown blockquote rules. Useful to add snippets under bullet points."
+  (interactive "r")
+  (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
+
+;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
+; (goto-char (point-min)) (apply #'query-replace-regexp rest)))
+
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank)
+)
+;(global-set-key (kbd "C-d") 'duplicate-line)
+
+(defun z-edit-file-as-root ()
+  "Edit the file that is associated with the current buffer as root"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+        (find-file file))
+    (message "Current buffer does not have an associated file.")))
+
+(defun z-kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+(defun next-user-buffer ()
+  "Switch to the next user buffer.
+User buffers are those whose name does not start with *."
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (next-buffer) )))
+
+(defun previous-user-buffer ()
+  "Switch to the previous user buffer.
+User buffers are those whose name does not start with *."
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (previous-buffer) )))
+
+(defun next-emacs-buffer ()
+  "Switch to the next emacs buffer.
+Emacs buffers are those whose name starts with *."
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
+      (setq i (1+ i)) (next-buffer) )))
+
+(defun previous-emacs-buffer ()
+  "Switch to the previous emacs buffer.
+Emacs buffers are those whose name starts with *."
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
+      (setq i (1+ i)) (previous-buffer) )))
+
+
+(defun switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+(defun z-save-file-close-window ()
+  "DOCSTRING"
+  (interactive)
+    (save-buffer )
+    (delete-frame)
+  )
+
+(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
+  "*Resize window interactively."
+  (interactive "p")
+  (if (one-window-p) (error "Cannot resize sole window"))
+  (or arg (setq arg 1))
+  (let (c)
+    (catch 'done
+      (while t
+        (message
+         "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
+         arg)
+        (setq c (read-char))
+        (condition-case ()
+            (cond
+             ((= c ?h) (enlarge-window arg))
+             ((= c ?s) (shrink-window arg))
+             ((= c ?w) (enlarge-window-horizontally arg))
+             ((= c ?n) (shrink-window-horizontally arg))
+             ((= c ?\^G) (keyboard-quit))
+             ((= c ?q) (throw 'done t))
+             ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
+             (t (beep)))
+          (error (beep)))))
+    (message "Done.")))
+
+(defun transpose-windows (arg)
+   "Transpose the buffers shown in two windows."
+   (interactive "p")
+   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+     (while (/= arg 0)
+       (let ((this-win (window-buffer))
+             (next-win (window-buffer (funcall selector))))
+         (set-window-buffer (selected-window) next-win)
+         (set-window-buffer (funcall selector) this-win)
+         (select-window (funcall selector)))
+       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
+(defun ood () (interactive) (dired "/home/zeltak/org"))
+
+(defun create-scratch-buffer nil
+   "create a scratch buffer"
+   (interactive)
+   (switch-to-buffer (get-buffer-create "*scratch*"))
+   (lisp-interaction-mode))
+
+(defun narrow-or-widen-dwim ()
+"If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+(interactive)
+(cond ((buffer-narrowed-p) (widen))
+((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+((equal major-mode 'org-mode) (org-narrow-to-subtree))
+(t (error "Please select a region to narrow to"))))
+
+(require 'thingatpt)
+
+(defun google-search ()
+  "Googles a query or region if any."
+  (interactive)
+  (browse-url
+   (concat
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (if mark-active
+        (buffer-substring (region-beginning) (region-end))
+      (read-string "Google: ")))))
+
+(fset 'orgstyle-tnote
+   [?! home ?!])
+(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+
+
+(fset 'orgstyle-warning
+   "@\341@WARNING:")
+(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
+
+(fset 'orgstyle-warning2
+   [?@ home ?@])
+(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
+
+
+
+(fset 'orgstyle-com1
+   [?~ home ?~])
+(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
+
+(fset 'orgstyle-note
+   "$\341$NOTE:")
+(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
+
+(fset 'orgstyle-note2
+   [?$ home ?$])
+(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
+
+(fset 'orgstyle-tip
+   "%\341%TIP:")
+(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
+
+
+(fset 'orgstyle-tip2
+   [?% home ?%])
+(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
+
+
+(fset 'orgstyle-code
+   [?^ home ?^])
+(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
+
+(fset 'orgstyle-header
+   [?& home ?&])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
+
+(fset 'orgstyle-bold
+   [?* home ?*])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
+
+(fset 'orgstyle-highlight-green
+   [?' home ?'])
+(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
+
+(fset 'orgstyle-com2
+   [?` home ?`])
+(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
+
+(fset 'underline_net_delete
+   [?\M-% ?\  return return ?!])
+
+;;;; Saved macros
+;; Saved macro - adds latex end-lines to verse passages
+(fset 'versify
+      [?\C-a ?\C-e ?\\ ?\\ down])
+
+;(global-set-key (kbd "") 'versify)
+
+(defmacro C-u (&rest args)
+  (let ((prefix (list 4)))
+    (while (cdr args)
+      (cond
+       ((eq (car args) 'C-u)
+        (setf (car prefix) (* 4 (car prefix))))
+       ((eq (car args) 'M-x)
+        ;; ignore
+        t)
+       (t
+        (error "Unknown arg %S" (car args))))
+      (setq args (cdr args)))
+    (unless (functionp (car args))
+      (error "%S is not a function" (car args)))
+    `(lambda ()
+       (interactive)
+       (let ((current-prefix-arg ',prefix))
+         (call-interactively ',(car args))))))
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
-(global-unset-key (kbd "<f4> "))
+(global-unset-key (kbd "<f4>"))
 (global-unset-key (kbd "<f5>"))
 (global-unset-key (kbd "<f6>"))
 (global-unset-key (kbd "<f7>"))
@@ -786,11 +1253,12 @@
  (kbd "C-M-y")
  (defhydra hydra-yas ()
    "yas command "
-   ("a" yas-activate-extra-mode "add_mode" :color blue)
-   ("n" yas-new-snippet "new_snip" :color blue)
+   ("a" yas-activate-extra-mode "enable Emacs mode for yas" :color blue)
+   ("n" yas-new-snippet "add new snippet" :color blue)
    ("v" yas-visit-snippet-file "visit" :color blue)
    ("i" yas-insert-snippet "insert_point" :color blue)
    ("r" yas-reload-all  "reload" :color blue)
+   ("t" yas-tryout-snippe  "try snipet" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key
@@ -799,9 +1267,10 @@
    "editing command "
    ("u" move-text-up  "marked up" :color red)
    ("d" move-text-down "marked down" :color red)
-   ("p" duplicate-line  "dup line" :color blue)
+   ("p" duplicate-line  "dup line" :color red)
    (";" comment-or-uncomment-region  "comment paste" :color blue)
-   ("l" z-copy-comment-paste  "comment paste" :color blue)
+   ("l" z/comment-line  "comment line" :color blue)
+   ("L" z/copy-comment-paste  "comment paste" :color blue)
    ("f" flush-blank-line  "flush blank" :color blue)
    ("u" z-fix-characters "fix unicode" :color blue)
    ("U" upcase-region  "upcase" :color blue)
@@ -818,6 +1287,10 @@
    ("t" travel-template  "travel-template" :color blue)
    ("q" nil "cancel")))
 
+;(defun z/prefix-org-refile ()
+;(C-u M-x org-refile)
+;)
+
 (global-set-key
  (kbd "C-M-o")
  (defhydra hydra-org-edit ()
@@ -829,6 +1302,8 @@
    ("h" org-set-line-headline "line to headline" :color blue)
    ("c" org-set-line-checkbox  "line to checkbox" :color blue)
    ("a" hydra-org-time/body   "ins date" :color blue)
+   ("r" org-refile   "refile" :color blue)
+   ("R" z/prefix-org-refile   "refile" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key
@@ -842,6 +1317,21 @@
    ("h" org-set-line-headline "line to headline" :color blue)
    ("c" org-set-line-checkbox  "line to checkbox" :color blue)
    ("a" hydra-org2/body   "ins date" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
+ (kbd "C-M-;")
+ (defhydra hydra-avi ()
+   "yas command "
+   ("g" avi-goto-char-2 "avi-goto-char-2" :color blue)
+   ("c" avi-goto-char "avi-goto-char" :color blue)
+   ("l" avi-goto-line "avi-goto-line" :color blue)
+   ("4" avi-copy-line  "avi-copy-line" :color blue)
+   ("3" avi-move-line  "avi-move-line" :color blue)
+   ("r" avi-copy-region  "avi-copy-region" :color blue)
+   ("1" avi-goto-word-1  "avi-goto-word-1" :color blue)
+   ("0" avi-goto-word-1  "avi-goto-word-0" :color blue)
+   ("z" ace-jump-zap  "zap text" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key
@@ -867,8 +1357,6 @@
 ;; (global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
 ;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
 ;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-
 
 
 
@@ -1053,9 +1541,14 @@
 (global-set-key (kbd "<f10> s y ") 'org-copy-subtree)
 (global-set-key (kbd "<f10> s p ") 'org-paste-subtree)
 (global-set-key (kbd "<f10> 8 ") 'org-toggle-heading)
-(global-set-key (kbd "<f10> 7 ") 'org-toggle-heading)
+(global-set-key (kbd "<f10> 7")                                    
+                #'(lambda ()                                     
+                    (interactive)                                
+                    (let ((current-prefix-arg '(4)))             
+                      (call-interactively #'org-toggle-heading))))
+
 (global-set-key (kbd "<f10> h ") 'org-insert-heading)
- (global-set-key (kbd "<f10> n ") 'org-indent-mode)
+(global-set-key (kbd "<f10> n ") (C-u M-x org-refile))
 
 
 (global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
@@ -1082,7 +1575,7 @@
 (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
 (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
 
-(global-set-key (kbd "<f12> <f12>") 'other-window)  
+(global-set-key (kbd "<f12><f12>") 'other-window)  
 (global-set-key (kbd "<f12> x") 'delete-window)  
 (global-set-key (kbd "<f12> z") 'delete-other-windows)  
 (global-set-key (kbd "<f12> -") 'split-window-vertically)  
@@ -1131,6 +1624,8 @@
 
 (require 'tramp) ; Remote file editing via ssh
 (setq tramp-default-method "ssh")
+
+(setq explicit-shell-file-name "/bin/zsh")
 
 (defun proced-settings ()
   (proced-toggle-auto-update))
@@ -1220,6 +1715,106 @@
 
 (add-to-list 'org-modules "org-habit")
 
+(setq org-agenda-files '("~/org/files/agenda/"))
+
+;change agenda colors
+;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
+;max days to show in agenda view
+(setq org-agenda-ndays 7)
+;start agenda from today!
+(setq org-agenda-start-on-weekday nil)
+;Items that have deadlines are displayed 10 days in advance
+(setq org-deadline-warning-days 10)
+;don’t display items that are done in my agenda.
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+
+;; Do not dim blocked tasks
+ (setq org-agenda-dim-blocked-tasks nil)
+ ;; Compact the block agenda view
+ (setq org-agenda-compact-blocks t)
+
+
+ ;; Always hilight the current agenda line
+ (add-hook 'org-agenda-mode-hook
+           '(lambda () (hl-line-mode 1))
+           'append)
+
+ ;; The following custom-set-faces create the highlights
+ ;; (custom-set-faces
+ ;;   ;; custom-set-faces was added by Custom.
+ ;;   ;; If you edit it by hand, you could mess it up so be careful.
+ ;;   ;; Your init file should contain only one such instance.
+ ;;   ;; If there is more than one, they won't work right.
+ ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
+
+ ;; Show all agenda dates - even if they are empty
+ (setq org-agenda-show-all-dates t)
+
+ ;;   Enable display of the time grid so we can see the marker for the current time
+(setq org-agenda-time-grid (quote ((daily today remove-match)
+                                   #("----------------" 0 16 (org-heading t))
+                                   (0900 1100 1300 1500 1700))))
+
+ ;; Display tags farther right
+ (setq org-agenda-tags-column -102)
+
+(setq org-agenda-custom-commands 
+'(
+;first command
+("r" "research" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/Research.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-down effort-down)
+          ) 
+          )
+          )
+
+;second
+("f" "food" todo "COOK" 
+         (
+         (org-agenda-files '("~/org/files/agenda/food.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+;third
+("o" "orgmode" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+
+;fourth (code block)
+("h" "Agenda and Home-related tasks"
+               (
+               (agenda "")
+               (tags-todo "+PRIORITY=\"A\"")
+               (tags "garden")
+)
+)
+
+;;finalize
+;;end brackets for setq
+)
+)
+
+(setq org-agenda-exporter-settings
+      '((ps-number-of-columns 2)
+        (ps-landscape-mode t)
+        (org-agenda-add-entry-text-maxlines 5)
+        (htmlize-output-type 'css)))
+
+(setq org-habit-graph-column 70)
+(setq org-habit-show-habits-only-for-today nil)
+
 ;;iimage in org (display images in org files)
 (setq org-startup-with-inline-images t)
 
@@ -1278,15 +1873,37 @@ With prefix argument, also display headlines without a TODO keyword."
 
 (setq org-priority-start-cycle-with-default t)
 
+(setq org-outline-path-complete-in-steps nil)
+
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
+
+(setq org-capture-templates
+      (quote (           
+              ("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
+               "*  %^{Description}" )
+              ("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+               "*  %^{Description}  " )
+              ("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+               "*  %x :Pre_Release: " )
+              ("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+               "*  %^{Description}" )
+              ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+               "*  %^{Description}" )
+              ("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
+               "*   %?\n%T" )
+              ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+               "* SHOP  %^{Description} " )
+              ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
+              ;;;agenda captures
+              ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
+               "* TODO  %^{Description} " )
+)))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
-(setq org-agenda-files '("~/org/files/agenda/"))
-
 (setq org-mobile-directory "~/Dropbox/MobileOrg/")
-
 ;; Set to the name of the file where new captures will be stored after pulling from mobile
 (setq org-mobile-inbox-for-pull "~/org/files/from-mobile.org")
 
@@ -1898,104 +2515,6 @@ execute speed commands."
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 
-;change agenda colors
-;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
-;max days to show in agenda view
-(setq org-agenda-ndays 7)
-;start agenda from today!
-(setq org-agenda-start-on-weekday nil)
-;Items that have deadlines are displayed 10 days in advance
-(setq org-deadline-warning-days 10)
-;don’t display items that are done in my agenda.
-(setq org-agenda-skip-deadline-if-done t)
-(setq org-agenda-skip-scheduled-if-done t)
-
-;; Do not dim blocked tasks
- (setq org-agenda-dim-blocked-tasks nil)
- ;; Compact the block agenda view
- (setq org-agenda-compact-blocks t)
-
-
- ;; Always hilight the current agenda line
- (add-hook 'org-agenda-mode-hook
-           '(lambda () (hl-line-mode 1))
-           'append)
-
- ;; The following custom-set-faces create the highlights
- ;; (custom-set-faces
- ;;   ;; custom-set-faces was added by Custom.
- ;;   ;; If you edit it by hand, you could mess it up so be careful.
- ;;   ;; Your init file should contain only one such instance.
- ;;   ;; If there is more than one, they won't work right.
- ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
-
- ;; Show all agenda dates - even if they are empty
- (setq org-agenda-show-all-dates t)
-
- ;;   Enable display of the time grid so we can see the marker for the current time
-(setq org-agenda-time-grid (quote ((daily today remove-match)
-                                   #("----------------" 0 16 (org-heading t))
-                                   (0900 1100 1300 1500 1700))))
-
- ;; Display tags farther right
- (setq org-agenda-tags-column -102)
-
-(setq org-agenda-custom-commands 
-'(
-;first command
-("r" "research" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/Research.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-down effort-down)
-          ) 
-          )
-          )
-
-;second
-("f" "food" todo "COOK" 
-         (
-         (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-;third
-("o" "orgmode" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-
-;fourth (code block)
-("h" "Agenda and Home-related tasks"
-               (
-               (agenda "")
-               (tags-todo "+PRIORITY=\"A\"")
-               (tags "garden")
-)
-)
-
-;;finalize
-;;end brackets for setq
-)
-)
-
-(setq org-agenda-exporter-settings
-      '((ps-number-of-columns 2)
-        (ps-landscape-mode t)
-        (org-agenda-add-entry-text-maxlines 5)
-        (htmlize-output-type 'css)))
-
-(setq org-habit-graph-column 70)
-(setq org-habit-show-habits-only-for-today nil)
-
 (setq org-publish-project-alist
            '(
               ("Help_files"
@@ -2017,29 +2536,6 @@ execute speed commands."
 (setq org-export-html-validation-link nil)
 
 org-use-sub-superscripts nil        ;; don't use `_' for subscript
-
-(setq org-capture-templates
-      (quote (           
-              ("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
-               "*  %^{Description}" )
-              ("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-               "*  %^{Description}  " )
-              ("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-               "*  %x :Pre_Release: " )
-              ("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
-               "*  %^{Description}" )
-              ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
-               "*  %^{Description}" )
-              ("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
-               "*   %?\n%T" )
-              ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
-               "* SHOP  %^{Description} " )
-              ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
-              ;;;agenda captures
-              ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
-               "* TODO  %^{Description} " )
-
-)))
 
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 
@@ -2216,6 +2712,8 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 ;Always recursively copy directory
 (setq dired-recursive-copies 'always)
 
+(require 'dired-x)
+
 (require 'dired-sort)
 
 (toggle-diredp-find-file-reuse-dir 1)
@@ -2258,411 +2756,6 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 take care of the wrapping of each item for me"
 (interactive)
 (insert-file-contents "/home/zeltak/Uni/bgu_courses/planner_gis/bullets.tex"))
-
-(defun z-fix-characters 
-(start end) 
-(interactive "r") 
-(let ((buffer-invisibility-spec)) (query-replace-regexp "[^\t\n\r\f -~]" ""))
-)
-
-(defun z-fix2-characters ()
-  (interactive)
-  (let ()
-    (query-replace-regexp "[^\t\n\r\f -~]" "")
-    ))
-
-(defun z-year-increment  (buffer max-year)
-  (interactive "b\nsMax year (yy): ")
-  (setq max-year (string-to-number max-year))
-  (let ((year 2003)
-        (newbuf (get-buffer-create "increment-year")))
-    (let ((s (with-current-buffer buffer
-               (buffer-substring (point-min) (point-max)))))
-      (dotimes (n (1+ max-year))
-        (with-current-buffer newbuf
-          (goto-char (point-max))
-          (insert "\n")
-          (insert (replace-regexp-in-string (int-to-string year)
-                                            (int-to-string (+ year n))
-                                            s)))))
-    (switch-to-buffer newbuf)))
-
-(defun flush-blank-lines ()
-    "Removes all blank lines from buffer or region"
-     (interactive)
-     (save-excursion
-       (let (min max)
-         (if (equal (region-active-p) nil)
-             (mark-whole-buffer))
-         (setq min (region-beginning) max (region-end))
-         (flush-lines "^ *$" min max t))))
-
-(global-set-key (kbd "M-j")
-            (lambda ()
-                  (interactive)
-                  (join-line -1)))
-
-(defun unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'."
-  (interactive)
-  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
-    (fill-paragraph nil)))
-
-(defun unfill-region (start end)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'."
-  (interactive "r")
-  (let ((fill-column 90002000))
-    (fill-region start end)))
-
-(defun z-count-words-region (posBegin posEnd)
-  "Print number of words and chars in region."
-  (interactive "r")
-  (message "Counting …")
-  (save-excursion
-    (let (wordCount charCount)
-      (setq wordCount 0)
-      (setq charCount (- posEnd posBegin))
-      (goto-char posBegin)
-      (while (and (< (point) posEnd)
-                  (re-search-forward "\\w+\\W*" posEnd t))
-        (setq wordCount (1+ wordCount)))
-
-      (message "Words: %d. Chars: %d." wordCount charCount)
-      )))
-
-(defun z-copy-comment-paste ()
-  "copy active region/current line, comment, and then paste"
-  (interactive)
-  (unless (use-region-p)
-    (progn
-      (beginning-of-line 2)
-      (push-mark (line-beginning-position 0))))
-  (kill-ring-save (region-beginning) (region-end))
-  (comment-region (region-beginning) (region-end))
-  (yank)
-  (exchange-point-and-mark)
-  (indent-according-to-mode))
-
-(defun move-line-up ()
-  "Move up the current line."
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2)
-  (indent-according-to-mode))
-
-(defun move-line-down ()
-  "Move down the current line."
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-(defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
-(defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
-
-(defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
-
-(defun z-insert-date (&optional addTimeStamp-p)
-  "Insert current date and or time. In this format yyyy-mm-dd.
- When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
- Replaces text selection.See also `current-date-time-string'."
-  (interactive "P")
-  (when (region-active-p) (delete-region (region-beginning) (region-end) ) )
-  (cond
-   ((equal addTimeStamp-p nil ) (insert (format-time-string "%Y-%m-%d")))
-   (t (insert (current-date-time-string))) ) )
-
-(defun copy-to-x-clipboard ()
-  (interactive)
-  (if (region-active-p)
-      (progn
-        (cond
-         ((and (display-graphic-p) x-select-enable-clipboard)
-          (x-set-selection 'CLIPBOARD (buffer-substring (region-beginning) (region-end))))
-         (t (shell-command-on-region (region-beginning) (region-end)
-                                     (cond
-                                      (*cygwin* "putclip")
-                                      (*is-a-mac* "pbcopy")
-                                      (*linux* "xsel -ib")))
-            ))
-        (message "Yanked region to clipboard!")
-        (deactivate-mark))
-        (message "No region active; can't yank to clipboard!")))
-
-(defun paste-from-x-clipboard()
-  (interactive)
-  (cond
-   ((and (display-graphic-p) x-select-enable-clipboard)
-    (insert (x-selection 'CLIPBOARD)))
-   (t (shell-command
-       (cond
-        (*cygwin* "getclip")
-        (*is-a-mac* "pbpaste")
-        (t "xsel -ob"))
-       1))
-   ))
-
-(defun prelude-indent-rigidly-and-copy-to-clipboard (begin end indent)
-  "Copy the selected code region to the clipboard, indented according
-to Markdown blockquote rules."
-  (let ((buffer (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring-no-properties buffer begin end)
-      (indent-rigidly (point-min) (point-max) indent)
-      (clipboard-kill-ring-save (point-min) (point-max)))))
-
-(defun prelude-indent-blockquote-and-copy-to-clipboard (begin end)
-  "Copy the selected code region to the clipboard, indented according
-to markdown blockquote rules (useful to copy snippets to StackOverflow, Assembla, Github."
-  (interactive "r")
-  (prelude-indent-rigidly-and-copy-to-clipboard begin end 4))
-
-(defun prelude-indent-nested-blockquote-and-copy-to-clipboard (begin end)
-  "Copy the selected code region to the clipboard, indented according
-to markdown blockquote rules. Useful to add snippets under bullet points."
-  (interactive "r")
-  (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
-
-;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
-; (goto-char (point-min)) (apply #'query-replace-regexp rest)))
-
-(defun duplicate-line()
-  (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (open-line 1)
-  (next-line 1)
-  (yank)
-)
-;(global-set-key (kbd "C-d") 'duplicate-line)
-
-(defun z-edit-file-as-root ()
-  "Edit the file that is associated with the current buffer as root"
-  (interactive)
-  (if (buffer-file-name)
-      (progn
-        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
-        (find-file file))
-    (message "Current buffer does not have an associated file.")))
-
-(defun z-kill-other-buffers ()
-      "Kill all other buffers."
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
-(defun next-user-buffer ()
-  "Switch to the next user buffer.
-User buffers are those whose name does not start with *."
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (string-match "^*" (buffer-name)) (< i 50))
-      (setq i (1+ i)) (next-buffer) )))
-
-(defun previous-user-buffer ()
-  "Switch to the previous user buffer.
-User buffers are those whose name does not start with *."
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (string-match "^*" (buffer-name)) (< i 50))
-      (setq i (1+ i)) (previous-buffer) )))
-
-(defun next-emacs-buffer ()
-  "Switch to the next emacs buffer.
-Emacs buffers are those whose name starts with *."
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
-      (setq i (1+ i)) (next-buffer) )))
-
-(defun previous-emacs-buffer ()
-  "Switch to the previous emacs buffer.
-Emacs buffers are those whose name starts with *."
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
-      (setq i (1+ i)) (previous-buffer) )))
-
-
-(defun switch-to-previous-buffer ()
-  "Switch to previously open buffer.
-Repeated invocations toggle between the two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-(defun z-save-file-close-window ()
-  "DOCSTRING"
-  (interactive)
-    (save-buffer )
-    (delete-frame)
-  )
-
-(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
-  "*Resize window interactively."
-  (interactive "p")
-  (if (one-window-p) (error "Cannot resize sole window"))
-  (or arg (setq arg 1))
-  (let (c)
-    (catch 'done
-      (while t
-        (message
-         "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
-         arg)
-        (setq c (read-char))
-        (condition-case ()
-            (cond
-             ((= c ?h) (enlarge-window arg))
-             ((= c ?s) (shrink-window arg))
-             ((= c ?w) (enlarge-window-horizontally arg))
-             ((= c ?n) (shrink-window-horizontally arg))
-             ((= c ?\^G) (keyboard-quit))
-             ((= c ?q) (throw 'done t))
-             ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
-             (t (beep)))
-          (error (beep)))))
-    (message "Done.")))
-
-(defun transpose-windows (arg)
-   "Transpose the buffers shown in two windows."
-   (interactive "p")
-   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-     (while (/= arg 0)
-       (let ((this-win (window-buffer))
-             (next-win (window-buffer (funcall selector))))
-         (set-window-buffer (selected-window) next-win)
-         (set-window-buffer (funcall selector) this-win)
-         (select-window (funcall selector)))
-       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-
-(defun ood () (interactive) (dired "/home/zeltak/org"))
-
-(defun create-scratch-buffer nil
-   "create a scratch buffer"
-   (interactive)
-   (switch-to-buffer (get-buffer-create "*scratch*"))
-   (lisp-interaction-mode))
-
-(defun narrow-or-widen-dwim ()
-"If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
-(interactive)
-(cond ((buffer-narrowed-p) (widen))
-((region-active-p) (narrow-to-region (region-beginning) (region-end)))
-((equal major-mode 'org-mode) (org-narrow-to-subtree))
-(t (error "Please select a region to narrow to"))))
-
-(require 'thingatpt)
-
-(defun google-search ()
-  "Googles a query or region if any."
-  (interactive)
-  (browse-url
-   (concat
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-    (if mark-active
-        (buffer-substring (region-beginning) (region-end))
-      (read-string "Google: ")))))
-
-(fset 'orgstyle-tnote
-   [?! home ?!])
-(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
-
-
-(fset 'orgstyle-warning
-   "@\341@WARNING:")
-(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
-
-(fset 'orgstyle-warning2
-   [?@ home ?@])
-(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
-
-
-
-(fset 'orgstyle-com1
-   [?~ home ?~])
-(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
-
-(fset 'orgstyle-note
-   "$\341$NOTE:")
-(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
-
-(fset 'orgstyle-note2
-   [?$ home ?$])
-(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
-
-(fset 'orgstyle-tip
-   "%\341%TIP:")
-(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
-
-
-(fset 'orgstyle-tip2
-   [?% home ?%])
-(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
-
-
-(fset 'orgstyle-code
-   [?^ home ?^])
-(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
-
-(fset 'orgstyle-header
-   [?& home ?&])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
-
-(fset 'orgstyle-bold
-   [?* home ?*])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
-
-(fset 'orgstyle-highlight-green
-   [?' home ?'])
-(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
-
-(fset 'orgstyle-com2
-   [?` home ?`])
-(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
-
-(fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
-
-;;;; Saved macros
-;; Saved macro - adds latex end-lines to verse passages
-(fset 'versify
-      [?\C-a ?\C-e ?\\ ?\\ down])
-
-;(global-set-key (kbd "") 'versify)
 
 (defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
 (defalias 'list-buffers 'ibuffer) ; always use ibuffer

@@ -191,7 +191,90 @@ $Note$ the sign !package! means the package is disbaled
   ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
+** Helm
+*** load Helm
+#+BEGIN_SRC emacs-lisp :results none
+(use-package helm
+:ensure t
+:config
+(require 'helm-config)
+(helm-mode 1)
+(global-set-key (kbd "M-x") 'helm-M-x)
+(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+)
+#+END_SRC
+*** Helm configuration 
+**** Helm viewing options config 
 
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
+       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+       helm-ff-file-name-history-use-recentf t)
+ #+END_SRC
+**** helm mini
+ enable fuzzy matching:
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-buffers-fuzzy-matching t
+       helm-recentf-fuzzy-match    t)
+ #+END_SRC
+**** TODO search org folders
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-cmd-t
+ :ensure t
+ :config
+ )
+
+ (defvar my-org-folders (list  "~/org/files/")
+   "my permanent folders for helm-mini")
+
+ (defun helm-my-org (&optional arg)
+   "Use C-u arg to work with repos."
+   (interactive "P")
+   (if (consp arg)
+       (call-interactively 'helm-cmd-t-repos)
+     (let ((helm-ff-transformer-show-only-basename nil))
+       (helm :sources (mapcar (lambda (dir)
+				(helm-cmd-t-get-create-source-dir dir))
+                              my-org-folders)
+             :candidate-number-limit 20
+             :buffer "*helm-my-org:*"
+             :input "org$ "))))
+ #+END_SRC
+
+**** google suggest 
+ #+BEGIN_SRC emacs-lisp :results none
+ (when (executable-find "curl")
+   (setq helm-google-suggest-use-curl-p t))
+ #+END_SRC
+
+**** helm man-woman (man doc reader)
+ enable at point
+ #+BEGIN_SRC emacs-lisp :results none
+ (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+ #+END_SRC
+**** helm locate
+ enable fuzzy 
+ #+BEGIN_SRC emacs-lisp :results none
+ (setq helm-locate-fuzzy-match t)	    
+ #+END_SRC
+**** helm bibtex
+ https://github.com/tmalsburg/helm-bibtex
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (autoload 'helm-bibtex "helm-bibtex" "" t)
+ (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+ (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+ (setq helm-bibtex-pdf-open-function
+   (lambda (fpath)
+     (start-process "evince" "*evince*" "evince" fpath)))
+
+ #+END_SRC
+
+**** TODO helm occur
 ** hydra
  #+BEGIN_SRC emacs-lisp :results none
 (use-package hydra
@@ -296,89 +379,21 @@ $Note$ the sign !package! means the package is disbaled
 #+END_SRC
 
 
-** Helm
-*** load Helm
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm
-:ensure t
-:config
-(global-set-key (kbd "M-x") 'helm-M-x)
-(setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
-)
-#+END_SRC
-*** Helm configuration 
-**** Helm viewing options config 
-
- #+BEGIN_SRC emacs-lisp :results none
- (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-       helm-ff-file-name-history-use-recentf t)
- #+END_SRC
-**** helm mini
- enable fuzzy matching:
- #+BEGIN_SRC emacs-lisp :results none
- (setq helm-buffers-fuzzy-matching t
-       helm-recentf-fuzzy-match    t)
- #+END_SRC
-**** TODO search org folders
-
- #+BEGIN_SRC emacs-lisp :results none
- (use-package helm-cmd-t
- :ensure t
- :config
- )
-
- (defvar my-org-folders (list  "~/org/files/")
-   "my permanent folders for helm-mini")
-
- (defun helm-my-org (&optional arg)
-   "Use C-u arg to work with repos."
-   (interactive "P")
-   (if (consp arg)
-       (call-interactively 'helm-cmd-t-repos)
-     (let ((helm-ff-transformer-show-only-basename nil))
-       (helm :sources (mapcar (lambda (dir)
-				(helm-cmd-t-get-create-source-dir dir))
-                              my-org-folders)
-             :candidate-number-limit 20
-             :buffer "*helm-my-org:*"
-             :input "org$ "))))
- #+END_SRC
-
-**** google suggest 
- #+BEGIN_SRC emacs-lisp :results none
- (when (executable-find "curl")
-   (setq helm-google-suggest-use-curl-p t))
- #+END_SRC
-
-**** helm man-woman (man doc reader)
- enable at point
- #+BEGIN_SRC emacs-lisp :results none
- (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
- #+END_SRC
-**** helm locate
- enable fuzzy 
- #+BEGIN_SRC emacs-lisp :results none
- (setq helm-locate-fuzzy-match t)	    
- #+END_SRC
-**** helm bibtex
- https://github.com/tmalsburg/helm-bibtex
-
- #+BEGIN_SRC emacs-lisp :results none
- (autoload 'helm-bibtex "helm-bibtex" "" t)
- (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
- (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
-
- (setq helm-bibtex-pdf-open-function
-   (lambda (fpath)
-     (start-process "evince" "*evince*" "evince" fpath)))
-
- #+END_SRC
-
 ** Yasnippets 
 *** base
+#+BEGIN_SRC emacs-lisp :results none
+(use-package yasnippet
+:ensure t
+:config
+(require 'yasnippet)
+;for orgmode properties fix 
+(setq yas-indent-line 'fixed)
+;set insert at point prompt type- here ido
+(setq yas/prompt-functions '(yas/ido-prompt
+                             yas/completing-prompt))
+)
+#+END_SRC
+
 #+begin_src emacs-lisp results none
   ;; (require 'yasnippet)
 
@@ -649,6 +664,7 @@ sets to only use homekeys
 #+BEGIN_SRC emacs-lisp :results none
 (use-package ace-window
     :init
+;set keys to only these 
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (setq aw-background nil))
 #+END_SRC
@@ -658,28 +674,49 @@ sets to only use homekeys
  '(aw-leading-char-face
    ((t (:inherit ace-jump-face-foreground :height 3.0)))))
 #+END_SRC
+** Avy
+#+BEGIN_SRC emacs-lisp :results none
+(defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+  "Keys for jumping.")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key (kbd "C-;") 'avi-goto-char-2)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq avi-background t)
+#+END_SRC
+
 ** Ace-isearch
 https://github.com/tam17aki/ace-isearch
 *** start ace-isearch
 #+BEGIN_SRC emacs-lisp :results none
-(use-package ace-isearch
-:ensure t
-:config
-(ace-isearch-mode +1)
-(global-ace-isearch-mode +1)
-)
+;use-package ace-isearch
+;:ensure t
+;:config
+;(ace-isearch-mode +1)
+;(global-ace-isearch-mode +1)
+;)
 #+END_SRC
 *** customize 
-#+BEGIN_SRC emacs-lisp :results none
-(custom-set-variables
- '(ace-isearch-input-length 7)
- '(ace-isearch-input-idle-delay 0.4)
- '(ace-isearch-submode 'ace-jump-char-mode)
- '(ace-isearch-use-ace-jump 'printing-char))
 
-(ace-isearch-set-ace-jump-after-isearch-exit t)
+#+BEGIN_SRC emacs-lisp :results none
+;(custom-set-variables
+; '(ace-isearch-input-length 7)
+; '(ace-isearch-input-idle-delay 0.4)
+; '(ace-isearch-submode 'ace-jump-char-mode)
+; '(ace-isearch-use-ace-jump 'printing-char))
+
+;(ace-isearch-set-ace-jump-after-isearch-exit t)
 #+END_SRC
 
+** ace zap
+#+BEGIN_SRC emacs-lisp :results none
+(use-package ace-jump-zap
+  :ensure ace-jump-zap
+)
+#+END_SRC
 ** auctex
 #+BEGIN_SRC emacs-lisp :results none
 ;(require 'tex)
@@ -917,6 +954,551 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 #+END_SRC
 
+* Functions
+** Encoding
+*** fix unicode characters
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-fix-characters 
+(start end) 
+(interactive "r") 
+(let ((buffer-invisibility-spec)) (query-replace-regexp "[^\t\n\r\f -~]" ""))
+)
+
+(defun z-fix2-characters ()
+  (interactive)
+  (let ()
+    (query-replace-regexp "[^\t\n\r\f -~]" "")
+    ))
+#+END_SRC
+** Editing
+*** Increment years
+
+#+BEGIN_SRC emacs-lisp
+(defun z-year-increment  (buffer max-year)
+  (interactive "b\nsMax year (yy): ")
+  (setq max-year (string-to-number max-year))
+  (let ((year 2003)
+        (newbuf (get-buffer-create "increment-year")))
+    (let ((s (with-current-buffer buffer
+               (buffer-substring (point-min) (point-max)))))
+      (dotimes (n (1+ max-year))
+        (with-current-buffer newbuf
+          (goto-char (point-max))
+          (insert "\n")
+          (insert (replace-regexp-in-string (int-to-string year)
+                                            (int-to-string (+ year n))
+                                            s)))))
+    (switch-to-buffer newbuf)))
+#+END_SRC
+
+#+RESULTS:
+: z-year-increment
+
+*** Get rid of blank lines
+#+BEGIN_SRC emacs-lisp :results none
+(defun flush-blank-lines ()
+    "Removes all blank lines from buffer or region"
+     (interactive)
+     (save-excursion
+       (let (min max)
+         (if (equal (region-active-p) nil)
+             (mark-whole-buffer))
+         (setq min (region-beginning) max (region-end))
+         (flush-lines "^ *$" min max t))))
+#+END_SRC 
+*** Join lines
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key (kbd "M-j")
+            (lambda ()
+                  (interactive)
+                  (join-line -1)))
+#+END_SRC
+*** Fill/unfill paragraph
+#+BEGIN_SRC emacs-lisp :results none
+(defun unfill-paragraph ()
+  "Replace newline chars in current paragraph by single spaces.
+This command does the inverse of `fill-paragraph'."
+  (interactive)
+  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
+    (fill-paragraph nil)))
+
+(defun unfill-region (start end)
+  "Replace newline chars in region by single spaces.
+This command does the inverse of `fill-region'."
+  (interactive "r")
+  (let ((fill-column 90002000))
+    (fill-region start end)))
+
+#+END_SRC
+*** Count words in region
+#+BEGIN_SRC emacs-lisp :results none
+
+(defun z-count-words-region (posBegin posEnd)
+  "Print number of words and chars in region."
+  (interactive "r")
+  (message "Counting ë°≠")
+  (save-excursion
+    (let (wordCount charCount)
+      (setq wordCount 0)
+      (setq charCount (- posEnd posBegin))
+      (goto-char posBegin)
+      (while (and (< (point) posEnd)
+                  (re-search-forward "\\w+\\W*" posEnd t))
+        (setq wordCount (1+ wordCount)))
+
+      (message "Words: %d. Chars: %d." wordCount charCount)
+      )))
+
+#+END_SRC
+*** Copy and comment
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/copy-comment-paste ()
+  "copy active region/current line, comment, and then paste"
+  (interactive)
+  (unless (use-region-p)
+    (progn
+      (beginning-of-line 2)
+      (push-mark (line-beginning-position 0))))
+  (kill-ring-save (region-beginning) (region-end))
+  (comment-region (region-beginning) (region-end))
+  (yank)
+  (exchange-point-and-mark)
+  (indent-according-to-mode))
+
+
+#+END_SRC
+*** comment/uncomment line
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/comment-line (n)
+  "Comment or uncomment current line and leave point after it.
+With positive prefix, apply to N lines including current one.
+With negative prefix, apply to -N lines above.
+If region is active, apply to active region instead."
+  (interactive "p")
+  (if (use-region-p)
+      (comment-or-uncomment-region
+       (region-beginning) (region-end))
+    (let ((range
+           (list (line-beginning-position)
+                 (goto-char (line-end-position n)))))
+      (comment-or-uncomment-region
+       (apply #'min range)
+       (apply #'max range)))
+    (forward-line 1)
+    (back-to-indentation)))
+
+#+END_SRC
+
+*** move line up/down
+    #+BEGIN_SRC emacs-lisp :results none
+(defun move-line-up ()
+  "Move up the current line."
+  (interactive)
+  (transpose-lines 1)
+  (forward-line -2)
+  (indent-according-to-mode))
+
+(defun move-line-down ()
+  "Move down the current line."
+  (interactive)
+  (forward-line 1)
+  (transpose-lines 1)
+  (forward-line -1)
+  (indent-according-to-mode))
+
+#+END_SRC
+*** move text up/down 
+#+BEGIN_SRC emacs-lisp :results none
+(defun move-text-internal (arg)
+   (cond
+    ((and mark-active transient-mark-mode)
+     (if (> (point) (mark))
+            (exchange-point-and-mark))
+     (let ((column (current-column))
+              (text (delete-and-extract-region (point) (mark))))
+       (forward-line arg)
+       (move-to-column column t)
+       (set-mark (point))
+       (insert text)
+       (exchange-point-and-mark)
+       (setq deactivate-mark nil)))
+    (t
+     (beginning-of-line)
+     (when (or (> arg 0) (not (bobp)))
+       (forward-line)
+       (when (or (< arg 0) (not (eobp)))
+            (transpose-lines arg))
+       (forward-line -1)))))
+
+(defun move-text-down (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines down."
+   (interactive "*p")
+   (move-text-internal arg))
+
+(defun move-text-up (arg)
+   "Move region (transient-mark-mode active) or current line
+  arg lines up."
+   (interactive "*p")
+   (move-text-internal (- arg)))
+#+END_SRC
+*** insert date
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-insert-date (&optional addTimeStamp-p)
+  "Insert current date and or time. In this format yyyy-mm-dd.
+ When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
+ Replaces text selection.See also `current-date-time-string'."
+  (interactive "P")
+  (when (region-active-p) (delete-region (region-beginning) (region-end) ) )
+  (cond
+   ((equal addTimeStamp-p nil ) (insert (format-time-string "%Y-%m-%d")))
+   (t (insert (current-date-time-string))) ) )
+#+END_SRC
+*** copy/paste to/from x clip
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun copy-to-x-clipboard ()
+  (interactive)
+  (if (region-active-p)
+      (progn
+        (cond
+         ((and (display-graphic-p) x-select-enable-clipboard)
+          (x-set-selection 'CLIPBOARD (buffer-substring (region-beginning) (region-end))))
+         (t (shell-command-on-region (region-beginning) (region-end)
+                                     (cond
+                                      (*cygwin* "putclip")
+                                      (*is-a-mac* "pbcopy")
+                                      (*linux* "xsel -ib")))
+            ))
+        (message "Yanked region to clipboard!")
+        (deactivate-mark))
+        (message "No region active; can't yank to clipboard!")))
+
+(defun paste-from-x-clipboard()
+  (interactive)
+  (cond
+   ((and (display-graphic-p) x-select-enable-clipboard)
+    (insert (x-selection 'CLIPBOARD)))
+   (t (shell-command
+       (cond
+        (*cygwin* "getclip")
+        (*is-a-mac* "pbpaste")
+        (t "xsel -ob"))
+       1))
+   ))
+#+END_SRC
+
+*** copy and indent lines
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun prelude-indent-rigidly-and-copy-to-clipboard (begin end indent)
+  "Copy the selected code region to the clipboard, indented according
+to Markdown blockquote rules."
+  (let ((buffer (current-buffer)))
+    (with-temp-buffer
+      (insert-buffer-substring-no-properties buffer begin end)
+      (indent-rigidly (point-min) (point-max) indent)
+      (clipboard-kill-ring-save (point-min) (point-max)))))
+
+(defun prelude-indent-blockquote-and-copy-to-clipboard (begin end)
+  "Copy the selected code region to the clipboard, indented according
+to markdown blockquote rules (useful to copy snippets to StackOverflow, Assembla, Github."
+  (interactive "r")
+  (prelude-indent-rigidly-and-copy-to-clipboard begin end 4))
+
+(defun prelude-indent-nested-blockquote-and-copy-to-clipboard (begin end)
+  "Copy the selected code region to the clipboard, indented according
+to markdown blockquote rules. Useful to add snippets under bullet points."
+  (interactive "r")
+  (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
+
+#+END_SRC
+*** TODO search replace all document
+@currently below code broken@
+#+BEGIN_SRC emacs-lisp :results none
+;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
+; (goto-char (point-min)) (apply #'query-replace-regexp rest)))                            
+
+#+END_SRC
+*** duplicate line
+#+BEGIN_SRC emacs-lisp :results none
+(defun duplicate-line()
+  (interactive)
+  (move-beginning-of-line 1)
+  (kill-line)
+  (yank)
+  (open-line 1)
+  (next-line 1)
+  (yank)
+)
+;(global-set-key (kbd "C-d") 'duplicate-line)
+#+END_SRC
+** Root actions
+*** edit file as root
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-edit-file-as-root ()
+  "Edit the file that is associated with the current buffer as root"
+  (interactive)
+  (if (buffer-file-name)
+      (progn
+        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
+        (find-file file))
+    (message "Current buffer does not have an associated file.")))
+
+
+#+END_SRC
+** Buffers
+*** kill other buffers
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-kill-other-buffers ()
+      "Kill all other buffers."
+      (interactive)
+      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+#+END_SRC
+
+*** movment in buffer
+#+BEGIN_SRC emacs-lisp :results none
+(defun next-user-buffer ()
+  "Switch to the next user buffer.
+User buffers are those whose name does not start with *."
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (next-buffer) )))
+
+(defun previous-user-buffer ()
+  "Switch to the previous user buffer.
+User buffers are those whose name does not start with *."
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (string-match "^*" (buffer-name)) (< i 50))
+      (setq i (1+ i)) (previous-buffer) )))
+
+(defun next-emacs-buffer ()
+  "Switch to the next emacs buffer.
+Emacs buffers are those whose name starts with *."
+  (interactive)
+  (next-buffer)
+  (let ((i 0))
+    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
+      (setq i (1+ i)) (next-buffer) )))
+
+(defun previous-emacs-buffer ()
+  "Switch to the previous emacs buffer.
+Emacs buffers are those whose name starts with *."
+  (interactive)
+  (previous-buffer)
+  (let ((i 0))
+    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
+      (setq i (1+ i)) (previous-buffer) )))
+
+
+(defun switch-to-previous-buffer ()
+  "Switch to previously open buffer.
+Repeated invocations toggle between the two most recently open buffers."
+  (interactive)
+  (switch-to-buffer (other-buffer (current-buffer) 1)))
+
+
+#+END_SRC
+*** save current file and close window
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-save-file-close-window ()
+  "DOCSTRING"
+  (interactive)
+    (save-buffer )
+    (delete-frame)
+  )
+
+#+END_SRC
+** windows (panes)
+*** resize via menu
+#+BEGIN_SRC emacs-lisp :results none
+(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
+  "*Resize window interactively."
+  (interactive "p")
+  (if (one-window-p) (error "Cannot resize sole window"))
+  (or arg (setq arg 1))
+  (let (c)
+    (catch 'done
+      (while t
+	(message
+	 "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
+	 arg)
+	(setq c (read-char))
+	(condition-case ()
+	    (cond
+	     ((= c ?h) (enlarge-window arg))
+	     ((= c ?s) (shrink-window arg))
+	     ((= c ?w) (enlarge-window-horizontally arg))
+	     ((= c ?n) (shrink-window-horizontally arg))
+	     ((= c ?\^G) (keyboard-quit))
+	     ((= c ?q) (throw 'done t))
+	     ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
+	     (t (beep)))
+	  (error (beep)))))
+    (message "Done.")))
+#+END_SRC
+*** swap window location
+#+BEGIN_SRC emacs-lisp :results none
+(defun transpose-windows (arg)
+   "Transpose the buffers shown in two windows."
+   (interactive "p")
+   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+     (while (/= arg 0)
+       (let ((this-win (window-buffer))
+             (next-win (window-buffer (funcall selector))))
+         (set-window-buffer (selected-window) next-win)
+         (set-window-buffer (funcall selector) this-win)
+         (select-window (funcall selector)))
+       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+#+END_SRC
+
+** open a specific dir
+#+BEGIN_SRC emacs-lisp :results none
+(defun ood () (interactive) (dired "/home/zeltak/org"))
+#+END_SRC
+** General emacs
+*** create scratch buffer
+#+BEGIN_SRC emacs-lisp :results none
+(defun create-scratch-buffer nil
+   "create a scratch buffer"
+   (interactive)
+   (switch-to-buffer (get-buffer-create "*scratch*"))
+   (lisp-interaction-mode))  
+#+END_SRC
+** toggles 
+*** TODO auto narrow/widen
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun narrow-or-widen-dwim ()
+"If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
+(interactive)
+(cond ((buffer-narrowed-p) (widen))
+((region-active-p) (narrow-to-region (region-beginning) (region-end)))
+((equal major-mode 'org-mode) (org-narrow-to-subtree))
+(t (error "Please select a region to narrow to"))))
+#+END_SRC
+
+** outside Emacs
+*** TODO search google
+#+BEGIN_SRC emacs-lisp :results none
+(require 'thingatpt)
+
+(defun google-search ()
+  "Googles a query or region if any."
+  (interactive)
+  (browse-url
+   (concat
+    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
+    (if mark-active
+        (buffer-substring (region-beginning) (region-end))
+      (read-string "Google: ")))))
+#+END_SRC
+
+* Macros
+** org faces
+
+#+BEGIN_SRC emacs-lisp :results none
+(fset 'orgstyle-tnote
+   [?! home ?!])
+(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+
+
+(fset 'orgstyle-warning
+   "@\341@WARNING:")
+(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
+
+(fset 'orgstyle-warning2
+   [?@ home ?@])
+(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
+
+
+
+(fset 'orgstyle-com1
+   [?~ home ?~])
+(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
+
+(fset 'orgstyle-note
+   "$\341$NOTE:")
+(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
+
+(fset 'orgstyle-note2
+   [?$ home ?$])
+(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
+
+(fset 'orgstyle-tip
+   "%\341%TIP:")
+(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
+
+
+(fset 'orgstyle-tip2
+   [?% home ?%])
+(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
+
+
+(fset 'orgstyle-code
+   [?^ home ?^])
+(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
+
+(fset 'orgstyle-header
+   [?& home ?&])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
+
+(fset 'orgstyle-bold
+   [?* home ?*])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
+
+(fset 'orgstyle-highlight-green
+   [?' home ?'])
+(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
+
+(fset 'orgstyle-com2
+   [?` home ?`])
+(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
+
+(fset 'underline_net_delete
+   [?\M-% ?\Å† return return ?!])
+
+#+END_SRC
+
+** org wraps
+** Editing
+*** lines not paragraphs
+#+BEGIN_SRC emacs-lisp :results none
+;;;; Saved macros
+;; Saved macro - adds latex end-lines to verse passages
+(fset 'versify
+      [?\C-a ?\C-e ?\\ ?\\ down])
+
+;(global-set-key (kbd "") 'versify)
+#+END_SRC
+
+** prefix macro
+#+BEGIN_SRC emacs-lisp :results none
+(defmacro C-u (&rest args)
+  (let ((prefix (list 4)))
+    (while (cdr args)
+      (cond
+       ((eq (car args) 'C-u)
+        (setf (car prefix) (* 4 (car prefix))))
+       ((eq (car args) 'M-x)
+        ;; ignore
+        t)
+       (t
+        (error "Unknown arg %S" (car args))))
+      (setq args (cdr args)))
+    (unless (functionp (car args))
+      (error "%S is not a function" (car args)))
+    `(lambda ()
+       (interactive)
+       (let ((current-prefix-arg ',prefix))
+         (call-interactively ',(car args))))))
+#+END_SRC
 * Keybinds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
@@ -926,7 +1508,7 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
-(global-unset-key (kbd "<f4> "))
+(global-unset-key (kbd "<f4>"))
 (global-unset-key (kbd "<f5>"))
 (global-unset-key (kbd "<f6>"))
 (global-unset-key (kbd "<f7>"))
@@ -987,7 +1569,55 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
    ("q" nil "quit")))
 #+END_SRC
 
+complex example 
+
+#+BEGIN_EXAMPLE
+
+(defhydra hydra-vi (:body-pre hydra-vi/pre
+                    :color    amaranth)
+  "vi"
+  ;; basic navigation
+  ("l"        forward-char                  nil)
+  ("h"        backward-char                 nil)
+  ("j"        next-line                     nil)
+  ("k"        previous-line                 nil)
+  ;; mark
+  ("m"        set-mark-command              "mark")
+  ("C-o"      (set-mark-command 4)          "jump to prev location")
+  ;; beginning/end of line
+  ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+  ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+  ("$"        move-end-of-line              "end of line")
+  ;; word navigation
+  ("e"        forward-word                  "end of word")
+  ("w"        modi/forward-word-begin       "beg of next word")
+  ("b"        backward-word                 "beg of word")
+  ;; page scrolling
+  ("<prior>"  scroll-down-command           "page up")
+  ("<next>"   scroll-up-command             "page down")
+  ;; delete/cut/copy/paste
+  ("x"        delete-forward-char           "del char")
+  ("d"        my/iregister-cut              "cut/del")
+  ("D"        smart-kill-whole-line         "cut/del line")
+  ("y"        my/iregister-copy             "copy")
+  ("p"        yank                          "paste")
+  ;; beginning/end of buffer and go to line
+  ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
+  ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
+  ("<return>" goto-line                     "goto line")
+  ;; undo/redo
+  ("u"        undo-tree-undo                "undo")
+  ("C-r"      undo-tree-redo                "redo")
+  ;; misc
+  ("<SPC>"    ace-jump-mode                 "ace jump")
+  ;; exit points
+  ("q"        hydra-vi/post                 "cancel" :color blue))
+(bind-key "C-:" #'hydra-vi/body modi-mode-map)
+#+END_EXAMPLE
+
+
 *** window switch
+
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-w")
@@ -1034,6 +1664,122 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
    ("q" nil "cancel")))
 
 #+END_SRC
+
+complex example: 
+#+BEGIN_EXAMPLE
+;;; from http://www.emacswiki.org/emacs/ToggleWindowSplit (last example as of 2015-02-19)
+(defun window-toggle-split-direction ()
+  "Switch window split from horizontally to vertically, or vice versa.
+
+i.e. change right window to bottom, or change bottom window to right."
+  (interactive)
+  (require 'windmove)
+  (let ((done))
+    (dolist (dirs '((right . down) (down . right)))
+      (unless done
+        (let* ((win (selected-window))
+               (nextdir (car dirs))
+               (neighbour-dir (cdr dirs))
+               (next-win (windmove-find-other-window nextdir win))
+               (neighbour1 (windmove-find-other-window neighbour-dir win))
+               (neighbour2 (if next-win (with-selected-window next-win
+                                          (windmove-find-other-window neighbour-dir next-win)))))
+          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
+          (setq done (and (eq neighbour1 neighbour2)
+                          (not (eq (minibuffer-window) next-win))))
+          (if done
+              (let* ((other-buf (window-buffer next-win)))
+                (delete-window next-win)
+                (if (eq nextdir 'right)
+                    (split-window-vertically)
+                  (split-window-horizontally))
+                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
+
+;; current versions that work for me:
+;;   - ace-window         20150217.650  (from melpa)
+;;   - hydra              20150224.302  (from melpa)
+;;   - key-chord          0.5.20080915  (from marmalade)
+;;   - transpose-frame    20131221.1542 (from melpa)
+(use-package ace-window
+  ;; from http://sachachua.com/blog/2015/01/emacs-microhabit-switching-windows-windmove-ace-window-ace-jump/
+  ;; extended by http://oremacs.com/2015/01/29/more-hydra-goodness/
+  ;; :ensure t  ;; only in melpa :(
+  :config
+  (progn
+    (use-package hydra
+      :ensure t
+      :config
+      (use-package transpose-frame
+        :ensure t
+        :config
+        (progn
+          (require 'hydra-examples)
+          (defun hydra-universal-argument (arg)
+            (interactive "P")
+            (setq prefix-arg (if (consp arg)
+                                 (list (* 4 (car arg)))
+                               (if (eq arg '-)
+                                   (list -4)
+                                 '(4)))))
+
+          (lexical-let ((hydra-lv nil) ;; does not work with lv,
+                        ;; because lv creates an extra window
+                        (hydra-key-format-spec nil))
+            (defhydra hydra-window (global-map "C-M-o")
+              "
+Window Manager:
+  Move Point   ^^^^ Move Splitter   ^Ace                       ^^Split                         ^^Transpose
+^^^^^^^^^^------------------------------------------------------------------------------------------------------------------
+  _w_, _<up>_       Shift + Move    _C-a_: ace-window           _2_: split-window-below         _1_: transpose-frame
+  _a_, _<left>_                     _C-s_: ace-swap-window      _3_: split-window-right         _e_: rotate-frame-clockwise
+  _s_, _<down>_                     _C-d_: ace-delete-window    _<_: toggle-split-direction     _y_: flip-frame vertically
+  _d_, _<right>_                    _C-m_: ace-maximize-window  ^ ^                             _c_: flop-frame horizontally
+You can use arrow-keys or WASD.
+"
+              ("2" split-window-below nil)
+              ("3" split-window-right nil)
+              ("a" windmove-left nil)
+              ("s" windmove-down nil)
+              ("w" windmove-up nil)
+              ("d" windmove-right nil)
+              ("A" hydra-move-splitter-left nil)
+              ("S" hydra-move-splitter-down nil)
+              ("W" hydra-move-splitter-up nil)
+              ("D" hydra-move-splitter-right nil)
+              ("<left>" windmove-left nil)
+              ("<down>" windmove-down nil)
+              ("<up>" windmove-up nil)
+              ("<right>" windmove-right nil)
+              ("<S-left>" hydra-move-splitter-left nil)
+              ("<S-down>" hydra-move-splitter-down nil)
+              ("<S-up>" hydra-move-splitter-up nil)
+              ("<S-right>" hydra-move-splitter-right nil)
+              ("C-a" ace-window nil)
+              ("u" hydra-universal-argument nil)
+              ("C-s" ace-swap-window nil)
+              ("C-d" ace-delete-window nil)
+              ("C-m" ace-maximize-window nil)
+              ("<" window-toggle-split-direction nil)
+              ("1" transpose-frame nil)
+              ("e" rotate-frame-clockwise nil)
+              ("y" flip-frame nil)
+              ("c" flop-frame nil)
+              ("b" ido-switch-buffer "switch-buffer")
+              ("k" ido-kill-buffer "kill-buffer")
+              ("f" ido-find-file "find-file")
+              ("q" nil "quit")))
+          (use-package key-chord
+            :ensure t
+            :config
+            (progn
+              (key-chord-mode 1)
+              (key-chord-define-global "yy" 'hydra-window/body))))))))
+#+END_EXAMPLE
+
+
+
+
+
 *** yas 
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1041,11 +1787,12 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
  (kbd "C-M-y")
  (defhydra hydra-yas ()
    "yas command "
-   ("a" yas-activate-extra-mode "add_mode" :color blue)
-   ("n" yas-new-snippet "new_snip" :color blue)
+   ("a" yas-activate-extra-mode "enable Emacs mode for yas" :color blue)
+   ("n" yas-new-snippet "add new snippet" :color blue)
    ("v" yas-visit-snippet-file "visit" :color blue)
    ("i" yas-insert-snippet "insert_point" :color blue)
    ("r" yas-reload-all  "reload" :color blue)
+   ("t" yas-tryout-snippe  "try snipet" :color blue)
    ("q" nil "cancel")))
 #+END_SRC
 *** Editing
@@ -1056,9 +1803,10 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
      "editing command "
      ("u" move-text-up  "marked up" :color red)
      ("d" move-text-down "marked down" :color red)
-     ("p" duplicate-line  "dup line" :color blue)
+     ("p" duplicate-line  "dup line" :color red)
      (";" comment-or-uncomment-region  "comment paste" :color blue)
-     ("l" z-copy-comment-paste  "comment paste" :color blue)
+     ("l" z/comment-line  "comment line" :color blue)
+     ("L" z/copy-comment-paste  "comment paste" :color blue)
      ("f" flush-blank-line  "flush blank" :color blue)
      ("u" z-fix-characters "fix unicode" :color blue)
      ("U" upcase-region  "upcase" :color blue)
@@ -1066,6 +1814,8 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
      ("q" nil "cancel")))
 
 #+END_SRC
+revert-buffer
+
 (global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
 (global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
 (global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
@@ -1077,9 +1827,6 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 (global-set-key (kbd "<f4> w") 'ispell-word)
 (global-set-key (kbd "<f4> W") 'ispell)
 (global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
-
-
-
 
 
 
@@ -1100,7 +1847,14 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 #+END_SRC
 
 **** org editing
-#+BEGIN_SRC emacs-lisp xq:results none
+function needed?
+#+BEGIN_SRC emacs-lisp :results none
+;(defun z/prefix-org-refile ()
+;(C-u M-x org-refile)
+;)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-o")
  (defhydra hydra-org-edit ()
@@ -1112,9 +1866,12 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
    ("h" org-set-line-headline "line to headline" :color blue)
    ("c" org-set-line-checkbox  "line to checkbox" :color blue)
    ("a" hydra-org-time/body   "ins date" :color blue)
+   ("r" org-refile   "refile" :color blue)
+   ("R" z/prefix-org-refile   "refile" :color blue)
    ("q" nil "cancel")))
 
 #+END_SRC
+
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -1153,7 +1910,23 @@ helm-my-org- search all org files
 (global-set-key (kbd "<f1> a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
 
-
+*** ace 
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-M-;")
+ (defhydra hydra-avi ()
+   "yas command "
+   ("g" avi-goto-char-2 "avi-goto-char-2" :color blue)
+   ("c" avi-goto-char "avi-goto-char" :color blue)
+   ("l" avi-goto-line "avi-goto-line" :color blue)
+   ("4" avi-copy-line  "avi-copy-line" :color blue)
+   ("3" avi-move-line  "avi-move-line" :color blue)
+   ("r" avi-copy-region  "avi-copy-region" :color blue)
+   ("1" avi-goto-word-1  "avi-goto-word-1" :color blue)
+   ("0" avi-goto-word-1  "avi-goto-word-0" :color blue)
+   ("z" ace-jump-zap  "zap text" :color blue)
+   ("q" nil "cancel")))
+#+END_SRC
 *** buffer/window  
 #+BEGIN_SRC emacs-lisp :results none
 
@@ -1183,11 +1956,41 @@ helm-my-org- search all org files
 
 
 #+END_SRC
+*** hydra toggles
+
+(defhydra hydra-toggle (:color blue)
+  "toggle"
+  ("d"     toggle-debug-on-error        "debug on error")
+  ("e"     modi/toggle-edebug-defun     "edebug")
+  ("E"     modi/toggle-debug-defun      "debug on entry")
+  ("f"     toggle-fill-unfill           "fill/unfill")
+  ("F"     auto-fill-mode               "auto fill")
+  ("g"     indent-guide-mode            "indent guide")
+  ("i"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord" :color red)
+  ("l"     linum-mode             "linum")
+  ("m"     modi-mode                    "modi mode")
+  ("n"     endless/narrow-or-widen-dwim "narrow/widen")
+  ("N"     neotree-toggle               "neotree")
+  ("p"     prez-mode                    "presentation")
+  ("r"     dired-toggle-read-only       "read only") ; generalized `read-only-mode'
+  ("s"     transpose-frame              "split horz/vert" :color red)
+  ("S"     stripe-buffer-mode           "stripe buffer")
+  ("t"     toggle-truncate-lines        "truncate" :color red)
+  ("s-t"   toggle-theme                 "theme")
+  ("T"     toggle-theme                 "theme")
+  ("v"     recenter-top-bottom          "recenter" :color red)
+  ("<SPC>" whitespace-mode              "whitespace" :color red)
+  ("<f11>" toggle-frame-fullscreen      "fullscreen")
+  ("q"     nil                          "cancel" :color blue))
+(key-chord-define-global "qq"  #'hydra-toggle/body)
+
+
+
+*** dired hydra
+
 ** F1 Agenda/TODO/Search
  
-#+BEGIN_SRC emacs-lisp :results none
-
-#+END_SRC
 
 ** F2 Emacs plugins
 
@@ -1424,9 +2227,14 @@ needed for the form to be bound to the key.
 (global-set-key (kbd "<f10> s y ") 'org-copy-subtree)
 (global-set-key (kbd "<f10> s p ") 'org-paste-subtree)
 (global-set-key (kbd "<f10> 8 ") 'org-toggle-heading)
-(global-set-key (kbd "<f10> 7 ") 'org-toggle-heading)
+(global-set-key (kbd "<f10> 7")                                    
+                #'(lambda ()                                     
+                    (interactive)                                
+                    (let ((current-prefix-arg '(4)))             
+                      (call-interactively #'org-toggle-heading))))
+
 (global-set-key (kbd "<f10> h ") 'org-insert-heading)
- (global-set-key (kbd "<f10> n ") 'org-indent-mode)
+(global-set-key (kbd "<f10> n ") (C-u M-x org-refile))
 
 
 (global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
@@ -1463,7 +2271,7 @@ needed for the form to be bound to the key.
 
 ** F12 windows 
 #+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f12> <f12>") 'other-window)  
+(global-set-key (kbd "<f12><f12>") 'other-window)  
 (global-set-key (kbd "<f12> x") 'delete-window)  
 (global-set-key (kbd "<f12> z") 'delete-other-windows)  
 (global-set-key (kbd "<f12> -") 'split-window-vertically)  
@@ -1542,6 +2350,12 @@ $note its built into emacs no intsall needed$
 (require 'tramp) ; Remote file editing via ssh
 (setq tramp-default-method "ssh")
 #+END_SRC
+** TERM
+*** set default term zshrc
+#+BEGIN_SRC emacs-lisp :results none
+(setq explicit-shell-file-name "/bin/zsh")
+#+END_SRC
+
 ** TODO proced
 *** auto Update
 #+BEGIN_SRC emacs-lisp :results none
@@ -1566,8 +2380,6 @@ $note its built into emacs no intsall needed$
 (setq org-directory "/media/NAS/Uni/org/files/")
 )
 )
-
-
 #+END_SRC 
 
 **** main configs
@@ -1682,6 +2494,130 @@ this will make org-store-link use id when creating a link.
 (add-to-list 'org-modules "org-habit")
 #+END_SRC
 
+** Agenda
+*** set agenda location
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-agenda-files '("~/org/files/agenda/"))
+#+END_SRC
+
+*** Base
+
+#+BEGIN_SRC emacs-lisp :results none
+;change agenda colors
+;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
+;max days to show in agenda view
+(setq org-agenda-ndays 7)
+;start agenda from today!
+(setq org-agenda-start-on-weekday nil)
+;Items that have deadlines are displayed 10 days in advance
+(setq org-deadline-warning-days 10)
+;donÜ¢t display items that are done in my agenda.
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+#+END_SRC
+
+*** look and feel
+
+#+BEGIN_SRC emacs-lisp :results none
+   ;; Do not dim blocked tasks
+   (setq org-agenda-dim-blocked-tasks nil)
+   ;; Compact the block agenda view
+   (setq org-agenda-compact-blocks t)
+
+
+   ;; Always hilight the current agenda line
+   (add-hook 'org-agenda-mode-hook
+             '(lambda () (hl-line-mode 1))
+             'append)
+
+   ;; The following custom-set-faces create the highlights
+   ;; (custom-set-faces
+   ;;   ;; custom-set-faces was added by Custom.
+   ;;   ;; If you edit it by hand, you could mess it up so be careful.
+   ;;   ;; Your init file should contain only one such instance.
+   ;;   ;; If there is more than one, they won't work right.
+   ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
+
+   ;; Show all agenda dates - even if they are empty
+   (setq org-agenda-show-all-dates t)
+
+   ;;   Enable display of the time grid so we can see the marker for the current time
+  (setq org-agenda-time-grid (quote ((daily today remove-match)
+                                     #("----------------" 0 16 (org-heading t))
+                                     (0900 1100 1300 1500 1700))))
+
+   ;; Display tags farther right
+   (setq org-agenda-tags-column -102)
+
+
+#+END_SRC
+*** 'my custom agenda command'
+
+$Note$ that to get the priorities to appear first you need to use priorities-down.
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-agenda-custom-commands 
+'(
+;first command
+("r" "research" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/Research.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-down effort-down)
+          ) 
+          )
+          )
+
+;second
+("f" "food" todo "COOK" 
+         (
+         (org-agenda-files '("~/org/files/agenda/food.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+;third
+("o" "orgmode" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+
+;fourth (code block)
+("h" "Agenda and Home-related tasks"
+               (
+               (agenda "")
+               (tags-todo "+PRIORITY=\"A\"")
+               (tags "garden")
+)
+)
+
+;;finalize
+;;end brackets for setq
+)
+)
+
+#+END_SRC
+*** export agenda
+#+BEGIN_SRC emacs-lisp :results none
+          (setq org-agenda-exporter-settings
+                '((ps-number-of-columns 2)
+                  (ps-landscape-mode t)
+                  (org-agenda-add-entry-text-maxlines 5)
+                  (htmlize-output-type 'css)))
+#+END_SRC
+*** habits
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-habit-graph-column 70)
+(setq org-habit-show-habits-only-for-today nil)
+#+END_SRC
+
 ** Images
 *** base
 **** inline images by default at startup
@@ -1771,55 +2707,60 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-priority-start-cycle-with-default t)
 #+END_SRC 
 ** Refile
+*** set which refile method to us (currently helm)
+this command below will use helm for completion since in the above helm config we sepcify these two commands: (require 'helm-config) and (helm-mode 1)
 
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-outline-path-complete-in-steps nil)
+#+END_SRC
+
+*** set heading depth
 #+begin_src emacs-lisp results none
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
-(setq org-refile-targets '((org-agenda-files . (:maxlevel . 6))))
+(setq org-refile-targets (quote ((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 9))))
 #+end_src
 
-; Use full outline paths for refile targets - we file directly with IDO
-(setq org-refile-use-outline-path t)
+#+RESULTS:
 
-; Targets complete directly with IDO
-(setq org-outline-path-complete-in-steps nil)
 
-; Allow refile to create parent tasks with confirmation
-(setq org-refile-allow-creating-parent-nodes (quote confirm))
+** capture
+*** TODO templates
+**** my templates
+     :PROPERTIES:
+     :ID:       dfffbe27-21bc-4fb9-908e-f492f4afeb60
+     :END:
 
-; Use IDO for both buffer and file completion and ido-everywhere to t
-(setq org-completion-use-ido t)
-(setq ido-everywhere t)
-(setq ido-max-directory-size 100000)
-(ido-mode (quote both))
-; Use the current window when visiting files and buffers with ido
-(setq ido-default-file-method 'selected-window)
-(setq ido-default-buffer-method 'selected-window)
-; Use the current window for indirect buffer display
-(setq org-indirect-buffer-display 'current-window)
-
-;;;; Refile settings
-; Exclude DONE state tasks from refile targets
-(defun bh/verify-refile-target ()
-  "Exclude todo keywords with a done state from refile targets"
-  (not (member (nth 2 (org-heading-components)) org-done-keywords)))
-
-(setq org-refile-target-verify-function 'bh/verify-refile-target)
-
-;;; goto/navigate with org-refile (C-u c-c c-w)
-(setq org-goto-max-level 10)
-(setq org-goto-interface 'outline-path-completion)
-(setq org-outline-path-complete-in-steps nil)
-
+#+BEGIN_SRC emacs-lisp :results none 
+  (setq org-capture-templates
+        (quote (           
+                ("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
+                 "*  %^{Description}" )
+                ("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+                 "*  %^{Description}  " )
+                ("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+                 "*  %x :Pre_Release: " )
+                ("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+                 "*  %^{Description}" )
+                ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+                 "*  %^{Description}" )
+                ("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
+                 "*   %?\n%T" )
+                ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+                 "* SHOP  %^{Description} " )
+                ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
+                ;;;agenda captures
+                ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
+                 "* TODO  %^{Description} " )
+  )))
+#+END_SRC
 
 ** mobile org
 *** setup
 #+begin_src emacs-lisp :results none
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
-(setq org-agenda-files '("~/org/files/agenda/"))
-
 (setq org-mobile-directory "~/Dropbox/MobileOrg/")
-
 ;; Set to the name of the file where new captures will be stored after pulling from mobile
 (setq org-mobile-inbox-for-pull "~/org/files/from-mobile.org")
 
@@ -2561,124 +3502,6 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 #+END_SRC 
-** Agenda
-*** Base
-
-#+BEGIN_SRC emacs-lisp :results none
-;change agenda colors
-;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
-;max days to show in agenda view
-(setq org-agenda-ndays 7)
-;start agenda from today!
-(setq org-agenda-start-on-weekday nil)
-;Items that have deadlines are displayed 10 days in advance
-(setq org-deadline-warning-days 10)
-;donÜ¢t display items that are done in my agenda.
-(setq org-agenda-skip-deadline-if-done t)
-(setq org-agenda-skip-scheduled-if-done t)
-#+END_SRC
-
-*** look and feel
-
-#+BEGIN_SRC emacs-lisp :results none
-   ;; Do not dim blocked tasks
-   (setq org-agenda-dim-blocked-tasks nil)
-   ;; Compact the block agenda view
-   (setq org-agenda-compact-blocks t)
-
-
-   ;; Always hilight the current agenda line
-   (add-hook 'org-agenda-mode-hook
-             '(lambda () (hl-line-mode 1))
-             'append)
-
-   ;; The following custom-set-faces create the highlights
-   ;; (custom-set-faces
-   ;;   ;; custom-set-faces was added by Custom.
-   ;;   ;; If you edit it by hand, you could mess it up so be careful.
-   ;;   ;; Your init file should contain only one such instance.
-   ;;   ;; If there is more than one, they won't work right.
-   ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
-
-   ;; Show all agenda dates - even if they are empty
-   (setq org-agenda-show-all-dates t)
-
-   ;;   Enable display of the time grid so we can see the marker for the current time
-  (setq org-agenda-time-grid (quote ((daily today remove-match)
-                                     #("----------------" 0 16 (org-heading t))
-                                     (0900 1100 1300 1500 1700))))
-
-   ;; Display tags farther right
-   (setq org-agenda-tags-column -102)
-
-
-#+END_SRC
-*** 'my custom agenda command'
-
-$Note$ that to get the priorities to appear first you need to use priorities-down.
-
-#+BEGIN_SRC emacs-lisp :results none
-(setq org-agenda-custom-commands 
-'(
-;first command
-("r" "research" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/Research.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-down effort-down)
-          ) 
-          )
-          )
-
-;second
-("f" "food" todo "COOK" 
-         (
-         (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-;third
-("o" "orgmode" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-
-;fourth (code block)
-("h" "Agenda and Home-related tasks"
-               (
-               (agenda "")
-               (tags-todo "+PRIORITY=\"A\"")
-               (tags "garden")
-)
-)
-
-;;finalize
-;;end brackets for setq
-)
-)
-
-#+END_SRC
-*** export agenda
-#+BEGIN_SRC emacs-lisp :results none
-          (setq org-agenda-exporter-settings
-                '((ps-number-of-columns 2)
-                  (ps-landscape-mode t)
-                  (org-agenda-add-entry-text-maxlines 5)
-                  (htmlize-output-type 'css)))
-#+END_SRC
-*** habits
-#+BEGIN_SRC emacs-lisp :results none
-(setq org-habit-graph-column 70)
-(setq org-habit-show-habits-only-for-today nil)
-#+END_SRC
 ** Export/publishing
 *** export locations for publishing 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2710,58 +3533,6 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 #+BEGIN_SRC emacs-lisp :results none
 org-use-sub-superscripts nil        ;; don't use `_' for subscript
 #+END_SRC
-
-** capture
-*** TODO templates
-**** How to use
-my system:
-`t` general todos
-`u` Uni related todos
-
-**** my templates
-     :PROPERTIES:
-     :ID:       dfffbe27-21bc-4fb9-908e-f492f4afeb60
-     :END:
-
-#+BEGIN_SRC emacs-lisp :results non
-  (setq org-capture-templates
-        (quote (           
-                ("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
-                 "*  %^{Description}" )
-                ("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-                 "*  %^{Description}  " )
-                ("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-                 "*  %x :Pre_Release: " )
-                ("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
-                 "*  %^{Description}" )
-                ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
-                 "*  %^{Description}" )
-                ("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
-                 "*   %?\n%T" )
-                ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
-                 "* SHOP  %^{Description} " )
-                ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
-                ;;;agenda captures
-                ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
-                 "* TODO  %^{Description} " )
-
-  )))
-#+END_SRC
-
-
-
-#+RESULTS:
-| x | todo_nix            | entry | (file+headline ~/org/files/agenda/TODO.org Linux) | *  %^{Description}  |
-| o | dl_movie            | entry | (file+headline ~/org/files/agenda/dl.org Movies)  | *  %^{Description}  |
-| O | dl_movie_prerelease | entry | (file+headline ~/org/files/agenda/dl.org Movies)  | *  %x :Pre_Release: |
-| v | dl_TV               | entry | (file+headline ~/org/files/agenda/dl.org TV)      | *  %^{Description}  |
-| m | dl_music            | entry | (file+headline ~/org/files/agenda/dl.org Music)   | *  %^{Description}  |
-| h | todo_home           | entry | (file+headline ~/org/files/agenda/TODO.org Home)  | *   %?              |
-%T |
-| b | todo_shopping | entry | (file+headline ~/org/files/agenda/food.org shopping) | * SHOP  %^{Description} |
-| q | Quick Note    | entry | (file ~/org/quick-note.org)                          | * %?                    |
-%U |
-| w | Work_short_term | entry | (file+headline ~/org/files/agenda/Research.org Short term Misc) | * TODO  %^{Description} |
 
 ** org attach
 #+BEGIN_SRC emacs-lisp :results none
@@ -3012,6 +3783,10 @@ Always recursively delete directory
 #+END_SRC
 
 *** plugins
+**** dired-x
+#+BEGIN_SRC emacs-lisp :results none
+(require 'dired-x)
+#+END_SRC
 **** dired sort
  #+BEGIN_SRC emacs-lisp :results none
  (require 'dired-sort)
@@ -3082,507 +3857,6 @@ take care of the wrapping of each item for me"
 
 #+END_SRC
 
-* Functions
-** Encoding
-*** fix unicode characters
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-fix-characters 
-(start end) 
-(interactive "r") 
-(let ((buffer-invisibility-spec)) (query-replace-regexp "[^\t\n\r\f -~]" ""))
-)
-
-(defun z-fix2-characters ()
-  (interactive)
-  (let ()
-    (query-replace-regexp "[^\t\n\r\f -~]" "")
-    ))
-#+END_SRC
-** Editing
-*** Increment years
-
-#+BEGIN_SRC emacs-lisp
-(defun z-year-increment  (buffer max-year)
-  (interactive "b\nsMax year (yy): ")
-  (setq max-year (string-to-number max-year))
-  (let ((year 2003)
-        (newbuf (get-buffer-create "increment-year")))
-    (let ((s (with-current-buffer buffer
-               (buffer-substring (point-min) (point-max)))))
-      (dotimes (n (1+ max-year))
-        (with-current-buffer newbuf
-          (goto-char (point-max))
-          (insert "\n")
-          (insert (replace-regexp-in-string (int-to-string year)
-                                            (int-to-string (+ year n))
-                                            s)))))
-    (switch-to-buffer newbuf)))
-#+END_SRC
-
-#+RESULTS:
-: z-year-increment
-
-*** Get rid of blank lines
-#+BEGIN_SRC emacs-lisp :results none
-(defun flush-blank-lines ()
-    "Removes all blank lines from buffer or region"
-     (interactive)
-     (save-excursion
-       (let (min max)
-         (if (equal (region-active-p) nil)
-             (mark-whole-buffer))
-         (setq min (region-beginning) max (region-end))
-         (flush-lines "^ *$" min max t))))
-#+END_SRC 
-*** Join lines
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "M-j")
-            (lambda ()
-                  (interactive)
-                  (join-line -1)))
-#+END_SRC
-*** Fill/unfill paragraph
-#+BEGIN_SRC emacs-lisp :results none
-(defun unfill-paragraph ()
-  "Replace newline chars in current paragraph by single spaces.
-This command does the inverse of `fill-paragraph'."
-  (interactive)
-  (let ((fill-column 90002000)) ; 90002000 is just random. you can use `most-positive-fixnum'
-    (fill-paragraph nil)))
-
-(defun unfill-region (start end)
-  "Replace newline chars in region by single spaces.
-This command does the inverse of `fill-region'."
-  (interactive "r")
-  (let ((fill-column 90002000))
-    (fill-region start end)))
-
-#+END_SRC
-*** Count words in region
-#+BEGIN_SRC emacs-lisp :results none
-
-(defun z-count-words-region (posBegin posEnd)
-  "Print number of words and chars in region."
-  (interactive "r")
-  (message "Counting ë°≠")
-  (save-excursion
-    (let (wordCount charCount)
-      (setq wordCount 0)
-      (setq charCount (- posEnd posBegin))
-      (goto-char posBegin)
-      (while (and (< (point) posEnd)
-                  (re-search-forward "\\w+\\W*" posEnd t))
-        (setq wordCount (1+ wordCount)))
-
-      (message "Words: %d. Chars: %d." wordCount charCount)
-      )))
-
-#+END_SRC
-*** Copy and comment
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-copy-comment-paste ()
-  "copy active region/current line, comment, and then paste"
-  (interactive)
-  (unless (use-region-p)
-    (progn
-      (beginning-of-line 2)
-      (push-mark (line-beginning-position 0))))
-  (kill-ring-save (region-beginning) (region-end))
-  (comment-region (region-beginning) (region-end))
-  (yank)
-  (exchange-point-and-mark)
-  (indent-according-to-mode))
-
-
-#+END_SRC
-*** move line up/down
-    #+BEGIN_SRC emacs-lisp :results none
-(defun move-line-up ()
-  "Move up the current line."
-  (interactive)
-  (transpose-lines 1)
-  (forward-line -2)
-  (indent-according-to-mode))
-
-(defun move-line-down ()
-  "Move down the current line."
-  (interactive)
-  (forward-line 1)
-  (transpose-lines 1)
-  (forward-line -1)
-  (indent-according-to-mode))
-
-#+END_SRC
-*** move text up/down 
-#+BEGIN_SRC emacs-lisp :results none
-(defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
-(defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
-
-(defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
-#+END_SRC
-*** insert date
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-insert-date (&optional addTimeStamp-p)
-  "Insert current date and or time. In this format yyyy-mm-dd.
- When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
- Replaces text selection.See also `current-date-time-string'."
-  (interactive "P")
-  (when (region-active-p) (delete-region (region-beginning) (region-end) ) )
-  (cond
-   ((equal addTimeStamp-p nil ) (insert (format-time-string "%Y-%m-%d")))
-   (t (insert (current-date-time-string))) ) )
-#+END_SRC
-*** copy/paste to/from x clip
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun copy-to-x-clipboard ()
-  (interactive)
-  (if (region-active-p)
-      (progn
-        (cond
-         ((and (display-graphic-p) x-select-enable-clipboard)
-          (x-set-selection 'CLIPBOARD (buffer-substring (region-beginning) (region-end))))
-         (t (shell-command-on-region (region-beginning) (region-end)
-                                     (cond
-                                      (*cygwin* "putclip")
-                                      (*is-a-mac* "pbcopy")
-                                      (*linux* "xsel -ib")))
-            ))
-        (message "Yanked region to clipboard!")
-        (deactivate-mark))
-        (message "No region active; can't yank to clipboard!")))
-
-(defun paste-from-x-clipboard()
-  (interactive)
-  (cond
-   ((and (display-graphic-p) x-select-enable-clipboard)
-    (insert (x-selection 'CLIPBOARD)))
-   (t (shell-command
-       (cond
-        (*cygwin* "getclip")
-        (*is-a-mac* "pbpaste")
-        (t "xsel -ob"))
-       1))
-   ))
-#+END_SRC
-
-*** copy and indent lines
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun prelude-indent-rigidly-and-copy-to-clipboard (begin end indent)
-  "Copy the selected code region to the clipboard, indented according
-to Markdown blockquote rules."
-  (let ((buffer (current-buffer)))
-    (with-temp-buffer
-      (insert-buffer-substring-no-properties buffer begin end)
-      (indent-rigidly (point-min) (point-max) indent)
-      (clipboard-kill-ring-save (point-min) (point-max)))))
-
-(defun prelude-indent-blockquote-and-copy-to-clipboard (begin end)
-  "Copy the selected code region to the clipboard, indented according
-to markdown blockquote rules (useful to copy snippets to StackOverflow, Assembla, Github."
-  (interactive "r")
-  (prelude-indent-rigidly-and-copy-to-clipboard begin end 4))
-
-(defun prelude-indent-nested-blockquote-and-copy-to-clipboard (begin end)
-  "Copy the selected code region to the clipboard, indented according
-to markdown blockquote rules. Useful to add snippets under bullet points."
-  (interactive "r")
-  (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
-
-#+END_SRC
-*** TODO search replace all document
-@currently below code broken@
-#+BEGIN_SRC emacs-lisp :results none
-;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
-; (goto-char (point-min)) (apply #'query-replace-regexp rest)))                            
-
-#+END_SRC
-*** duplicate line
-#+BEGIN_SRC emacs-lisp :results none
-(defun duplicate-line()
-  (interactive)
-  (move-beginning-of-line 1)
-  (kill-line)
-  (yank)
-  (open-line 1)
-  (next-line 1)
-  (yank)
-)
-;(global-set-key (kbd "C-d") 'duplicate-line)
-#+END_SRC
-** Root actions
-*** edit file as root
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-edit-file-as-root ()
-  "Edit the file that is associated with the current buffer as root"
-  (interactive)
-  (if (buffer-file-name)
-      (progn
-        (setq file (concat "/sudo:root@localhost:" (buffer-file-name)))
-        (find-file file))
-    (message "Current buffer does not have an associated file.")))
-
-
-#+END_SRC
-** Buffers
-*** kill other buffers
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-kill-other-buffers ()
-      "Kill all other buffers."
-      (interactive)
-      (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
-#+END_SRC
-
-*** movment in buffer
-#+BEGIN_SRC emacs-lisp :results none
-(defun next-user-buffer ()
-  "Switch to the next user buffer.
-User buffers are those whose name does not start with *."
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (string-match "^*" (buffer-name)) (< i 50))
-      (setq i (1+ i)) (next-buffer) )))
-
-(defun previous-user-buffer ()
-  "Switch to the previous user buffer.
-User buffers are those whose name does not start with *."
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (string-match "^*" (buffer-name)) (< i 50))
-      (setq i (1+ i)) (previous-buffer) )))
-
-(defun next-emacs-buffer ()
-  "Switch to the next emacs buffer.
-Emacs buffers are those whose name starts with *."
-  (interactive)
-  (next-buffer)
-  (let ((i 0))
-    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
-      (setq i (1+ i)) (next-buffer) )))
-
-(defun previous-emacs-buffer ()
-  "Switch to the previous emacs buffer.
-Emacs buffers are those whose name starts with *."
-  (interactive)
-  (previous-buffer)
-  (let ((i 0))
-    (while (and (not (string-match "^*" (buffer-name))) (< i 50))
-      (setq i (1+ i)) (previous-buffer) )))
-
-
-(defun switch-to-previous-buffer ()
-  "Switch to previously open buffer.
-Repeated invocations toggle between the two most recently open buffers."
-  (interactive)
-  (switch-to-buffer (other-buffer (current-buffer) 1)))
-
-
-#+END_SRC
-*** save current file and close window
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-save-file-close-window ()
-  "DOCSTRING"
-  (interactive)
-    (save-buffer )
-    (delete-frame)
-  )
-
-#+END_SRC
-** windows (panes)
-*** resize via menu
-#+BEGIN_SRC emacs-lisp :results none
-(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
-  "*Resize window interactively."
-  (interactive "p")
-  (if (one-window-p) (error "Cannot resize sole window"))
-  (or arg (setq arg 1))
-  (let (c)
-    (catch 'done
-      (while t
-	(message
-	 "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
-	 arg)
-	(setq c (read-char))
-	(condition-case ()
-	    (cond
-	     ((= c ?h) (enlarge-window arg))
-	     ((= c ?s) (shrink-window arg))
-	     ((= c ?w) (enlarge-window-horizontally arg))
-	     ((= c ?n) (shrink-window-horizontally arg))
-	     ((= c ?\^G) (keyboard-quit))
-	     ((= c ?q) (throw 'done t))
-	     ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
-	     (t (beep)))
-	  (error (beep)))))
-    (message "Done.")))
-#+END_SRC
-*** swap window location
-#+BEGIN_SRC emacs-lisp :results none
-(defun transpose-windows (arg)
-   "Transpose the buffers shown in two windows."
-   (interactive "p")
-   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-     (while (/= arg 0)
-       (let ((this-win (window-buffer))
-             (next-win (window-buffer (funcall selector))))
-         (set-window-buffer (selected-window) next-win)
-         (set-window-buffer (funcall selector) this-win)
-         (select-window (funcall selector)))
-       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-#+END_SRC
-
-** open a specific dir
-#+BEGIN_SRC emacs-lisp :results none
-(defun ood () (interactive) (dired "/home/zeltak/org"))
-#+END_SRC
-** General emacs
-*** create scratch buffer
-#+BEGIN_SRC emacs-lisp :results none
-(defun create-scratch-buffer nil
-   "create a scratch buffer"
-   (interactive)
-   (switch-to-buffer (get-buffer-create "*scratch*"))
-   (lisp-interaction-mode))  
-#+END_SRC
-** toggles 
-*** TODO auto narrow/widen
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun narrow-or-widen-dwim ()
-"If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
-(interactive)
-(cond ((buffer-narrowed-p) (widen))
-((region-active-p) (narrow-to-region (region-beginning) (region-end)))
-((equal major-mode 'org-mode) (org-narrow-to-subtree))
-(t (error "Please select a region to narrow to"))))
-#+END_SRC
-
-** outside Emacs
-*** TODO search google
-#+BEGIN_SRC emacs-lisp :results none
-(require 'thingatpt)
-
-(defun google-search ()
-  "Googles a query or region if any."
-  (interactive)
-  (browse-url
-   (concat
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-    (if mark-active
-        (buffer-substring (region-beginning) (region-end))
-      (read-string "Google: ")))))
-#+END_SRC
-
-* Macros
-** org faces
-
-#+BEGIN_SRC emacs-lisp :results none
-(fset 'orgstyle-tnote
-   [?! home ?!])
-(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
-
-
-(fset 'orgstyle-warning
-   "@\341@WARNING:")
-(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
-
-(fset 'orgstyle-warning2
-   [?@ home ?@])
-(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
-
-
-
-(fset 'orgstyle-com1
-   [?~ home ?~])
-(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
-
-(fset 'orgstyle-note
-   "$\341$NOTE:")
-(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
-
-(fset 'orgstyle-note2
-   [?$ home ?$])
-(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
-
-(fset 'orgstyle-tip
-   "%\341%TIP:")
-(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
-
-
-(fset 'orgstyle-tip2
-   [?% home ?%])
-(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
-
-
-(fset 'orgstyle-code
-   [?^ home ?^])
-(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
-
-(fset 'orgstyle-header
-   [?& home ?&])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
-
-(fset 'orgstyle-bold
-   [?* home ?*])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
-
-(fset 'orgstyle-highlight-green
-   [?' home ?'])
-(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
-
-(fset 'orgstyle-com2
-   [?` home ?`])
-(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
-
-(fset 'underline_net_delete
-   [?\M-% ?\Å† return return ?!])
-
-#+END_SRC
-
-** org wraps
-** Editing
-*** lines not paragraphs
-#+BEGIN_SRC emacs-lisp :results none
-;;;; Saved macros
-;; Saved macro - adds latex end-lines to verse passages
-(fset 'versify
-      [?\C-a ?\C-e ?\\ ?\\ down])
-
-;(global-set-key (kbd "") 'versify)
-#+END_SRC 
 * Aliases
 ** settings
 #+BEGIN_SRC emacs-lisp :results none

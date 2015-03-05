@@ -1,0 +1,22 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: new recipe
+# key: newrec
+# binding: direct-keybinding
+# --
+
+** COOK ${1:short title}
+      :PROPERTIES:
+      :Time: 
+      :Rating:
+      :Source:$2   
+      :Ammount:
+      :Fav:
+      :END:
+
+$0
+
+*** ingridients
+$3 
+*** preperation
+$4
+

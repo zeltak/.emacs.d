@@ -2,7 +2,31 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("ssh_config" 0 10
+(#1=(#("mexi" 0 4
+      (bmkp-full-record #1#))
+    (filename . "   - no file -")
+    (buffer-name . "*scratch*")
+    (front-context-string)
+    (rear-context-string . "allback-source))")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21752 8189 553913 957000))
+    (created . #2#)
+    (position . 569))
+#1=(#("org-refile-last-stored" 0 22
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/agenda/TODO.org")
+    (buffer-name . "TODO.org")
+    (front-context-string . "** pack\n   '(yas")
+    (rear-context-string . "** flexget  \n\n\n\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21751 58502 88214 516000))
+    (created . #2#)
+    (position . 20422))
+#1=(#("ssh_config" 0 10
       (bmkp-full-record #1#))
     (filename . "~/.ssh/config")
     (buffer-name . "config")
@@ -250,17 +274,17 @@
     (position . 1))
 #1=(#("TODO.org" 0 8
       (bmkp-full-record #1#))
-    (end-position . 39278)
+    (end-position . 39352)
     (filename . "~/org/files/agenda/TODO.org")
     (buffer-name . "TODO.org")
     (front-context-string . " add to uni\n  ou")
     (rear-context-string . " me\n  NIS 377\n**")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 11)
-    (time 21747 13380 387246 483000)
+    (visits . 13)
+    (time 21752 19790 63410 259000)
     (created 21605 34254 655548 463000)
-    (position . 39278))
+    (position . 39352))
 #1=(#("settings.org" 0 12
       (bmkp-full-record #1#))
     (end-position . 1232)
@@ -270,8 +294,8 @@
     (rear-context-string . "\")))\n#+END_SRC\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 9)
-    (time 21720 19621 324774 915000)
+    (visits . 10)
+    (time 21752 19807 158600 217000)
     (created 21599 19295 302181 721000)
     (position . 1232))
 #1=(#("code_uni" 0 8
