@@ -42,6 +42,19 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 ;(load-file "~/.emacs.d/themes/zprime-theme.el")
 ;load the choosen theme at startup 
 (load-theme 'zprime t)
+
+; fonts in linux
+(if (system-type-is-gnu)
+;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
+;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
+(add-to-list 'default-frame-alist '(font . "Pragmata Pro-14"))
+)
+
+;; fontso in Win
+(if (system-type-is-win)
+(add-to-list 'default-frame-alist '(font . "Consolas-14"))
+)
+
 #+END_SRC
 
 ** Fonts
@@ -1849,9 +1862,7 @@ revert-buffer
 **** org editing
 function needed?
 #+BEGIN_SRC emacs-lisp :results none
-;(defun z/prefix-org-refile ()
-;(C-u M-x org-refile)
-;)
+(fset 'z/prefix-org-refile (C-u M-x org-refile))   
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1988,7 +1999,7 @@ helm-my-org- search all org files
 
 
 *** dired hydra
-
+    
 ** F1 Agenda/TODO/Search
  
 
@@ -2651,6 +2662,9 @@ make sure child headers don't get the header tags
 
 
 *** tag searches function  
+    :PROPERTIES:
+    :ID:       c1e25ca7-8cbd-4bd8-b417-3ac09c61474b
+    :END:
 #+BEGIN_SRC emacs-lisp :results none
 (org-add-link-type
  "tag"
@@ -2725,6 +2739,10 @@ this command below will use helm for completion since in the above helm config w
 
 
 ** capture
+*** load org-protocl
+#+BEGIN_SRC emacs-lisp :results none
+(require 'org-protocol)
+#+END_SRC
 *** TODO templates
 **** my templates
      :PROPERTIES:
