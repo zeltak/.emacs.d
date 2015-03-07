@@ -16,11 +16,33 @@
 )
 
 ;;;add custom themes to list
-(add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
-;to load a specifc theme 
-;(load-file "~/.emacs.d/themes/zprime-theme.el")
-;load the choosen theme at startup 
-(load-theme 'zprime t)
+  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
+  ;to load a specifc theme 
+  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
+  ;load the choosen theme at startup 
+  (load-theme 'zprime t)
+
+;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
+
+;; ;; last t is for NO-ENABLE
+  ;;   (load-theme 'zprime t t)
+  ;;   (load-theme 'tango-dark t t)
+  
+  ;;   (defun mb/pick-color-theme (frame)
+  ;;     (select-frame frame)
+  ;;     (if (window-system frame)
+  ;;         (progn  
+  ;;           (disable-theme 'tango-dark) ; in case it was active
+  ;;           (enable-theme 'zprime))
+  ;;       (progn  
+  ;;         (disable-theme 'zprime) ; in case it was active
+  ;;         (enable-theme 'tango-dark))))
+  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
+  
+  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
+  ;;   (if window-system
+  ;;       (enable-theme 'zprime)
+  ;;     (enable-theme 'tango-dark))
 
 ; fonts in linux
 (if (system-type-is-gnu)
@@ -1287,9 +1309,7 @@ Repeated invocations toggle between the two most recently open buffers."
    ("t" travel-template  "travel-template" :color blue)
    ("q" nil "cancel")))
 
-;(defun z/prefix-org-refile ()
-;(C-u M-x org-refile)
-;)
+(fset 'z/prefix-org-refile (C-u M-x org-refile))
 
 (global-set-key
  (kbd "C-M-o")
@@ -1458,6 +1478,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "<f9> d") 'org-download-screenshot)
 (global-set-key (kbd "<f9> D") 'org-download-delete)
 ;Create an ID for the entry at point if it does not yet have one.
+(global-set-key "\C-ca" 'org-agenda)
 (global-set-key (kbd "<f9> I") 'org-id-get-create)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "<f9> p") 'org-capture)
@@ -1761,6 +1782,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (setq org-agenda-custom-commands 
 '(
+
+("w" tags-todo "CATEGORY=\"work\"")
 ;first command
 ("r" "research" todo "TODO" 
          (
@@ -1878,6 +1901,8 @@ With prefix argument, also display headlines without a TODO keyword."
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 9))))
+
+(require 'org-protocol)
 
 (setq org-capture-templates
       (quote (           

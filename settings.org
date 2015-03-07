@@ -36,24 +36,34 @@ $Note The first function just reloads the Emacs configuration. The second functi
 To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 
 #+BEGIN_SRC emacs-lisp :results none
-;;;add custom themes to list
-(add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
-;to load a specifc theme 
-;(load-file "~/.emacs.d/themes/zprime-theme.el")
-;load the choosen theme at startup 
-(load-theme 'zprime t)
+  ;;;add custom themes to list
+  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
+  ;to load a specifc theme 
+  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
+  ;load the choosen theme at startup 
+  (load-theme 'zprime t)
 
-; fonts in linux
-(if (system-type-is-gnu)
-;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
-;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-14"))
-)
+;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
 
-;; fontso in Win
-(if (system-type-is-win)
-(add-to-list 'default-frame-alist '(font . "Consolas-14"))
-)
+;; ;; last t is for NO-ENABLE
+  ;;   (load-theme 'zprime t t)
+  ;;   (load-theme 'tango-dark t t)
+  
+  ;;   (defun mb/pick-color-theme (frame)
+  ;;     (select-frame frame)
+  ;;     (if (window-system frame)
+  ;;         (progn  
+  ;;           (disable-theme 'tango-dark) ; in case it was active
+  ;;           (enable-theme 'zprime))
+  ;;       (progn  
+  ;;         (disable-theme 'zprime) ; in case it was active
+  ;;         (enable-theme 'tango-dark))))
+  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
+  
+  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
+  ;;   (if window-system
+  ;;       (enable-theme 'zprime)
+  ;;     (enable-theme 'tango-dark))
 
 #+END_SRC
 
@@ -1999,7 +2009,8 @@ helm-my-org- search all org files
 
 
 *** dired hydra
-    
+*** movment
+pop-global-mark this will move you to prev position 
 ** F1 Agenda/TODO/Search
  
 
@@ -2137,6 +2148,7 @@ helm-my-org- search all org files
 (global-set-key (kbd "<f9> d") 'org-download-screenshot)
 (global-set-key (kbd "<f9> D") 'org-download-delete)
 ;Create an ID for the entry at point if it does not yet have one.
+(global-set-key "\C-ca" 'org-agenda)
 (global-set-key (kbd "<f9> I") 'org-id-get-create)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key (kbd "<f9> p") 'org-capture)
@@ -2562,13 +2574,15 @@ this will make org-store-link use id when creating a link.
 
 
 #+END_SRC
-*** 'my custom agenda command'
+*** TODO 'my custom agenda command'
 
 $Note$ that to get the priorities to appear first you need to use priorities-down.
 
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-custom-commands 
 '(
+
+("w" tags-todo "CATEGORY=\"work\"")
 ;first command
 ("r" "research" todo "TODO" 
          (
@@ -3366,7 +3380,6 @@ http://lebensverrueckt.haktar.org/articles/org-mode-Food/#comment-1348609811
          (evil-open-below 1)
 )
 #+END_SRC
-
 
 *** movment org specific
 **** go to top header
