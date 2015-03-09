@@ -381,24 +381,41 @@ $Note$ the sign !package! means the package is disbaled
  ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))                                                           
  #+END_SRC
 ** org-dp (wrap code blocks functions) 
- #+BEGIN_SRC emacs-lisp :results none
+*** load 
+#+BEGIN_SRC emacs-lisp :results none
  (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
  (require 'org-dp-lib)
  #+END_SRC
+*** my wrap functions
 
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (use-package ord-dp-lib
-  ;;   :load-path "/home/zeltak/.emacs.g/extra/org-dp/"
-  ;;  )
-#+END_SRC 
+ (when (require 'org-dp-lib nil t)
 
-#+BEGIN_SRC emacs-lisp
-  (org-dp-create 'src-block nil nil
-                 '(:name "ex1" :header (":cache no" ":noweb yes"))
-                 :language "picolisp"
-                 :preserve-indent 1
-                 :parameters ":results value"
-                 :value "(+ 2 2)")
+;;;;;;;;;; wrap in elisp
+  (defun z/wrap-elisp ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "emacs-lisp" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-elisp () (interactive) (beginning-of-line) (z/wrap-elisp))
+
+;;;;;;;;;; wrap in bash
+  (defun z/wrap-bash ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "sh" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-bash () (interactive) (beginning-of-line) (z/wrap-bash))
+
+;;;;;;;;;; wrap in R
+  (defun z/wrap-R ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "R" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-R () (interactive) (beginning-of-line) (z/wrap-R))
+;end paren
+     )
 #+END_SRC
 
 
@@ -1257,6 +1274,34 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 )
 ;(global-set-key (kbd "C-d") 'duplicate-line)
 #+END_SRC
+*** auto spell correction function
+
+keybind is C-x C-i
+
+ #+BEGIN_SRC emacs-lisp :results none
+; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
+
+ (define-prefix-command 'endless/toggle-map)
+ ;; The manual recommends C-c for user keys, but C-x t is
+ ;; always free, whereas C-c t is used by some modes.
+ (define-key ctl-x-map "t" 'endless/toggle-map)
+ (define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
+
+ (defun endless/ispell-word-then-abbrev (p)
+   "Call `ispell-word'. Then create an abbrev for the correction made.
+ With prefix P, create local abbrev. Otherwise it will be global."
+   (interactive "P")
+   (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+     (call-interactively 'ispell-word)
+     (setq aft (downcase (or (thing-at-point 'word) "")))
+     (unless (string= aft bef)
+       (message "\"%s\" now expands to \"%s\" %sally"
+		bef aft (if p "loc" "glob"))
+       (define-abbrev
+         (if p local-abbrev-table global-abbrev-table)
+         bef aft))))
+ #+END_SRC
+
 ** Root actions
 *** edit file as root
 #+BEGIN_SRC emacs-lisp :results none
@@ -1838,20 +1883,36 @@ You can use arrow-keys or WASD.
 
 #+END_SRC
 revert-buffer
+duplicate marked region
 
-(global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
-(global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
-(global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
-(global-set-key (kbd "<f4> r") 'z-wrap-cblock-r)
-(global-set-key (kbd "<f4> q") 'z-wrap-cblock-quote)
-(global-set-key (kbd "<f4> l") 'z-wrap-cblock-lisp)
-(global-set-key (kbd "<f4> s") 'z-wrap-cblock-sas)
-;; easy spell check
+; easy spell check
 (global-set-key (kbd "<f4> w") 'ispell-word)
 (global-set-key (kbd "<f4> W") 'ispell)
 (global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
+  ;; (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
+  ;; (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
+  ;; ;; easy spell check
+  ;; (global-set-key (kbd "<f4> u") 'z-fix-characters)
+  ;; (global-set-key (kbd "<f4> 6 u") 'upcase-region)
+ ;; (global-set-key (kbd "<f4> 6 l") 'downcase-region)
+  ;; (global-set-key (kbd "<f4> k") 'browse-kill-ring)
+  ;; (global-set-key (kbd "<f4> B ") 'flush-blank-lines)
 
 
+
+*** commenting
+#+BEGIN_SRC emacs-lisp :results none
+  (global-set-key
+   (kbd "<f4>")
+   (defhydra hydra-commenting ()
+     "wrapping in org blocks"
+     ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
+     ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
+     ("r"    z/hydra-wrap-R "R" :color blue)
+     ("b"   z/hydra-wrap-bash  "bash" :color blue)
+     ("q" nil "cancel")))
+
+#+END_SRC
 
 *** org
 **** org cooking 
@@ -2009,19 +2070,12 @@ helm-my-org- search all org files
 
 
 *** dired hydra
+*** bookmark hydra
 *** movment
 pop-global-mark this will move you to prev position 
-** F1 Agenda/TODO/Search
- 
 
-** F2 Emacs plugins
 
-#+BEGIN_SRC emacs-lisp :results none
-#+END_SRC
-
-** F3 Emacs Main
-
-#+BEGIN_SRC emacs-lisp :results none
+*** Emacs
 ;dired
 (define-key global-map (kbd "<f3> d") 'dired)
 (global-set-key (kbd "<f3> j") 'dired-jump) 
@@ -2040,37 +2094,24 @@ pop-global-mark this will move you to prev position
 (global-set-key (kbd "<f3> m n") 'name-kbd-macro)
 (global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
 
-#+END_SRC
+** F1 Agenda/TODO/Search
+ 
 
+** F2 Emacs plugins
 
-** F4 editing 
-**** F4 key
 #+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
-(global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
-;convert region to code blocks
-(global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
-(global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
-(global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
-(global-set-key (kbd "<f4> r") 'z-wrap-cblock-r)
-(global-set-key (kbd "<f4> q") 'z-wrap-cblock-quote)
-(global-set-key (kbd "<f4> l") 'z-wrap-cblock-lisp)
-(global-set-key (kbd "<f4> s") 'z-wrap-cblock-sas)
-;; easy spell check
-(global-set-key (kbd "<f4> w") 'ispell-word)
-(global-set-key (kbd "<f4> W") 'ispell)
-(global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
-
-(global-set-key (kbd "<f4> ;") 'z-copy-comment-paste)
-(global-set-key (kbd "<f4> u") 'z-fix-characters)
-(global-set-key (kbd "<f4> 6 u") 'upcase-region)
-(global-set-key (kbd "<f4> 6 l") 'downcase-region)
-
-
-(global-set-key (kbd "<f4> k") 'browse-kill-ring)
-(global-set-key (kbd "<f4> B ") 'flush-blank-lines)
 #+END_SRC
-**** non F4
+
+** F3 spelling
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key (kbd "<f3><f3>") 'endless/ispell-word-then-abbrev)
+
+#+END_SRC
+
+
+
+** editing 
+
 #+BEGIN_SRC emacs-lisp :results none
 ;; move lines up dowb with C-S-pgup/pgdown
 (global-set-key [(control shift prior )]  'move-line-up)
@@ -2934,21 +2975,22 @@ this command below will use helm for completion since in the above helm config w
 (setq org-src-fontify-natively t)
 #+END_SRC 
 ** Orgmode functions
-*** editing
+*** terminal
 **** org evaluate to term
 
-#+begin_src emacs-lisp
-(defadvice org-babel-execute:sh (around sacha activate)
-  (if (assoc-default :term (ad-get-arg 1) nil)
-    (let ((buffer (make-term "babel" "/bin/zsh")))
-      (with-current-buffer buffer
-        (insert (org-babel-expand-body:generic
-             body params (org-babel-variable-assignments:sh params)))
-        (term-send-input))
-(pop-to-buffer buffer))
-    ad-do-it))
-#+end_src
+ #+begin_src emacs-lisp
+ (defadvice org-babel-execute:sh (around sacha activate)
+   (if (assoc-default :term (ad-get-arg 1) nil)
+     (let ((buffer (make-term "babel" "/bin/zsh")))
+       (with-current-buffer buffer
+         (insert (org-babel-expand-body:generic
+              body params (org-babel-variable-assignments:sh params)))
+         (term-send-input))
+ (pop-to-buffer buffer))
+     ad-do-it))
+ #+end_src
 
+*** editing
 **** Insert current time stamp
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -3020,9 +3062,39 @@ this command below will use helm for completion since in the above helm config w
     (beginning-of-line)))
 #+END_SRC
     
-**** turn into example
-#+BEGIN_SRC emacs-lisp :results none
+**** read only function
+Make some org-sections read-only
 
+$Note- you !MUST! tag the header :read_only: other wise it wont work$ 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-mark-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element)))
+(add-text-properties begin (- end 1) '(read-only t
+font-lock-face '(:background "#FFE3E3")))))
+"read_only")
+(message "Made readonly!"))
+(defun org-remove-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element))
+(inhibit-read-only t))
+(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
+"read_only"))
+(add-hook 'org-mode-hook 'org-mark-readonly)
+#+END_SRC
+
+*** code wraps 
+**** cr example
+#+BEGIN_SRC emacs-lisp :results none
 (defun z-wrap-cblock-example ()
    "Wrap region in quote block"
    (interactive)
@@ -3037,12 +3109,8 @@ this command below will use helm for completion since in the above helm config w
         (goto-char (point-max))
         (insert "#+END_EXAMPLE\n")
         (deactivate-mark))))
-        
-
-
-
 #+END_SRC
-**** turn into bash block
+**** cr bash 
 
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-wrap-cblock-sh ()
@@ -3062,7 +3130,7 @@ this command below will use helm for completion since in the above helm config w
         
 #+END_SRC
 
-**** turn into R block
+**** cr R 
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-wrap-cblock-r ()
    "Wrap region in quote block"
@@ -3080,7 +3148,7 @@ this command below will use helm for completion since in the above helm config w
         (deactivate-mark))))
 
 #+END_SRC
-**** turn into quote
+**** cr quote
 		    
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-wrap-region-in-quote-block ()
@@ -3101,7 +3169,7 @@ this command below will use helm for completion since in the above helm config w
 
 #+END_SRC 
 
-**** turn into lisp 
+**** cr lisp 
 		   
 #+begin_src emacs-lisp results none
 (defun z-wrap-cblock-lisp ()
@@ -3120,8 +3188,7 @@ this command below will use helm for completion since in the above helm config w
         (deactivate-mark))))
 
 #+end_src
-**** turn into SAS  
-
+**** cr SAS  
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-wrap-cblock-sas ()
    "Wrap region in quote block"
@@ -3137,10 +3204,10 @@ this command below will use helm for completion since in the above helm config w
         (goto-char (point-max))
         (insert "#+END_SRC\n")
         (deactivate-mark))))
-
-
 #+END_SRC
 **** interactive wrap  
+will wrap in lisp unless using a prefix C-u and then it will prompt 
+
 #+BEGIN_SRC emacs-lisp :results none
 (defun org-wrap-in-src-block (&optional lang lines)
   "Wrap sexp-at-point or region in src-block.
@@ -3182,16 +3249,16 @@ and the number of lines to be wrapped."
       (read-number "Number of lines to wrap: " 1)))))
   (let* ((language (or lang "emacs-lisp"))
          (beg (or (and (not lines)
-                       (region-active-p)
-                       (region-beginning))
+		       (region-active-p)
+		       (region-beginning))
                   (point)))
          (marker (save-excursion (goto-char beg) (point-marker)))
          (bol (save-excursion (goto-char beg) (bolp)))
          (end (cond
-               (lines (save-excursion
+	       (lines (save-excursion
                         (forward-line lines) (point)))
-               ((region-active-p)(region-end))
-               (t (save-excursion
+	       ((region-active-p)(region-end))
+	       (t (save-excursion
                     (forward-sexp) (point)))))
          (cut-strg (buffer-substring beg end)))
     (delete-region beg end)
@@ -3228,36 +3295,6 @@ and the number of lines to be wrapped."
   ;;                 (lambda ()
   ;;                   (interactive)
   ;;                       (org-wrap-in-src-block  "shell" 1)))
-#+END_SRC
-
-**** read only function
-Make some org-sections read-only
-
-$Note- you !MUST! tag the header :read_only: other wise it wont work$ 
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-mark-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element)))
-(add-text-properties begin (- end 1) '(read-only t
-font-lock-face '(:background "#FFE3E3")))))
-"read_only")
-(message "Made readonly!"))
-(defun org-remove-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element))
-(inhibit-read-only t))
-(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
-"read_only"))
-(add-hook 'org-mode-hook 'org-mark-readonly)
 #+END_SRC
 
 *** food 	
@@ -3965,33 +4002,6 @@ take care of the wrapping of each item for me"
 (setq-default abbrev-mode t)
 #+END_SRC
 
-** auto spell correction function
-
-keybind is C-x C-i
-
-#+BEGIN_SRC emacs-lisp :results none
-(define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
-
-(define-prefix-command 'endless/toggle-map)
-;; The manual recommends C-c for user keys, but C-x t is
-;; always free, whereas C-c t is used by some modes.
-(define-key ctl-x-map "t" 'endless/toggle-map)
-(define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
-
-(defun endless/ispell-word-then-abbrev (p)
-  "Call `ispell-word'. Then create an abbrev for the correction made.
-With prefix P, create local abbrev. Otherwise it will be global."
-  (interactive "P")
-  (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-    (call-interactively 'ispell-word)
-    (setq aft (downcase (or (thing-at-point 'word) "")))
-    (unless (string= aft bef)
-      (message "\"%s\" now expands to \"%s\" %sally"
-               bef aft (if p "loc" "glob"))
-      (define-abbrev
-        (if p local-abbrev-table global-abbrev-table)
-        bef aft))))
-#+END_SRC
 ** personal abbriviations
 *** new collected abbrv
 to quickly peak at the personal file look here:

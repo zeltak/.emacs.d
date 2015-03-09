@@ -265,16 +265,33 @@
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
 (require 'org-dp-lib)
 
-;; (use-package ord-dp-lib
-;;   :load-path "/home/zeltak/.emacs.g/extra/org-dp/"
-;;  )
+(when (require 'org-dp-lib nil t)
 
-(org-dp-create 'src-block nil nil
-               '(:name "ex1" :header (":cache no" ":noweb yes"))
-               :language "picolisp"
-               :preserve-indent 1
-               :parameters ":results value"
-               :value "(+ 2 2)")
+;;;;;;;;;; wrap in elisp
+  (defun z/wrap-elisp ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "emacs-lisp" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-elisp () (interactive) (beginning-of-line) (z/wrap-elisp))
+
+;;;;;;;;;; wrap in bash
+  (defun z/wrap-bash ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "sh" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-bash () (interactive) (beginning-of-line) (z/wrap-bash))
+
+;;;;;;;;;; wrap in R
+  (defun z/wrap-R ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "R" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-R () (interactive) (beginning-of-line) (z/wrap-R))
+;end paren
+     )
 
 (use-package yasnippet
 :ensure t
@@ -1300,6 +1317,16 @@ Repeated invocations toggle between the two most recently open buffers."
    ("q" nil "cancel")))
 
 (global-set-key
+ (kbd "<f4>")
+ (defhydra hydra-commenting ()
+   "wrapping in org blocks"
+   ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
+   ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
+   ("r"    z/hydra-wrap-R "R" :color blue)
+   ("b"   z/hydra-wrap-bash  "bash" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
  (kbd "<f1> c")
  (defhydra hydra-org-food ()
    "yas command "
@@ -1380,47 +1407,9 @@ Repeated invocations toggle between the two most recently open buffers."
 
 
 
-;dired
-(define-key global-map (kbd "<f3> d") 'dired)
-(global-set-key (kbd "<f3> j") 'dired-jump) 
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root) 
-(global-set-key (kbd "<f3> E") 'view-mode) 
-(global-set-key (kbd "<f3> e") 'read-only-mode) 
-(global-set-key (kbd "<f3> s") 'babcore-shell-execute)
-(global-set-key (kbd "<f3> b") 'create-scratch-buffer)
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root)
-(global-set-key (kbd "<f3> l") 'linium-mode)
-(global-set-key (kbd "<f3> ;") 'comment-region)
-(global-set-key (kbd "<f3> o") 'back-button-global)
-
-(global-set-key (kbd "<f3> m s") 'start-kbd-macro)
-(global-set-key (kbd "<f3> m q") 'end-kbd-macro)
-(global-set-key (kbd "<f3> m n") 'name-kbd-macro)
-(global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
-
-(global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
-(global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
-;convert region to code blocks
-(global-set-key (kbd "<f4> e") 'z-wrap-cblock-example)
-(global-set-key (kbd "<f4> b") 'z-wrap-cblock-sh)
-(global-set-key (kbd "<f4> <f4> b") 'z-wrap-line-bash)
-(global-set-key (kbd "<f4> r") 'z-wrap-cblock-r)
-(global-set-key (kbd "<f4> q") 'z-wrap-cblock-quote)
-(global-set-key (kbd "<f4> l") 'z-wrap-cblock-lisp)
-(global-set-key (kbd "<f4> s") 'z-wrap-cblock-sas)
-;; easy spell check
-(global-set-key (kbd "<f4> w") 'ispell-word)
-(global-set-key (kbd "<f4> W") 'ispell)
-(global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
-
-(global-set-key (kbd "<f4> ;") 'z-copy-comment-paste)
-(global-set-key (kbd "<f4> u") 'z-fix-characters)
-(global-set-key (kbd "<f4> 6 u") 'upcase-region)
-(global-set-key (kbd "<f4> 6 l") 'downcase-region)
 
 
-(global-set-key (kbd "<f4> k") 'browse-kill-ring)
-(global-set-key (kbd "<f4> B ") 'flush-blank-lines)
+
 
 ;; move lines up dowb with C-S-pgup/pgdown
 (global-set-key [(control shift prior )]  'move-line-up)
@@ -2110,6 +2099,29 @@ With prefix argument, also display headlines without a TODO keyword."
       (forward-line))
     (beginning-of-line)))
 
+(defun org-mark-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element)))
+(add-text-properties begin (- end 1) '(read-only t
+font-lock-face '(:background "#FFE3E3")))))
+"read_only")
+(message "Made readonly!"))
+(defun org-remove-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element))
+(inhibit-read-only t))
+(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
+"read_only"))
+(add-hook 'org-mode-hook 'org-mark-readonly)
+
 (defun z-wrap-cblock-example ()
    "Wrap region in quote block"
    (interactive)
@@ -2284,29 +2296,6 @@ and the number of lines to be wrapped."
 ;;                 (lambda ()
 ;;                   (interactive)
 ;;                       (org-wrap-in-src-block  "shell" 1)))
-
-(defun org-mark-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element)))
-(add-text-properties begin (- end 1) '(read-only t
-font-lock-face '(:background "#FFE3E3")))))
-"read_only")
-(message "Made readonly!"))
-(defun org-remove-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element))
-(inhibit-read-only t))
-(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
-"read_only"))
-(add-hook 'org-mode-hook 'org-mark-readonly)
 
 (defun cooking-sparse-tree-breakfeast ()
   (interactive)
