@@ -342,6 +342,8 @@
 
 ;; (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 
+(setq ispell-personal-dictionary "~/.emacs.d/ispell-dico-personal")
+
 (use-package browse-kill-ring
 :ensure t
 :config
@@ -976,6 +978,28 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 )
 ;(global-set-key (kbd "C-d") 'duplicate-line)
 
+; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
+
+ (define-prefix-command 'endless/toggle-map)
+ ;; The manual recommends C-c for user keys, but C-x t is
+ ;; always free, whereas C-c t is used by some modes.
+ (define-key ctl-x-map "t" 'endless/toggle-map)
+ (define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
+
+ (defun endless/ispell-word-then-abbrev (p)
+   "Call `ispell-word'. Then create an abbrev for the correction made.
+ With prefix P, create local abbrev. Otherwise it will be global."
+   (interactive "P")
+   (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
+     (call-interactively 'ispell-word)
+     (setq aft (downcase (or (thing-at-point 'word) "")))
+     (unless (string= aft bef)
+       (message "\"%s\" now expands to \"%s\" %sally"
+                bef aft (if p "loc" "glob"))
+       (define-abbrev
+         (if p local-abbrev-table global-abbrev-table)
+         bef aft))))
+
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
   (interactive)
@@ -1327,6 +1351,17 @@ Repeated invocations toggle between the two most recently open buffers."
    ("q" nil "cancel")))
 
 (global-set-key
+ (kbd "<f3>")
+ (defhydra hydra-commenting ()
+   "spell checking "
+   ("<f3>" endless/ispell-word-then-abbre  "check and add to abbrv" :color blue)
+   ("i"    ispell  "start spell checker" :color blue)
+   ("w"   ispell-word  "check word" :color blue)
+   ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
+   ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
  (kbd "<f1> c")
  (defhydra hydra-org-food ()
    "yas command "
@@ -1404,10 +1439,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
 ;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
 ;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-
-
-
 
 
 
@@ -2828,28 +2859,6 @@ take care of the wrapping of each item for me"
 (setq save-abbrevs t)
 ;; turn on abbrev mode globally
 (setq-default abbrev-mode t)
-
-(define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
-
-(define-prefix-command 'endless/toggle-map)
-;; The manual recommends C-c for user keys, but C-x t is
-;; always free, whereas C-c t is used by some modes.
-(define-key ctl-x-map "t" 'endless/toggle-map)
-(define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
-
-(defun endless/ispell-word-then-abbrev (p)
-  "Call `ispell-word'. Then create an abbrev for the correction made.
-With prefix P, create local abbrev. Otherwise it will be global."
-  (interactive "P")
-  (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-    (call-interactively 'ispell-word)
-    (setq aft (downcase (or (thing-at-point 'word) "")))
-    (unless (string= aft bef)
-      (message "\"%s\" now expands to \"%s\" %sally"
-               bef aft (if p "loc" "glob"))
-      (define-abbrev
-        (if p local-abbrev-table global-abbrev-table)
-        bef aft))))
 
 (setq abbrev-file-name "/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt")
 

@@ -481,6 +481,10 @@ this requires you to isntall 'popup' from MELPA beforehand
   ;; (setq yas-prompt-functions '(yas-popup-isearch-prompt yas-ido-prompt yas-no-prompt))
 #+END_SRC
 
+** ispell
+#+BEGIN_SRC emacs-lisp :results none
+(setq ispell-personal-dictionary "~/.emacs.d/ispell-dico-personal")
+#+END_SRC
 ** Browse kill ring
 #+BEGIN_SRC emacs-lisp :results none
 (use-package browse-kill-ring
@@ -1275,8 +1279,11 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 ;(global-set-key (kbd "C-d") 'duplicate-line)
 #+END_SRC
 *** auto spell correction function
+from:
+http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
 
-keybind is C-x C-i
+this will store the abbrevs here: 
+file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
 
  #+BEGIN_SRC emacs-lisp :results none
 ; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
@@ -1683,7 +1690,6 @@ complex example
 (bind-key "C-:" #'hydra-vi/body modi-mode-map)
 #+END_EXAMPLE
 
-
 *** window switch
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1847,9 +1853,7 @@ You can use arrow-keys or WASD.
 
 
 
-
 *** yas 
-
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-y")
@@ -1885,10 +1889,6 @@ You can use arrow-keys or WASD.
 revert-buffer
 duplicate marked region
 
-; easy spell check
-(global-set-key (kbd "<f4> w") 'ispell-word)
-(global-set-key (kbd "<f4> W") 'ispell)
-(global-set-key (kbd "<f4> f") 'flyspell-check-next-highlighted-word)
   ;; (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
   ;; (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
   ;; ;; easy spell check
@@ -1910,6 +1910,21 @@ duplicate marked region
      ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
      ("r"    z/hydra-wrap-R "R" :color blue)
      ("b"   z/hydra-wrap-bash  "bash" :color blue)
+     ("q" nil "cancel")))
+
+#+END_SRC
+
+*** spelling
+#+BEGIN_SRC emacs-lisp :results none
+  (global-set-key
+   (kbd "<f3>")
+   (defhydra hydra-commenting ()
+     "spell checking "
+     ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
+     ("i"    ispell  "start spell checker" :color blue)
+     ("w"   ispell-word  "check word" :color blue)
+     ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
+     ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
      ("q" nil "cancel")))
 
 #+END_SRC
@@ -2098,17 +2113,6 @@ pop-global-mark this will move you to prev position
  
 
 ** F2 Emacs plugins
-
-#+BEGIN_SRC emacs-lisp :results none
-#+END_SRC
-
-** F3 spelling
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f3><f3>") 'endless/ispell-word-then-abbrev)
-
-#+END_SRC
-
-
 
 ** editing 
 
