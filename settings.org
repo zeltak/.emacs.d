@@ -344,10 +344,17 @@ $Note$ the sign !package! means the package is disbaled
  #+end_src
 
 ** EVIL NERD Commenter
+https://github.com/redguardtoo/evil-nerd-commenter
+
  #+BEGIN_SRC emacs-lisp :results none
- ;(evilnc-default-hotkeys)
- ;(setq evilnc-hotkey-comment-operator ",,")
+(use-package evil-nerd-commenter
+:ensure t
+:config
+)
+;(evilnc-default-hotkeys)
+;(setq evilnc-hotkey-comment-operator ",,")
  #+END_SRC
+
 ** TODO edit-server (for chrome interaction)
  #+BEGIN_SRC emacs-lisp :results none
    ;; (require 'edit-server)
@@ -1868,51 +1875,72 @@ You can use arrow-keys or WASD.
    ("q" nil "cancel")))
 #+END_SRC
 *** Editing
+**** main editing command 
+
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key                         
+    (kbd "C-M-e")
+    (defhydra hydra-editing (:color blue)
+      "editing command "
+      ("e" hydra-edit-extra/body  "Extra editing commands")
+      ("<up>" move-text-up  "marked up" :color red)
+      ("<down>" move-text-down "marked down" :color red)
+      ("p" duplicate-line  "dup line" :color red)
+      (";"  hydra-commenting/body  "comment!" )
+      ("f" flush-blank-line  "flush blank" )
+      ("u" z-fix-characters "fix unicode" )
+      ("R" revert-buffer  "revert buffer before changes" ) 
+      ("q" nil "cancel")))
+
+ #+END_SRC
+ duplicate marked region
+
+**** extra editing commands
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-edit-extra (:color blue :hint nil )
+      "
+ fix _u_nicode issue  // u_p_case region // _d_owncase region 
+      "
+      ("u" z-fix-characters  "fix unicode" ) 
+      ("p" upcase-region  "upcase region" ) 
+      ("d" downcase-region  "downcase region" ) 
+      ("q" nil "cancel" nil)
+ )
+
+ #+END_SRC
+
+**** commenting sub hydra 
+
 #+BEGIN_SRC emacs-lisp :results none
-  (global-set-key
-   (kbd "C-M-e")
-   (defhydra hydra-editing ()
-     "editing command "
-     ("u" move-text-up  "marked up" :color red)
-     ("d" move-text-down "marked down" :color red)
-     ("p" duplicate-line  "dup line" :color red)
-     (";" comment-or-uncomment-region  "comment paste" :color blue)
-     ("l" z/comment-line  "comment line" :color blue)
-     ("L" z/copy-comment-paste  "comment paste" :color blue)
-     ("f" flush-blank-line  "flush blank" :color blue)
-     ("u" z-fix-characters "fix unicode" :color blue)
-     ("U" upcase-region  "upcase" :color blue)
-     ("D" downcase-region  "downcase" :color blue)
-     ("q" nil "cancel")))
+(defhydra hydra-commenting (:color blue  )
+     "
+comment  _;_ // comment _t_o line // comment para_g_raph // co_p_y-paste-comment 
+comment _e_macs function  // copy-paste-comment-function _r_  
+
+     "
+     (";" evilnc-comment-or-uncomment-lines  "comment" ) 
+     ("t" evilnc-quick-comment-or-uncomment-to-the-line   "c 2 line"  nil ) 
+     ("g" evilnc-comment-or-uncomment-paragraphs  "c paragraph"  nil ) 
+     ("p" evilnc-copy-and-comment-lines  "c,c,p"  nil ) 
+     ("e" z/comment-line  "comment-line-emacsfun" :color blue)
+     ("r" z/copy-comment-paste  "c,c,p-fun " :color blue)
+     ("q" nil "cancel" nil)
+)
 
 #+END_SRC
-revert-buffer
-duplicate marked region
 
-  ;; (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
-  ;; (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
-  ;; ;; easy spell check
-  ;; (global-set-key (kbd "<f4> u") 'z-fix-characters)
-  ;; (global-set-key (kbd "<f4> 6 u") 'upcase-region)
- ;; (global-set-key (kbd "<f4> 6 l") 'downcase-region)
-  ;; (global-set-key (kbd "<f4> k") 'browse-kill-ring)
-  ;; (global-set-key (kbd "<f4> B ") 'flush-blank-lines)
+**** TODO insert Unicode
 
+(defhydra hydra-unicode (:color blue)
+  "unicode"
+  (">"   (insert-char ?œò¢û) "œò¢û") ; C-x 8 RET 261b RET, pointing hand
+  ("SPC" (insert-char ?œôòë)  "0-width space") ; C-x 8 RET 200b RET, zero width space
+  ("\\"  (insert-char ?œò¡î) "œò¡î") ; C-x 8 RET 9646 RET, black vertical rectangle
+  ("|"   (insert-char ?œò¡ï) "œò¡ï") ; C-x 8 RET 9647 RET, white vertical rectangle
+  ("dd"  (insert-char ?‘¡°) "‘¡°") ; curved double quotes open
+  ("df"  (insert-char ?‘¡±) "‘¡±") ; curved double quotes close
 
-
-*** commenting
-#+BEGIN_SRC emacs-lisp :results none
-  (global-set-key
-   (kbd "<f4>")
-   (defhydra hydra-commenting ()
-     "wrapping in org blocks"
-     ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
-     ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
-     ("r"    z/hydra-wrap-R "R" :color blue)
-     ("b"   z/hydra-wrap-bash  "bash" :color blue)
-     ("q" nil "cancel")))
-
-#+END_SRC
 
 *** spelling
 #+BEGIN_SRC emacs-lisp :results none
@@ -1969,6 +1997,9 @@ function needed?
 
 #+END_SRC
 
+ ;; (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
+ ;; (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
+
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -2006,6 +2037,58 @@ helm-my-org- search all org files
 (global-set-key (kbd "<f1> t") 'org-todo)
 (global-set-key (kbd "<f1> a") 'org-agenda)
 (global-set-key "\C-ca" 'org-agenda)
+
+**** TODO org expand blocks
+;;; hydra org template
+(with-eval-after-load "hydra"
+  (defhydra hydra-org-template (:color blue :hint nil)
+    "
+_c_enter  _q_uote    _L_aTeX:
+_l_atex   _e_xample  _i_ndex:
+_a_scii   _v_erse    _I_NCLUDE:
+_s_rc     ^ ^        _H_TML:
+_h_tml    ^ ^        _A_SCII:
+"
+    ("s" (pl/hot-expand "<s"))
+    ("e" (pl/hot-expand "<e"))
+    ("q" (pl/hot-expand "<q"))
+    ("v" (pl/hot-expand "<v"))
+    ("c" (pl/hot-expand "<c"))
+    ("l" (pl/hot-expand "<l"))
+    ("h" (pl/hot-expand "<h"))
+    ("a" (pl/hot-expand "<a"))
+    ("L" (pl/hot-expand "<L"))
+    ("i" (pl/hot-expand "<i"))
+    ("I" (pl/hot-expand "<I"))
+    ("H" (pl/hot-expand "<H"))
+    ("A" (pl/hot-expand "<A"))
+    ("<" self-insert-command "ins")
+    ("o" nil "quit")))
+
+(defun pl/hot-expand (str)
+  "Expand org template."
+  (insert str)
+  (org-try-structure-completion))
+
+(with-eval-after-load "org"
+  (define-key org-mode-map "<"
+    (lambda () (interactive)
+      (if (looking-back "^")
+          (hydra-org-template/body)
+        (self-insert-command 1)))))
+**** code blocks
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key
+    (kbd "<f4>")
+    (defhydra hydra-commenting ()
+      "wrapping in org blocks"
+      ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
+      ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
+      ("r"    z/hydra-wrap-R "R" :color blue)
+      ("b"   z/hydra-wrap-bash  "bash" :color blue)
+      ("q" nil "cancel")))
+
+ #+END_SRC
 
 *** ace 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2053,7 +2136,7 @@ helm-my-org- search all org files
 
 
 #+END_SRC
-*** hydra toggles
+*** TODO toggles
 
 (defhydra hydra-toggle (:color blue)
   "toggle"
@@ -2082,12 +2165,26 @@ helm-my-org- search all org files
   ("q"     nil                          "cancel" :color blue))
 (key-chord-define-global "qq"  #'hydra-toggle/body)
 
+font increae/decrease 
 
 
 *** dired hydra
 *** bookmark hydra
 *** movment
 pop-global-mark this will move you to prev position 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defhydra hydra-goto-line (:pre (progn
+                                  (linum-mode 1))
+                           :post (progn
+                                   (linum-mode -1))
+                           :color blue)
+  "goto"
+  ("g" goto-line "line")
+  ("c" goto-char "char")
+  ("q" nil "quit"))
+#+END_SRC
+
 
 
 *** Emacs

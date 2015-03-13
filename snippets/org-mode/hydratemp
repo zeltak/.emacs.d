@@ -1,0 +1,13 @@
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: hydra_templae
+# key: hydp
+# binding: direct-keybinding
+# --
+(defhydra hydra-$1 (:color blue hint: nil )
+     "
+ _$2_ // 
+
+     "
+     ("$3" $4  "$5" ) 
+     ("q" nil "cancel" nil)
+)

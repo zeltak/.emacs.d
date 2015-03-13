@@ -239,6 +239,10 @@
 ;; (global-set-key (kbd "C-*") 'evil-search-symbol-forward)
 ;; (global-set-key (kbd "C-#") 'evil-search-symbol-backward)
 
+(use-package evil-nerd-commenter
+:ensure t
+:config
+)
 ;(evilnc-default-hotkeys)
 ;(setq evilnc-hotkey-comment-operator ",,")
 
@@ -1324,37 +1328,50 @@ Repeated invocations toggle between the two most recently open buffers."
    ("t" yas-tryout-snippe  "try snipet" :color blue)
    ("q" nil "cancel")))
 
-(global-set-key
+(global-set-key                         
  (kbd "C-M-e")
- (defhydra hydra-editing ()
+ (defhydra hydra-editing (:color blue)
    "editing command "
-   ("u" move-text-up  "marked up" :color red)
-   ("d" move-text-down "marked down" :color red)
+   ("e" hydra-edit-extra/body  "Extra editing commands")
+   ("<up>" move-text-up  "marked up" :color red)
+   ("<down>" move-text-down "marked down" :color red)
    ("p" duplicate-line  "dup line" :color red)
-   (";" comment-or-uncomment-region  "comment paste" :color blue)
-   ("l" z/comment-line  "comment line" :color blue)
-   ("L" z/copy-comment-paste  "comment paste" :color blue)
-   ("f" flush-blank-line  "flush blank" :color blue)
-   ("u" z-fix-characters "fix unicode" :color blue)
-   ("U" upcase-region  "upcase" :color blue)
-   ("D" downcase-region  "downcase" :color blue)
+   (";"  hydra-commenting/body  "comment!" )
+   ("f" flush-blank-line  "flush blank" )
+   ("u" z-fix-characters "fix unicode" )
+   ("R" revert-buffer  "revert buffer before changes" ) 
    ("q" nil "cancel")))
 
-(global-set-key
- (kbd "<f4>")
- (defhydra hydra-commenting ()
-   "wrapping in org blocks"
-   ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
-   ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
-   ("r"    z/hydra-wrap-R "R" :color blue)
-   ("b"   z/hydra-wrap-bash  "bash" :color blue)
-   ("q" nil "cancel")))
+(defhydra hydra-edit-extra (:color blue :hint nil )
+     "
+fix _u_nicode issue  // u_p_case region // _d_owncase region 
+     "
+     ("u" z-fix-characters  "fix unicode" ) 
+     ("p" upcase-region  "upcase region" ) 
+     ("d" downcase-region  "downcase region" ) 
+     ("q" nil "cancel" nil)
+)
+
+(defhydra hydra-commenting (:color blue  )
+     "
+comment  _;_ // comment _t_o line // comment para_g_raph // co_p_y-paste-comment 
+comment _e_macs function  // copy-paste-comment-function _r_  
+
+     "
+     (";" evilnc-comment-or-uncomment-lines  "comment" ) 
+     ("t" evilnc-quick-comment-or-uncomment-to-the-line   "c 2 line"  nil ) 
+     ("g" evilnc-comment-or-uncomment-paragraphs  "c paragraph"  nil ) 
+     ("p" evilnc-copy-and-comment-lines  "c,c,p"  nil ) 
+     ("e" z/comment-line  "comment-line-emacsfun" :color blue)
+     ("r" z/copy-comment-paste  "c,c,p-fun " :color blue)
+     ("q" nil "cancel" nil)
+)
 
 (global-set-key
  (kbd "<f3>")
  (defhydra hydra-commenting ()
    "spell checking "
-   ("<f3>" endless/ispell-word-then-abbre  "check and add to abbrv" :color blue)
+   ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
    ("i"    ispell  "start spell checker" :color blue)
    ("w"   ispell-word  "check word" :color blue)
    ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
@@ -1402,6 +1419,16 @@ Repeated invocations toggle between the two most recently open buffers."
    ("q" nil "cancel")))
 
 (global-set-key
+ (kbd "<f4>")
+ (defhydra hydra-commenting ()
+   "wrapping in org blocks"
+   ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
+   ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
+   ("r"    z/hydra-wrap-R "R" :color blue)
+   ("b"   z/hydra-wrap-bash  "bash" :color blue)
+   ("q" nil "cancel")))
+
+(global-set-key
  (kbd "C-M-;")
  (defhydra hydra-avi ()
    "yas command "
@@ -1440,7 +1467,15 @@ Repeated invocations toggle between the two most recently open buffers."
 ;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
 ;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
 
-
+(defhydra hydra-goto-line (:pre (progn
+                                  (linum-mode 1))
+                           :post (progn
+                                   (linum-mode -1))
+                           :color blue)
+  "goto"
+  ("g" goto-line "line")
+  ("c" goto-char "char")
+  ("q" nil "quit"))
 
 ;; move lines up dowb with C-S-pgup/pgdown
 (global-set-key [(control shift prior )]  'move-line-up)
