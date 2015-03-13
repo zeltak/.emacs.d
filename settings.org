@@ -1285,6 +1285,29 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 )
 ;(global-set-key (kbd "C-d") 'duplicate-line)
 #+END_SRC
+*** copy current line
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring.
+      Ease of use features:
+      - Move to start of next line.
+      - Appends the copy on sequential calls.
+      - Use newline as last char even on the last line of the buffer.
+      - If region is active, copy its lines."
+    (interactive "p")
+    (let ((beg (line-beginning-position))
+          (end (line-end-position arg)))
+      (when mark-active
+        (if (> (point) (mark))
+            (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+          (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+      (if (eq last-command 'copy-line)
+          (kill-append (buffer-substring beg end) (< end beg))
+        (kill-ring-save beg end)))
+    (kill-append "\n" nil)
+    (beginning-of-line (or (and arg (1+ arg)) 2))
+    (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+#+END_SRC
 *** auto spell correction function
 from:
 http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
@@ -1482,6 +1505,30 @@ Repeated invocations toggle between the two most recently open buffers."
       (read-string "Google: ")))))
 #+END_SRC
 
+** test Emacs config
+#+BEGIN_SRC emacs-lisp :results none
+(defun ora-test-emacs ()
+  (interactive)
+  (require 'async)
+  (async-start
+   (lambda () (shell-command-to-string
+          "emacs --batch --eval \"
+(condition-case e
+    (progn
+      (load \\\"~/.emacs.d/settings.el\\\")
+      (message \\\"-OK-\\\"))
+  (error
+   (message \\\"ERROR!\\\")
+   (signal (car e) (cdr e))))\""))
+   `(lambda (output)
+      (if (string-match "-OK-" output)
+          (when ,(called-interactively-p 'any)
+            (message "All is well"))
+        (switch-to-buffer-other-window "*startup error*")
+        (delete-region (point-min) (point-max))
+        (insert output)
+        (search-backward "ERROR!")))))
+#+END_SRC
 * Macros
 ** org faces
 
@@ -1604,14 +1651,16 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
 #+END_SRC
-** key-chord
+** editing 
+#+BEGIN_SRC emacs-lisp :results none
+(key-chord-define-global "yy"     'z/copy-line)
+(key-chord-define-global "jj"     'avi-goto-char-2)
+#+END_SRC
+** movment
 
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (key-chord-define-global "uu"     'undo)
-  ;; (key-chord-define-global "ui"     'undo)
-  ;; (key-chord-define-global "fj" 'ace-jump-word-mode)
-  ;; (key-chord-define-global "fl" 'ace-jump-line-mode)
-  ;; (key-chord-define-global "fk" 'ace-jump-char-mode)
+(global-unset-key (kbd "M-`"))
+(global-set-key (kbd "M-`") 'avi-goto-char-2)
 #+END_SRC
 
 ** hydra
@@ -1627,10 +1676,10 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     ("l" hydra-move-splitter-right)))
  #+END_SRC
 
-*** vim
-#+BEGIN_SRC emacs-lisp :results none
+*** TODO vim
+
 (global-set-key
- (kbd "C-z")
+ (kbd "")
  (defhydra hydra-vi
      (:pre
       (set-cursor-color "#e52b50")
@@ -1649,53 +1698,48 @@ Repeated invocations toggle between the two most recently open buffers."
    ("d" delete-region "del" :color blue)
    ("y" kill-ring-save "yank" :color blue)
    ("q" nil "quit")))
-#+END_SRC
 
-complex example 
 
-#+BEGIN_EXAMPLE
-
-(defhydra hydra-vi (:body-pre hydra-vi/pre
-                    :color    amaranth)
-  "vi"
-  ;; basic navigation
-  ("l"        forward-char                  nil)
-  ("h"        backward-char                 nil)
-  ("j"        next-line                     nil)
-  ("k"        previous-line                 nil)
-  ;; mark
-  ("m"        set-mark-command              "mark")
-  ("C-o"      (set-mark-command 4)          "jump to prev location")
-  ;; beginning/end of line
-  ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
-  ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
-  ("$"        move-end-of-line              "end of line")
-  ;; word navigation
-  ("e"        forward-word                  "end of word")
-  ("w"        modi/forward-word-begin       "beg of next word")
-  ("b"        backward-word                 "beg of word")
-  ;; page scrolling
-  ("<prior>"  scroll-down-command           "page up")
-  ("<next>"   scroll-up-command             "page down")
-  ;; delete/cut/copy/paste
-  ("x"        delete-forward-char           "del char")
-  ("d"        my/iregister-cut              "cut/del")
-  ("D"        smart-kill-whole-line         "cut/del line")
-  ("y"        my/iregister-copy             "copy")
-  ("p"        yank                          "paste")
-  ;; beginning/end of buffer and go to line
-  ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
-  ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
-  ("<return>" goto-line                     "goto line")
-  ;; undo/redo
-  ("u"        undo-tree-undo                "undo")
-  ("C-r"      undo-tree-redo                "redo")
-  ;; misc
-  ("<SPC>"    ace-jump-mode                 "ace jump")
-  ;; exit points
-  ("q"        hydra-vi/post                 "cancel" :color blue))
-(bind-key "C-:" #'hydra-vi/body modi-mode-map)
-#+END_EXAMPLE
+  (defhydra hydra-vi (:body-pre hydra-vi/pre
+                      :color    amaranth)
+    "vi"
+    ;; basic navigation
+    ("l"        forward-char                  nil)
+    ("h"        backward-char                 nil)
+    ("j"        next-line                     nil)
+    ("k"        previous-line                 nil)
+    ;; mark
+    ("m"        set-mark-command              "mark")
+    ("C-o"      (set-mark-command 4)          "jump to prev location")
+    ;; beginning/end of line
+    ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+    ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+    ("$"        move-end-of-line              "end of line")
+    ;; word navigation
+    ("e"        forward-word                  "end of word")
+    ("w"        modi/forward-word-begin       "beg of next word")
+    ("b"        backward-word                 "beg of word")
+    ;; page scrolling
+    ("<prior>"  scroll-down-command           "page up")
+    ("<next>"   scroll-up-command             "page down")
+    ;; delete/cut/copy/paste
+    ("x"        delete-forward-char           "del char")
+    ("d"        my/iregister-cut              "cut/del")
+    ("D"                 "cut/del line")
+    ("y"        my/iregister-copy             "copy")
+    ("p"        yank                          "paste")
+    ;; beginning/end of buffer and go to line
+    ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
+    ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
+    ("<return>" goto-line                     "goto line")
+    ;; undo/redo
+    ("u"        undo-tree-undo                "undo")
+    ("C-r"      undo-tree-redo                "redo")
+    ;; misc
+    ("<SPC>"    ace-jump-mode                 "ace jump")
+    ;; exit points
+    ("q"        hydra-vi/post                 "cancel" :color blue))
+;  (bind-key "C-:" #'hydra-vi/body modi-mode-map) ;
 
 *** window switch
 
@@ -1859,7 +1903,6 @@ You can use arrow-keys or WASD.
 
 
 
-
 *** yas 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -1881,7 +1924,7 @@ You can use arrow-keys or WASD.
    (global-set-key                         
     (kbd "C-M-e")
     (defhydra hydra-editing (:color blue)
-      "editing command "
+      "editing command"
       ("e" hydra-edit-extra/body  "Extra editing commands")
       ("<up>" move-text-up  "marked up" :color red)
       ("<down>" move-text-down "marked down" :color red)
@@ -1941,21 +1984,19 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("dd"  (insert-char ?‘¡°) "‘¡°") ; curved double quotes open
   ("df"  (insert-char ?‘¡±) "‘¡±") ; curved double quotes close
 
-
-*** spelling
-#+BEGIN_SRC emacs-lisp :results none
-  (global-set-key
-   (kbd "<f3>")
-   (defhydra hydra-commenting ()
-     "spell checking "
-     ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
-     ("i"    ispell  "start spell checker" :color blue)
-     ("w"   ispell-word  "check word" :color blue)
-     ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
-     ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
-     ("q" nil "cancel")))
-
-#+END_SRC
+**** spelling
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key
+    (kbd "<f3>")
+    (defhydra hydra-spell  ()
+      "spell checking "
+      ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
+      ("i"    ispell  "start spell checker" :color blue)
+      ("w"   ispell-word  "check word" :color blue)
+      ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
+      ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
+      ("q" nil "cancel")))
+ #+END_SRC
 
 *** org
 **** org cooking 
@@ -2080,7 +2121,7 @@ _h_tml    ^ ^        _A_SCII:
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key
     (kbd "<f4>")
-    (defhydra hydra-commenting ()
+    (defhydra hydra-org-blocks ()
       "wrapping in org blocks"
       ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
       ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
@@ -2090,7 +2131,7 @@ _h_tml    ^ ^        _A_SCII:
 
  #+END_SRC
 
-*** ace 
+*** TODO ace
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-;")
@@ -2102,11 +2143,14 @@ _h_tml    ^ ^        _A_SCII:
    ("4" avi-copy-line  "avi-copy-line" :color blue)
    ("3" avi-move-line  "avi-move-line" :color blue)
    ("r" avi-copy-region  "avi-copy-region" :color blue)
-   ("1" avi-goto-word-1  "avi-goto-word-1" :color blue)
-   ("0" avi-goto-word-1  "avi-goto-word-0" :color blue)
+   ("a" avi-goto-word-1  "avi-goto-word-1" :color blue)
+   ("v" avi-goto-word-0  "avi-goto-word-0" :color blue)
    ("z" ace-jump-zap  "zap text" :color blue)
    ("q" nil "cancel")))
 #+END_SRC
+
+
+
 *** buffer/window  
 #+BEGIN_SRC emacs-lisp :results none
 
@@ -4172,33 +4216,31 @@ file:/home/zeltak/.emacs.d/abbrv/misc_abbrv.txt
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none
-  (setq gnus-select-method '(nntp "news.gmane.org"))
+  ;; (setq gnus-select-method '(nntp "news.gmane.org"))
+
+  ;; (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+  ;;                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+  ;;                                   (nnimap-server-port 993)
+  ;;                                   (nnimap-stream ssl)))
+
+  ;; ;for smtp
+  ;;   (setq message-send-mail-function 'smtpmail-send-it
+  ;;         smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+  ;;         smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+  ;;         smtpmail-default-smtp-server "smtp.gmail.com"
+  ;;         smtpmail-smtp-server "smtp.gmail.com"
+  ;;         smtpmail-smtp-service 587
+  ;;         smtpmail-local-domain "gmail.com")
   
-  (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
-                                    (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
-                                    (nnimap-server-port 993)
-                                    (nnimap-stream ssl)))
-  
-  ;for smtp
-    (setq message-send-mail-function 'smtpmail-send-it
-          smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-          smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-          smtpmail-default-smtp-server "smtp.gmail.com"
-          smtpmail-smtp-server "smtp.gmail.com"
-          smtpmail-smtp-service 587
-          smtpmail-local-domain "gmail.com")
-    
-  
-  
-  
-  
+
+
+
+
 #+END_SRC
 
 * Extensions
 ** Xha menu
-
 #+BEGIN_SRC emacs-lisp :results none
-
 (if (string= system-name "voices") 
 (progn
 
@@ -4250,8 +4292,7 @@ file:/home/zeltak/.emacs.d/abbrv/misc_abbrv.txt
    )
   (find-file (cdr (assoc openCode xah-filelist)) ) )
 
-(global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'z-open-file-fast)
+;(global-set-key (kbd "XXX") 'z-open-file-fast)
 
 #+END_SRC
 ** menu per machine

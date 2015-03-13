@@ -982,6 +982,27 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 )
 ;(global-set-key (kbd "C-d") 'duplicate-line)
 
+(defun z/copy-line (arg)
+    "Copy lines (as many as prefix argument) in the kill ring.
+      Ease of use features:
+      - Move to start of next line.
+      - Appends the copy on sequential calls.
+      - Use newline as last char even on the last line of the buffer.
+      - If region is active, copy its lines."
+    (interactive "p")
+    (let ((beg (line-beginning-position))
+          (end (line-end-position arg)))
+      (when mark-active
+        (if (> (point) (mark))
+            (setq beg (save-excursion (goto-char (mark)) (line-beginning-position)))
+          (setq end (save-excursion (goto-char (mark)) (line-end-position)))))
+      (if (eq last-command 'copy-line)
+          (kill-append (buffer-substring beg end) (< end beg))
+        (kill-ring-save beg end)))
+    (kill-append "\n" nil)
+    (beginning-of-line (or (and arg (1+ arg)) 2))
+    (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
+
 ; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
 
  (define-prefix-command 'endless/toggle-map)
@@ -1133,6 +1154,28 @@ Repeated invocations toggle between the two most recently open buffers."
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
 
+(defun ora-test-emacs ()
+  (interactive)
+  (require 'async)
+  (async-start
+   (lambda () (shell-command-to-string
+          "emacs --batch --eval \"
+(condition-case e
+    (progn
+      (load \\\"~/.emacs.d/settings.el\\\")
+      (message \\\"-OK-\\\"))
+  (error
+   (message \\\"ERROR!\\\")
+   (signal (car e) (cdr e))))\""))
+   `(lambda (output)
+      (if (string-match "-OK-" output)
+          (when ,(called-interactively-p 'any)
+            (message "All is well"))
+        (switch-to-buffer-other-window "*startup error*")
+        (delete-region (point-min) (point-max))
+        (insert output)
+        (search-backward "ERROR!")))))
+
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -1236,11 +1279,11 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
 
-;; (key-chord-define-global "uu"     'undo)
-;; (key-chord-define-global "ui"     'undo)
-;; (key-chord-define-global "fj" 'ace-jump-word-mode)
-;; (key-chord-define-global "fl" 'ace-jump-line-mode)
-;; (key-chord-define-global "fk" 'ace-jump-char-mode)
+(key-chord-define-global "yy"     'z/copy-line)
+(key-chord-define-global "jj"     'avi-goto-char-2)
+
+(global-unset-key (kbd "M-`"))
+(global-set-key (kbd "M-`") 'avi-goto-char-2)
 
 ; (require 'hydra-examples)
 ; (hydra-create "C-M-o" hydra-example-move-window-splitter)
@@ -1250,27 +1293,6 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     ("j" hydra-move-splitter-down)
 ;     ("k" hydra-move-splitter-up)
 ;     ("l" hydra-move-splitter-right)))
-
-(global-set-key
- (kbd "C-z")
- (defhydra hydra-vi
-     (:pre
-      (set-cursor-color "#e52b50")
-      :post
-      (set-cursor-color "green")
-      :color amaranth)
-   "vi"
-   ("l" forward-char)
-   ("h" backward-char)
-   ("j" next-line)
-   ("k" previous-line)
-   ("m" set-mark-command "mark")
-   ("a" move-beginning-of-line "beg")
-   ("e" move-end-of-line "end")
-   ("v" evil-mode "evil")
-   ("d" delete-region "del" :color blue)
-   ("y" kill-ring-save "yank" :color blue)
-   ("q" nil "quit")))
 
 (global-set-key
  (kbd "C-M-w")
@@ -1331,7 +1353,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key                         
  (kbd "C-M-e")
  (defhydra hydra-editing (:color blue)
-   "editing command "
+   "editing command"
    ("e" hydra-edit-extra/body  "Extra editing commands")
    ("<up>" move-text-up  "marked up" :color red)
    ("<down>" move-text-down "marked down" :color red)
@@ -1369,7 +1391,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (global-set-key
  (kbd "<f3>")
- (defhydra hydra-commenting ()
+ (defhydra hydra-spell  ()
    "spell checking "
    ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
    ("i"    ispell  "start spell checker" :color blue)
@@ -1420,7 +1442,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (global-set-key
  (kbd "<f4>")
- (defhydra hydra-commenting ()
+ (defhydra hydra-org-blocks ()
    "wrapping in org blocks"
    ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
    ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
@@ -1438,8 +1460,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
    ("4" avi-copy-line  "avi-copy-line" :color blue)
    ("3" avi-move-line  "avi-move-line" :color blue)
    ("r" avi-copy-region  "avi-copy-region" :color blue)
-   ("1" avi-goto-word-1  "avi-goto-word-1" :color blue)
-   ("0" avi-goto-word-1  "avi-goto-word-0" :color blue)
+   ("a" avi-goto-word-1  "avi-goto-word-1" :color blue)
+   ("v" avi-goto-word-0  "avi-goto-word-0" :color blue)
    ("z" ace-jump-zap  "zap text" :color blue)
    ("q" nil "cancel")))
 
@@ -2931,21 +2953,21 @@ take care of the wrapping of each item for me"
 ;;       smtpmail-smtp-service 587
 ;;       smtpmail-local-domain "gmail.com")
 
-(setq gnus-select-method '(nntp "news.gmane.org"))
+;; (setq gnus-select-method '(nntp "news.gmane.org"))
 
-(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
-                                  (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
-                                  (nnimap-server-port 993)
-                                  (nnimap-stream ssl)))
+;; (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+;;                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
+;;                                   (nnimap-server-port 993)
+;;                                   (nnimap-stream ssl)))
 
-;for smtp
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-        smtpmail-default-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 587
-        smtpmail-local-domain "gmail.com")
+;; ;for smtp
+;;   (setq message-send-mail-function 'smtpmail-send-it
+;;         smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+;;         smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+;;         smtpmail-default-smtp-server "smtp.gmail.com"
+;;         smtpmail-smtp-server "smtp.gmail.com"
+;;         smtpmail-smtp-service 587
+;;         smtpmail-local-domain "gmail.com")
 
 (if (string= system-name "voices") 
 (progn
@@ -2994,8 +3016,7 @@ take care of the wrapping of each item for me"
    )
   (find-file (cdr (assoc openCode xah-filelist)) ) )
 
-(global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'z-open-file-fast)
+;(global-set-key (kbd "XXX") 'z-open-file-fast)
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
