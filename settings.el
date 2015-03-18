@@ -755,6 +755,26 @@
 ;; async shell commands
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 
+(use-package unfill
+:ensure t
+:config
+)
+
+(use-package indent-guide
+:ensure t
+:config
+)
+
+(use-package fill-column-indicator
+:ensure t
+:config
+)
+
+(use-package drag-stuff
+ :ensure t
+ :config
+  )
+
 (defun z-fix-characters 
 (start end) 
 (interactive "r") 
@@ -874,39 +894,6 @@ If region is active, apply to active region instead."
   (forward-line -1)
   (indent-according-to-mode))
 
-(defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
-(defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
-
-(defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
-
 (defun z-insert-date (&optional addTimeStamp-p)
   "Insert current date and or time. In this format yyyy-mm-dd.
  When called with `universal-argument', insert date and time, e.g. 2012-05-28T07:06:23-07:00
@@ -971,6 +958,26 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 ;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
 ; (goto-char (point-min)) (apply #'query-replace-regexp rest)))
 
+(defun duplicate-current-line-or-region (arg)
+  "Duplicates the current line or region ARG times.
+If there's no region, the current line will be duplicated. However, if
+there's a region, all lines that region covers will be duplicated."
+  (interactive "p")
+  (let (beg end (origin (point)))
+    (if (and mark-active (> (point) (mark)))
+        (exchange-point-and-mark))
+    (setq beg (line-beginning-position))
+    (if mark-active
+        (exchange-point-and-mark))
+    (setq end (line-end-position))
+    (let ((region (buffer-substring-no-properties beg end)))
+      (dotimes (i arg)
+        (goto-char end)
+        (newline)
+        (insert region)
+        (setq end (point)))
+      (goto-char (+ origin (* (length region) arg) arg)))))
+
 (defun duplicate-line()
   (interactive)
   (move-beginning-of-line 1)
@@ -980,7 +987,6 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
   (next-line 1)
   (yank)
 )
-;(global-set-key (kbd "C-d") 'duplicate-line)
 
 (defun z/copy-line (arg)
     "Copy lines (as many as prefix argument) in the kill ring.
@@ -1024,6 +1030,13 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
        (define-abbrev
          (if p local-abbrev-table global-abbrev-table)
          bef aft))))
+
+(defun z/regex-delete-numeric  ()
+  "delete all numeric characters"
+  (interactive)
+  (goto-char (point-min))
+  (replace-regexp "[0-9]" "")
+)
 
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
@@ -1082,11 +1095,11 @@ Repeated invocations toggle between the two most recently open buffers."
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
-(defun z-save-file-close-window ()
+(defun z-save-buffer-close-window ()
   "DOCSTRING"
   (interactive)
-    (save-buffer )
-    (delete-frame)
+    (save-buffer)
+    (kill-this-buffer)
   )
 
 (defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
@@ -1278,6 +1291,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "C-M-p"))
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
+(global-unset-key (kbd "C-M-b"))
 
 (key-chord-define-global "yy"     'z/copy-line)
 (key-chord-define-global "jj"     'avi-goto-char-2)
@@ -1295,8 +1309,8 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     ("l" hydra-move-splitter-right)))
 
 (global-set-key
- (kbd "C-M-w")
- (defhydra hydra-window ()
+ (kbd "<f12>")
+ (defhydra hydra-window (:color blue)
    "window"
    ("h" windmove-left)
    ("j" windmove-down)
@@ -1309,33 +1323,22 @@ Repeated invocations toggle between the two most recently open buffers."
                     'hydra-window/body)
           (throw 'hydra-disable t))
         "ace")
-   ("v" (lambda ()
+   ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
         "vert")
-   ("x" (lambda ()
+   ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
         "horz")
-   ("s" (lambda ()
-          (interactive)
-          (ace-window 4)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "swap")
-   ("t" transpose-frame "'")
-   ("d" (lambda ()
-          (interactive)
-          (ace-window 16)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "del")
-   ("o" delete-other-windows "one" :color blue)
-   ("i" ace-maximize-window "ace-one" :color blue)
+   ("t" transpose-windows  "transpose")
+   ("<f12>" other-window "other-window")
+   ("x" delete-window "delete window")
+   ("x" delete-other-windows "delete all other  windows")
+   ("i" ace-maximize-window "ace-one" )
+   ("r" resize-window "resize" )
    ("q" nil "cancel")))
 
 (global-set-key
@@ -1355,9 +1358,11 @@ Repeated invocations toggle between the two most recently open buffers."
  (defhydra hydra-editing (:color blue)
    "editing command"
    ("e" hydra-edit-extra/body  "Extra editing commands")
-   ("<up>" move-text-up  "marked up" :color red)
-   ("<down>" move-text-down "marked down" :color red)
-   ("p" duplicate-line  "dup line" :color red)
+   ("<up>" drag-stuff-up  "marked up" :color red)
+   ("<down>" drag-stuff-down  "marked down" :color red)
+;   ("<left>" drag-stuff-left  "marked left" :color red)
+ ;  ("<right>" drag-stuff-right "marked right" :color red)
+   ("p" duplicate-current-line-or-region  "duplicate" :color red)
    (";"  hydra-commenting/body  "comment!" )
    ("f" flush-blank-line  "flush blank" )
    ("u" z-fix-characters "fix unicode" )
@@ -1371,7 +1376,9 @@ fix _u_nicode issue  // u_p_case region // _d_owncase region
      ("u" z-fix-characters  "fix unicode" ) 
      ("p" upcase-region  "upcase region" ) 
      ("d" downcase-region  "downcase region" ) 
+     ("f" toggle-fill-unfill  "fill/unfill")
      ("q" nil "cancel" nil)
+     ("1" z/regex-delete-numeric "delete numbers")
 )
 
 (defhydra hydra-commenting (:color blue  )
@@ -1399,6 +1406,16 @@ comment _e_macs function  // copy-paste-comment-function _r_
    ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
    ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
    ("q" nil "cancel")))
+
+(global-set-key
+   (kbd "<f9>")
+(defhydra hydra-org (:color blue :hint nil)
+  "
+org_headlines _<f9>_
+"
+  ("<f9>"     helm-org-headlines   "org-headlines")
+    ("q"     nil                          "cancel" )
+))
 
 (global-set-key
  (kbd "<f1> c")
@@ -1466,28 +1483,40 @@ comment _e_macs function  // copy-paste-comment-function _r_
    ("q" nil "cancel")))
 
 (global-set-key
- (kbd "C-M-b")
- (defhydra hydra-buffer  ()
-   "buffer commands "
-   ("s" save-buffer "save buffer"  :color blue)
-   ("x" kill-this-buffer "kill buffer"  :color blue)
-   ("o" z-kill-other-buffers "kill all but current" :color blue)
-   ("i" kill-buffer  "ido-kill" :color blue)
-   ("c" z-save-file-close-window "save and close"  :color blue)
-   ("q" nil "cancel")))
+   (kbd "<f11>")
+   (defhydra hydra-buffer  (:color blue)
+     "buffer commands "
+     ("s" save-buffer "save buffer"  )
+     ("x" kill-this-buffer "kill buffer"  )
+     ("o" z-kill-other-buffers "kill all but current" )
+     ("i" kill-buffer  "ido-kill" )
+     ("c" z-save-buffer-close-window "save and close"  )
+     ("k" kill-buffer "helm kill buffer" )
+     ("n" next-user-buffer  "next buffer" )
+     ("p" previous-user-buffer "prev buffer"  )
+     ("N" next-emacs-buffer "next Emacs  buffer"  )
+     ("P" previous-emacs-buffer "prev emacs buffer"  )
+     ("<f11>" switch-to-previous-buffer  "last buffer"  )
+     ("q" nil "cancel")))
 
-;; (global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-;; (global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
-;; (global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
-;; (global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
-;; (global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
-
-;; ;buffers movment
-;; (global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
-;; (global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
-;; (global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
-;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
-;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
+(global-set-key
+   (kbd "<f1>")
+(defhydra hydra-toggles (:color blue)
+  "toggle Emacs configs"
+  ("g"     indent-guide-mode            "indent guide")
+  ("f"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord")
+  ("l"     linum-mode             "linum")
+  ("e"     evil-mode                    "evil mode")
+  ("r"     read-only-mode       "read only mode ") 
+  ("w"     whitespace-mode              "whitespace" )
+  ("=" text-scale-increase "font plus" :color red)
+  ("-" text-scale-decrease "font minus" :color red)
+  ("p" list-packages          "list")
+  ("c" cua-mode          "cua")
+  ("h k"  describe-key          "hel-keys")
+  ("q"     nil                          "cancel" )
+))
 
 (defhydra hydra-goto-line (:pre (progn
                                   (linum-mode 1))
@@ -1499,38 +1528,41 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("c" goto-char "char")
   ("q" nil "quit"))
 
-;; move lines up dowb with C-S-pgup/pgdown
-(global-set-key [(control shift prior )]  'move-line-up)
-(global-set-key [(control shift next)]  'move-line-down)
+(global-set-key
+   (kbd "<f7>")
+(defhydra hydra-helm (:color blue :hint nil)
+  "
+helm-mini _<f7>_  // h_e_lm extra
+_k_ill ring
+_m_ark ring
+_r_ecents
+_l_ocate
+_r_ecents
+"
+  ("<f7>"     helm-mini            "helm-mini")
+  ("e"     hydra-helm-extra/body            "extra helm commands")
+  ("k"     helm-show-kill-ring            "killring")
+  ("m"     helm-mark-ring            "markring")
+  ("r"     helm-recentf            "recents")
+  ("l"     helm-locate            "locate")
+  ("f"     helm-find-files            "find files")
+  ("a"     helm-apropos            "apropos")
+  ("o"     helm-occur            "occur")
+  ("b"     helm-buffer-list            "buffers")
+    ("q"     nil                          "cancel" )
+))
 
-; kill (delete) from word to back of the line
-(global-set-key (kbd "C-<backspace>") (lambda ()
-                                        (interactive)
-                                        (kill-line 0)))
+(defhydra hydra-helm-extra (:color blue :hint nil )
+       "
+ helm meta-_x_ 
+helm _t_op
+       "
+       ("x" helm-M-x  "helm m-x" ) 
+       ("t"     helm-top            "helm top") 
+       ("q" nil "cancel" nil)
+  )
 
-(global-set-key (kbd "M-2") 'er/expand-region)
 
-(global-set-key (kbd "<f5> g") 'gnus)
-
-(global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
-
-(global-set-key (kbd "<f7> y") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> k") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> r") 'helm-recentf)
-(global-set-key (kbd "<f7> l") 'helm-locate)
-(global-set-key (kbd "<f7> x") 'helm-M-x)
-(global-set-key (kbd "<f7> f") 'helm-find-files)
-;to replace native C-x C-f
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "<f7> o") 'helm-occur)
-(global-set-key (kbd "<f7> h") 'helm-apropos)
-(global-set-key (kbd "<f7> t") 'helm-top)
-
-(global-set-key (kbd "<f7> b") 'helm-buffers-list)
-(global-set-key (kbd "<f7> <f7>") 'helm-mini)
-
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-set-key (kbd "<f7> m") 'helm-mark-ring)
 
 (global-set-key (kbd "<f8> <f8> ") 'helm-bookmarks)
 (global-set-key (kbd "<f8> h") 'bookmarks-jump)
@@ -1539,99 +1571,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (global-set-key (kbd "<f8> b") 'bmkp-bookmark-set-confirm-overwrite)
 (global-set-key (kbd "<f8> s") 'bmkp-bmenu-filter-tags-incrementally)
 (global-set-key (kbd "<f8> c ") 'helm-chrome-bookmarks)
-
-(global-set-key (kbd "<f9> x") 'org-archive-subtree)
-(global-set-key (kbd "<f9> u") 'outline-up-heading)
-(global-set-key (kbd "<f9> e") 'org-export-dispatch)
-(global-set-key (kbd "<f9> t") 'org-toggle-inline-images)
-(global-set-key (kbd "<f9> c") 'org-columns)
-(global-set-key (kbd "<f9> q") 'org-columns-quit)
-(global-set-key (kbd "<f9> b") 'org-bibtex-yank)
-(global-set-key (kbd "<f9> r") 'org-refile)
-(global-set-key (kbd "<f9> B") 'org-bibtex-create)
-(global-set-key (kbd "<f9> s") 'org-sort)
-(global-set-key (kbd "<f9> n") 'org-narrow-to-subtree)
-(global-set-key (kbd "<f9> w") 'widen)
-(global-set-key (kbd "<f9> d") 'org-download-screenshot)
-(global-set-key (kbd "<f9> D") 'org-download-delete)
-;Create an ID for the entry at point if it does not yet have one.
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key (kbd "<f9> I") 'org-id-get-create)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "<f9> p") 'org-capture)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key (kbd "<f9> l s") 'org-store-link)
-(global-set-key (kbd "<f9> l i") 'org-insert-link)
-(global-set-key (kbd "<f9> l c") 'org-id-copy)
-(global-set-key (kbd "<f9> l e") 'org-id-copy)
-
-;movies DL
-  (global-set-key (kbd "<f9> <f9> v")
-    (lambda ()
-      (interactive)
-        (org-id-goto "62b49339-cd19-4a3c-a6fd-70dd45be4670")))
-;  emacs
-  (global-set-key (kbd "<f9> <f9> e ")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "38a15adf-f505-4a54-b1d9-f76b22ce1147")
-        (org-narrow-to-subtree)
-))
-  
-  
-  ;org
-  (global-set-key (kbd "<f9> <f9> o")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "be4759e1-2951-4c91-a155-056bc2a16d9f")
-        (org-narrow-to-subtree)
-))
-  
-  ;ssh
-  (global-set-key (kbd "<f9> <f9> s")
-    (lambda ()
-      (interactive)
-        (org-id-goto "bf60adbf-fc3a-4eed-be14-a9244c3fef4e")))
-  
-  ;beets
-  (global-set-key (kbd "<f9> <f9> b")
-    (lambda ()
-      (interactive)
-        (org-id-goto "e0837792-f794-495e-908f-f75bdb4462b3")))
-  
-  
-  ;git
-  (global-set-key (kbd "<f9> <f9> g")
-    (lambda ()
-      (interactive)
-        (org-id-goto "7816c1c8-be9a-4fd5-8121-15c190885cd7")))
-  
-  ;mobileorg
-  (global-set-key (kbd "<f9> <f9> m")
-    (lambda ()
-      (interactive)
-        (org-id-goto "0367963c-9ba2-44ee-9b30-bf5b7200b873")))
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> p")
-    (lambda ()
-      (interactive)
-        (org-id-goto "47bad96f-740c-4b93-b739-a4b925d85514")))
-  
-  ;capture settings
- ; (global-set-key (kbd "<f9> <f9> e c")
-  ;  (lambda ()
-   ;   (interactive)
-    ;    (org-id-goto "dfffbe27-21bc-4fb9-908e-f492f4afeb60")))
-  
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> c c ")
-    (lambda ()
-      (interactive)
-        (org-id-goto "8193566d-2dd5-4368-8238-fac2fc9aa7e9")))
 
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key (kbd "<f10> b s ") 'org-babel-execute-subtree)
@@ -1656,31 +1595,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (global-set-key (kbd "<f10> t d") 'org-table-cut-region)
 (global-set-key (kbd "<f10> t p") 'org-table-paste-rectangle)
 (global-set-key (kbd "<f10> t c") 'org-table-create-or-convert-from-region)
-
-;;saving and closing
-(global-set-key (kbd "<f11> s") 'save-buffer); Aux save
-(global-set-key (kbd "<f11> x") 'kill-this-buffer) ; Close file and buffer
-(global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-(global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
-(global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
-(global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
-(global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
-
-;buffers movment
-(global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
-(global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
-(global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
-(global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
-(global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-(global-set-key (kbd "<f12><f12>") 'other-window)  
-(global-set-key (kbd "<f12> x") 'delete-window)  
-(global-set-key (kbd "<f12> z") 'delete-other-windows)  
-(global-set-key (kbd "<f12> -") 'split-window-vertically)  
-(global-set-key (kbd "<f12> =") 'split-window-right)  
-(global-set-key (kbd "<f12> +") 'split-window-below)  
-(global-set-key (kbd "<f12> r") 'resize-window)
-(global-set-key (kbd "<f12> ]") 'transpose-windows)
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")

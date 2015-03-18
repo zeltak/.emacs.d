@@ -1,4 +1,4 @@
-#+Title: setting.org
+ #+Title: setting.org
 
 
 * Emacs startup
@@ -1005,6 +1005,45 @@ https://github.com/magit/magit/blob/master/README.md#its-magit--an-emacs-mode-fo
 (push '("*Async Shell Command*" :stick t) popwin:special-display-config)
 #+END_SRC
 
+** unfill
+https://github.com/purcell/unfill
+
+makes or unmakes a marked section wider/shorter (look fill command)
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package unfill
+:ensure t
+:config
+)
+#+END_SRC
+
+** indent guide
+#+BEGIN_SRC emacs-lisp :results none
+(use-package indent-guide
+:ensure t
+:config
+)
+
+#+END_SRC
+** Fill colum mode
+#+BEGIN_SRC emacs-lisp :results none
+(use-package fill-column-indicator
+:ensure t
+:config
+)
+#+END_SRC
+
+** drag stuff
+https://github.com/rejeep/drag-stuff.el
+
+allows to drag text around via keyboard 
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package drag-stuff
+ :ensure t
+ :config
+  )
+#+END_SRC
 * Functions
 ** Encoding
 *** fix unicode characters
@@ -1159,41 +1198,6 @@ If region is active, apply to active region instead."
   (indent-according-to-mode))
 
 #+END_SRC
-*** move text up/down 
-#+BEGIN_SRC emacs-lisp :results none
-(defun move-text-internal (arg)
-   (cond
-    ((and mark-active transient-mark-mode)
-     (if (> (point) (mark))
-            (exchange-point-and-mark))
-     (let ((column (current-column))
-              (text (delete-and-extract-region (point) (mark))))
-       (forward-line arg)
-       (move-to-column column t)
-       (set-mark (point))
-       (insert text)
-       (exchange-point-and-mark)
-       (setq deactivate-mark nil)))
-    (t
-     (beginning-of-line)
-     (when (or (> arg 0) (not (bobp)))
-       (forward-line)
-       (when (or (< arg 0) (not (eobp)))
-            (transpose-lines arg))
-       (forward-line -1)))))
-
-(defun move-text-down (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines down."
-   (interactive "*p")
-   (move-text-internal arg))
-
-(defun move-text-up (arg)
-   "Move region (transient-mark-mode active) or current line
-  arg lines up."
-   (interactive "*p")
-   (move-text-internal (- arg)))
-#+END_SRC
 *** insert date
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-insert-date (&optional addTimeStamp-p)
@@ -1272,7 +1276,30 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 ; (goto-char (point-min)) (apply #'query-replace-regexp rest)))                            
 
 #+END_SRC
-*** duplicate line
+*** duplicate line/region 
+#+BEGIN_SRC emacs-lisp :results none
+(defun duplicate-current-line-or-region (arg)
+  "Duplicates the current line or region ARG times.
+If there's no region, the current line will be duplicated. However, if
+there's a region, all lines that region covers will be duplicated."
+  (interactive "p")
+  (let (beg end (origin (point)))
+    (if (and mark-active (> (point) (mark)))
+        (exchange-point-and-mark))
+    (setq beg (line-beginning-position))
+    (if mark-active
+        (exchange-point-and-mark))
+    (setq end (line-end-position))
+    (let ((region (buffer-substring-no-properties beg end)))
+      (dotimes (i arg)
+        (goto-char end)
+        (newline)
+        (insert region)
+        (setq end (point)))
+      (goto-char (+ origin (* (length region) arg) arg)))))
+#+END_SRC
+
+**** old method for line only 
 #+BEGIN_SRC emacs-lisp :results none
 (defun duplicate-line()
   (interactive)
@@ -1283,8 +1310,8 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
   (next-line 1)
   (yank)
 )
-;(global-set-key (kbd "C-d") 'duplicate-line)
 #+END_SRC
+
 *** copy current line
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/copy-line (arg)
@@ -1338,6 +1365,18 @@ file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
          (if p local-abbrev-table global-abbrev-table)
          bef aft))))
  #+END_SRC
+
+*** common used regex
+**** delete all numeric characters
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/regex-delete-numeric  ()
+  "delete all numeric characters"
+  (interactive)
+  (goto-char (point-min))
+  (replace-regexp "[0-9]" "")
+)
+#+END_SRC
+
 
 ** Root actions
 *** edit file as root
@@ -1412,13 +1451,12 @@ Repeated invocations toggle between the two most recently open buffers."
 #+END_SRC
 *** save current file and close window
 #+BEGIN_SRC emacs-lisp :results none
-(defun z-save-file-close-window ()
+(defun z-save-buffer-close-window ()
   "DOCSTRING"
   (interactive)
-    (save-buffer )
-    (delete-frame)
+    (save-buffer)
+    (kill-this-buffer)
   )
-
 #+END_SRC
 ** windows (panes)
 *** resize via menu
@@ -1650,6 +1688,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "C-M-p"))
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
+(global-unset-key (kbd "C-M-b"))
 #+END_SRC
 ** editing 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1741,12 +1780,12 @@ Repeated invocations toggle between the two most recently open buffers."
     ("q"        hydra-vi/post                 "cancel" :color blue))
 ;  (bind-key "C-:" #'hydra-vi/body modi-mode-map) ;
 
-*** window switch
+*** windows
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
- (kbd "C-M-w")
- (defhydra hydra-window ()
+ (kbd "<f12>")
+ (defhydra hydra-window (:color blue)
    "window"
    ("h" windmove-left)
    ("j" windmove-down)
@@ -1759,149 +1798,25 @@ Repeated invocations toggle between the two most recently open buffers."
                     'hydra-window/body)
           (throw 'hydra-disable t))
         "ace")
-   ("v" (lambda ()
+   ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
         "vert")
-   ("x" (lambda ()
+   ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
         "horz")
-   ("s" (lambda ()
-          (interactive)
-          (ace-window 4)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "swap")
-   ("t" transpose-frame "'")
-   ("d" (lambda ()
-          (interactive)
-          (ace-window 16)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "del")
-   ("o" delete-other-windows "one" :color blue)
-   ("i" ace-maximize-window "ace-one" :color blue)
+   ("t" transpose-windows  "transpose")
+   ("<f12>" other-window "other-window")
+   ("x" delete-window "delete window")
+   ("x" delete-other-windows "delete all other  windows")
+   ("i" ace-maximize-window "ace-one" )
+   ("r" resize-window "resize" )
    ("q" nil "cancel")))
 
 #+END_SRC
-
-complex example: 
-#+BEGIN_EXAMPLE
-;;; from http://www.emacswiki.org/emacs/ToggleWindowSplit (last example as of 2015-02-19)
-(defun window-toggle-split-direction ()
-  "Switch window split from horizontally to vertically, or vice versa.
-
-i.e. change right window to bottom, or change bottom window to right."
-  (interactive)
-  (require 'windmove)
-  (let ((done))
-    (dolist (dirs '((right . down) (down . right)))
-      (unless done
-        (let* ((win (selected-window))
-               (nextdir (car dirs))
-               (neighbour-dir (cdr dirs))
-               (next-win (windmove-find-other-window nextdir win))
-               (neighbour1 (windmove-find-other-window neighbour-dir win))
-               (neighbour2 (if next-win (with-selected-window next-win
-                                          (windmove-find-other-window neighbour-dir next-win)))))
-          ;;(message "win: %s\nnext-win: %s\nneighbour1: %s\nneighbour2:%s" win next-win neighbour1 neighbour2)
-          (setq done (and (eq neighbour1 neighbour2)
-                          (not (eq (minibuffer-window) next-win))))
-          (if done
-              (let* ((other-buf (window-buffer next-win)))
-                (delete-window next-win)
-                (if (eq nextdir 'right)
-                    (split-window-vertically)
-                  (split-window-horizontally))
-                (set-window-buffer (windmove-find-other-window neighbour-dir) other-buf))))))))
-
-;; current versions that work for me:
-;;   - ace-window         20150217.650  (from melpa)
-;;   - hydra              20150224.302  (from melpa)
-;;   - key-chord          0.5.20080915  (from marmalade)
-;;   - transpose-frame    20131221.1542 (from melpa)
-(use-package ace-window
-  ;; from http://sachachua.com/blog/2015/01/emacs-microhabit-switching-windows-windmove-ace-window-ace-jump/
-  ;; extended by http://oremacs.com/2015/01/29/more-hydra-goodness/
-  ;; :ensure t  ;; only in melpa :(
-  :config
-  (progn
-    (use-package hydra
-      :ensure t
-      :config
-      (use-package transpose-frame
-        :ensure t
-        :config
-        (progn
-          (require 'hydra-examples)
-          (defun hydra-universal-argument (arg)
-            (interactive "P")
-            (setq prefix-arg (if (consp arg)
-                                 (list (* 4 (car arg)))
-                               (if (eq arg '-)
-                                   (list -4)
-                                 '(4)))))
-
-          (lexical-let ((hydra-lv nil) ;; does not work with lv,
-                        ;; because lv creates an extra window
-                        (hydra-key-format-spec nil))
-            (defhydra hydra-window (global-map "C-M-o")
-              "
-Window Manager:
-  Move Point   ^^^^ Move Splitter   ^Ace                       ^^Split                         ^^Transpose
-^^^^^^^^^^------------------------------------------------------------------------------------------------------------------
-  _w_, _<up>_       Shift + Move    _C-a_: ace-window           _2_: split-window-below         _1_: transpose-frame
-  _a_, _<left>_                     _C-s_: ace-swap-window      _3_: split-window-right         _e_: rotate-frame-clockwise
-  _s_, _<down>_                     _C-d_: ace-delete-window    _<_: toggle-split-direction     _y_: flip-frame vertically
-  _d_, _<right>_                    _C-m_: ace-maximize-window  ^ ^                             _c_: flop-frame horizontally
-You can use arrow-keys or WASD.
-"
-              ("2" split-window-below nil)
-              ("3" split-window-right nil)
-              ("a" windmove-left nil)
-              ("s" windmove-down nil)
-              ("w" windmove-up nil)
-              ("d" windmove-right nil)
-              ("A" hydra-move-splitter-left nil)
-              ("S" hydra-move-splitter-down nil)
-              ("W" hydra-move-splitter-up nil)
-              ("D" hydra-move-splitter-right nil)
-              ("<left>" windmove-left nil)
-              ("<down>" windmove-down nil)
-              ("<up>" windmove-up nil)
-              ("<right>" windmove-right nil)
-              ("<S-left>" hydra-move-splitter-left nil)
-              ("<S-down>" hydra-move-splitter-down nil)
-              ("<S-up>" hydra-move-splitter-up nil)
-              ("<S-right>" hydra-move-splitter-right nil)
-              ("C-a" ace-window nil)
-              ("u" hydra-universal-argument nil)
-              ("C-s" ace-swap-window nil)
-              ("C-d" ace-delete-window nil)
-              ("C-m" ace-maximize-window nil)
-              ("<" window-toggle-split-direction nil)
-              ("1" transpose-frame nil)
-              ("e" rotate-frame-clockwise nil)
-              ("y" flip-frame nil)
-              ("c" flop-frame nil)
-              ("b" ido-switch-buffer "switch-buffer")
-              ("k" ido-kill-buffer "kill-buffer")
-              ("f" ido-find-file "find-file")
-              ("q" nil "quit")))
-          (use-package key-chord
-            :ensure t
-            :config
-            (progn
-              (key-chord-mode 1)
-              (key-chord-define-global "yy" 'hydra-window/body))))))))
-#+END_EXAMPLE
-
-
 
 *** yas 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1926,9 +1841,11 @@ You can use arrow-keys or WASD.
     (defhydra hydra-editing (:color blue)
       "editing command"
       ("e" hydra-edit-extra/body  "Extra editing commands")
-      ("<up>" move-text-up  "marked up" :color red)
-      ("<down>" move-text-down "marked down" :color red)
-      ("p" duplicate-line  "dup line" :color red)
+      ("<up>" drag-stuff-up  "marked up" :color red)
+      ("<down>" drag-stuff-down  "marked down" :color red)
+   ;   ("<left>" drag-stuff-left  "marked left" :color red)
+    ;  ("<right>" drag-stuff-right "marked right" :color red)
+      ("p" duplicate-current-line-or-region  "duplicate" :color red)
       (";"  hydra-commenting/body  "comment!" )
       ("f" flush-blank-line  "flush blank" )
       ("u" z-fix-characters "fix unicode" )
@@ -1936,8 +1853,6 @@ You can use arrow-keys or WASD.
       ("q" nil "cancel")))
 
  #+END_SRC
- duplicate marked region
-
 **** extra editing commands
 
  #+BEGIN_SRC emacs-lisp :results none
@@ -1948,7 +1863,9 @@ You can use arrow-keys or WASD.
       ("u" z-fix-characters  "fix unicode" ) 
       ("p" upcase-region  "upcase region" ) 
       ("d" downcase-region  "downcase region" ) 
+      ("f" toggle-fill-unfill  "fill/unfill")
       ("q" nil "cancel" nil)
+      ("1" z/regex-delete-numeric "delete numbers")
  )
 
  #+END_SRC
@@ -1999,6 +1916,46 @@ comment _e_macs function  // copy-paste-comment-function _r_
  #+END_SRC
 
 *** org
+**** org main
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f9>")
+(defhydra hydra-org (:color blue :hint nil)
+  "
+org_headlines _<f9>_
+"
+  ("<f9>"     helm-org-headlines   "org-headlines")
+    ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
+(global-set-key (kbd "<f9> x") 'org-archive-subtree)
+(global-set-key (kbd "<f9> u") 'outline-up-heading)
+(global-set-key (kbd "<f9> e") 'org-export-dispatch)
+(global-set-key (kbd "<f9> t") 'org-toggle-inline-images)
+(global-set-key (kbd "<f9> c") 'org-columns)
+(global-set-key (kbd "<f9> q") 'org-columns-quit)
+(global-set-key (kbd "<f9> b") 'org-bibtex-yank)
+(global-set-key (kbd "<f9> r") 'org-refile)
+(global-set-key (kbd "<f9> B") 'org-bibtex-create)
+(global-set-key (kbd "<f9> s") 'org-sort)
+(global-set-key (kbd "<f9> n") 'org-narrow-to-subtree)
+(global-set-key (kbd "<f9> w") 'widen)
+(global-set-key (kbd "<f9> d") 'org-download-screenshot)
+(global-set-key (kbd "<f9> D") 'org-download-delete)
+;Create an ID for the entry at point if it does not yet have one.
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key (kbd "<f9> I") 'org-id-get-create)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key (kbd "<f9> p") 'org-capture)
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key (kbd "<f9> l s") 'org-store-link)
+(global-set-key (kbd "<f9> l i") 'org-insert-link)
+(global-set-key (kbd "<f9> l c") 'org-id-copy)
+(global-set-key (kbd "<f9> l e") 'org-id-copy)
+
+
+
 **** org cooking 
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2131,7 +2088,7 @@ _h_tml    ^ ^        _A_SCII:
 
  #+END_SRC
 
-*** TODO ace
+*** ace
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-;")
@@ -2150,67 +2107,50 @@ _h_tml    ^ ^        _A_SCII:
 #+END_SRC
 
 
-
 *** buffer/window  
 #+BEGIN_SRC emacs-lisp :results none
-
-  (global-set-key
-   (kbd "C-M-b")
-   (defhydra hydra-buffer  ()
+(global-set-key
+   (kbd "<f11>")
+   (defhydra hydra-buffer  (:color blue)
      "buffer commands "
-     ("s" save-buffer "save buffer"  :color blue)
-     ("x" kill-this-buffer "kill buffer"  :color blue)
-     ("o" z-kill-other-buffers "kill all but current" :color blue)
-     ("i" kill-buffer  "ido-kill" :color blue)
-     ("c" z-save-file-close-window "save and close"  :color blue)
+     ("s" save-buffer "save buffer"  )
+     ("x" kill-this-buffer "kill buffer"  )
+     ("o" z-kill-other-buffers "kill all but current" )
+     ("i" kill-buffer  "ido-kill" )
+     ("c" z-save-buffer-close-window "save and close"  )
+     ("k" kill-buffer "helm kill buffer" )
+     ("n" next-user-buffer  "next buffer" )
+     ("p" previous-user-buffer "prev buffer"  )
+     ("N" next-emacs-buffer "next Emacs  buffer"  )
+     ("P" previous-emacs-buffer "prev emacs buffer"  )
+     ("<f11>" switch-to-previous-buffer  "last buffer"  )
      ("q" nil "cancel")))
 
-  ;; (global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-  ;; (global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
-  ;; (global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
-  ;; (global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
-  ;; (global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
-
-  ;; ;buffers movment
-  ;; (global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
-  ;; (global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
-  ;; (global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
-  ;; (global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
-  ;; (global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-
 #+END_SRC
+
+
+
 *** TODO toggles
-
-(defhydra hydra-toggle (:color blue)
-  "toggle"
-  ("d"     toggle-debug-on-error        "debug on error")
-  ("e"     modi/toggle-edebug-defun     "edebug")
-  ("E"     modi/toggle-debug-defun      "debug on entry")
-  ("f"     toggle-fill-unfill           "fill/unfill")
-  ("F"     auto-fill-mode               "auto fill")
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f1>")
+(defhydra hydra-toggles (:color blue)
+  "toggle Emacs configs"
   ("g"     indent-guide-mode            "indent guide")
-  ("i"     fci-mode                     "fci")
-  ("k"     key-chord-mode               "key chord" :color red)
+  ("f"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord")
   ("l"     linum-mode             "linum")
-  ("m"     modi-mode                    "modi mode")
-  ("n"     endless/narrow-or-widen-dwim "narrow/widen")
-  ("N"     neotree-toggle               "neotree")
-  ("p"     prez-mode                    "presentation")
-  ("r"     dired-toggle-read-only       "read only") ; generalized `read-only-mode'
-  ("s"     transpose-frame              "split horz/vert" :color red)
-  ("S"     stripe-buffer-mode           "stripe buffer")
-  ("t"     toggle-truncate-lines        "truncate" :color red)
-  ("s-t"   toggle-theme                 "theme")
-  ("T"     toggle-theme                 "theme")
-  ("v"     recenter-top-bottom          "recenter" :color red)
-  ("<SPC>" whitespace-mode              "whitespace" :color red)
-  ("<f11>" toggle-frame-fullscreen      "fullscreen")
-  ("q"     nil                          "cancel" :color blue))
-(key-chord-define-global "qq"  #'hydra-toggle/body)
-
-font increae/decrease 
-
+  ("e"     evil-mode                    "evil mode")
+  ("r"     read-only-mode       "read only mode ") 
+  ("w"     whitespace-mode              "whitespace" )
+  ("=" text-scale-increase "font plus" :color red)
+  ("-" text-scale-decrease "font minus" :color red)
+  ("p" list-packages          "list")
+  ("c" cua-mode          "cua")
+  ("h k"  describe-key          "hel-keys")
+  ("q"     nil                          "cancel" )
+))
+#+END_SRC
 
 *** dired hydra
 *** bookmark hydra
@@ -2250,58 +2190,56 @@ pop-global-mark this will move you to prev position
 (global-set-key (kbd "<f3> m n") 'name-kbd-macro)
 (global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
 
-** F1 Agenda/TODO/Search
- 
-
-** F2 Emacs plugins
-
-** editing 
-
+*** Helm
 #+BEGIN_SRC emacs-lisp :results none
-;; move lines up dowb with C-S-pgup/pgdown
-(global-set-key [(control shift prior )]  'move-line-up)
-(global-set-key [(control shift next)]  'move-line-down)
-
-; kill (delete) from word to back of the line
-(global-set-key (kbd "C-<backspace>") (lambda ()
-                                        (interactive)
-                                        (kill-line 0)))
-
-(global-set-key (kbd "M-2") 'er/expand-region)					
+(global-set-key
+   (kbd "<f7>")
+(defhydra hydra-helm (:color blue :hint nil)
+  "
+helm-mini _<f7>_  // h_e_lm extra
+_k_ill ring
+_m_ark ring
+_r_ecents
+_l_ocate
+_r_ecents
+"
+  ("<f7>"     helm-mini            "helm-mini")
+  ("e"     hydra-helm-extra/body            "extra helm commands")
+  ("k"     helm-show-kill-ring            "killring")
+  ("m"     helm-mark-ring            "markring")
+  ("r"     helm-recentf            "recents")
+  ("l"     helm-locate            "locate")
+  ("f"     helm-find-files            "find files")
+  ("a"     helm-apropos            "apropos")
+  ("o"     helm-occur            "occur")
+  ("b"     helm-buffer-list            "buffers")
+    ("q"     nil                          "cancel" )
+))
 #+END_SRC
 
-** F5 Gnus
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f5> g") 'gnus)
-#+END_SRC
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+
+
+**** extra helm
+ #+BEGIN_SRC emacs-lisp :results none
+(defhydra hydra-helm-extra (:color blue :hint nil )
+       "
+ helm meta-_x_ 
+helm _t_op
+       "
+       ("x" helm-M-x  "helm m-x" ) 
+       ("t"     helm-top            "helm top") 
+       ("q" nil "cancel" nil)
+  )
+
+ #+END_SRC
+
+
 ** F6 org headers
 
 #+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f6> <f6>") 'helm-org-headlines)
 #+END_SRC
 
-** F7 Helm
-   
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f7> y") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> k") 'helm-show-kill-ring)
-(global-set-key (kbd "<f7> r") 'helm-recentf)
-(global-set-key (kbd "<f7> l") 'helm-locate)
-(global-set-key (kbd "<f7> x") 'helm-M-x)
-(global-set-key (kbd "<f7> f") 'helm-find-files)
-;to replace native C-x C-f
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
-(global-set-key (kbd "<f7> o") 'helm-occur)
-(global-set-key (kbd "<f7> h") 'helm-apropos)
-(global-set-key (kbd "<f7> t") 'helm-top)
-
-(global-set-key (kbd "<f7> b") 'helm-buffers-list)
-(global-set-key (kbd "<f7> <f7>") 'helm-mini)
-
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-(global-set-key (kbd "<f7> m") 'helm-mark-ring)
-
-#+END_SRC
 
 ** F8 Bookmarks/Recents
 #+BEGIN_SRC emacs-lisp :results none
@@ -2314,49 +2252,11 @@ pop-global-mark this will move you to prev position
 (global-set-key (kbd "<f8> c ") 'helm-chrome-bookmarks)
 #+END_SRC
 
-** F9 org1
-   :PROPERTIES:
-   :ID:       17b9fc26-20cc-4b8f-94f4-54aaadeeba0f
-   :END:
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f9> x") 'org-archive-subtree)
-(global-set-key (kbd "<f9> u") 'outline-up-heading)
-(global-set-key (kbd "<f9> e") 'org-export-dispatch)
-(global-set-key (kbd "<f9> t") 'org-toggle-inline-images)
-(global-set-key (kbd "<f9> c") 'org-columns)
-(global-set-key (kbd "<f9> q") 'org-columns-quit)
-(global-set-key (kbd "<f9> b") 'org-bibtex-yank)
-(global-set-key (kbd "<f9> r") 'org-refile)
-(global-set-key (kbd "<f9> B") 'org-bibtex-create)
-(global-set-key (kbd "<f9> s") 'org-sort)
-(global-set-key (kbd "<f9> n") 'org-narrow-to-subtree)
-(global-set-key (kbd "<f9> w") 'widen)
-(global-set-key (kbd "<f9> d") 'org-download-screenshot)
-(global-set-key (kbd "<f9> D") 'org-download-delete)
-;Create an ID for the entry at point if it does not yet have one.
-(global-set-key "\C-ca" 'org-agenda)
-(global-set-key (kbd "<f9> I") 'org-id-get-create)
-(global-set-key (kbd "C-c c") 'org-capture)
-(global-set-key (kbd "<f9> p") 'org-capture)
-(global-set-key "\C-cl" 'org-store-link)
-(global-set-key (kbd "<f9> l s") 'org-store-link)
-(global-set-key (kbd "<f9> l i") 'org-insert-link)
-(global-set-key (kbd "<f9> l c") 'org-id-copy)
-(global-set-key (kbd "<f9> l e") 'org-id-copy)
-#+END_SRC 
 ** F9+F9 org-id goto
 
 $Note For (kbd "<f9> l") to work, you need to have f9 to be a prefix key$
 !look into per file hooks for the below!
 
-#+BEGIN_EXAMPLE
-(lambda () ...) is an anonymous function.
-
-(interactive) makes the function an interactive command, which is
-needed for the form to be bound to the key.
-#+END_EXAMPLE
-
-#+BEGIN_SRC emacs-lisp :results none
   ;movies DL
   (global-set-key (kbd "<f9> <f9> v")
     (lambda ()
@@ -2425,7 +2325,6 @@ needed for the form to be bound to the key.
       (interactive)
         (org-id-goto "8193566d-2dd5-4368-8238-fac2fc9aa7e9")))
   
-#+END_SRC
 
 ** F10 org 2
 
@@ -2456,39 +2355,6 @@ needed for the form to be bound to the key.
 
 #+END_SRC   
 
-
-** F11 buffer/window operations (save,close etc)
-#+BEGIN_SRC emacs-lisp :results none
-;;saving and closing
-(global-set-key (kbd "<f11> s") 'save-buffer); Aux save
-(global-set-key (kbd "<f11> x") 'kill-this-buffer) ; Close file and buffer
-(global-set-key (kbd "<f11> C") 'z-kill-other-buffers ) ; close all buffers but current-based on user script
-(global-set-key (kbd "<f11> W") (lambda () (interactive) (save-buffer) (kill-buffer)  ))
-(global-set-key (kbd "<f11> X") 'save-buffers-kill-terminl)
-(global-set-key (kbd "<f11> i") 'kill-buffer) ; ido kill buffer
-(global-set-key (kbd "<f11> S") 'z-save-file-close-window) ; 
-
-;buffers movment
-(global-set-key (kbd "<f11> p") 'previous-user-buffer) ; 
-(global-set-key (kbd "<f11> n") 'next-user-buffer) ; 
-(global-set-key (kbd "<f11> P") 'previous-emacs-buffer) ; 
-(global-set-key (kbd "<f11> N") 'next-emacs-buffer) ; 
-(global-set-key (kbd "<f11> <f11> ") 'switch-to-previous-buffer)
-
-
-#+END_SRC 
-
-** F12 windows 
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "<f12><f12>") 'other-window)  
-(global-set-key (kbd "<f12> x") 'delete-window)  
-(global-set-key (kbd "<f12> z") 'delete-other-windows)  
-(global-set-key (kbd "<f12> -") 'split-window-vertically)  
-(global-set-key (kbd "<f12> =") 'split-window-right)  
-(global-set-key (kbd "<f12> +") 'split-window-below)  
-(global-set-key (kbd "<f12> r") 'resize-window)
-(global-set-key (kbd "<f12> ]") 'transpose-windows)
-#+END_SRC
 
 * Settings
 ** XDG/open with 
