@@ -1695,6 +1695,8 @@ Repeated invocations toggle between the two most recently open buffers."
 (key-chord-define-global "yy"     'z/copy-line)
 (key-chord-define-global "jj"     'avi-goto-char-2)
 #+END_SRC
+
+
 ** movment
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1864,6 +1866,7 @@ Repeated invocations toggle between the two most recently open buffers."
       ("p" upcase-region  "upcase region" ) 
       ("d" downcase-region  "downcase region" ) 
       ("f" toggle-fill-unfill  "fill/unfill")
+      ("r" z-edit-file-as-root  "edit as root")
       ("q" nil "cancel" nil)
       ("1" z/regex-delete-numeric "delete numbers")
  )
@@ -2130,7 +2133,9 @@ _h_tml    ^ ^        _A_SCII:
 
 
 
-*** TODO toggles
+*** TODO Emacs//toggles
+**** main toggles 
+
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f1>")
@@ -2142,17 +2147,53 @@ _h_tml    ^ ^        _A_SCII:
   ("l"     linum-mode             "linum")
   ("e"     evil-mode                    "evil mode")
   ("r"     read-only-mode       "read only mode ") 
+  ("r"     view-mode       "view mode ") 
   ("w"     whitespace-mode              "whitespace" )
   ("=" text-scale-increase "font plus" :color red)
   ("-" text-scale-decrease "font minus" :color red)
-  ("p" list-packages          "list")
+  ("p" list-packages          "MELPA")
+  ("s" create-scratch-buffer   "create scratch")
   ("c" cua-mode          "cua")
-  ("h k"  describe-key          "hel-keys")
+  ("m"  hydra-toggles-macro/body "macros")
+  ("h"      hydra-toggles-help/body     "hel-keys")
   ("q"     nil                          "cancel" )
 ))
 #+END_SRC
 
+
+
+**** extra macro commands
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-toggles-macro  (:color blue :hint nil )
+      "macro commands
+      "
+      ("s" start-kbd-macro  "start macro" ) 
+      ("e" end-kbd-macro  "end macro" ) 
+      ("n" name-kbd-macro  "name macro" ) 
+      ("i" insert-kbd-macro  "insert macro" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+**** help menu commands
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-toggles-help   (:color blue :hint nil )
+      "help commands
+      "
+      ("k" describe-key   "keybinds help" ) 
+      ("v" describe-variable    "variable help" ) 
+      ("f" describe-function   "function help" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+
 *** dired hydra
+
+;dired
+(define-key global-map (kbd "<f3> d") 'dired)
+(global-set-key (kbd "<f3> j") 'dired-jump) 
 *** bookmark hydra
 *** movment
 pop-global-mark this will move you to prev position 
@@ -2168,27 +2209,32 @@ pop-global-mark this will move you to prev position
   ("c" goto-char "char")
   ("q" nil "quit"))
 #+END_SRC
-
+(global-set-key (kbd "<f3> o") 'back-button-global)
 
 
 *** Emacs
-;dired
-(define-key global-map (kbd "<f3> d") 'dired)
-(global-set-key (kbd "<f3> j") 'dired-jump) 
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root) 
-(global-set-key (kbd "<f3> E") 'view-mode) 
-(global-set-key (kbd "<f3> e") 'read-only-mode) 
-(global-set-key (kbd "<f3> s") 'babcore-shell-execute)
-(global-set-key (kbd "<f3> b") 'create-scratch-buffer)
-(global-set-key (kbd "<f3> r") 'z-edit-file-as-root)
-(global-set-key (kbd "<f3> l") 'linium-mode)
-(global-set-key (kbd "<f3> ;") 'comment-region)
-(global-set-key (kbd "<f3> o") 'back-button-global)
 
-(global-set-key (kbd "<f3> m s") 'start-kbd-macro)
-(global-set-key (kbd "<f3> m q") 'end-kbd-macro)
-(global-set-key (kbd "<f3> m n") 'name-kbd-macro)
-(global-set-key (kbd "<f3> m i") 'insert-kbd-macro)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f3>")
+(defhydra hydra-toggles (:color blue)
+  "Emacs configs"
+  ("g"     indent-guide-mode            "indent guide")
+  ("f"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord")
+  ("l"     linum-mode             "linum")
+  ("e"     evil-mode                    "evil mode")
+  ("r"     read-only-mode       "read only mode ") 
+  ("w"     whitespace-mode              "whitespace" )
+  ("=" text-scale-increase "font plus" :color red)
+  ("-" text-scale-decrease "font minus" :color red)
+  ("p" list-packages          "MELPA")
+  ("c" cua-mode          "cua")
+  ("h k"  describe-key          "hel-keys")
+  ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
 
 *** Helm
 #+BEGIN_SRC emacs-lisp :results none

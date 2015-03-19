@@ -1377,6 +1377,7 @@ fix _u_nicode issue  // u_p_case region // _d_owncase region
      ("p" upcase-region  "upcase region" ) 
      ("d" downcase-region  "downcase region" ) 
      ("f" toggle-fill-unfill  "fill/unfill")
+     ("r" z-edit-file-as-root  "edit as root")
      ("q" nil "cancel" nil)
      ("1" z/regex-delete-numeric "delete numbers")
 )
@@ -1509,14 +1510,36 @@ org_headlines _<f9>_
   ("l"     linum-mode             "linum")
   ("e"     evil-mode                    "evil mode")
   ("r"     read-only-mode       "read only mode ") 
+  ("r"     view-mode       "view mode ") 
   ("w"     whitespace-mode              "whitespace" )
   ("=" text-scale-increase "font plus" :color red)
   ("-" text-scale-decrease "font minus" :color red)
-  ("p" list-packages          "list")
+  ("p" list-packages          "MELPA")
+  ("s" create-scratch-buffer   "create scratch")
   ("c" cua-mode          "cua")
-  ("h k"  describe-key          "hel-keys")
+  ("m"  hydra-toggles-macro/body "macros")
+  ("h"      hydra-toggles-help/body     "hel-keys")
   ("q"     nil                          "cancel" )
 ))
+
+(defhydra hydra-toggles-macro  (:color blue :hint nil )
+     "macro commands
+     "
+     ("s" start-kbd-macro  "start macro" ) 
+     ("e" end-kbd-macro  "end macro" ) 
+     ("n" name-kbd-macro  "name macro" ) 
+     ("i" insert-kbd-macro  "insert macro" ) 
+     ("q" nil "cancel" nil)
+)
+
+(defhydra hydra-toggles-help   (:color blue :hint nil )
+     "help commands
+     "
+     ("k" describe-key   "keybinds help" ) 
+     ("v" describe-variable    "variable help" ) 
+     ("f" describe-function   "function help" ) 
+     ("q" nil "cancel" nil)
+)
 
 (defhydra hydra-goto-line (:pre (progn
                                   (linum-mode 1))
@@ -1527,6 +1550,25 @@ org_headlines _<f9>_
   ("g" goto-line "line")
   ("c" goto-char "char")
   ("q" nil "quit"))
+
+(global-set-key
+   (kbd "<f3>")
+(defhydra hydra-toggles (:color blue)
+  "Emacs configs"
+  ("g"     indent-guide-mode            "indent guide")
+  ("f"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord")
+  ("l"     linum-mode             "linum")
+  ("e"     evil-mode                    "evil mode")
+  ("r"     read-only-mode       "read only mode ") 
+  ("w"     whitespace-mode              "whitespace" )
+  ("=" text-scale-increase "font plus" :color red)
+  ("-" text-scale-decrease "font minus" :color red)
+  ("p" list-packages          "MELPA")
+  ("c" cua-mode          "cua")
+  ("h k"  describe-key          "hel-keys")
+  ("q"     nil                          "cancel" )
+))
 
 (global-set-key
    (kbd "<f7>")
