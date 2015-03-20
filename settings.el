@@ -1541,6 +1541,18 @@ org_headlines _<f9>_
      ("q" nil "cancel" nil)
 )
 
+(global-set-key
+   (kbd "<f8>")
+   (defhydra hydra-bookmark   (:color blue)
+     "bookmark  commands "
+     ("<f8>" helm-bookmarks  "choose bookmark"  )
+     ("m" bookmark-bmenu-list "B+ menu"  )
+     ("r" helm-recentf  "recents"  )
+     ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
+     ("s" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
+     ("c" helm-chrome-bookmarks "chrome bkmrks"  )
+     ("q" nil "cancel")))
+
 (defhydra hydra-goto-line (:pre (progn
                                   (linum-mode 1))
                            :post (progn
@@ -1603,40 +1615,6 @@ helm _t_op
        ("t"     helm-top            "helm top") 
        ("q" nil "cancel" nil)
   )
-
-
-
-(global-set-key (kbd "<f8> <f8> ") 'helm-bookmarks)
-(global-set-key (kbd "<f8> h") 'bookmarks-jump)
-(global-set-key (kbd "<f8> m") 'bookmark-bmenu-list)
-(global-set-key (kbd "<f8> r") 'helm-recentf)
-(global-set-key (kbd "<f8> b") 'bmkp-bookmark-set-confirm-overwrite)
-(global-set-key (kbd "<f8> s") 'bmkp-bmenu-filter-tags-incrementally)
-(global-set-key (kbd "<f8> c ") 'helm-chrome-bookmarks)
-
-(global-set-key "\C-cs" 'org-babel-execute-subtree)
-(global-set-key (kbd "<f10> b s ") 'org-babel-execute-subtree)
-(global-set-key (kbd "<f10> s d ") 'org-cut-subtree)
-(global-set-key (kbd "<f10> s y ") 'org-copy-subtree)
-(global-set-key (kbd "<f10> s p ") 'org-paste-subtree)
-(global-set-key (kbd "<f10> 8 ") 'org-toggle-heading)
-(global-set-key (kbd "<f10> 7")                                    
-                #'(lambda ()                                     
-                    (interactive)                                
-                    (let ((current-prefix-arg '(4)))             
-                      (call-interactively #'org-toggle-heading))))
-
-(global-set-key (kbd "<f10> h ") 'org-insert-heading)
-(global-set-key (kbd "<f10> n ") (C-u M-x org-refile))
-
-
-(global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
-(global-set-key (kbd "<f10> m s ") 'org-insert-push)
-
-(global-set-key (kbd "<f10> t y") 'org-table-copy-region)
-(global-set-key (kbd "<f10> t d") 'org-table-cut-region)
-(global-set-key (kbd "<f10> t p") 'org-table-paste-rectangle)
-(global-set-key (kbd "<f10> t c") 'org-table-create-or-convert-from-region)
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
