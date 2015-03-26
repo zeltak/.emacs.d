@@ -1127,7 +1127,7 @@ This command does the inverse of `fill-region'."
 (defun z-count-words-region (posBegin posEnd)
   "Print number of words and chars in region."
   (interactive "r")
-  (message "Counting ‘¡­")
+  (message "Counting â€¦")
   (save-excursion
     (let (wordCount charCount)
       (setq wordCount 0)
@@ -1382,7 +1382,7 @@ file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
                      (let ((current-prefix-arg '(4)))             
-                       (call-interactively #'org-toggle-heading)))
+                       (call-interactively #'org-toggle-heading))))
 
 #+END_SRC
 
@@ -1637,7 +1637,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
 
 (fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
+   [?\M-% ?\Â  return return ?!])
 
 #+END_SRC
 
@@ -1911,12 +1911,12 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (defhydra hydra-unicode (:color blue)
   "unicode"
-  (">"   (insert-char ?œò¢û) "œò¢û") ; C-x 8 RET 261b RET, pointing hand
-  ("SPC" (insert-char ?œôòë)  "0-width space") ; C-x 8 RET 200b RET, zero width space
-  ("\\"  (insert-char ?œò¡î) "œò¡î") ; C-x 8 RET 9646 RET, black vertical rectangle
-  ("|"   (insert-char ?œò¡ï) "œò¡ï") ; C-x 8 RET 9647 RET, white vertical rectangle
-  ("dd"  (insert-char ?‘¡°) "‘¡°") ; curved double quotes open
-  ("df"  (insert-char ?‘¡±) "‘¡±") ; curved double quotes close
+  (">"   (insert-char ?â˜›) "â˜›") ; C-x 8 RET 261b RET, pointing hand
+  ("SPC" (insert-char ?â€‹)  "0-width space") ; C-x 8 RET 200b RET, zero width space
+  ("\\"  (insert-char ?â–®) "â–®") ; C-x 8 RET 9646 RET, black vertical rectangle
+  ("|"   (insert-char ?â–¯) "â–¯") ; C-x 8 RET 9647 RET, white vertical rectangle
+  ("dd"  (insert-char ?â€œ) "â€œ") ; curved double quotes open
+  ("df"  (insert-char ?â€) "â€") ; curved double quotes close
 
 **** spelling
  #+BEGIN_SRC emacs-lisp :results none
@@ -2506,7 +2506,7 @@ $note its built into emacs no intsall needed$
 ;associate these files with org
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-;don†¢t insert blank lines
+;donâ€™t insert blank lines
 (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 ;make new headings appear after the content for the current one
@@ -2516,7 +2516,7 @@ $note its built into emacs no intsall needed$
 (setq org-return-follows-link nil)
 ;going to the beginning and end of the heading instead of the current line
 (setq org-special-ctrl-a/e t)
-;rebind certain one-letter keybindings when the cursor is at the beginning of the row - most notably †¡t†¢ for org-todo instead of †¡C-c C-t†¢
+;rebind certain one-letter keybindings when the cursor is at the beginning of the row - most notably â€˜tâ€™ for org-todo instead of â€˜C-c C-tâ€™
 (setq org-startup-align-all-tables t)
 (setq org-archive-location (concat org-directory "archive/%s_archive::"))
 (setq org-attach-store-link-p)
@@ -2630,7 +2630,7 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
 (setq org-deadline-warning-days 10)
-;don†¢t display items that are done in my agenda.
+;donâ€™t display items that are done in my agenda.
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
 #+END_SRC
@@ -3525,23 +3525,23 @@ execute speed commands."
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(œôô¦[^œôô¦\n]+œôô¦\\)" (0 '(:foreground "#000000" :underline t :background "#FF9AEA" :weight ultra-bold) t))))
+'(("\\(â‚†[^â‚†\n]+â‚†\\)" (0 '(:foreground "#000000" :underline t :background "#FF9AEA" :weight ultra-bold) t))))
 
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(œôô¥[^œôô¥\n]+œôô¥\\)" (0 '(:weight ultra-bold :foreground "#1E00DE") t))))
+'(("\\(â‚…[^â‚…\n]+â‚…\\)" (0 '(:weight ultra-bold :foreground "#1E00DE") t))))
 
 
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(“©ş[^“©ş\n]+“©ş\\)" (0 '(:weight ultra-bold :foreground "#FF9800") t))))
+'(("\\(â‚„[^â‚„\n]+â‚„\\)" (0 '(:weight ultra-bold :foreground "#FF9800") t))))
 
 ;blusish
 (font-lock-add-keywords
  'org-mode
-'(("\\(—£À[^—£À\n]—£À+\\)" (0 '(:weight ultra-bold :foreground "#393D900") t))))
+'(("\\(â€¢[^â€¢\n]â€¢+\\)" (0 '(:weight ultra-bold :foreground "#393D900") t))))
 
 
  
@@ -3577,7 +3577,7 @@ execute speed commands."
 ;header
 (font-lock-add-keywords
  'org-mode
-'(("\\(’¢ø[^’¢ø\n]+’¢ø\\)" (0 '(:foreground "#ffffff" :weight ultra-bold :slant italic :background "#59BD7F" :height 1.3) t))))
+'(("\\(â€¡[^â€¡\n]+â€¡\\)" (0 '(:foreground "#ffffff" :weight ultra-bold :slant italic :background "#59BD7F" :height 1.3) t))))
 
 ;;;FOR SPECIAL CHARACTERS
 
@@ -3596,10 +3596,10 @@ execute speed commands."
  'org-mode
 '(("\\(\\^[^^\n]+\\^\\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
 
-;for ’¢÷ 
+;for â€  
 (font-lock-add-keywords
  'org-mode
-'(("\\(\\’¢÷[^’¢÷\n]+\\’¢÷\\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
+'(("\\(\\â€ [^â€ \n]+\\â€ \\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
 
 #+END_SRC
 
@@ -3608,7 +3608,7 @@ The following characters are special : . * + ? ^ $ \ [
 more characters :
 http://en.wikipedia.org/wiki/List_of_Unicode_characters
 #+BEGIN_EXAMPLE
-’¢÷—£À‘¡¬œôó£œôó¤•¡­ 	‘¡­ œôóÅœôóÆ	—¬ıœôóÒœôóÓœôóÔœôóÕœôóÖœôó×œôóØœôóÙœôóÚœôóÛœôóÜœôóİœôô  	“©û“©ü“©ı“©ş	œôô¥œôô¦œôô§œôô¨œôô© œôôª œôô« œôô¬
+â€ â€¢â€–â€£â€¤â€¥ 	â€¦ â…â†	â‘â’â“â”â•â–â—â˜â™âšâ›âœââ‚€ 	â‚â‚‚â‚ƒâ‚„	â‚…â‚†â‚‡â‚ˆâ‚‰ â‚Š â‚‹ â‚Œ
 #+END_EXAMPLE
 
 ** look and feel
@@ -3618,10 +3618,10 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;      (interactive)
 ;      (font-lock-add-keywords nil
 ;        '(("\\(\+begin_src\\)"
-;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?Â¦)
 ;                     nil)))
 ;          ("\\(\+end_src\\)"
-;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?Â¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 #+END_SRC 
@@ -3648,7 +3648,7 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 #+END_SRC
 
 *** visual option 
-**** remove the ‘¡°Validate XHTML 1.0‘¡± message from HTML export
+**** remove the â€œValidate XHTML 1.0â€ message from HTML export
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-export-html-validation-link nil)
 #+END_SRC
@@ -3876,7 +3876,7 @@ Set this variable to non-nil, Dired will try to guess a default target directory
 #+END_SRC
 
 **** dired omit 
-Omitting a file means removing it from the directory listing. Omitting is useful for keeping Dired buffers free of ‘¡°uninteresting‘¡± files (for instance, auto-save, auxiliary, backup, and revision control files) so that the user can concentrate on the interesting files.
+Omitting a file means removing it from the directory listing. Omitting is useful for keeping Dired buffers free of â€œuninterestingâ€ files (for instance, auto-save, auxiliary, backup, and revision control files) so that the user can concentrate on the interesting files.
 To activate it, add this to your .emacs
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -3920,7 +3920,7 @@ Always recursively delete directory
  (toggle-diredp-find-file-reuse-dir 1)
  #+END_SRC
 
- Dired+ also provides commands †¡diredp-find-file-reuse-dir-buffer†¢ and †¡diredp-mouse-find-file-reuse-dir-buffer†¢ that open a directory in the same buffer •¡¹ bind them as you like.
+ Dired+ also provides commands â€˜diredp-find-file-reuse-dir-bufferâ€™ and â€˜diredp-mouse-find-file-reuse-dir-bufferâ€™ that open a directory in the same buffer â€“ bind them as you like.
 
 **** dired rainbow
  color files by extension 
@@ -4287,7 +4287,7 @@ global command history file and have:
      )
  )
 #+END_SRC
-This recalls the R statement from your R statement history, but it tries to match it with the one which is already on your line. So, for example, typing pl in R process and pressing \C-up (that†¢s control and the up arrow) will cycle through all the statements which start with pl, so it will recall for example all the plot(... commands.
+This recalls the R statement from your R statement history, but it tries to match it with the one which is already on your line. So, for example, typing pl in R process and pressing \C-up (thatâ€™s control and the up arrow) will cycle through all the statements which start with pl, so it will recall for example all the plot(... commands.
 
 *** allow ess to run procceses in background
 
@@ -4415,7 +4415,7 @@ https://github.com/seth/my-emacs-dot-d/blob/master/emacs-init.org
   (comint-send-input))
 #+END_SRC
 ** connect to ssh link in xterm in org file
-One day after being particularly frustrated when I couldn†¢t get into a box, I was adding yet another entry to ~/.ssh/config only to realize it was in there twice already, I decided to turn this problem into a nail so I could use my universal hammer, emacs.
+One day after being particularly frustrated when I couldnâ€™t get into a box, I was adding yet another entry to ~/.ssh/config only to realize it was in there twice already, I decided to turn this problem into a nail so I could use my universal hammer, emacs.
 
 #+BEGIN_EXAMPLE
 (defun jgk/xterm-ssh (host)
@@ -4424,7 +4424,7 @@ One day after being particularly frustrated when I couldn†¢t get into a box, I w
                                (concat "'ssh -AY "  host "'")))
 #+END_EXAMPLE
 
-I now have an org file for each project I work on and can create links that will let me ssh into a system with a †¡click†¢
+I now have an org file for each project I work on and can create links that will let me ssh into a system with a â€˜clickâ€™
 
 #+BEGIN_EXAMPLE
 [[elisp:(jgk/xterm-ssh "username@192.168.15.218")][Magical Mystery Machine]]
@@ -4437,6 +4437,6 @@ I am slowly adding systems in as I need them. I have found the ability to keep n
 If you need to access a lot of random systems you should try this, it has made my life sane
 ** Emacs deamon
 #+BEGIN_EXAMPLE
-The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs •¡¹daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The •¡¹daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs •¡¹daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The •¡¹daemon option has the fringe benefit of leaving emacs running even if you log out.
+The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs â€“daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The â€“daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs â€“daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The â€“daemon option has the fringe benefit of leaving emacs running even if you log out.
 #+END_EXAMPLE
 

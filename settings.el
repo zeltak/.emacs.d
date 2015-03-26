@@ -1038,6 +1038,11 @@ there's a region, all lines that region covers will be duplicated."
   (replace-regexp "[0-9]" "")
 )
 
+(defun z/org-convert-header-samelevel  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-toggle-heading)))
+
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
   (interactive)
@@ -1299,6 +1304,12 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'avi-goto-char-2)
 
+;Create an ID for the entry at point if it does not yet have one.
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key (kbd "C-c c") 'org-capture)
+(global-set-key "\C-cs" 'org-babel-execute-subtree)
+(global-set-key "\C-cl" 'org-store-link)
+
 ; (require 'hydra-examples)
 ; (hydra-create "C-M-o" hydra-example-move-window-splitter)
 
@@ -1409,14 +1420,41 @@ comment _e_macs function  // copy-paste-comment-function _r_
    ("q" nil "cancel")))
 
 (global-set-key
-   (kbd "<f9>")
-(defhydra hydra-org (:color blue :hint nil)
-  "
+    (kbd "<f9>")
+ (defhydra hydra-org (:color blue )
+ "
 org_headlines _<f9>_
-"
-  ("<f9>"     helm-org-headlines   "org-headlines")
-    ("q"     nil                          "cancel" )
-))
+ "
+     ("<f9>"     helm-org-headlines   "")
+     ("u"     outline-up-heading  "outline-up-heading")
+     ("x"     org-archive-subtree "org-archive-subtree")
+     ("e"     org-export-dispatch "org-export-dispatch")
+     ("t"     org-toggle-inline-image  "org-toggle-inline-images")
+     ("c"     org-columns         "org-columns")
+     ("C"     org-columns-quit    "org-columns-quit")
+     ("b"     org-bibtex-yank     "org-bibtex-yank")
+     ("r"     org-refile          "org-refile")
+     ("B"     org-bibtex-create   "org-bibtex-create")
+     ("s"     org-sort     "org-sort")
+     ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
+     ("w"     widen              "widen")
+     ("d"     org-download-screensh "org-download-screenshot")
+     ("D"     org-download-delete "org-download-delete")
+     ("8"     org-toggle-heading   "convert>header (**)")
+     ("7"     z/org-convert-header-samelevel  "convert>header (*)")
+     ("h"     org-insert-heading  "org insert header")
+     ("q"     nil                          "cancel" )
+ ))
+
+(defhydra hydra-org-links (:color blue )
+     "
+     "
+    ("s" org-store-link  "store" ) 
+    ("i" org-insert-link   "insert" ) 
+    ("d"     org-id-create "org id create")
+    ("c" org-id-copy  "copy org-id" ) 
+     ("q" nil "cancel" nil)
+)
 
 (global-set-key
  (kbd "<f1> c")
@@ -1488,6 +1526,7 @@ org_headlines _<f9>_
    (defhydra hydra-buffer  (:color blue)
      "buffer commands "
      ("s" save-buffer "save buffer"  )
+     ("a" write-file  "save as.."  )
      ("x" kill-this-buffer "kill buffer"  )
      ("o" z-kill-other-buffers "kill all but current" )
      ("i" kill-buffer  "ido-kill" )
