@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("mexi" 0 4
+(#1=(#("arch_installs" 0 13
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/Tech/linux.org")
+    (buffer-name . "linux.org")
+    (front-context-string . "**** Installs cl")
+    (rear-context-string . "\n#+END_EXAMPLE\n\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 1)
+    (time 21781 16482 291650 283000)
+    (created 21781 16469 991039 925000)
+    (position . 16043))
+#1=(#("mexi" 0 4
       (bmkp-full-record #1#))
     (filename . "   - no file -")
     (buffer-name . "*scratch*")
@@ -88,9 +100,9 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21670 21034 596804 92000))
-    (created . #2#)
+    (visits . 1)
+    (time 21780 60157 445286 809000)
+    (created 21670 21034 596804 92000)
     (position . 1))
 #1=(#(".teamocil" 0 9
       (bmkp-full-record #1#))
@@ -118,8 +130,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 4)
-    (time 21777 33249 63111 848000)
+    (visits . 5)
+    (time 21781 14754 875160 27000)
     (created 21651 52 441071 235000)
     (position . 1))
 #1=(#(".tmux.conf" 0 10
@@ -256,8 +268,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 3)
-    (time 21680 58790 419745 203000)
+    (visits . 4)
+    (time 21780 60162 715561 97000)
     (created 21605 59602 231651 535000)
     (position . 1))
 #1=(#("android.org" 0 11
@@ -390,17 +402,17 @@
     (position . 1))
 #1=(#("linux.org" 0 9
       (bmkp-full-record #1#))
-    (end-position . 92074)
+    (end-position . 92079)
     (filename . "~/org/files/Tech/linux.org")
     (buffer-name . "linux.org")
     (front-context-string . "** gnome\n*** Gno")
     (rear-context-string . "\nfc-cache -f -v\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 11)
-    (time 21777 6751 852775 124000)
+    (visits . 15)
+    (time 21781 16479 643571 237000)
     (created 21542 42258 858913 14000)
-    (position . 92074))
+    (position . 92079))
 #1=(#(".pentadactylrc" 0 14
       (bmkp-full-record #1#))
     (end-position . 3)
