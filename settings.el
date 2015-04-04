@@ -1442,6 +1442,7 @@ org_headlines _<f9>_
      ("D"     org-download-delete "org-download-delete")
      ("8"     org-toggle-heading   "convert>header (**)")
      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
+     ("l"     hydra-org-links/body  "links")
      ("h"     org-insert-heading  "org insert header")
      ("q"     nil                          "cancel" )
  ))
@@ -1703,16 +1704,8 @@ helm _t_op
 
 (add-hook 'proced-mode-hook 'proced-settings)
 
-(if (string= system-name "voices") 
-(progn
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
-)
-
-(progn
-(setq org-directory "/media/NAS/Uni/org/files/")
-)
-)
 
 ;associate these files with org
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
@@ -3112,3 +3105,127 @@ take care of the wrapping of each item for me"
   (insert "export TERM=screen-256color-bce")
   (insert "ssu zuni")
   (comint-send-input))
+
+(require 'mu4e)
+;; default
+(setq mu4e-maildir "~/Maildir")
+
+(setq mu4e-drafts-folder "/[Gmail].Drafts")
+(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+(setq mu4e-trash-folder  "/[Gmail].Trash")
+
+;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+;; additional non-Gmail addresses and want assign them different
+;; behavior.)
+
+;; setup some handy shortcuts
+;; you can quickly switch to your Inbox -- press ``ji''
+;; then, when you want archive some messages, move them to
+;; the 'All Mail' folder by pressing ``ma''.
+
+(setq mu4e-maildir-shortcuts
+    '( ("/INBOX"               . ?i)
+       ("/[Gmail].Sent Mail"   . ?s)
+       ("/[Gmail].Trash"       . ?t)
+       ("/[Gmail].All Mail"    . ?a)))
+
+;; allow for updating mail using 'U' in the main view:
+(setq mu4e-get-mail-command "offlineimap")
+
+;; something about ourselves
+(setq
+   user-mail-address "ikloog@gmail.com"
+   user-full-name  "itai kloog "
+   mu4e-compose-signature
+    (concat
+      "Foo X. Bar\n"
+      "http://www.example.com\n"))
+
+;; sending mail -- replace USERNAME with your gmail username
+;; also, make sure the gnutls command line utils are installed
+;; package 'gnutls-bin' in Debian/Ubuntu
+
+(require 'smtpmail)
+(setq message-send-mail-function 'smtpmail-send-it
+   starttls-use-gnutls t
+   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+   smtpmail-auth-credentials
+     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+   smtpmail-default-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-service 587)
+
+;; alternatively, for emacs-24 you can use:
+;;(setq message-send-mail-function 'smtpmail-send-it
+;;     smtpmail-stream-type 'starttls
+;;     smtpmail-default-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-service 587)
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+
+;; attempt to show images when viewing messages
+(setq mu4e-view-show-images t)
+
+
+(when (fboundp 'imagemagick-register-types)
+      (imagemagick-register-types))
+ 
+
+(setq mu4e-view-prefer-html t)
+
+
+;; show full addresses in view message (instead of just names)
+;; toggle per name with M-RET
+(setq mu4e-view-show-addresses 't)
+
+
+
+;; list of my email addresses.
+(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
+                                    "ikloog@bgu.ac.il"
+                                    "ekloog@hsph.harvard.edu"))
+
+
+;; mu4e-action-view-in-browser is built into mu4e
+;; by adding it to these lists of custom actions
+;; it can be invoked by first pressing a, then selecting
+(add-to-list 'mu4e-headers-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+(add-to-list 'mu4e-view-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+
+;; the headers to show in the headers list -- a pair of a field
+;; and its width, with `nil' meaning 'unlimited'
+;; (better only use that for the last field.
+;; These are the defaults:
+(setq mu4e-headers-fields
+    '( (:date          .  25)
+       (:flags         .   6)
+       (:from          .  22)
+       (:subject       .  nil)))
+
+
+;; If you get your mail without an explicit command,
+;; use "true" for the command (this is the default)
+(setq mu4e-get-mail-command "offlineimap")
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+;; attachments go here
+(setq mu4e-attachment-dir  "~/Downloads")
+
+;; convenience function for starting the whole mu4e in its own frame
+;; posted by the author of mu4e on the mailing list
+(defun mu4e-in-new-frame ()
+  "Start mu4e in new frame."
+  (interactive)
+  (select-frame (make-frame))
+  (mu4e))
