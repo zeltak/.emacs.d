@@ -253,16 +253,20 @@
 ;; (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
 ;; (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
 
-;; (use-package org-download 
-;; :ensure t
-;; :config
-;;  (setq-default org-download-heading-lvl nil)
-;;  (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
-;; )
+(use-package org-download 
+ :ensure t
+ :config
+ (setq-default org-download-heading-lvl nil)
+ (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+)
 
-(load-file "~/.emacs.g/extra/org-download/org-download.el")
-(setq-default org-download-heading-lvl nil)
-(setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+;; (setq org-download-method 'attach
+;;        org-download-screenshot-method "scrot -s %s"
+;;        org-download-backend (if (executable-find "curl") "curl \"%s\" -o \"%s\"" t)))
+
+; (load-file "~/.emacs.g/extra/org-download/org-download.el")
+; (setq-default org-download-heading-lvl nil)
+; (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
@@ -527,7 +531,7 @@
   ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
 
 (use-package ace-window
-    :init
+    :config
 ;set keys to only these 
     (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
     (setq aw-background nil))
@@ -586,77 +590,6 @@
          (on   color-identifiers-mode)
          (off  flycheck-mode))))
 
-;; (require 'auto-complete)
-;; (require 'auto-complete-config)
-;; (ac-config-default)
-
-;; (add-to-list 'completion-styles 'initials t)
-;; (add-to-list 'ac-sources 'ac-source-semantic)
-
-;; (setq-default ac-sources (cons 'ac-source-yasnippet ac-sources))
-
-;; ;;; customizations
-;; (setq ac-auto-start 2
-;;       ac-delay 0.
-;;       ac-quick-help-delay 0.
-;;       ac-use-fuzzy t
-;;       tab-always-indent 'complete ; use 'complete when auto-complete is disabled
-;;       ac-dwim t)
-
-;; (define-key ac-completing-map (kbd "C-n") 'ac-next)
-;; (define-key ac-completing-map (kbd "C-p") 'ac-previous)
-;; ;; (define-key ac-completing-map "\M-/" 'ac-stop)
-;; (define-key ac-completing-map "\t" 'ac-expand-common)
-;; (define-key ac-completing-map (kbd "RET") 'ac-complete)
-
-;; ;;; work around for autopair auto-complete
-;; (define-key ac-completing-map [return] 'ac-complete)
-;; (add-hook 'auto-complete-mode-hook 'ac-flyspell-workaround)
-
-;; ;;; list of modes where ac should be available
-;; (dolist (mode '(emacs-lisp-mode
-;;                 lisp-interaction-mode
-;;                 inferior-emacs-lisp-mode
-;;                 magit-log-edit-mode
-;;                 log-edit-mode
-;;                 org-mode
-;;                 text-mode
-;;                 haml-mode
-;;                 sass-mode
-;;                 yaml-mode
-;;                 haskell-mode
-;;                 html-mode
-;;                 nxml-mode
-;;                 sh-mode
-;;                 lisp-mode
-;;                 textile-mode
-;;                 markdown-mode
-;;                 cperl-mode
-;;                 sass-mode
-;;                 latex-mode
-;;                 fortran-mode
-;;                 f90-mode))
-
-;;   (add-to-list 'ac-modes mode))
-
-(use-package company
-:ensure t
-:config
-)
-
-  ;To use company-mode in all buffers
-  (add-hook 'after-init-hook 'global-company-mode)
-
-  ;;look and feel
-  (setq company-idle-delay 0.3)
-  (setq company-tooltip-limit 20)
-  (setq company-minimum-prefix-length 2)
-  (setq company-echo-delay 0)
-  (setq company-auto-complete nil)
-  (add-to-list 'company-backends 'company-dabbrev t)
-  (add-to-list 'company-backends 'company-ispell t)
-  (add-to-list 'company-backends 'company-files t)
-
 (use-package rainbow-mode
 :ensure t
 :config
@@ -678,83 +611,6 @@
 
 
 
-(use-package popwin
-  :ensure t
-  :idle (popwin-mode 1))
-(defvar popwin:special-display-config-backup popwin:special-display-config)
-(setq display-buffer-function 'popwin:display-buffer)
-
-;; basic
-(push '("*Help*" :stick t :noselect t) popwin:special-display-config)
-(push '("*helm world time*" :stick t :noselect t) popwin:special-display-config)
-(push '("*Pp Eval Output*" :stick t) popwin:special-display-config)
-
-;; magit
-(push '("*magit-process*" :stick t) popwin:special-display-config)
-
-;; quickrun
-(push '("*quickrun*" :stick t) popwin:special-display-config)
-
-;; dictionaly
-(push '("*dict*" :stick t) popwin:special-display-config)
-(push '("*sdic*" :stick t) popwin:special-display-config)
-
-;; popwin for slime
-(push '(slime-repl-mode :stick t) popwin:special-display-config)
-
-;; man
-(push '(Man-mode :stick t :height 20) popwin:special-display-config)
-
-;; Elisp
-(push '("*ielm*" :stick t) popwin:special-display-config)
-(push '("*eshell pop*" :stick t) popwin:special-display-config)
-
-;; pry
-(push '(inf-ruby-mode :stick t :height 20) popwin:special-display-config)
-
-;; python
-(push '("*Python*"   :stick t) popwin:special-display-config)
-(push '("*Python Help*" :stick t :height 20) popwin:special-display-config)
-(push '("*jedi:doc*" :stick t :noselect t) popwin:special-display-config)
-
-;; Haskell
-(push '("*haskell*" :stick t) popwin:special-display-config)
-(push '("*GHC Info*") popwin:special-display-config)
-
-;; sgit
-(push '("*sgit*" :position right :width 0.5 :stick t)
-      popwin:special-display-config)
-
-;; git-gutter
-(push '("*git-gutter:diff*" :width 0.5 :stick t)
-      popwin:special-display-config)
-
-;; direx
-(push '(direx:direx-mode :position left :width 40 :dedicated t)
-      popwin:special-display-config)
-
-(push '("*Occur*" :stick t) popwin:special-display-config)
-
-;; prodigy
-(push '("*prodigy*" :stick t) popwin:special-display-config)
-
-;; malabar-mode
-(push '("*Malabar Compilation*" :stick t :height 30)
-      popwin:special-display-config)
-
-;; org-mode
-(push '("*Org tags*" :stick t :height 30)
-      popwin:special-display-config)
-
-;; Completions
-(push '("*Completions*" :stick t :noselect t) popwin:special-display-config)
-
-;; ggtags
-(push '("*ggtags-global*" :stick t :noselect t :height 30) popwin:special-display-config)
-
-;; async shell commands
-(push '("*Async Shell Command*" :stick t) popwin:special-display-config)
-
 (use-package unfill
 :ensure t
 :config
@@ -771,6 +627,11 @@
 )
 
 (use-package drag-stuff
+ :ensure t
+ :config
+  )
+
+(use-package bug-hunter
  :ensure t
  :config
   )
@@ -1371,10 +1232,11 @@ Repeated invocations toggle between the two most recently open buffers."
    ("e" hydra-edit-extra/body  "Extra editing commands")
    ("<up>" drag-stuff-up  "marked up" :color red)
    ("<down>" drag-stuff-down  "marked down" :color red)
-;   ("<left>" drag-stuff-left  "marked left" :color red)
- ;  ("<right>" drag-stuff-right "marked right" :color red)
+   ;("<left>" drag-stuff-left  "marked left" :color red)
+   ;("<right>" drag-stuff-right "marked right" :color red)
    ("p" duplicate-current-line-or-region  "duplicate" :color red)
    (";"  hydra-commenting/body  "comment!" )
+   ("i"  hydra-unicode/body  "insert" )   
    ("f" flush-blank-line  "flush blank" )
    ("u" z-fix-characters "fix unicode" )
    ("R" revert-buffer  "revert buffer before changes" ) 
@@ -1408,6 +1270,16 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("q" nil "cancel" nil)
 )
 
+(defhydra hydra-unicode (:color blue)
+  "unicode"
+  (">"   (insert-char ?) "☛") ; C-x 8 RET 261b RET, pointing hand
+  ("\\"  (insert-char ?▮) "▮") ; C-x 8 RET 9646 RET, black vertical rectangle
+  ("."  (insert-char ?】) "】") ; curved double quotes close
+  (","  (insert-char ?【) "【") ; curved double quotes close
+ ; ("/"  (insert-char ?【】) "【】") ; curved double quotes close
+  ("q" nil "cancel" nil)
+))
+
 (global-set-key
  (kbd "<f3>")
  (defhydra hydra-spell  ()
@@ -1438,7 +1310,7 @@ org_headlines _<f9>_
      ("s"     org-sort     "org-sort")
      ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
      ("w"     widen              "widen")
-     ("d"     org-download-screensh "org-download-screenshot")
+     ("d"     org-download-screenshot "org-download-screenshot")
      ("D"     org-download-delete "org-download-delete")
      ("8"     org-toggle-heading   "convert>header (**)")
      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
@@ -1655,6 +1527,17 @@ helm _t_op
        ("t"     helm-top            "helm top") 
        ("q" nil "cancel" nil)
   )
+
+(global-set-key
+   (kbd "<f5>")
+(defhydra hydra-mu4e (:color blue :hint nil)
+  "
+"
+  ("<f5>"     mu4e            "start mu4e")
+  ("u"     mu4e-update-mail-and-index           "Send/Recive")
+  ("o"     mu4e-headers-change-sorting            "sort")
+    ("q"     nil                          "cancel" )
+))
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -2905,35 +2788,133 @@ take care of the wrapping of each item for me"
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
-;; (setq user-full-name "zeltak"
-;;       user-mail-address "zeltak@gmail.com")
 
-;; (setq gnus-select-method '(nntp "news.gmane.org"))
 
-;; ;for smtp
-;; (setq message-send-mail-function 'smtpmail-send-it
-;;       smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-;;       smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-;;       smtpmail-default-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-server "smtp.gmail.com"
-;;       smtpmail-smtp-service 587
-;;       smtpmail-local-domain "gmail.com")
+(require 'mu4e)
 
-;; (setq gnus-select-method '(nntp "news.gmane.org"))
+;old below commbined method works better 
+;; Re-index every 15 minutes.
+;(setq mu4e-update-interval (* 10 60))
+;(setq mu4e-get-mail-command "offlineimap")
 
-;; (add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
-;;                                   (nnimap-address "imap.gmail.com")  ; it could also be imap.googlemail.com if that's your server.
-;;                                   (nnimap-server-port 993)
-;;                                   (nnimap-stream ssl)))
 
-;; ;for smtp
-;;   (setq message-send-mail-function 'smtpmail-send-it
-;;         smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-;;         smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-;;         smtpmail-default-smtp-server "smtp.gmail.com"
-;;         smtpmail-smtp-server "smtp.gmail.com"
-;;         smtpmail-smtp-service 587
-;;         smtpmail-local-domain "gmail.com")
+(setq mu4e-get-mail-command "offlineimap"
+      mu4e-update-interval 120
+      mu4e-headers-auto-update t)
+
+
+;; list of my email addresses.
+(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
+                                    "ikloog@bgu.ac.il"
+                                    "ekloog@hsph.harvard.edu"))
+
+;; something about ourselves
+(setq
+   user-mail-address "ikloog@gmail.com"
+   user-full-name  "itai kloog "
+   mu4e-compose-signature
+    (concat
+      "itai kloog\n"
+      "http://www.example.com\n"))
+
+(setq mu4e-compose-signature-auto-include 't)
+
+;; default
+(setq mu4e-maildir "~/Maildir")
+
+(setq mu4e-drafts-folder "/[Gmail].Drafts")
+(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+(setq mu4e-trash-folder  "/[Gmail].Trash")
+
+(setq mu4e-attachment-dir  "~/Downloads")
+
+;; setup some handy shortcuts
+;; you can quickly switch to your Inbox -- press ``ji''
+;; then, when you want archive some messages, move them to
+;; the 'All Mail' folder by pressing ``ma''.
+
+(setq mu4e-maildir-shortcuts
+    '( ("/INBOX"               . ?i)
+       ("/[Gmail].Sent Mail"   . ?s)
+       ("/[Gmail].Trash"       . ?t)
+       ("/[Gmail].All Mail"    . ?a)))
+
+mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
+
+(require 'org-mu4e)
+
+(require 'smtpmail)
+(setq message-send-mail-function 'smtpmail-send-it
+   starttls-use-gnutls t
+   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+   smtpmail-auth-credentials
+     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+   smtpmail-default-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-service 587)
+
+;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; alternatively, for emacs-24 you can use:
+;;(setq message-send-mail-function 'smtpmail-send-it
+;;     smtpmail-stream-type 'starttls
+;;     smtpmail-default-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-service 587)
+
+(setq mu4e-date-format-long "%Y-%m-%d %H:%M:%S")
+(setq mu4e-headers-date-format "%y%m%d (%H:%M:%S)")
+;can define a horizontal or vertical split 
+(setq mu4e-split-view 'horizontal)
+
+
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+;; attempt to show images when viewing messages
+(setq mu4e-view-show-images t)
+(when (fboundp 'imagemagick-register-types)
+      (imagemagick-register-types))
+;preffer html  
+(setq mu4e-view-prefer-html t)
+
+;; Silly mu4e only shows names in From: by default. Of course we also  want the addresses.
+(setq mu4e-view-show-addresses t)
+
+;; mu4e-action-view-in-browser is built into mu4e
+;; by adding it to these lists of custom actions
+;; it can be invoked by first pressing a, then selecting
+(add-to-list 'mu4e-headers-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+(add-to-list 'mu4e-view-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+
+;; the headers to show in the headers list -- a pair of a field
+;; and its width, with `nil' meaning 'unlimited'
+;; (better only use that for the last field.
+;; These are the defaults:
+(setq mu4e-headers-fields
+    '( (:date          .  25)
+       (:flags         .   6)
+       (:from          .  22)
+       (:subject       .  nil)))
+
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+(require 'mu4e-contrib) 
+(setq mu4e-html2text-command 'mu4e-shr2text) 
+;(setq mu4e-html2text-command "w3m -I utf8 -O utf8 -T text/html")
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+;; additional non-Gmail addresses and want assign them different
+;; behavior.)
 
 (if (string= system-name "voices") 
 (progn
@@ -3105,127 +3086,3 @@ take care of the wrapping of each item for me"
   (insert "export TERM=screen-256color-bce")
   (insert "ssu zuni")
   (comint-send-input))
-
-(require 'mu4e)
-;; default
-(setq mu4e-maildir "~/Maildir")
-
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
-
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-;; additional non-Gmail addresses and want assign them different
-;; behavior.)
-
-;; setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
-
-(setq mu4e-maildir-shortcuts
-    '( ("/INBOX"               . ?i)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
-
-;; allow for updating mail using 'U' in the main view:
-(setq mu4e-get-mail-command "offlineimap")
-
-;; something about ourselves
-(setq
-   user-mail-address "ikloog@gmail.com"
-   user-full-name  "itai kloog "
-   mu4e-compose-signature
-    (concat
-      "Foo X. Bar\n"
-      "http://www.example.com\n"))
-
-;; sending mail -- replace USERNAME with your gmail username
-;; also, make sure the gnutls command line utils are installed
-;; package 'gnutls-bin' in Debian/Ubuntu
-
-(require 'smtpmail)
-(setq message-send-mail-function 'smtpmail-send-it
-   starttls-use-gnutls t
-   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-   smtpmail-auth-credentials
-     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-   smtpmail-default-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-service 587)
-
-;; alternatively, for emacs-24 you can use:
-;;(setq message-send-mail-function 'smtpmail-send-it
-;;     smtpmail-stream-type 'starttls
-;;     smtpmail-default-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-service 587)
-
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-
-;; use 'fancy' non-ascii characters in various places in mu4e
-(setq mu4e-use-fancy-chars t)
-
-;; attempt to show images when viewing messages
-(setq mu4e-view-show-images t)
-
-
-(when (fboundp 'imagemagick-register-types)
-      (imagemagick-register-types))
- 
-
-(setq mu4e-view-prefer-html t)
-
-
-;; show full addresses in view message (instead of just names)
-;; toggle per name with M-RET
-(setq mu4e-view-show-addresses 't)
-
-
-
-;; list of my email addresses.
-(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
-                                    "ikloog@bgu.ac.il"
-                                    "ekloog@hsph.harvard.edu"))
-
-
-;; mu4e-action-view-in-browser is built into mu4e
-;; by adding it to these lists of custom actions
-;; it can be invoked by first pressing a, then selecting
-(add-to-list 'mu4e-headers-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-(add-to-list 'mu4e-view-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-
-;; the headers to show in the headers list -- a pair of a field
-;; and its width, with `nil' meaning 'unlimited'
-;; (better only use that for the last field.
-;; These are the defaults:
-(setq mu4e-headers-fields
-    '( (:date          .  25)
-       (:flags         .   6)
-       (:from          .  22)
-       (:subject       .  nil)))
-
-
-;; If you get your mail without an explicit command,
-;; use "true" for the command (this is the default)
-(setq mu4e-get-mail-command "offlineimap")
-
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-;; attachments go here
-(setq mu4e-attachment-dir  "~/Downloads")
-
-;; convenience function for starting the whole mu4e in its own frame
-;; posted by the author of mu4e on the mailing list
-(defun mu4e-in-new-frame ()
-  "Start mu4e in new frame."
-  (interactive)
-  (select-frame (make-frame))
-  (mu4e))
