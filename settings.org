@@ -1,5 +1,5 @@
  #+Title: setting.org
- 
+
  
 * Emacs startup
   :PROPERTIES:
@@ -154,17 +154,14 @@ $Note$ the sign !package! means the package is disbaled
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package yasnippet
-)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results none
+ :config 
 (yas-global-mode 1)
 ;; Use custom snippets.
 ;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-reload-all)
 (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+)
 #+END_SRC
-
 *** function helm 
 #+BEGIN_SRC emacs-lisp :results none
 (defun shk-yas/helm-prompt (prompt choices &optional display-fn)
@@ -703,7 +700,15 @@ $note its built into emacs no intsall needed$
 #+END_SRC
 ** expand region
 https://github.com/magnars/expand-region.el
-if installed through package manager no extra config is needed
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package expand-region
+ :ensure t
+ :config
+ :bind ("M-2" . er/expand-region )
+ )
+
+#+END_SRC
 
 
 ** Ace jump
@@ -906,7 +911,14 @@ https://github.com/Malabarba/elisp-bug-hunter
   )
 #+END_SRC
 
-
+** mic-parens
+better parens match than bulit in Emacs one 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package mic-paren
+ :ensure t
+ :config
+  )
+#+END_SRC
 * Functions
 ** Encoding
 *** fix unicode characters
@@ -1249,6 +1261,27 @@ file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
 
 #+END_SRC
 
+*** expand code block keys 
+#+BEGIN_SRC emacs-lisp :results none
+(defun pl/hot-expand (str)
+  "Expand org template."
+  (insert str)
+  (org-try-structure-completion))
+
+(with-eval-after-load "org"
+  (define-key org-mode-map "<"
+    (lambda () (interactive)
+      (if (looking-back "^")
+          (hydra-org-template/body)
+        (self-insert-command 1)))))
+
+#+END_SRC
+*** TODO org refile with prefix
+broken this way, causes erros in init 
+#+BEGIN_SRC emacs-lisp :results none
+;(fset 'z/prefix-org-refile (C-u M-x org-refile))   
+#+END_SRC
+
 ** Root actions
 *** edit file as root
 #+BEGIN_SRC emacs-lisp :results none
@@ -1580,7 +1613,258 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key "\C-cl" 'org-store-link)
 #+END_SRC
+
 ** hydra
+*** TODO Emacs//toggles (f1)
+**** main toggles 
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f1>")
+(defhydra hydra-toggles (:color blue)
+  "toggle Emacs configs"
+  ("g"     indent-guide-mode            "indent guide")
+  ("f"     fci-mode                     "fci")
+  ("k"     key-chord-mode               "key chord")
+  ("l"     linum-mode             "linum")
+  ("e"     evil-mode                    "evil mode")
+  ("r"     read-only-mode       "read only mode ") 
+  ("r"     view-mode       "view mode ") 
+  ("w"     whitespace-mode              "whitespace" )
+  ("=" text-scale-increase "font plus" :color red)
+  ("-" text-scale-decrease "font minus" :color red)
+  ("p" list-packages          "MELPA")
+  ("s" create-scratch-buffer   "create scratch")
+  ("c" cua-mode          "cua")
+  ("m"  hydra-toggles-macro/body "macros")
+  ("h"      hydra-toggles-help/body     "hel-keys")
+  ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
+**** extra macro commands
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-toggles-macro  (:color blue :hint nil )
+      "macro commands
+      "
+      ("s" start-kbd-macro  "start macro" ) 
+      ("e" end-kbd-macro  "end macro" ) 
+      ("n" name-kbd-macro  "name macro" ) 
+      ("i" insert-kbd-macro  "insert macro" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+**** help menu commands
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-toggles-help   (:color blue :hint nil )
+      "help commands
+      "
+      ("k" describe-key   "keybinds help" ) 
+      ("v" describe-variable    "variable help" ) 
+      ("f" describe-function   "function help" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+*** spelling (F3)
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key
+    (kbd "<f3>")
+    (defhydra hydra-spell  ()
+      "spell checking "
+      ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
+      ("i"    ispell  "start spell checker" :color blue)
+      ("w"   ispell-word  "check word" :color blue)
+      ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
+      ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
+      ("q" nil "cancel")))
+ #+END_SRC
+*** code blocks (F4)
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key
+    (kbd "<f4>")
+    (defhydra hydra-org-blocks ()
+    "
+_c_enter  _q_uote    _L_aTeX:
+_l_atex   _e_xample  _i_ndex:
+_a_scii   _v_erse    _I_NCLUDE:
+_s_rc     ^ ^        _H_TML:
+_h_tml    ^ ^        _A_SCII:
+"
+      ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
+      ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
+      ("r"    z/hydra-wrap-R "R" :color blue)
+      ("b"   z/hydra-wrap-bash  "bash" :color blue)
+    ("s" (pl/hot-expand "<s"))
+    ("e" (pl/hot-expand "<e"))
+    ("q" (pl/hot-expand "<q"))
+    ("v" (pl/hot-expand "<v"))
+    ("c" (pl/hot-expand "<c"))
+    ("l" (pl/hot-expand "<l"))
+    ("h" (pl/hot-expand "<h"))
+    ("a" (pl/hot-expand "<a"))
+    ("L" (pl/hot-expand "<L"))
+    ("i" (pl/hot-expand "<i"))
+    ("I" (pl/hot-expand "<I"))
+    ("H" (pl/hot-expand "<H"))
+    ("A" (pl/hot-expand "<A"))
+    ("<" self-insert-command "ins")
+      ("q" nil "cancel")))
+
+ #+END_SRC
+
+*** mu4e (F5)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f5>")
+(defhydra hydra-mu4e (:color blue :hint nil)
+  "
+"
+  ("<f5>"     mu4e            "start mu4e")
+  ("u"     mu4e-update-mail-and-index           "Send/Recive")
+  ("o"     mu4e-headers-change-sorting            "sort")
+    ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
+
+*** bookmark hydra (F8)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f8>")
+   (defhydra hydra-bookmark   (:color blue)
+     "bookmark  commands "
+     ("<f8>" helm-bookmarks  "choose bookmark"  )
+     ("m" bookmark-bmenu-list "B+ menu"  )
+     ("r" helm-recentf  "recents"  )
+     ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
+     ("s" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
+     ("c" helm-chrome-bookmarks "chrome bkmrks"  )
+     ("q" nil "cancel")))
+#+END_SRC
+
+*** org (F9)
+**** org main
+
+#+BEGIN_SRC emacs-lisp :results none
+  (global-set-key
+     (kbd "<f9>")
+  (defhydra hydra-org (:color blue )
+  "
+  "
+      ("<f9>"     helm-org-headlines   "search-headers")
+      ("u"     outline-up-heading  "outline-up-heading")
+      ("x"     org-archive-subtree "org-archive-subtree")
+      ("e"     org-export-dispatch "org-export-dispatch")
+      ("i"     org-toggle-inline-image  "org-toggle-inline-images")
+      ("t"     org-todo  "org-todo")
+      ("c"     org-columns         "org-columns")
+      ("C"     org-columns-quit    "org-columns-quit")
+      ("b"     org-bibtex-yank     "org-bibtex-yank")
+      ("r"     org-refile          "org-refile")
+      ("R" z/prefix-org-refile   "refile" )
+      ("B"     org-bibtex-create   "org-bibtex-create")
+      ("s"     org-sort     "org-sort")
+      ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
+      ("w"     widen              "widen")
+      ("d"     org-download-screenshot "org-download-screenshot")
+      ("D"     org-download-delete "org-download-delete")
+      ("8"     org-toggle-heading   "convert>header (**)")
+      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
+      ("l"     hydra-org-links/body  "links")
+      ("h"     org-insert-heading  "org insert header")
+;need to escape \ with \\
+      ("\\"     hydra-org-table/body      "org tables")
+      ("X"     org-babel-execute-subtree      "exe.babel.subtree")
+      ("f"     hydra-org-food/body      "org-food")
+       ("q"     nil                          "cancel" )
+  ))
+#+END_SRC
+(global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
+(global-set-key (kbd "<f10> m s ") 'org-insert-push)
+
+**** extra org links commands
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-org-links (:color blue )
+      "
+      "
+     ("s" org-store-link  "store" ) 
+     ("i" org-insert-link   "insert" ) 
+     ("d"     org-id-create "org id create")
+     ("c" org-id-copy  "copy org-id" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+**** extra table commands
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-org-table  (:color red )
+      "
+      "
+     ("y" org-table-copy-region  "copy" :color blue) 
+     ("d" org-table-cut-region  "cut" ) 
+     ("p" org-table-paste-rectangle  "paste" :color red ) 
+     ("c" org-table-create-or-convert-from-region  "convert" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+**** org cooking 
+#+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-org-food ()
+   "org-food "
+   ("b" cooking-sparse-tree-breakfeast "breakfeast_view" :color blue)
+   ("m" cooking-sparse-tree-main "main_view" :color blue)
+   ("r" recipe-template "recipe-template" :color blue)
+   ("t" travel-template  "travel-template" :color blue)
+   ("q" nil "cancel")
+)
+#+END_SRC
+
+**** org editing
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-org-edit (:color blue)
+   "orgmode editing "
+   ("t" org-insert-todo-heading-respect-content "insert TODO" )
+   ("d" org-cut-subtree  "org cut" )
+   ("y" org-copy-subtree "org copy" )
+   ("p" org-paste-subtree  "org paste" )
+   ("h" org-set-line-headline "line to headline" )
+   ("c" org-set-line-checkbox  "line to checkbox" )
+   ("s" hydra-org-time/body "time stamps" )
+   ("q" nil "cancel")))
+
+#+END_SRC
+
+**** orgmode time functions 
+
+ #+BEGIN_SRC emacs-lisp :results none
+  (defhydra hydra-org-time (:color blue)
+    "time command"
+    ("s"  org-timestamp-select "select time stamp")
+    ("n" org-timestamp-now  "timestamp current" )
+    ("i" z-insert-date "insert current data")  
+    ("d" org-deadline  "set deadline")  
+    ("i" org-schedule  "set schedule")  
+    ("q" nil "cancel")
+ )
+ #+END_SRC
+
+
+ `TODO` 
+ helm-my-org- search all org files 
+
+ (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
+ (define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
+ (define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
+ )
+
+
 *** hydra spliter
  #+BEGIN_SRC emacs-lisp :results none
 ; (require 'hydra-examples)
@@ -1593,110 +1877,7 @@ Repeated invocations toggle between the two most recently open buffers."
 ;     ("l" hydra-move-splitter-right)))
  #+END_SRC
 
-*** TODO vim
-
-(global-set-key
- (kbd "")
- (defhydra hydra-vi
-     (:pre
-      (set-cursor-color "#e52b50")
-      :post
-      (set-cursor-color "green")
-      :color amaranth)
-   "vi"
-   ("l" forward-char)
-   ("h" backward-char)
-   ("j" next-line)
-   ("k" previous-line)
-   ("m" set-mark-command "mark")
-   ("a" move-beginning-of-line "beg")
-   ("e" move-end-of-line "end")
-   ("v" evil-mode "evil")
-   ("d" delete-region "del" :color blue)
-   ("y" kill-ring-save "yank" :color blue)
-   ("q" nil "quit")))
-
-
-  (defhydra hydra-vi (:body-pre hydra-vi/pre
-                      :color    amaranth)
-    "vi"
-    ;; basic navigation
-    ("l"        forward-char                  nil)
-    ("h"        backward-char                 nil)
-    ("j"        next-line                     nil)
-    ("k"        previous-line                 nil)
-    ;; mark
-    ("m"        set-mark-command              "mark")
-    ("C-o"      (set-mark-command 4)          "jump to prev location")
-    ;; beginning/end of line
-    ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
-    ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
-    ("$"        move-end-of-line              "end of line")
-    ;; word navigation
-    ("e"        forward-word                  "end of word")
-    ("w"        modi/forward-word-begin       "beg of next word")
-    ("b"        backward-word                 "beg of word")
-    ;; page scrolling
-    ("<prior>"  scroll-down-command           "page up")
-    ("<next>"   scroll-up-command             "page down")
-    ;; delete/cut/copy/paste
-    ("x"        delete-forward-char           "del char")
-    ("d"        my/iregister-cut              "cut/del")
-    ("D"                 "cut/del line")
-    ("y"        my/iregister-copy             "copy")
-    ("p"        yank                          "paste")
-    ;; beginning/end of buffer and go to line
-    ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
-    ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
-    ("<return>" goto-line                     "goto line")
-    ;; undo/redo
-    ("u"        undo-tree-undo                "undo")
-    ("C-r"      undo-tree-redo                "redo")
-    ;; misc
-    ("<SPC>"    ace-jump-mode                 "ace jump")
-    ;; exit points
-    ("q"        hydra-vi/post                 "cancel" :color blue))
-;  (bind-key "C-:" #'hydra-vi/body modi-mode-map) ;
-
-*** windows
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
- (kbd "<f12>")
- (defhydra hydra-window (:color blue)
-   "window"
-   ("h" windmove-left)
-   ("j" windmove-down)
-   ("k" windmove-up)
-   ("l" windmove-right)
-   ("a" (lambda ()
-          (interactive)
-          (ace-window 1)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "ace")
-   ("=" (lambda ()
-          (interactive)
-          (split-window-right)
-          (windmove-right))
-        "vert")
-   ("-" (lambda ()
-          (interactive)
-          (split-window-below)
-          (windmove-down))
-        "horz")
-   ("t" transpose-windows  "transpose")
-   ("<f12>" other-window "other-window")
-   ("x" delete-window "delete window")
-   ("x" delete-other-windows "delete all other  windows")
-   ("i" ace-maximize-window "ace-one" )
-   ("r" resize-window "resize" )
-   ("q" nil "cancel")))
-
-#+END_SRC
-
-*** yas 
+*** yas (C-M-y)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-y")
@@ -1710,7 +1891,7 @@ Repeated invocations toggle between the two most recently open buffers."
    ("t" yas-tryout-snippe  "try snipet" :color blue)
    ("q" nil "cancel")))
 #+END_SRC
-*** Editing
+*** Editing (C-M-o)
 **** main editing command 
 
 
@@ -1788,208 +1969,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
 
 #+END_SRC
 
-**** spelling
- #+BEGIN_SRC emacs-lisp :results none
-   (global-set-key
-    (kbd "<f3>")
-    (defhydra hydra-spell  ()
-      "spell checking "
-      ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
-      ("i"    ispell  "start spell checker" :color blue)
-      ("w"   ispell-word  "check word" :color blue)
-      ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
-      ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
-      ("q" nil "cancel")))
- #+END_SRC
-
-*** org
-**** org main
-
-#+BEGIN_SRC emacs-lisp :results none
-  (global-set-key
-     (kbd "<f9>")
-  (defhydra hydra-org (:color blue )
-  "
- org_headlines _<f9>_
-  "
-      ("<f9>"     helm-org-headlines   "")
-      ("u"     outline-up-heading  "outline-up-heading")
-      ("x"     org-archive-subtree "org-archive-subtree")
-      ("e"     org-export-dispatch "org-export-dispatch")
-      ("t"     org-toggle-inline-image  "org-toggle-inline-images")
-      ("c"     org-columns         "org-columns")
-      ("C"     org-columns-quit    "org-columns-quit")
-      ("b"     org-bibtex-yank     "org-bibtex-yank")
-      ("r"     org-refile          "org-refile")
-      ("B"     org-bibtex-create   "org-bibtex-create")
-      ("s"     org-sort     "org-sort")
-      ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
-      ("w"     widen              "widen")
-      ("d"     org-download-screenshot "org-download-screenshot")
-      ("D"     org-download-delete "org-download-delete")
-      ("8"     org-toggle-heading   "convert>header (**)")
-      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
-      ("l"     hydra-org-links/body  "links")
-      ("h"     org-insert-heading  "org insert header")
-      ("q"     nil                          "cancel" )
-  ))
-#+END_SRC
- (global-set-key (kbd "<f10> b s ") 'org-babel-execute-subtree)
- (global-set-key (kbd "<f10> n ") (C-u M-x org-refileq))
- (global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
- (global-set-key (kbd "<f10> m s ") 'org-insert-push)
- (global-set-key (kbd "<f10> t y") 'org-table-copy-region)
- (global-set-key (kbd "<f10> t d") 'org-table-cut-region)
- (global-set-key (kbd "<f10> t p") 'org-table-paste-rectangle)
- (global-set-key (kbd "<f10> t c") 'org-table-create-or-convert-from-region)
-
-**** extra org links commands
-
- #+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-org-links (:color blue )
-      "
-      "
-     ("s" org-store-link  "store" ) 
-     ("i" org-insert-link   "insert" ) 
-     ("d"     org-id-create "org id create")
-     ("c" org-id-copy  "copy org-id" ) 
-      ("q" nil "cancel" nil)
- )
- #+END_SRC
-
-**** org cooking 
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
- (kbd "<f1> c")
- (defhydra hydra-org-food ()
-   "yas command "
-   ("b" cooking-sparse-tree-breakfeast "breakfeast_view" :color blue)
-   ("m" cooking-sparse-tree-main "main_view" :color blue)
-   ("r" recipe-template "recipe-template" :color blue)
-   ("t" travel-template  "travel-template" :color blue)
-   ("q" nil "cancel")))
-
-#+END_SRC
-
-**** org editing
-function needed?
-#+BEGIN_SRC emacs-lisp :results none
-(fset 'z/prefix-org-refile (C-u M-x org-refile))   
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
- (kbd "C-M-o")
- (defhydra hydra-org-edit ()
-   "yas command "
-   ("t" org-insert-todo-heading-respect-content "insert TODO" :color blue)
-   ("d" org-cut-subtree  "org cut" :color blue)
-   ("y" org-copy-subtree "org copy" :color blue)
-   ("p" org-paste-subtree  "org paste" :color blue)
-   ("h" org-set-line-headline "line to headline" :color blue)
-   ("c" org-set-line-checkbox  "line to checkbox" :color blue)
-   ("a" hydra-org-time/body   "ins date" :color blue)
-   ("r" org-refile   "refile" :color blue)
-   ("R" z/prefix-org-refile   "refile" :color blue)
-   ("q" nil "cancel")))
-
-#+END_SRC
-
- ;; (global-set-key (kbd "<f4> c h") 'org-set-line-headline); convert selected lines to headers
- ;; (global-set-key (kbd "<f4> c b") 'org-set-line-checkbox); convert selected lines to checkboxes
-
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
- (kbd "")
- (defhydra hydra-org-time ()
-   "time command "
-   ("t" org-insert-todo-heading-respect-content "insert TODO" :color blue)
-   ("d" org-cut-subtree  "org cut" :color blue)
-   ("y" org-copy-subtree "org copy" :color blue)
-   ("p" org-paste-subtree  "org paste" :color blue)
-   ("h" org-set-line-headline "line to headline" :color blue)
-   ("c" org-set-line-checkbox  "line to checkbox" :color blue)
-   ("a" hydra-org2/body   "ins date" :color blue)
-   ("q" nil "cancel")))
-
-#+END_SRC
-
-   ("d" org-timestamp-select  "time selector" :color blue)
-   ("a n" org-timestamp-now   "time selector" :color blue)
-   ("a i" z-insert-date   "ins date" :color blue)
-
-`TODO` 
-helm-my-org- search all org files 
-
-
-
-(define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
-(define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
-(define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
-(global-set-key (kbd "<f1> d d") 'org-timestamp-select)
-(global-set-key (kbd "<f1> d n") 'org-timestamp-now)
-(global-set-key (kbd "<f1> d i") 'z-insert-date)
-(global-set-key (kbd "<f1> d l") 'org-deadline)
-(global-set-key (kbd "<f1> d s") 'org-schedule)
-(global-set-key (kbd "<f1> t") 'org-todo)
-(global-set-key (kbd "<f1> a") 'org-agenda)
-(global-set-key "\C-ca" 'org-agenda)
-
-**** TODO org expand blocks
-;;; hydra org template
-(with-eval-after-load "hydra"
-  (defhydra hydra-org-template (:color blue :hint nil)
-    "
-_c_enter  _q_uote    _L_aTeX:
-_l_atex   _e_xample  _i_ndex:
-_a_scii   _v_erse    _I_NCLUDE:
-_s_rc     ^ ^        _H_TML:
-_h_tml    ^ ^        _A_SCII:
-"
-    ("s" (pl/hot-expand "<s"))
-    ("e" (pl/hot-expand "<e"))
-    ("q" (pl/hot-expand "<q"))
-    ("v" (pl/hot-expand "<v"))
-    ("c" (pl/hot-expand "<c"))
-    ("l" (pl/hot-expand "<l"))
-    ("h" (pl/hot-expand "<h"))
-    ("a" (pl/hot-expand "<a"))
-    ("L" (pl/hot-expand "<L"))
-    ("i" (pl/hot-expand "<i"))
-    ("I" (pl/hot-expand "<I"))
-    ("H" (pl/hot-expand "<H"))
-    ("A" (pl/hot-expand "<A"))
-    ("<" self-insert-command "ins")
-    ("o" nil "quit")))
-
-(defun pl/hot-expand (str)
-  "Expand org template."
-  (insert str)
-  (org-try-structure-completion))
-
-(with-eval-after-load "org"
-  (define-key org-mode-map "<"
-    (lambda () (interactive)
-      (if (looking-back "^")
-          (hydra-org-template/body)
-        (self-insert-command 1)))))
-**** code blocks
- #+BEGIN_SRC emacs-lisp :results none
-   (global-set-key
-    (kbd "<f4>")
-    (defhydra hydra-org-blocks ()
-      "wrapping in org blocks"
-      ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
-      ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
-      ("r"    z/hydra-wrap-R "R" :color blue)
-      ("b"   z/hydra-wrap-bash  "bash" :color blue)
-      ("q" nil "cancel")))
-
- #+END_SRC
-
-*** ace
+*** ace (C-M;)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-;")
@@ -2007,8 +1987,7 @@ _h_tml    ^ ^        _A_SCII:
    ("q" nil "cancel")))
 #+END_SRC
 
-
-*** buffer/window  
+*** buffer/window  (F11)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f11>")
@@ -2031,61 +2010,43 @@ _h_tml    ^ ^        _A_SCII:
 #+END_SRC
 
 
-
-*** TODO Emacs//toggles
-**** main toggles 
+*** windows (F12)
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
-   (kbd "<f1>")
-(defhydra hydra-toggles (:color blue)
-  "toggle Emacs configs"
-  ("g"     indent-guide-mode            "indent guide")
-  ("f"     fci-mode                     "fci")
-  ("k"     key-chord-mode               "key chord")
-  ("l"     linum-mode             "linum")
-  ("e"     evil-mode                    "evil mode")
-  ("r"     read-only-mode       "read only mode ") 
-  ("r"     view-mode       "view mode ") 
-  ("w"     whitespace-mode              "whitespace" )
-  ("=" text-scale-increase "font plus" :color red)
-  ("-" text-scale-decrease "font minus" :color red)
-  ("p" list-packages          "MELPA")
-  ("s" create-scratch-buffer   "create scratch")
-  ("c" cua-mode          "cua")
-  ("m"  hydra-toggles-macro/body "macros")
-  ("h"      hydra-toggles-help/body     "hel-keys")
-  ("q"     nil                          "cancel" )
-))
+ (kbd "<f12>")
+ (defhydra hydra-window (:color blue)
+   "window"
+   ("h" windmove-left)
+   ("j" windmove-down)
+   ("k" windmove-up)
+   ("l" windmove-right)
+   ("a" (lambda ()
+          (interactive)
+          (ace-window 1)
+          (add-hook 'ace-window-end-once-hook
+                    'hydra-window/body)
+          (throw 'hydra-disable t))
+        "ace")
+   ("=" (lambda ()
+          (interactive)
+          (split-window-right)
+          (windmove-right))
+        "vert")
+   ("-" (lambda ()
+          (interactive)
+          (split-window-below)
+          (windmove-down))
+        "horz")
+   ("t" transpose-windows  "transpose")
+   ("<f12>" other-window "other-window")
+   ("x" delete-window "delete window")
+   ("x" delete-other-windows "delete all other  windows")
+   ("i" ace-maximize-window "ace-one" )
+   ("r" resize-window "resize" )
+   ("q" nil "cancel")))
+
 #+END_SRC
-
-
-
-**** extra macro commands
-
- #+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-toggles-macro  (:color blue :hint nil )
-      "macro commands
-      "
-      ("s" start-kbd-macro  "start macro" ) 
-      ("e" end-kbd-macro  "end macro" ) 
-      ("n" name-kbd-macro  "name macro" ) 
-      ("i" insert-kbd-macro  "insert macro" ) 
-      ("q" nil "cancel" nil)
- )
- #+END_SRC
-
-**** help menu commands
- #+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-toggles-help   (:color blue :hint nil )
-      "help commands
-      "
-      ("k" describe-key   "keybinds help" ) 
-      ("v" describe-variable    "variable help" ) 
-      ("f" describe-function   "function help" ) 
-      ("q" nil "cancel" nil)
- )
- #+END_SRC
 
 
 *** dired hydra
@@ -2093,20 +2054,6 @@ _h_tml    ^ ^        _A_SCII:
 ;dired
 (define-key global-map (kbd "<f3> d") 'dired)
 (global-set-key (kbd "<f3> j") 'dired-jump) 
-*** bookmark hydra
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "<f8>")
-   (defhydra hydra-bookmark   (:color blue)
-     "bookmark  commands "
-     ("<f8>" helm-bookmarks  "choose bookmark"  )
-     ("m" bookmark-bmenu-list "B+ menu"  )
-     ("r" helm-recentf  "recents"  )
-     ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
-     ("s" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
-     ("c" helm-chrome-bookmarks "chrome bkmrks"  )
-     ("q" nil "cancel")))
-#+END_SRC
 *** movment
 pop-global-mark this will move you to prev position 
 
@@ -2119,36 +2066,12 @@ pop-global-mark this will move you to prev position
   "goto"
   ("g" goto-line "line")
   ("c" goto-char "char")
+  ("2" er/expand-region "expand")
   ("q" nil "quit"))
 #+END_SRC
 (global-set-key (kbd "<f3> o") 'back-button-global)
 
-
-*** Emacs
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "<f3>")
-(defhydra hydra-toggles (:color blue)
-  "Emacs configs"
-  ("g"     indent-guide-mode            "indent guide")
-  ("f"     fci-mode                     "fci")
-  ("k"     key-chord-mode               "key chord")
-  ("l"     linum-mode             "linum")
-  ("e"     evil-mode                    "evil mode")
-  ("r"     read-only-mode       "read only mode ") 
-  ("w"     whitespace-mode              "whitespace" )
-  ("=" text-scale-increase "font plus" :color red)
-  ("-" text-scale-decrease "font minus" :color red)
-  ("p" list-packages          "MELPA")
-  ("c" cua-mode          "cua")
-  ("h k"  describe-key          "hel-keys")
-  ("q"     nil                          "cancel" )
-))
-#+END_SRC
-
-
-*** Helm
+*** Helm (F7)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f7>")
@@ -2192,96 +2115,72 @@ helm _t_op
 
  #+END_SRC
 
+*** TODO vim
 
-*** mu4e 
-#+BEGIN_SRC emacs-lisp :results none
 (global-set-key
-   (kbd "<f5>")
-(defhydra hydra-mu4e (:color blue :hint nil)
-  "
-"
-  ("<f5>"     mu4e            "start mu4e")
-  ("u"     mu4e-update-mail-and-index           "Send/Recive")
-  ("o"     mu4e-headers-change-sorting            "sort")
-    ("q"     nil                          "cancel" )
-))
-#+END_SRC
+ (kbd "")
+ (defhydra hydra-vi
+     (:pre
+      (set-cursor-color "#e52b50")
+      :post
+      (set-cursor-color "green")
+      :color amaranth)
+   "vi"
+   ("l" forward-char)
+   ("h" backward-char)
+   ("j" next-line)
+   ("k" previous-line)
+   ("m" set-mark-command "mark")
+   ("a" move-beginning-of-line "beg")
+   ("e" move-end-of-line "end")
+   ("v" evil-mode "evil")
+   ("d" delete-region "del" :color blue)
+   ("y" kill-ring-save "yank" :color blue)
+   ("q" nil "quit")))
 
-** F9+F9 org-id goto
 
-$Note For (kbd "<f9> l") to work, you need to have f9 to be a prefix key$
-!look into per file hooks for the below!
+  (defhydra hydra-vi (:body-pre hydra-vi/pre
+                      :color    amaranth)
+    "vi"
+    ;; basic navigation
+    ("l"        forward-char                  nil)
+    ("h"        backward-char                 nil)
+    ("j"        next-line                     nil)
+    ("k"        previous-line                 nil)
+    ;; mark
+    ("m"        set-mark-command              "mark")
+    ("C-o"      (set-mark-command 4)          "jump to prev location")
+    ;; beginning/end of line
+    ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+    ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+    ("$"        move-end-of-line              "end of line")
+    ;; word navigation
+    ("e"        forward-word                  "end of word")
+    ("w"        modi/forward-word-begin       "beg of next word")
+    ("b"        backward-word                 "beg of word")
+    ;; page scrolling
+    ("<prior>"  scroll-down-command           "page up")
+    ("<next>"   scroll-up-command             "page down")
+    ;; delete/cut/copy/paste
+    ("x"        delete-forward-char           "del char")
+    ("d"        my/iregister-cut              "cut/del")
+    ("D"                 "cut/del line")
+    ("y"        my/iregister-copy             "copy")
+    ("p"        yank                          "paste")
+    ;; beginning/end of buffer and go to line
+    ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
+    ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
+    ("<return>" goto-line                     "goto line")
+    ;; undo/redo
+    ("u"        undo-tree-undo                "undo")
+    ("C-r"      undo-tree-redo                "redo")
+    ;; misc
+    ("<SPC>"    ace-jump-mode                 "ace jump")
+    ;; exit points
+    ("q"        hydra-vi/post                 "cancel" :color blue))
+;  (bind-key "C-:" #'hydra-vi/body modi-mode-map) ;
 
-  ;movies DL
-  (global-set-key (kbd "<f9> <f9> v")
-    (lambda ()
-      (interactive)
-        (org-id-goto "62b49339-cd19-4a3c-a6fd-70dd45be4670")))
-;  emacs
-  (global-set-key (kbd "<f9> <f9> e ")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "38a15adf-f505-4a54-b1d9-f76b22ce1147")
-        (org-narrow-to-subtree)
-))
-  
-  
-  ;org
-  (global-set-key (kbd "<f9> <f9> o")
-    (lambda ()
-      (interactive)
-        (widen)
-        (org-id-goto "be4759e1-2951-4c91-a155-056bc2a16d9f")
-        (org-narrow-to-subtree)
-))
-  
-  ;ssh
-  (global-set-key (kbd "<f9> <f9> s")
-    (lambda ()
-      (interactive)
-        (org-id-goto "bf60adbf-fc3a-4eed-be14-a9244c3fef4e")))
-  
-  ;beets
-  (global-set-key (kbd "<f9> <f9> b")
-    (lambda ()
-      (interactive)
-        (org-id-goto "e0837792-f794-495e-908f-f75bdb4462b3")))
-  
-  
-  ;git
-  (global-set-key (kbd "<f9> <f9> g")
-    (lambda ()
-      (interactive)
-        (org-id-goto "7816c1c8-be9a-4fd5-8121-15c190885cd7")))
-  
-  ;mobileorg
-  (global-set-key (kbd "<f9> <f9> m")
-    (lambda ()
-      (interactive)
-        (org-id-goto "0367963c-9ba2-44ee-9b30-bf5b7200b873")))
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> p")
-    (lambda ()
-      (interactive)
-        (org-id-goto "47bad96f-740c-4b93-b739-a4b925d85514")))
-  
-  ;capture settings
- ; (global-set-key (kbd "<f9> <f9> e c")
-  ;  (lambda ()
-   ;   (interactive)
-    ;    (org-id-goto "dfffbe27-21bc-4fb9-908e-f492f4afeb60")))
-  
-  
-  ;papers
-  (global-set-key (kbd "<f9> <f9> c c ")
-    (lambda ()
-      (interactive)
-        (org-id-goto "8193566d-2dd5-4368-8238-fac2fc9aa7e9")))
-  
 
-	
 * Settings
 ** XDG/open with 
 *** set emacs browser
@@ -3991,12 +3890,6 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
 *** base setup 
 #+BEGIN_SRC emacs-lisp :results none
 (require 'mu4e)
-
-;old below commbined method works better 
-;; Re-index every 15 minutes.
-;(setq mu4e-update-interval (* 10 60))
-;(setq mu4e-get-mail-command "offlineimap")
-
 
 (setq mu4e-get-mail-command "offlineimap"
       mu4e-update-interval 120
