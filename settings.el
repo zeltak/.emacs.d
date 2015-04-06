@@ -176,8 +176,6 @@
 (use-package helm-cmd-t
 :ensure t
 :config
-)
-
 (defvar my-org-folders (list  "~/org/files/")
   "my permanent folders for helm-mini")
 
@@ -193,6 +191,7 @@
             :candidate-number-limit 20
             :buffer "*helm-my-org:*"
             :input "org$ "))))
+)
 
 (when (executable-find "curl")
   (setq helm-google-suggest-use-curl-p t))
@@ -523,8 +522,10 @@
 (use-package expand-region
  :ensure t
  :config
- :bind ("M-2" . er/expand-region )
+ :bind (
+       ("M-2" . er/expand-region )
  )
+)
 
 ;; some proposals for binding:
  
@@ -646,6 +647,13 @@
  :ensure t
  :config
   )
+
+(use-package mu4e-maildirs-extension
+ :ensure t
+ :config
+(setq mu4e-maildirs-extension-title "Mail")
+;(setq mu4e-maildirs-extension-custom-list (quote ("INBOX" "Starred"  )))
+ )
 
 (defun z-fix-characters 
 (start end) 
@@ -827,8 +835,11 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
   (interactive "r")
   (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
 
-;(defun search-replace-file (&rest rest) (interactive) (save-excursion    
-; (goto-char (point-min)) (apply #'query-replace-regexp rest)))
+(defun   ssrch-replace-file (&rest rest)
+(interactive)
+(save-excursion    
+(goto-char (point-min))
+(apply #'query-replace-regexp rest)))
 
 (defun duplicate-current-line-or-region (arg)
   "Duplicates the current line or region ARG times.
@@ -1206,7 +1217,7 @@ Repeated invocations toggle between the two most recently open buffers."
   ("l"     linum-mode             "linum")
   ("e"     evil-mode                    "evil mode")
   ("r"     read-only-mode       "read only mode ") 
-  ("r"     view-mode       "view mode ") 
+  ("v"     view-mode       "view mode ") 
   ("w"     whitespace-mode              "whitespace" )
   ("=" text-scale-increase "font plus" :color red)
   ("-" text-scale-decrease "font minus" :color red)
@@ -1558,8 +1569,9 @@ _r_ecents
   ("l"     helm-locate            "locate")
   ("f"     helm-find-files            "find files")
   ("a"     helm-apropos            "apropos")
-  ("o"     helm-occur            "occur")
+  ("c"     helm-occur            "occur")
   ("b"     helm-buffer-list            "buffers")
+  ("o"     helm-my-org            "search org file")
     ("q"     nil                          "cancel" )
 ))
 
@@ -1880,6 +1892,8 @@ With prefix argument, also display headlines without a TODO keyword."
                "*   %?\n%T" )
               ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
                "* SHOP  %^{Description} " )
+              ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
+               "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n\n" )
               ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
               ;;;agenda captures
               ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
@@ -2825,12 +2839,9 @@ take care of the wrapping of each item for me"
 
 
 (require 'mu4e)
-
-;old below commbined method works better 
-;; Re-index every 15 minutes.
-;(setq mu4e-update-interval (* 10 60))
-;(setq mu4e-get-mail-command "offlineimap")
-
+(require 'mu4e-contrib) 
+;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
+(mu4e-maildirs-extension)
 
 (setq mu4e-get-mail-command "offlineimap"
       mu4e-update-interval 120
@@ -2897,8 +2908,8 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 ;;     smtpmail-smtp-server "smtp.gmail.com"
 ;;     smtpmail-smtp-service 587)
 
-(setq mu4e-date-format-long "%Y-%m-%d %H:%M:%S")
-(setq mu4e-headers-date-format "%y%m%d (%H:%M:%S)")
+(setq mu4e-date-format-long "%d/%m/%Y (%H:%M:%S)")
+(setq mu4e-headers-date-format "%d/%m/%Y (%H:%M:%S)")
 ;can define a horizontal or vertical split 
 (setq mu4e-split-view 'horizontal)
 
