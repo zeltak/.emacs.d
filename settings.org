@@ -396,6 +396,7 @@ https://github.com/redguardtoo/evil-nerd-commenter
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))                                                           
  #+END_SRC
 ** org-dp (wrap code blocks functions) 
+https://github.com/tj64/org-dp
 *** load 
 #+BEGIN_SRC emacs-lisp :results none
  (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
@@ -432,7 +433,6 @@ https://github.com/redguardtoo/evil-nerd-commenter
 ;end paren
      )
 #+END_SRC
-
 
 ** Yasnippets 
 *** base
@@ -972,6 +972,18 @@ https://github.com/agpchil/mu4e-maildirs-extension
 
  )
 #+END_SRC
+
+** color-theme-approximate
+ If it doesn't work try to put the line lower in the .emacs file (it happened to me). If everything still look like shit check that you have the correct XTERM environment variable set 
+$Note- is different inside screen or tmux$
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package color-theme-approximate
+ :ensure t
+ :config
+(color-theme-approximate-on)
+ )
+#+END_SRC 
 
 * Functions
 ** Encoding
@@ -3531,12 +3543,28 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 ;(global-visual-line-mode t)
 (setq line-move-visual nil)
 
-;; scroll one line at a time (less "jumpy" than defaults)
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+
 ;;disable tooltips
 (tooltip-mode -1)
 
 #+end_src
+
+#+RESULTS:
+
+** start maximized
+#+BEGIN_SRC emacs-lisp :results none
+;Start maximized, please
+(custom-set-variables
+ '(initial-frame-alist (quote ((fullscreen . maximized))))) ;; start maximized
+
+#+END_SRC
+** scroll
+#+BEGIN_SRC emacs-lisp :results none
+; scroll one line at a time (less "jumpy" than defaults)
+(setq scroll-margin 5
+scroll-conservatively 9999
+scroll-step 1)
+#+END_SRC
 ** toolbars
 turn on off toolbars with icons
 1 to switch on and -1 to switch off
@@ -3557,6 +3585,8 @@ turn on off toolbars with icons
 
 ;;Keep the cursor steady when scrolling
 (setq scroll-preserve-screen-position t)
+
+
 #+END_SRC
 ** Menus
 *** Add language switching menu
@@ -3673,7 +3703,6 @@ turn on off toolbars with icons
 ;
 ; (add-hook 'find-file-hook 'my-set-theme-on-mode)
 #+end_src
-
 
 ** Evil mode look and feel
 *** Cursor colors by state
