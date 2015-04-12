@@ -1214,10 +1214,10 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
 @currently below code broken@
 
 #+BEGIN_SRC emacs-lisp :results none
-(defun  z/search-replace-file ()
-(interactive)
-(goto-char (point-min))
-(query-replace-regexp )))                            
+;(defun  z/search-replace-file ()
+;(interactive)
+;(goto-char (point-min))
+;(query-replace-regexp ))
 
 #+END_SRC
 *** duplicate line/region 
@@ -2413,13 +2413,17 @@ $note its built into emacs no intsall needed$
 #+end_src
 
 *** enable shift selection 
+
 use setq org-support-shift-select:
+
 'always- to always use it
 'nil- to disable on org mode
 't- for When outside special context
+
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-support-shift-select 't)
-#+END_SR
+#+END_SRC
+
 ** custom link types
 *** grep link
 #+BEGIN_SRC emacs-lisp :results none
@@ -2575,6 +2579,19 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-habit-graph-column 70)
 (setq org-habit-show-habits-only-for-today nil)
+#+END_SRC
+
+*** get popups for meetings
+#+BEGIN_SRC emacs-lisp
+ (appt-activate 1)
+ (org-agenda-to-appt)
+#+END_SRC
+
+thos  will be reminded of things in your org files, before the appointment time (I think 12 min is the default)
+You could also add this, so that the appointments refresh and new get added every time that you call the agenda:
+
+#+BEGIN_SRC emacs-lisp
+ (add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
 #+END_SRC
 
 ** Images

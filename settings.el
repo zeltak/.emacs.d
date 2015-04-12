@@ -576,16 +576,10 @@
 ;(require 'tex)
 ;(setq preview-scale-function 1.1)
 
-;; (require 'guide-key)
-;; (guide-key-mode 1)  ; Enable guide-key-mode
-;; (setq guide-key/idle-delay 0.1)
-
-;; (setq guide-key/popup-window-position "right")
-
-;; ;(setq guide-key/guide-key-sequence '("C-c" "C-x r" "C-x 4" "f9"))
-;; (setq guide-key/guide-key-sequence '("kk"))
-;; (setq guide-key/guide-key-sequence '("<f4>"))
-;; (setq guide-key/recursive-key-sequence-flag t)
+(use-package lentic
+ :ensure t
+ :config
+ )
 
 (setq manage-minor-mode-default
       '((global
@@ -653,6 +647,49 @@
  :config
 (setq mu4e-maildirs-extension-title "Mail")
 ;(setq mu4e-maildirs-extension-custom-list (quote ("INBOX" "Starred"  )))
+ )
+
+(use-package swiper 
+ :ensure t
+ :config
+ )
+
+(use-package engine-mode
+ :ensure t
+ :config 
+(defengine amazon
+  "http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
+
+(defengine duckduckgo
+  "https://duckduckgo.com/?q=%s"
+  "d")
+
+(defengine github
+  "https://github.com/search?ref=simplesearch&q=%s")
+
+(defengine google
+  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
+  "g")
+
+(defengine google-images
+  "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
+
+(defengine google-maps
+  "http://maps.google.com/maps?q=%s")
+
+(defengine wikipedia
+  "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+  "w")
+
+(defengine youtube
+  "http://www.youtube.com/results?aq=f&oq=&search_query=%s")
+
+ )
+
+(use-package color-theme-approximate
+ :ensure t
+ :config
+(color-theme-approximate-on)
  )
 
 (defun z-fix-characters 
@@ -835,11 +872,10 @@ to markdown blockquote rules. Useful to add snippets under bullet points."
   (interactive "r")
   (prelude-indent-rigidly-and-copy-to-clipboard begin end 6))
 
-(defun   ssrch-replace-file (&rest rest)
-(interactive)
-(save-excursion    
-(goto-char (point-min))
-(apply #'query-replace-regexp rest)))
+;(defun  z/search-replace-file ()
+;(interactive)
+;(goto-char (point-min))
+;(query-replace-regexp ))
 
 (defun duplicate-current-line-or-region (arg)
   "Duplicates the current line or region ARG times.
@@ -1049,7 +1085,7 @@ Repeated invocations toggle between the two most recently open buffers."
    (switch-to-buffer (get-buffer-create "*scratch*"))
    (lisp-interaction-mode))
 
-(defun narrow-or-widen-dwim ()
+(defun z/narrow-or-widen-dwim ()
 "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
 (interactive)
 (cond ((buffer-narrowed-p) (widen))
@@ -1215,6 +1251,7 @@ Repeated invocations toggle between the two most recently open buffers."
   ("f"     fci-mode                     "fci")
   ("k"     key-chord-mode               "key chord")
   ("l"     linum-mode             "linum")
+  ("t"     lentic-mode             "lentic ")
   ("e"     evil-mode                    "evil mode")
   ("r"     read-only-mode       "read only mode ") 
   ("v"     view-mode       "view mode ") 
@@ -1308,8 +1345,9 @@ _h_tml    ^ ^        _A_SCII:
      ("m" bookmark-bmenu-list "B+ menu"  )
      ("r" helm-recentf  "recents"  )
      ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
-     ("s" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
+     ("f" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
      ("c" helm-chrome-bookmarks "chrome bkmrks"  )
+     ("s" bookmark-save  "save bkmrks"  )
      ("q" nil "cancel")))
 
 (global-set-key
@@ -1331,7 +1369,8 @@ _h_tml    ^ ^        _A_SCII:
       ("B"     org-bibtex-create   "org-bibtex-create")
       ("s"     org-sort     "org-sort")
       ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
-      ("w"     widen              "widen")
+      ("W"     widen              "widen")
+      ("w"     z/narrow-or-widen-dwim              "toggle wide/narrow")
       ("d"     org-download-screenshot "org-download-screenshot")
       ("D"     org-download-delete "org-download-delete")
       ("8"     org-toggle-heading   "convert>header (**)")
@@ -1432,6 +1471,7 @@ _h_tml    ^ ^        _A_SCII:
    ("i"  hydra-unicode/body  "insert" )   
    ("f" flush-blank-line  "flush blank" )
    ("u" z-fix-characters "fix unicode" )
+   ("g" google-search "google searh selected" )
    ("R" revert-buffer  "revert buffer before changes" ) 
    ("q" nil "cancel")))
 
@@ -1628,11 +1668,6 @@ helm _t_op
 
 (setq explicit-shell-file-name "/bin/zsh")
 
-(defun proced-settings ()
-  (proced-toggle-auto-update))
-
-(add-hook 'proced-mode-hook 'proced-settings)
-
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
 
@@ -1810,6 +1845,11 @@ helm _t_op
 (setq org-habit-graph-column 70)
 (setq org-habit-show-habits-only-for-today nil)
 
+(appt-activate 1)
+(org-agenda-to-appt)
+
+(add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
+
 ;;iimage in org (display images in org files)
 (setq org-startup-with-inline-images t)
 
@@ -1893,7 +1933,7 @@ With prefix argument, also display headlines without a TODO keyword."
               ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
                "* SHOP  %^{Description} " )
               ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
-               "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n%U\n%a\n\n" )
+               "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
               ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
               ;;;agenda captures
               ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
@@ -2573,10 +2613,18 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 ;(global-visual-line-mode t)
 (setq line-move-visual nil)
 
-;; scroll one line at a time (less "jumpy" than defaults)
-(setq scroll-step 1) ;; keyboard scroll one line at a time
+
 ;;disable tooltips
 (tooltip-mode -1)
+
+;Start maximized, please
+(custom-set-variables
+ '(initial-frame-alist (quote ((fullscreen . maximized))))) ;; start maximized
+
+; scroll one line at a time (less "jumpy" than defaults)
+(setq scroll-margin 5
+scroll-conservatively 9999
+scroll-step 1)
 
 (tool-bar-mode -1)
 
