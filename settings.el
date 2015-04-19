@@ -1213,6 +1213,9 @@ Repeated invocations toggle between the two most recently open buffers."
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
 
+(fset 'del_exe_mu4e
+   [?d ?x ?y ])
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
@@ -1271,7 +1274,7 @@ Repeated invocations toggle between the two most recently open buffers."
      "
      ("s" start-kbd-macro  "start macro" ) 
      ("e" end-kbd-macro  "end macro" ) 
-     ("n" name-kbd-macro  "name macro" ) 
+     ("n" name-last-kbd-macro  "name macro" ) 
      ("i" insert-kbd-macro  "insert macro" ) 
      ("q" nil "cancel" nil)
 )

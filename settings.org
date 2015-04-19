@@ -1639,6 +1639,13 @@ Repeated invocations toggle between the two most recently open buffers."
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
 #+END_SRC
+** mu4e
+*** delete and exe
+#+BEGIN_SRC emacs-lisp :results none
+(fset 'del_exe_mu4e
+   [?d ?x ?y ])
+
+#+END_SRC
 * Keybinds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
@@ -1720,7 +1727,7 @@ Repeated invocations toggle between the two most recently open buffers."
       "
       ("s" start-kbd-macro  "start macro" ) 
       ("e" end-kbd-macro  "end macro" ) 
-      ("n" name-kbd-macro  "name macro" ) 
+      ("n" name-last-kbd-macro  "name macro" ) 
       ("i" insert-kbd-macro  "insert macro" ) 
       ("q" nil "cancel" nil)
  )
