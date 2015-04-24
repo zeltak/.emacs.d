@@ -15,6 +15,7 @@
     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" . t)))
  '(image-dired-db-file "/home/zeltak/.emacs.t/image-dired/.image-dired_db")
  '(image-dired-dir "~/.emacs.t/image-dired/")
+ '(initial-frame-alist (quote ((fullscreen . maximized))))
  '(org-agenda-files
    (quote
     ("/home/zeltak/org/files/agenda/Research.org" "/home/zeltak/org/files/agenda/TODO.org" "/home/zeltak/org/files/agenda/dl.org" "/home/zeltak/org/files/agenda/food.org" "/home/zeltak/org/files/agenda/travel.org")))
