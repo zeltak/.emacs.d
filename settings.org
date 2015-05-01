@@ -1321,6 +1321,22 @@ file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
 )
 #+END_SRC
 
+*** Code box
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/comment-box (b e)
+  "Draw a box comment around the region but arrange for the region
+to extend to at least the fill column. Place the point after the
+comment box."
+  (interactive "r")
+  (let ((e (copy-marker e t)))
+    (goto-char b)
+    (end-of-line)
+    (insert-char ?  (- fill-column (current-column)))
+    (comment-box b e 1)
+    (goto-char e)
+    (set-marker e nil)))
+
+#+END_SRC
 ** org
 *** convert to same level header
 #+BEGIN_SRC emacs-lisp :results none
@@ -1969,7 +1985,7 @@ _h_tml    ^ ^        _A_SCII:
    ("t" yas-tryout-snippe  "try snipet" :color blue)
    ("q" nil "cancel")))
 #+END_SRC
-*** Editing (C-M-o)
+*** Editing (C-M-e)
 **** main editing command 
 
 
@@ -1989,6 +2005,7 @@ _h_tml    ^ ^        _A_SCII:
       ("f" flush-blank-line  "flush blank" )
       ("u" z-fix-characters "fix unicode" )
       ("g" google-search "google searh selected" )
+      ("c" z/comment-box "comment box" )
       ("R" revert-buffer  "revert buffer before changes" ) 
       ("q" nil "cancel")))
 

@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#(".Xresources" 0 11
+(#1=(#("org-capture-last-stored" 0 23
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/agenda/dl.org")
+    (buffer-name . "dl.org")
+    (front-context-string . "***  http://www.")
+    (rear-context-string . "ies Indie Cindy\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21827 7377 633921 432000))
+    (created . #2#)
+    (position . 5913))
+#1=(#(".Xresources" 0 11
       (bmkp-full-record #1#))
     (filename . "~/dotfiles/LAPTOP/.Xresources")
     (buffer-name . ".Xresources")

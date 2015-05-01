@@ -957,6 +957,19 @@ there's a region, all lines that region covers will be duplicated."
   (replace-regexp "[0-9]" "")
 )
 
+(defun z/comment-box (b e)
+  "Draw a box comment around the region but arrange for the region
+to extend to at least the fill column. Place the point after the
+comment box."
+  (interactive "r")
+  (let ((e (copy-marker e t)))
+    (goto-char b)
+    (end-of-line)
+    (insert-char ?  (- fill-column (current-column)))
+    (comment-box b e 1)
+    (goto-char e)
+    (set-marker e nil)))
+
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
                      (let ((current-prefix-arg '(4)))             
@@ -1475,6 +1488,7 @@ _h_tml    ^ ^        _A_SCII:
    ("f" flush-blank-line  "flush blank" )
    ("u" z-fix-characters "fix unicode" )
    ("g" google-search "google searh selected" )
+   ("c" z/comment-box "comment box" )
    ("R" revert-buffer  "revert buffer before changes" ) 
    ("q" nil "cancel")))
 
