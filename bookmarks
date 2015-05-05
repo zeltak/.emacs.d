@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("org-capture-last-stored" 0 23
+(#1=(#("hydra.settings" 0 14
+      (bmkp-full-record #1#))
+    (filename . "~/.emacs.d/settings.org")
+    (buffer-name . "settings.org")
+    (front-context-string . "dra\n*** Emacs//t")
+    (rear-context-string . "#+END_SRC\n\n** hy")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21831 22454 68111 422000))
+    (created . #2#)
+    (position . 50213))
+#1=(#("org-capture-last-stored" 0 23
       (bmkp-full-record #1#))
     (filename . "~/org/files/agenda/dl.org")
     (buffer-name . "dl.org")
@@ -28,16 +40,17 @@
     (position . 1))
 #1=(#("search.emacs" 0 12
       (bmkp-full-record #1#))
+    (end-position . 1129274)
     (filename . "~/org/files/Tech/linux.org")
     (buffer-name . "linux.org")
     (front-context-string . "******* Search T")
     (rear-context-string . "t\n#+END_SRC\n 	 \n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21794 40612 33968 633000))
-    (created . #2#)
-    (position . 1134795))
+    (visits . 1)
+    (time 21831 22437 147595 5000)
+    (created 21794 40612 33968 633000)
+    (position . 1129274))
 #1=(#("comics.dl" 0 9
       (bmkp-full-record #1#))
     (filename . "~/org/files/agenda/dl.org")
@@ -471,8 +484,8 @@
     (rear-context-string . "\")))\n#+END_SRC\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 16)
-    (time 21791 60675 422730 997000)
+    (visits . 18)
+    (time 21831 22445 566464 426000)
     (created 21599 19295 302181 721000)
     (position . 1232))
 #1=(#("code_uni" 0 8

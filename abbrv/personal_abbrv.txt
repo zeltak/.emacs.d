@@ -881,6 +881,7 @@
     ("specificalyl" "specifically" nil 0)
     ("statment" "statement" nil 0)
     ("statments" "statements" nil 0)
+    ("steralized" "sterilized" nil 0)
     ("stnad" "stand" nil 0)
     ("stopry" "story" nil 0)
     ("stoyr" "story" nil 0)
