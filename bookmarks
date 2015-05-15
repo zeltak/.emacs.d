@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("clerk.config" 0 12
+(#1=(#("bar" 0 3
+      (bmkp-full-record #1#))
+    (filename . "~/.i3/config")
+    (buffer-name . "config")
+    (front-context-string . "\n   }\n\n#for the ")
+    (rear-context-string . " $bg        $tx\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21844 18594 24715 329000))
+    (created . #2#)
+    (position . 10378))
+#1=(#("clerk.config" 0 12
       (bmkp-full-record #1#))
     (filename . "~/dotfiles/LAPTOP/.config/clerk/config")
     (buffer-name . "config")
@@ -584,16 +596,18 @@
     (position . 28))
 #1=(#("autostart.sh" 0 12
       (bmkp-full-record #1#))
-    (filename . "~/dotfiles/COMMON/bin/autostart.sh")
+    (annotation)
+    (tags)
+    (filename . "~/dotfiles/LAPTOP/bin/autostart.sh")
     (buffer-name . "autostart.sh")
-    (front-context-string . "####Autostart###")
-    (rear-context-string)
+    (front-context-string . "c urxvt -name tm")
+    (rear-context-string . "#11 (Utils)\n#exe")
     (front-context-region-string)
     (rear-context-region-string)
     (visits . 0)
-    (time . #2=(21561 4752 310569 229000))
+    (time . #2=(21844 19222 170981 757000))
     (created . #2#)
-    (position . 1))
+    (position . 2400))
 #1=(#(".mpdconf" 0 8
       (bmkp-full-record #1#))
     (filename . "~/.mpdconf")
@@ -616,8 +630,8 @@
     (rear-context-string . "TUP: overview\n\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 6)
-    (time 21840 38453 656878 832000)
+    (visits . 7)
+    (time 21844 18194 921555 984000)
     (created 21790 12017 43737 553000)
     (position . 75))
 #1=(#(".pentadactylrc" 0 14
@@ -936,8 +950,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 4)
-    (time 21777 9786 47815 81000)
+    (visits . 7)
+    (time 21844 19067 120429 709000)
     (created 20812 16868 987428 79000)
     (position . 1)
     (end-position . 1))

@@ -2278,7 +2278,16 @@ helm _t_op
     ("q"        hydra-vi/post                 "cancel" :color blue))
 ;  (bind-key "C-:" #'hydra-vi/body modi-mode-map) ;
 
-
+** isearch
+#+BEGIN_SRC emacs-lisp :results none
+(progn
+  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
+  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
+ )
+#+END_SRC
 * Settings
 ** XDG/open with 
 *** set emacs browser
