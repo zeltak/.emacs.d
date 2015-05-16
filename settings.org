@@ -985,6 +985,17 @@ $Note- is different inside screen or tmux$
  )
 #+END_SRC 
 
+** peep dired
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package peep-dired
+ :ensure t
+ :config
+ (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+ )
+#+END_SRC 
+
+
 * Functions
 ** Encoding
 *** fix unicode characters
@@ -1760,6 +1771,34 @@ Repeated invocations toggle between the two most recently open buffers."
       ("q" nil "cancel" nil)
  )
  #+END_SRC
+*** dired hydra (f2)
+**** main
+#+BEGIN_SRC emacs-lisp :results noneq
+(global-set-key
+   (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue)
+  "dired"
+  ("<f2>"     dired            "start dired")
+  ("j"  dired-jump  "jump current folder")
+  ("p"  peep-dired      "toggle peep mode")
+  ("t"   hydra-dired-configs/body      "dired toggles")
+  ("m"   diredp-mark/unmark-extensio      "mark")
+  ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
+**** dired togles
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-dired-configs (:color blue )
+      "
+      "
+     ("o" dired-omit-mode  "dired omit" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
+
+dired-omit-mode
+
 *** spelling (F3)
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key
@@ -2065,6 +2104,8 @@ add the org faces macros here (%Tip%, $Note$ etc)
 
 #+END_SRC
 
+
+
 *** ace (C-M;)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -2145,11 +2186,6 @@ add the org faces macros here (%Tip%, $Note$ etc)
 #+END_SRC
 
 
-*** dired hydra
-
-;dired
-(define-key global-map (kbd "<f3> d") 'dired)
-(global-set-key (kbd "<f3> j") 'dired-jump) 
 *** movment
 pop-global-mark this will move you to prev position 
 
@@ -2288,6 +2324,13 @@ helm _t_op
   (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
  )
 #+END_SRC
+** dired
+#+BEGIN_SRC emacs-lisp :results none
+(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+#+END_SRC
+
 * Settings
 ** XDG/open with 
 *** set emacs browser
@@ -3811,6 +3854,17 @@ Always recursively delete directory
 (setq dired-recursive-copies 'always)
 #+END_SRC
 
+**** allow dired to be able to delete or copy a whole dir.
+#+BEGIN_SRC emacs-lisp :results none
+(setq dired-recursive-copies (quote always)) ; ‘¡°always‘¡± means no asking
+(setq dired-recursive-deletes (quote top)) ; ‘¡°top‘¡± means ask once
+#+END_SRC
+**** copy from one dired dir to the next dired dir shown in a split window
+#+BEGIN_SRC emacs-lisp :results none
+(setq dired-dwim-target t)
+#+END_SRC
+Now, go to dired, then call split-window-vertically, then go to another dired dir. Now, when you press C to copy, the other dir in the split pane will be default destination. Same for R (rename; move).
+
 *** plugins
 **** dired-x
 #+BEGIN_SRC emacs-lisp :results none
@@ -3848,10 +3902,56 @@ Always recursively delete directory
 
 **** dired-details+
 #+BEGIN_SRC emacs-lisp :results none
-(require 'dired-details+)
+;(require 'dired-details+)
 ;Also in dired-details, to show sym link targets, add this to our .emacs
-(setq dired-details-hide-link-targets nil)
+;(setq dired-details-hide-link-targets nil)
 #+END_SRC
+*** functions 
+**** open in external (default) app
+http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/dired-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference."
+  (interactive)
+  (let* (
+         (†îfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (†îdo-it-p (if (<= (length †îfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when †îdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) †îfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  †îfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) †îfile-list))))))
+#+END_SRC
+**** open in WM/DE file manafer
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/dired-open-in-desktop ()
+  "Show current file in desktop (OS's file manager)."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. œôóÖ with nautilus
+    ) ))
+#+END_SRC
+
 * Editing
 ** spelling
 #+begin_src emacs-lisp results none

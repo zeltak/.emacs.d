@@ -692,6 +692,12 @@
 (color-theme-approximate-on)
  )
 
+(use-package peep-dired
+ :ensure t
+ :config
+ (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+ )
+
 (defun z-fix-characters 
 (start end) 
 (interactive "r") 
@@ -1302,6 +1308,25 @@ Repeated invocations toggle between the two most recently open buffers."
 )
 
 (global-set-key
+   (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue)
+  "dired"
+  ("<f2>"     dired            "start dired")
+  ("j"  dired-jump  "jump current folder")
+  ("p"  peep-dired      "toggle peep mode")
+  ("t"   hydra-dired-configs/body      "dired toggles")
+  ("m"   diredp-mark/unmark-extensio      "mark")
+  ("q"     nil                          "cancel" )
+))
+
+(defhydra hydra-dired-configs (:color blue )
+     "
+     "
+    ("o" dired-omit-mode  "dired omit" ) 
+     ("q" nil "cancel" nil)
+)
+
+(global-set-key
  (kbd "<f3>")
  (defhydra hydra-spell  ()
    "spell checking "
@@ -1649,6 +1674,10 @@ helm _t_op
   (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
   (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
  )
+
+(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -2784,6 +2813,11 @@ scroll-step 1)
 ;Always recursively copy directory
 (setq dired-recursive-copies 'always)
 
+(setq dired-recursive-copies (quote always)) ; “always” means no asking
+(setq dired-recursive-deletes (quote top)) ; “top” means ask once
+
+(setq dired-dwim-target t)
+
 (require 'dired-x)
 
 (require 'dired-sort)
@@ -2803,9 +2837,47 @@ scroll-step 1)
     "Dired Video files extensions")
 (dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
 
-(require 'dired-details+)
+;(require 'dired-details+)
 ;Also in dired-details, to show sym link targets, add this to our .emacs
-(setq dired-details-hide-link-targets nil)
+;(setq dired-details-hide-link-targets nil)
+
+(defun z/dired-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference."
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+
+(defun z/dired-open-in-desktop ()
+  "Show current file in desktop (OS's file manager)."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    ) ))
 
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)

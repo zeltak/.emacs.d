@@ -2,7 +2,25 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("bar" 0 3
+(#1=(#("d.zh_tmp" 0 8
+      (bmkp-full-record #1#))
+    (buffer-name . "ZH_tmp")
+    (front-context-string . "1990 CSN\n  drwxr")
+    (rear-context-string . "0K Apr 21 17:34 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 3)
+    (time 21846 60106 986408 890000)
+    (created 21846 59428 973940 324000)
+    (position . 121)
+    (filename . "/home/zeltak/ZH_tmp/")
+    (dired-directory . "~/ZH_tmp/")
+    (dired-marked)
+    (dired-switches . "-aBhl  --group-directories-first")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("bar" 0 3
       (bmkp-full-record #1#))
     (filename . "~/.i3/config")
     (buffer-name . "config")
@@ -166,7 +184,7 @@
     (position . 49303))
 #1=(#("plugins.emacs" 0 13
       (bmkp-full-record #1#))
-    (end-position . 1066123)
+    (end-position . 1060392)
     (annotation)
     (tags)
     (filename . "~/org/files/Tech/linux.org")
@@ -175,10 +193,10 @@
     (rear-context-string . "il)\n#+END_SRC \n*")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 3)
-    (time 21814 25910 233193 149000)
+    (visits . 4)
+    (time 21846 59602 842182 981000)
     (created 21792 50488 66694 120000)
-    (position . 1066123))
+    (position . 1060392))
 #1=(#("install_clients" 0 15
       (bmkp-full-record #1#))
     (filename . "~/org/files/Tech/linux.org")
@@ -509,8 +527,8 @@
     (rear-context-string . " me\n  NIS 377\n**")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 14)
-    (time 21790 6432 586749 663000)
+    (visits . 15)
+    (time 21846 56115 416673 983000)
     (created 21605 34254 655548 463000)
     (position . 39352))
 #1=(#("settings.org" 0 12
@@ -950,8 +968,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 7)
-    (time 21844 19067 120429 709000)
+    (visits . 8)
+    (time 21846 58634 918329 939000)
     (created 20812 16868 987428 79000)
     (position . 1)
     (end-position . 1))
