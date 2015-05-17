@@ -48,7 +48,7 @@
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-14"))
+(add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
 )
 
 ;; fontso in Win
@@ -657,33 +657,6 @@
 (use-package engine-mode
  :ensure t
  :config 
-(defengine amazon
-  "http://www.amazon.com/s/ref=nb_sb_noss?url=search-alias%3Daps&field-keywords=%s")
-
-(defengine duckduckgo
-  "https://duckduckgo.com/?q=%s"
-  "d")
-
-(defengine github
-  "https://github.com/search?ref=simplesearch&q=%s")
-
-(defengine google
-  "http://www.google.com/search?ie=utf-8&oe=utf-8&q=%s"
-  "g")
-
-(defengine google-images
-  "http://www.google.com/images?hl=en&source=hp&biw=1440&bih=795&gbv=2&aq=f&aqi=&aql=&oq=&q=%s")
-
-(defengine google-maps
-  "http://maps.google.com/maps?q=%s")
-
-(defengine wikipedia
-  "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
-  "w")
-
-(defengine youtube
-  "http://www.youtube.com/results?aq=f&oq=&search_query=%s")
-
  )
 
 (use-package color-theme-approximate
@@ -696,6 +669,51 @@
  :ensure t
  :config
  (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+ )
+
+(require 'dired-x)
+
+(use-package dired-sort
+ :ensure t
+ :config
+  )
+
+(use-package dired+
+ :ensure t
+ :config
+(toggle-diredp-find-file-reuse-dir 1)
+  )
+
+(use-package dired-details
+ :ensure t
+ :config
+(setq dired-details-hide-link-targets nil)
+ )
+
+(use-package dired-details+
+ :ensure t
+ :config
+ )
+
+(use-package dired-avfs
+ :ensure t
+ :config
+ )
+
+(use-package dired-filter
+ :ensure t
+ :config
+ )
+
+(use-package dired-narrow
+ :ensure t
+ :config
+ )
+
+(use-package dired-efap
+ :ensure t
+ :config
+ 
  )
 
 (defun z-fix-characters 
@@ -975,6 +993,32 @@ comment box."
     (comment-box b e 1)
     (goto-char e)
     (set-marker e nil)))
+
+(defun z/insert-keyleft ()
+  " insert 【   "
+  (interactive)
+  (insert "【")
+  )
+
+(defun z/insert-keyright ()
+  " insert 】   "
+  (interactive)
+  (insert "】")
+  )
+
+
+(defun z/insert-keyboth ()
+  " insert 【】  "
+  (interactive)
+  (insert "【 】")
+(backward-char 2)  
+)
+
+(defun z/insert-bashscript ()
+  " insert #!/bin/sh  "
+  (interactive)
+  (insert "#!/bin/sh")
+)
 
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
@@ -1323,6 +1367,7 @@ Repeated invocations toggle between the two most recently open buffers."
      "
      "
     ("o" dired-omit-mode  "dired omit" ) 
+    ("w" wdired-change-to-wdired-mode  "wdired" ) 
      ("q" nil "cancel" nil)
 )
 
@@ -1509,7 +1554,7 @@ _h_tml    ^ ^        _A_SCII:
    ;("<right>" drag-stuff-right "marked right" :color red)
    ("p" duplicate-current-line-or-region  "duplicate" :color red)
    (";"  hydra-commenting/body  "comment!" )
-   ("i"  hydra-unicode/body  "insert" )   
+   ("i"  hydra-editing-insert/body  "insert" )   
    ("f" flush-blank-line  "flush blank" )
    ("u" z-fix-characters "fix unicode" )
    ("g" google-search "google searh selected" )
@@ -1545,15 +1590,12 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("q" nil "cancel" nil)
 )
 
-(defhydra hydra-unicode (:color blue)
+(defhydra hydra-editing-insert (:color blue)
   "unicode"
-  (">"   (insert-char ?) "☛") ; C-x 8 RET 261b RET, pointing hand
-  ("\\"  (insert-char ?▮) "▮") ; C-x 8 RET 9646 RET, black vertical rectangle
-  ("."  (insert-char ?】) "】") ; curved double quotes close
-  (","  (insert-char ?【) "【") ; curved double quotes close
- ; ("/"  (insert-char ?【】) "【】") ; curved double quotes close
+  ("k"    z/insert-keyboth  "【】") 
+  ("b"     z/insert-bashscript  "#!") 
   ("q" nil "cancel" nil)
-))
+)
 
 (global-set-key
  (kbd "C-M-;")
@@ -1988,9 +2030,11 @@ With prefix argument, also display headlines without a TODO keyword."
                "* SHOP  %^{Description} " )
               ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
                "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
-              ("q" "Quick Note" entry (file "~/org/quick-note.org") "* %?\n%U")
-              ;;;agenda captures
-              ("w" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
+              ("q" "Quick Note" entry (file "~/org/quick-note.org")
+                "* %?\n%U")
+              ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
+              ;agenda captures
+              ("r" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
                "* TODO  %^{Description} " )
 )))
 
@@ -2807,39 +2851,11 @@ scroll-step 1)
 
 (setq dired-dwim-target t)
 
-(setq-default dired-omit-mode t)
-
-(setq dired-recursive-deletes 'always)
-;Always recursively copy directory
-(setq dired-recursive-copies 'always)
-
-(setq dired-recursive-copies (quote always)) ; “always” means no asking
-(setq dired-recursive-deletes (quote top)) ; “top” means ask once
-
 (setq dired-dwim-target t)
 
-(require 'dired-x)
-
-(require 'dired-sort)
-
-(toggle-diredp-find-file-reuse-dir 1)
-
-(require 'dired-rainbow)
-
-(defconst dired-audio-files-extensions
-  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
-  "Dired Audio files extensions")
-(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-
-(defconst dired-video-files-extensions
-    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-    "Dired Video files extensions")
-(dired-rainbow-define video "#B3CCFF" dired-video-files-extensions)
-
-;(require 'dired-details+)
-;Also in dired-details, to show sym link targets, add this to our .emacs
-;(setq dired-details-hide-link-targets nil)
+(setq dired-recursive-deletes 'always); “always” means no asking
+;Always recursively copy directory
+(setq dired-recursive-copies 'top) ; “top” means ask once
 
 (defun z/dired-open-in-external-app ()
   "Open the current file or dired marked files in external app.
@@ -2878,6 +2894,73 @@ The app is chosen from your OS's preference."
     (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
     ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
     ) ))
+
+(defun z/dired-get-size ()
+ (interactive)
+ (let ((files (dired-get-marked-files)))
+   (with-temp-buffer
+     (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+     (message "Size of all marked files: %s"
+              (progn 
+                (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                 (match-string 1))))))
+
+(setq-default dired-omit-mode t)
+
+;To activate it, add this to your .emacs
+(setq-default dired-omit-mode t)
+;To toggle the mode, bind it to a keystroke that you like
+(define-key dired-mode-map (kbd "C-o") 'dired-omit-mode)
+
+(defun my-mark-file-name-for-rename ()
+    "Mark file name on current line except its extension"
+    (interactive)
+
+    ;; get the file file name first
+    ;; full-name: full file name
+    ;; extension: extension of the file
+    ;; base-name: file name without extension
+    (let ((full-name (file-name-nondirectory (dired-get-filename)))
+          extension base-name)
+      
+      ;; check if it's a dir or a file
+      ;; TODO not use if, use switch case check for symlink
+      (if (file-directory-p full-name)
+          (progn
+            ;; if file name is directory, mark file name should mark the whole
+            ;; file name
+            (call-interactively 'end-of-line) ;move the end of line
+            (backward-char (length full-name)) ;back to the beginning
+            (set-mark (point))
+            (forward-char (length full-name)))
+        (progn
+          ;; if current file is a file, mark file name mark only the base name,
+          ;; exclude the extension
+          (setq extension (file-name-extension full-name))
+          (setq base-name (file-name-sans-extension full-name))
+          (call-interactively 'end-of-line)
+          (backward-char (length full-name))
+          (set-mark (point))
+          (forward-char (length base-name))))))
+
+  (defun my-mark-file-name-forward ()
+    "Mark file name on the next line"
+    (interactive)
+    (deactivate-mark)
+    (next-line)
+    (my-mark-file-name-for-rename))
+
+  (defun my-mark-file-name-backward ()
+    "Mark file name on the next line"
+    (interactive)
+    (deactivate-mark)
+    (previous-line)
+    (my-mark-file-name-for-rename))
+
+;(eval-after-load 'wdired
+ ; (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
+  ;(define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
+  ;(define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))
 
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)

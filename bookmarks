@@ -2,15 +2,27 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("d.zh_tmp" 0 8
+(#1=(#("*" 0 1
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/Home/home.org")
+    (buffer-name . "home.org")
+    (front-context-string . "* Garden\n** keep")
+    (rear-context-string . "ly\n** Dad Banks\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21847 18701 730023 482000))
+    (created . #2#)
+    (position . 22157))
+#1=(#("d.zh_tmp" 0 8
       (bmkp-full-record #1#))
     (buffer-name . "ZH_tmp")
     (front-context-string . "1990 CSN\n  drwxr")
     (rear-context-string . "0K Apr 21 17:34 ")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 3)
-    (time 21846 60106 986408 890000)
+    (visits . 6)
+    (time 21847 25478 654675 831000)
     (created 21846 59428 973940 324000)
     (position . 121)
     (filename . "/home/zeltak/ZH_tmp/")
@@ -388,8 +400,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 2)
-    (time 21670 21006 595174 830000)
+    (visits . 3)
+    (time 21847 18697 969230 402000)
     (created 21605 59841 93959 633000)
     (position . 1))
 #1=(#("help" 0 4
