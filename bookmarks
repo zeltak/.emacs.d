@@ -236,6 +236,7 @@
     (position . 916245))
 #1=(#("orgmode" 0 7
       (bmkp-full-record #1#))
+    (end-position . 1154124)
     (annotation)
     (tags)
     (filename . "~/org/files/Tech/linux.org")
@@ -244,10 +245,10 @@
     (rear-context-string . "ernal-browser.\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21790 12131 21781 501000))
-    (created . #2#)
-    (position . 1141930))
+    (visits . 1)
+    (time 21850 364 450027 986000)
+    (created 21790 12131 21781 501000)
+    (position . 1154124))
 #1=(#("arch_installs" 0 13
       (bmkp-full-record #1#))
     (filename . "~/org/files/Tech/linux.org")
@@ -660,8 +661,8 @@
     (rear-context-string . "TUP: overview\n\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 7)
-    (time 21844 18194 921555 984000)
+    (visits . 8)
+    (time 21849 50615 459910 14000)
     (created 21790 12017 43737 553000)
     (position . 75))
 #1=(#(".pentadactylrc" 0 14

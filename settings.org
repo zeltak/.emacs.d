@@ -1045,7 +1045,11 @@ https://github.com/Fuco1/dired-hacks
  )
 #+END_SRC 
 
-
+** password-store
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
+(require 'password-store)
+#+END_SRC
 * Functions
 ** Encoding
 *** fix unicode characters
@@ -1129,7 +1133,7 @@ This command does the inverse of `fill-region'."
 (defun z-count-words-region (posBegin posEnd)
   "Print number of words and chars in region."
   (interactive "r")
-  (message "Counting ‘¡­")
+  (message "Counting â€¦")
   (save-excursion
     (let (wordCount charCount)
       (setq wordCount 0)
@@ -1402,22 +1406,22 @@ comment box."
 
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/insert-keyleft ()
-  " insert ‘¡¾   "
+  " insert ã€   "
   (interactive)
-  (insert "‘¡¾")
+  (insert "ã€")
   )
 
 (defun z/insert-keyright ()
-  " insert ‘¡¿   "
+  " insert ã€‘   "
   (interactive)
-  (insert "‘¡¿")
+  (insert "ã€‘")
   )
 
 
 (defun z/insert-keyboth ()
-  " insert ‘¡¾‘¡¿  "
+  " insert ã€ã€‘  "
   (interactive)
-  (insert "‘¡¾ ‘¡¿")
+  (insert "ã€ ã€‘")
 (backward-char 2)  
 )
 
@@ -1711,7 +1715,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
 
 (fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
+   [?\M-% ?\Â  return return ?!])
 
 #+END_SRC
 
@@ -1754,7 +1758,7 @@ Repeated invocations toggle between the two most recently open buffers."
    [?d ?x ?y ])
 
 #+END_SRC
-* Keybinds
+* Key binds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
   :END:
@@ -1998,16 +2002,18 @@ _h_tml    ^ ^        _A_SCII:
 (global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
 (global-set-key (kbd "<f10> m s ") 'org-insert-push)
 
-**** extra org links commands
+**** TODO extra org links commands
 
  #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-links (:color blue )
       "
       "
-     ("s" org-store-link  "store" ) 
-     ("i" org-insert-link   "insert" ) 
+     ("i" org-insert-link   "insert (or edit if on link)" ) 
      ("d"     org-id-create "org id create")
      ("c" org-id-copy  "copy org-id" ) 
+     ("s" org-id-store-link  "store org-id" ) 
+     ("c" org-id-copy  "copy org-id" ) 
+     ("a" org-store-link  "orgmode store" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -2174,7 +2180,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
 #+BEGIN_SRC emacs-lisp :results none
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
-  ("k"    z/insert-keyboth  "‘¡¾‘¡¿") 
+  ("k"    z/insert-keyboth  "ã€ã€‘") 
   ("b"     z/insert-bashscript  "#!") 
   ("q" nil "cancel" nil)
 )
@@ -2494,7 +2500,7 @@ $note its built into emacs no intsall needed$
 ;associate these files with org
 (add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-;don†¢t insert blank lines
+;donâ€™t insert blank lines
 (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 
 ;make new headings appear after the content for the current one
@@ -2504,7 +2510,7 @@ $note its built into emacs no intsall needed$
 (setq org-return-follows-link nil)
 ;going to the beginning and end of the heading instead of the current line
 (setq org-special-ctrl-a/e t)
-;rebind certain one-letter keybindings when the cursor is at the beginning of the row - most notably †¡t†¢ for org-todo instead of †¡C-c C-t†¢
+;rebind certain one-letter keybindings when the cursor is at the beginning of the row - most notably â€˜tâ€™ for org-todo instead of â€˜C-c C-tâ€™
 (setq org-startup-align-all-tables t)
 (setq org-archive-location (concat org-directory "archive/%s_archive::"))
 (setq org-attach-store-link-p)
@@ -2622,7 +2628,7 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
 (setq org-deadline-warning-days 10)
-;don†¢t display items that are done in my agenda.
+;donâ€™t display items that are done in my agenda.
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
 #+END_SRC
@@ -3533,23 +3539,23 @@ execute speed commands."
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(œôô¦[^œôô¦\n]+œôô¦\\)" (0 '(:foreground "#000000" :underline t :background "#FF9AEA" :weight ultra-bold) t))))
+'(("\\(â‚†[^â‚†\n]+â‚†\\)" (0 '(:foreground "#000000" :underline t :background "#FF9AEA" :weight ultra-bold) t))))
 
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(œôô¥[^œôô¥\n]+œôô¥\\)" (0 '(:weight ultra-bold :foreground "#1E00DE") t))))
+'(("\\(â‚…[^â‚…\n]+â‚…\\)" (0 '(:weight ultra-bold :foreground "#1E00DE") t))))
 
 
 ;
 (font-lock-add-keywords
  'org-mode
-'(("\\(“©ş[^“©ş\n]+“©ş\\)" (0 '(:weight ultra-bold :foreground "#FF9800") t))))
+'(("\\(â‚„[^â‚„\n]+â‚„\\)" (0 '(:weight ultra-bold :foreground "#FF9800") t))))
 
 ;blusish
 (font-lock-add-keywords
  'org-mode
-'(("\\(—£À[^—£À\n]—£À+\\)" (0 '(:weight ultra-bold :foreground "#393D900") t))))
+'(("\\(â€¢[^â€¢\n]â€¢+\\)" (0 '(:weight ultra-bold :foreground "#393D900") t))))
 
 
  
@@ -3585,7 +3591,7 @@ execute speed commands."
 ;header
 (font-lock-add-keywords
  'org-mode
-'(("\\(’¢ø[^’¢ø\n]+’¢ø\\)" (0 '(:foreground "#ffffff" :weight ultra-bold :slant italic :background "#59BD7F" :height 1.3) t))))
+'(("\\(â€¡[^â€¡\n]+â€¡\\)" (0 '(:foreground "#ffffff" :weight ultra-bold :slant italic :background "#59BD7F" :height 1.3) t))))
 
 ;;;FOR SPECIAL CHARACTERS
 
@@ -3604,10 +3610,10 @@ execute speed commands."
  'org-mode
 '(("\\(\\^[^^\n]+\\^\\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
 
-;for ’¢÷ 
+;for â€  
 (font-lock-add-keywords
  'org-mode
-'(("\\(\\’¢÷[^’¢÷\n]+\\’¢÷\\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
+'(("\\(\\â€ [^â€ \n]+\\â€ \\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
 
 #+END_SRC
 
@@ -3616,7 +3622,7 @@ The following characters are special : . * + ? ^ $ \ [
 more characters :
 http://en.wikipedia.org/wiki/List_of_Unicode_characters
 #+BEGIN_EXAMPLE
-’¢÷—£À‘¡¬œôó£œôó¤•¡­ 	‘¡­ œôóÅœôóÆ	—¬ıœôóÒœôóÓœôóÔœôóÕœôóÖœôó×œôóØœôóÙœôóÚœôóÛœôóÜœôóİœôô  	“©û“©ü“©ı“©ş	œôô¥œôô¦œôô§œôô¨œôô© œôôª œôô« œôô¬
+â€ â€¢â€–â€£â€¤â€¥ 	â€¦ â…â†	â‘â’â“â”â•â–â—â˜â™âšâ›âœââ‚€ 	â‚â‚‚â‚ƒâ‚„	â‚…â‚†â‚‡â‚ˆâ‚‰ â‚Š â‚‹ â‚Œ
 #+END_EXAMPLE
 
 ** look and feel
@@ -3626,10 +3632,10 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;      (interactive)
 ;      (font-lock-add-keywords nil
 ;        '(("\\(\+begin_src\\)"
-;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?Â¦)
 ;                     nil)))
 ;          ("\\(\+end_src\\)"
-;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
+;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?Â¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 #+END_SRC 
@@ -3656,7 +3662,7 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 #+END_SRC
 
 *** visual option 
-**** remove the ‘¡°Validate XHTML 1.0‘¡± message from HTML export
+**** remove the â€œValidate XHTML 1.0â€ message from HTML export
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-export-html-validation-link nil)
 #+END_SRC
@@ -3907,9 +3913,9 @@ Set this variable to non-nil, Dired will try to guess a default target directory
 Always recursively delete directory
 
 #+BEGIN_SRC emacs-lisp :results none
-(setq dired-recursive-deletes 'always); ‘¡°always‘¡± means no asking
+(setq dired-recursive-deletes 'always); â€œalwaysâ€ means no asking
 ;Always recursively copy directory
-(setq dired-recursive-copies 'top) ; ‘¡°top‘¡± means ask once
+(setq dired-recursive-copies 'top) ; â€œtopâ€ means ask once
 #+END_SRC
 
 *** functions 
@@ -3922,26 +3928,26 @@ http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
 The app is chosen from your OS's preference."
   (interactive)
   (let* (
-         (†îfile-list
+         (Î¾file-list
           (if (string-equal major-mode "dired-mode")
               (dired-get-marked-files)
             (list (buffer-file-name))))
-         (†îdo-it-p (if (<= (length †îfile-list) 5)
+         (Î¾do-it-p (if (<= (length Î¾file-list) 5)
                        t
                      (y-or-n-p "Open more than 5 files? "))))
 
-    (when †îdo-it-p
+    (when Î¾do-it-p
       (cond
        ((string-equal system-type "windows-nt")
         (mapc
          (lambda (fPath)
-           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) †îfile-list))
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) Î¾file-list))
        ((string-equal system-type "darwin")
         (mapc
-         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  †îfile-list))
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  Î¾file-list))
        ((string-equal system-type "gnu/linux")
         (mapc
-         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) †îfile-list))))))
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) Î¾file-list))))))
 #+END_SRC
 **** open in WM/DE file manafer
 #+BEGIN_SRC emacs-lisp :results none
@@ -3954,7 +3960,7 @@ The app is chosen from your OS's preference."
    ((string-equal system-type "darwin") (shell-command "open ."))
    ((string-equal system-type "gnu/linux")
     (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
-    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. œôóÖ with nautilus
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. â– with nautilus
     ) ))
 #+END_SRC
 
@@ -3971,7 +3977,7 @@ The app is chosen from your OS's preference."
                   (match-string 1))))))
 #+END_SRC
 *** dired omit 
-Omitting a file means removing it from the directory listing. Omitting is useful for keeping Dired buffers free of ‘¡°uninteresting‘¡± files (for instance, auto-save, auxiliary, backup, and revision control files) so that the user can concentrate on the interesting files.
+Omitting a file means removing it from the directory listing. Omitting is useful for keeping Dired buffers free of â€œuninterestingâ€ files (for instance, auto-save, auxiliary, backup, and revision control files) so that the user can concentrate on the interesting files.
 To activate it, add this to your .emacs
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4002,6 +4008,7 @@ The variable dired-omit-extensions holds the list of all file extensions to hide
 
 *** TODO wdired mode
 functions to get tab etc to work 
+
 #+BEGIN_SRC emacs-lisp :results none
 (defun my-mark-file-name-for-rename ()
     "Mark file name on current line except its extension"
@@ -4048,11 +4055,17 @@ functions to get tab etc to work
     (previous-line)
     (my-mark-file-name-for-rename))
 
-;(eval-after-load 'wdired
- ; (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
-  ;(define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
-  ;(define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))
+#+END_SRC
 
+#+BEGIN_SRC emacs-lisp :results none
+
+  ;; (eval-after-load 'wdired
+  ;;   (progn
+  ;;     (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
+  ;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
+  ;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename)
+  ;; )
+  ;; )
 #+END_SRC
 
 * Editing
@@ -4512,7 +4525,7 @@ global command history file and have:
      )
  )
 #+END_SRC
-This recalls the R statement from your R statement history, but it tries to match it with the one which is already on your line. So, for example, typing pl in R process and pressing \C-up (that†¢s control and the up arrow) will cycle through all the statements which start with pl, so it will recall for example all the plot(... commands.
+This recalls the R statement from your R statement history, but it tries to match it with the one which is already on your line. So, for example, typing pl in R process and pressing \C-up (thatâ€™s control and the up arrow) will cycle through all the statements which start with pl, so it will recall for example all the plot(... commands.
 
 *** allow ess to run procceses in background
 
@@ -4640,7 +4653,7 @@ https://github.com/seth/my-emacs-dot-d/blob/master/emacs-init.org
   (comint-send-input))
 #+END_SRC
 ** connect to ssh link in xterm in org file
-One day after being particularly frustrated when I couldn†¢t get into a box, I was adding yet another entry to ~/.ssh/config only to realize it was in there twice already, I decided to turn this problem into a nail so I could use my universal hammer, emacs.
+One day after being particularly frustrated when I couldnâ€™t get into a box, I was adding yet another entry to ~/.ssh/config only to realize it was in there twice already, I decided to turn this problem into a nail so I could use my universal hammer, emacs.
 
 #+BEGIN_EXAMPLE
 (defun jgk/xterm-ssh (host)
@@ -4649,7 +4662,7 @@ One day after being particularly frustrated when I couldn†¢t get into a box, I w
                                (concat "'ssh -AY "  host "'")))
 #+END_EXAMPLE
 
-I now have an org file for each project I work on and can create links that will let me ssh into a system with a †¡click†¢
+I now have an org file for each project I work on and can create links that will let me ssh into a system with a â€˜clickâ€™
 
 #+BEGIN_EXAMPLE
 [[elisp:(jgk/xterm-ssh "username@192.168.15.218")][Magical Mystery Machine]]
@@ -4662,6 +4675,6 @@ I am slowly adding systems in as I need them. I have found the ability to keep n
 If you need to access a lot of random systems you should try this, it has made my life sane
 ** Emacs deamon
 #+BEGIN_EXAMPLE
-The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs •¡¹daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The •¡¹daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs •¡¹daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The •¡¹daemon option has the fringe benefit of leaving emacs running even if you log out.
+The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs â€“daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The â€“daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs â€“daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The â€“daemon option has the fringe benefit of leaving emacs running even if you log out.
 #+END_EXAMPLE
 

@@ -716,6 +716,9 @@
  
  )
 
+(add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
+(require 'password-store)
+
 (defun z-fix-characters 
 (start end) 
 (interactive "r") 
@@ -1473,10 +1476,12 @@ _h_tml    ^ ^        _A_SCII:
 (defhydra hydra-org-links (:color blue )
      "
      "
-    ("s" org-store-link  "store" ) 
-    ("i" org-insert-link   "insert" ) 
+    ("i" org-insert-link   "insert (or edit if on link)" ) 
     ("d"     org-id-create "org id create")
     ("c" org-id-copy  "copy org-id" ) 
+    ("s" org-id-store-link  "store org-id" ) 
+    ("c" org-id-copy  "copy org-id" ) 
+    ("a" org-store-link  "orgmode store" ) 
      ("q" nil "cancel" nil)
 )
 
@@ -2957,10 +2962,13 @@ The app is chosen from your OS's preference."
     (previous-line)
     (my-mark-file-name-for-rename))
 
-;(eval-after-load 'wdired
- ; (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
-  ;(define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
-  ;(define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))
+;; (eval-after-load 'wdired
+;;   (progn
+;;     (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
+;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
+;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename)
+;; )
+;; )
 
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
