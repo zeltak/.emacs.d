@@ -2962,13 +2962,13 @@ The app is chosen from your OS's preference."
     (previous-line)
     (my-mark-file-name-for-rename))
 
+;; (require 'wdired)
+
 ;; (eval-after-load 'wdired
 ;;   (progn
 ;;     (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
 ;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
-;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename)
-;; )
-;; )
+;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))) ;
 
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
