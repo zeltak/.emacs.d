@@ -290,6 +290,17 @@
 ;for hydra create interactive new functions
 (defun z/hydra-wrap-bash () (interactive) (beginning-of-line) (z/wrap-bash))
 
+
+;;;;;;;;;; wrap in bash
+  (defun z/wrap-example ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "example" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-example () (interactive) (beginning-of-line) (z/wrap-example))
+
+
+
 ;;;;;;;;;; wrap in R
   (defun z/wrap-R ()
         (org-dp-wrap-in-block
@@ -718,6 +729,15 @@
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
+
+(use-package golden-ratio
+ :ensure t
+ :config
+ (require 'golden-ratio)
+ (golden-ratio-mode 1)
+ )
+
+(winner-mode 1)
 
 (defun z-fix-characters 
 (start end) 
@@ -1480,7 +1500,6 @@ _h_tml    ^ ^        _A_SCII:
     ("d"     org-id-create "org id create")
     ("c" org-id-copy  "copy org-id" ) 
     ("s" org-id-store-link  "store org-id" ) 
-    ("c" org-id-copy  "copy org-id" ) 
     ("a" org-store-link  "orgmode store" ) 
      ("q" nil "cancel" nil)
 )

@@ -406,7 +406,7 @@ https://github.com/tj64/org-dp
  (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
  (require 'org-dp-lib)
  #+END_SRC
-*** my wrap functions
+*** TODO my wrap functions
 
 #+BEGIN_SRC emacs-lisp :results none
  (when (require 'org-dp-lib nil t)
@@ -426,6 +426,17 @@ https://github.com/tj64/org-dp
 
 ;for hydra create interactive new functions
 (defun z/hydra-wrap-bash () (interactive) (beginning-of-line) (z/wrap-bash))
+
+
+;;;;;;;;;; wrap in bash
+  (defun z/wrap-example ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "example" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-example () (interactive) (beginning-of-line) (z/wrap-example))
+
+
 
 ;;;;;;;;;; wrap in R
   (defun z/wrap-R ()
@@ -1049,6 +1060,23 @@ https://github.com/Fuco1/dired-hacks
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
+#+END_SRC
+** golden ratio
+https://github.com/roman/golden-ratio.el
+
+allows to dynamically resize the non currently edited pane
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package golden-ratio
+ :ensure t
+ :config
+ (require 'golden-ratio)
+ (golden-ratio-mode 1)
+ )
+#+END_SRC
+** winner-mode
+#+BEGIN_SRC emacs-lisp :results none
+(winner-mode 1)
 #+END_SRC
 * Functions
 ** Encoding
@@ -2012,7 +2040,6 @@ _h_tml    ^ ^        _A_SCII:
      ("d"     org-id-create "org id create")
      ("c" org-id-copy  "copy org-id" ) 
      ("s" org-id-store-link  "store org-id" ) 
-     ("c" org-id-copy  "copy org-id" ) 
      ("a" org-store-link  "orgmode store" ) 
       ("q" nil "cancel" nil)
  )

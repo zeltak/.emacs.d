@@ -57,6 +57,10 @@
 
 (define-abbrev-table 'css-mode-abbrev-table '())
 
+(define-abbrev-table 'dcl-mode-abbrev-table '())
+
+(define-abbrev-table 'debugger-mode-abbrev-table '())
+
 (define-abbrev-table 'diary-fancy-display-mode-abbrev-table '())
 
 (define-abbrev-table 'diary-mode-abbrev-table '())
@@ -95,7 +99,7 @@
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)
     ("Note" "$Note$" nil 0)
-    ("Tip" "%Tip%" nil 0)
+    ("Tip" "%Tip%" nil 1)
     ("Warning" "@Warning@" nil 0)
     ("abbout" "about" nil 0)
     ("abotu" "about" nil 0)
@@ -425,6 +429,7 @@
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
     ("drnik" "drink" nil 0)
+    ("dynamiclly" "dynamically" nil 0)
     ("eclair" "eclair" nil 0)
     ("efel" "feel" nil 0)
     ("effecient" "efficient" nil 0)
@@ -680,7 +685,7 @@
     ("neighbour" "neighbor" nil 0)
     ("neighbours" "neighbors" nil 1)
     ("nkow" "know" nil 0)
-    ("note" "$Note$" nil 5)
+    ("note" "$Note$" nil 6)
     ("nothign" "nothing" nil 0)
     ("numric" "numeric" nil 0)
     ("nver" "never" nil 0)
@@ -1107,6 +1112,8 @@
 
 (define-abbrev-table 'mu4e~update-mail-mode-abbrev-table '())
 
+(define-abbrev-table 'nxml-mode-abbrev-table '())
+
 (define-abbrev-table 'objc-mode-abbrev-table
   '(
    ))
@@ -1133,9 +1140,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
