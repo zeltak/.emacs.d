@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("garden" 0 6
+(#1=(#("rofi_start" 0 10
+      (bmkp-full-record #1#))
+    (filename . "~/dotfiles/LAPTOP/bin/rofi_start")
+    (buffer-name . "rofi_start")
+    (front-context-string . "          \"5. We")
+    (rear-context-string . "4. Pulse Mixer\"\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21861 55044 615682 797000))
+    (created . #2#)
+    (position . 125))
+#1=(#("garden" 0 6
       (bmkp-full-record #1#))
     (filename . "~/org/files/Home/home.org")
     (buffer-name . "home.org")
@@ -420,8 +432,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 8)
-    (time 21854 62465 562172 650000)
+    (visits . 9)
+    (time 21861 54015 762167 948000)
     (created 21651 52 441071 235000)
     (position . 1))
 #1=(#(".tmux.conf" 0 10
