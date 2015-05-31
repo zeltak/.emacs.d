@@ -200,13 +200,19 @@
 
 (setq helm-locate-fuzzy-match t)
 
+(use-package helm-bibtex
+ :ensure t
+ :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
 (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+(setq helm-bibtex-browser-function 'browser-url-chromium)
 
-(setq helm-bibtex-pdf-open-function
-  (lambda (fpath)
-    (start-process "evince" "*evince*" "evince" fpath)))
+
+ (setq helm-bibtex-pdf-open-function
+   (lambda (fpath)
+     (start-process "evince" "*evince*" "evince" fpath)))
+ )
 
 (use-package hydra
 :ensure t )

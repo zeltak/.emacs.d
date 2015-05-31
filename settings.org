@@ -283,18 +283,25 @@ $Note$ the sign !package! means the package is disbaled
  (setq helm-locate-fuzzy-match t)	    
  #+END_SRC
 **** helm bibtex
- https://github.com/tmalsburg/helm-bibtex
+https://github.com/tmalsburg/helm-bibtex
 
- #+BEGIN_SRC emacs-lisp :results none
- (autoload 'helm-bibtex "helm-bibtex" "" t)
- (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
- (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package helm-bibtex
+ :ensure t
+ :config
+(autoload 'helm-bibtex "helm-bibtex" "" t)
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+(setq helm-bibtex-browser-function 'browser-url-chromium)
+
 
  (setq helm-bibtex-pdf-open-function
    (lambda (fpath)
      (start-process "evince" "*evince*" "evince" fpath)))
+ )
+#+END_SRC 
 
- #+END_SRC
 
 **** helm occur
 no config needed 
