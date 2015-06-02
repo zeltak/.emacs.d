@@ -204,14 +204,38 @@
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+;(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 (setq helm-bibtex-browser-function 'browser-url-chromium)
 
 
  (setq helm-bibtex-pdf-open-function
    (lambda (fpath)
-     (start-process "evince" "*evince*" "evince" fpath)))
+     (start-process "okular" "*okular*" "okular" fpath)))
+ )
+
+(use-package ebib
+ :ensure t
+ :config
+(setq ebib-preload-bib-files '("~/ZH_tmp/xkloog_2014.bib")) 
+
+(setq ebib-common-optional-fields
+      '(translator keywords origlanguage url file location
+        partinfo subtitle edition abstract note annotator
+        crossref urldate address subtitle language))
+
+(setq ebib-file-associations '(("pdf" . "okular") ("djvu" . "okular")))
+(setq ebib-uniquify-keys t)
+(setq ebib-autogenerate-keys t)
+(setq ebib-index-window-size 20)
+(setq ebib-print-multiline t)
+
+;index view
+(setq ebib-index-display-fields (quote (year author)))
+(setq ebib-sort-order (quote ((year) (author) )))
+
+
  )
 
 (use-package hydra
@@ -1449,6 +1473,16 @@ _h_tml    ^ ^        _A_SCII:
   ("<f5>"     mu4e            "start mu4e")
   ("u"     mu4e-update-mail-and-index           "Send/Recive")
   ("o"     mu4e-headers-change-sorting            "sort")
+    ("q"     nil                          "cancel" )
+))
+
+(global-set-key
+   (kbd "<f6>")
+(defhydra hydra-bib (:color blue :hint nil)
+  "
+"
+  ("<f6>"     helm-bibtex            "hbibtex")
+  ("e"    ebib           "ebib")
     ("q"     nil                          "cancel" )
 ))
 
