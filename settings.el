@@ -1661,6 +1661,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("q" nil "cancel" nil)
 )
 
+(global-set-key                         
+ (kbd "C-M-p")
+ (defhydra hydra-password-store (:color blue)
+   "password store command"
+   ("e" password-store-edit   "edit pass" )
+   ("d" password-store-remove   "delete pass" )
+   ("q" nil "cancel")))
+
 (global-set-key
  (kbd "C-M-;")
  (defhydra hydra-avi ()

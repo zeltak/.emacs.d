@@ -1,5 +1,4 @@
  #+Title: setting.org
-
  
 * Emacs startup
   :PROPERTIES:
@@ -2262,6 +2261,18 @@ add the org faces macros here (%Tip%, $Note$ etc)
 )
 #+END_SRC
 
+*** password-store (C-M-p)
+**** main editing command 
+ #+BEGIN_SRC emacs-lisp :results none
+   (global-set-key                         
+    (kbd "C-M-p")
+    (defhydra hydra-password-store (:color blue)
+      "password store command"
+      ("e" password-store-edit   "edit pass" )
+      ("d" password-store-remove   "delete pass" )
+      ("q" nil "cancel")))
+
+ #+END_SRC
 *** ace (C-M;)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
