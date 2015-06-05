@@ -2078,17 +2078,16 @@ _h_tml    ^ ^        _A_SCII:
 (global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
 (global-set-key (kbd "<f10> m s ") 'org-insert-push)
 
-**** TODO extra org links commands
-
+**** extra org links commands
  #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-links (:color blue )
       "
       "
+     ("l" org-store-link  "create and  cop link")
      ("i" org-insert-link   "insert (or edit if on link)" ) 
-     ("d"     org-id-create "org id create")
+     ("d" org-id-create "org id create")
      ("c" org-id-copy  "copy org-id" ) 
      ("s" org-id-store-link  "store org-id" ) 
-     ("a" org-store-link  "orgmode store" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
