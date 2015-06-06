@@ -207,7 +207,9 @@
 ;(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
 (setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
-(setq helm-bibtex-browser-function 'browser-url-chromium)
+
+(setq helm-bibtex-browser-function
+  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
 
  (setq helm-bibtex-pdf-open-function
@@ -1510,6 +1512,7 @@ _h_tml    ^ ^        _A_SCII:
       ("e"     org-export-dispatch "org-export-dispatch")
       ("i"     org-toggle-inline-images  "org-toggle-inline-images")
       ("t"     org-todo  "org-todo")
+      ("T"     org-set-tags  "org-tags")
       ("c"     org-columns         "org-columns")
       ("C"     org-columns-quit    "org-columns-quit")
       ("b"     org-bibtex-yank     "org-bibtex-yank")
@@ -1536,11 +1539,11 @@ _h_tml    ^ ^        _A_SCII:
 (defhydra hydra-org-links (:color blue )
      "
      "
+    ("l" org-store-link  "create and  cop link")
     ("i" org-insert-link   "insert (or edit if on link)" ) 
-    ("d"     org-id-create "org id create")
+    ("d" org-id-create "org id create")
     ("c" org-id-copy  "copy org-id" ) 
     ("s" org-id-store-link  "store org-id" ) 
-    ("a" org-store-link  "orgmode store" ) 
      ("q" nil "cancel" nil)
 )
 
@@ -2085,30 +2088,59 @@ With prefix argument, also display headlines without a TODO keyword."
 (require 'org-protocol)
 
 (setq org-capture-templates
-      (quote (           
-              ("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
-               "*  %^{Description}" )
-              ("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-               "*  %^{Description}  " )
-              ("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
-               "*  %x :Pre_Release: " )
-              ("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
-               "*  %^{Description}" )
-              ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
-               "*  %^{Description}" )
-              ("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
-               "*   %?\n%T" )
-              ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
-               "* SHOP  %^{Description} " )
-              ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
-               "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
-              ("q" "Quick Note" entry (file "~/org/quick-note.org")
-                "* %?\n%U")
-              ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
-              ;agenda captures
-              ("r" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
-               "* TODO  %^{Description} " )
-)))
+        (quote (           
+("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+ "* Cook %? %^g 
+   :PROPERTIES:
+   :Time:     
+   :Rating:   
+   :Source:   
+   :Ammount:  
+   :Fav: 
+   :Type: 
+   :ID:   
+   :END:
+
+" )
+
+
+
+            
+("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
+ "*  %^{Description}" )
+
+("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*  %^{Description}  " )
+
+("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*  %x :Pre_Release: " )
+
+("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+ "*  %^{Description}" )
+
+("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+ "*  %^{Description}" )
+
+("h" "todo_home" entry (file+headline "~/org/files/agenda/TODO.org" "Home")
+ "*   %?\n%T" )
+
+("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+ "* SHOP  %^{Description} " )
+
+("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
+ "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
+
+("q" "Quick Note" entry (file "~/org/quick-note.org")
+  "* %?\n%U")
+
+("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
+
+;agenda captures
+("r" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
+ "* TODO  %^{Description} " )
+
+
+  )))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
