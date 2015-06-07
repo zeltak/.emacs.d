@@ -5,6 +5,10 @@
 
 (define-abbrev-table 'Info-edit-mode-abbrev-table '())
 
+(define-abbrev-table 'TeX-error-overview-mode-abbrev-table '())
+
+(define-abbrev-table 'TeX-output-mode-abbrev-table '())
+
 (define-abbrev-table 'awk-mode-abbrev-table
   '(
    ))
@@ -119,7 +123,7 @@
     ("abscence" "absence" nil 0)
     ("accesories" "accessories" nil 0)
     ("accidant" "accident" nil 0)
-    ("accomedate" "accommodate" nil 0)
+    ("accomedate" "accommodate" nil 1)
     ("accomodate" "accommodate" nil 0)
     ("accordingto" "according to" nil 0)
     ("accross" "across" nil 0)
@@ -213,7 +217,7 @@
     ("authetication" "authentication" nil 0)
     ("availalbe" "available" nil 0)
     ("avilability" "availability" nil 1)
-    ("avilable" "available" nil 0)
+    ("avilable" "available" nil 2)
     ("awya" "away" nil 0)
     ("aywa" "away" nil 0)
     ("bakc" "back" nil 0)
@@ -280,8 +284,10 @@
     ("charachter" "character" nil 0)
     ("charachters" "characters" nil 0)
     ("charactor" "character" nil 0)
+    ("charectaristics" "characteristics" nil 0)
     ("charecter" "character" nil 0)
     ("charector" "character" nil 0)
+    ("charectraistics" "characteristics" nil 0)
     ("cheif" "chief" nil 0)
     ("chekc" "check" nil 0)
     ("chnage" "change" nil 0)
@@ -296,6 +302,7 @@
     ("clustring" "clustering" nil 0)
     ("cna" "can" nil 0)
     ("colection" "collection" nil 0)
+    ("collecion" "collection" nil 0)
     ("comanies" "companies" nil 0)
     ("comany" "company" nil 0)
     ("comapnies" "companies" nil 0)
@@ -347,8 +354,10 @@
     ("convertable" "convertible" nil 0)
     ("cooparate" "cooperate" nil 0)
     ("cooporate" "cooperate" nil 0)
+    ("coordinante" "coordinate" nil 0)
     ("corproation" "corporation" nil 0)
     ("corproations" "corporations" nil 0)
+    ("correlitaions" "correlations" nil 0)
     ("corrospond" "correspond" nil 0)
     ("corruptable" "corruptible" nil 0)
     ("cotten" "cotton" nil 0)
@@ -375,6 +384,7 @@
     ("definately" "definitely" nil 0)
     ("definatly" "definitely" nil 2)
     ("definded" "defined" nil 0)
+    ("deinisty" "density" nil 0)
     ("departmens" "departments" nil 0)
     ("dependances" "dependencies" nil 0)
     ("deptartment" "department" nil 0)
@@ -401,6 +411,7 @@
     ("developor" "developer" nil 0)
     ("developors" "developers" nil 0)
     ("develpment" "development" nil 0)
+    ("deviding" "dividing" nil 0)
     ("devloped" "developed" nil 0)
     ("diaplay" "display" nil 0)
     ("didint" "didn't" nil 0)
@@ -437,7 +448,7 @@
     ("doind" "doing" nil 0)
     ("dollers" "dollars" nil 0)
     ("donig" "doing" nil 0)
-    ("dont" "don't" nil 1)
+    ("dont" "don't" nil 2)
     ("dosent" "doesn't" nil 0)
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
@@ -458,6 +469,7 @@
     ("english" "English" nil 0)
     ("enought" "enough" nil 0)
     ("entree" "entree" nil 0)
+    ("epxeirence" "experience" nil 0)
     ("equippment" "equipment" nil 0)
     ("equivalant" "equivalent" nil 0)
     ("esle" "else" nil 0)
@@ -469,6 +481,7 @@
     ("exchagne" "exchange" nil 0)
     ("exchagnes" "exchanges" nil 0)
     ("excitment" "excitement" nil 0)
+    ("exclud" "excluded" nil 0)
     ("exhcange" "exchange" nil 0)
     ("exhcanges" "exchanges" nil 0)
     ("experiance" "experience" nil 0)
@@ -576,12 +589,12 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 7)
+    ("i" "I" nil 8)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 5)
+    ("ie" "₆In example₆" nil 6)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -618,6 +631,7 @@
     ("interum" "interim" nil 0)
     ("inthe" "in the" nil 0)
     ("inturn" "in turn" nil 0)
+    ("invarient" "invariant" nil 0)
     ("invitaion" "invitation" nil 0)
     ("invstigated" "investigated" nil 0)
     ("inwhich" "in which" nil 0)
@@ -678,6 +692,8 @@
     ("merchent" "merchant" nil 0)
     ("mesage" "message" nil 0)
     ("mesages" "messages" nil 0)
+    ("mesausre" "measure" nil 0)
+    ("meterology" "meteorology" nil 0)
     ("mispell" "misspell" nil 0)
     ("mispelling" "misspelling" nil 0)
     ("mispellings" "misspellings" nil 0)
@@ -708,6 +724,7 @@
     ("nwe" "new" nil 0)
     ("nwo" "now" nil 0)
     ("obediant" "obedient" nil 0)
+    ("obserevrd" "observed" nil 0)
     ("obstecules" "obstacles" nil 0)
     ("ocasion" "occasion" nil 0)
     ("occassion" "occasion" nil 0)
@@ -814,6 +831,7 @@
     ("raidus" "RADIUS" nil 0)
     ("realyl" "really" nil 0)
     ("reccomend" "recommend" nil 0)
+    ("reccomendation" "recommendation" nil 0)
     ("reccommend" "recommend" nil 0)
     ("receieve" "receive" nil 0)
     ("recieve" "receive" nil 0)
@@ -870,7 +888,7 @@
     ("saidthat" "said that" nil 0)
     ("saidthe" "said the" nil 0)
     ("salamon" "salmon" nil 0)
-    ("sattelite" "satellite" nil 1)
+    ("sattelite" "satellite" nil 3)
     ("scedule" "schedule" nil 0)
     ("sceduled" "scheduled" nil 0)
     ("scen" "scene" nil 0)
@@ -888,6 +906,7 @@
     ("seperated" "separated" nil 0)
     ("sercumstances" "circumstances" nil 0)
     ("serveral" "several" nil 0)
+    ("severl" "several" nil 0)
     ("sez" "says" nil 0)
     ("shcool" "school" nil 0)
     ("shesaid" "she said" nil 0)
@@ -921,6 +940,7 @@
     ("speach" "speech" nil 0)
     ("specificaly" "specifically" nil 0)
     ("specificalyl" "specifically" nil 0)
+    ("standarized" "standardized" nil 0)
     ("statisticlly" "statistically" nil 0)
     ("statment" "statement" nil 0)
     ("statments" "statements" nil 0)
@@ -1010,6 +1030,7 @@
     ("totalyl" "totally" nil 0)
     ("tothe" "to the" nil 0)
     ("towrad" "toward" nil 0)
+    ("traditionaly" "traditionally" nil 0)
     ("traditionalyl" "traditionally" nil 0)
     ("transfered" "transferred" nil 0)
     ("truely" "truly" nil 0)
@@ -1108,6 +1129,8 @@
 
 (define-abbrev-table 'help-mode-abbrev-table '())
 
+(define-abbrev-table 'html-mode-abbrev-table '())
+
 (define-abbrev-table 'ibuffer-mode-abbrev-table '())
 
 (define-abbrev-table 'idl-mode-abbrev-table '())
@@ -1158,6 +1181,8 @@
   '(
    ))
 
+(define-abbrev-table 'plain-tex-mode-abbrev-table '())
+
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
@@ -1168,9 +1193,13 @@
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
+(define-abbrev-table 'sgml-mode-abbrev-table '())
+
 (define-abbrev-table 'sh-mode-abbrev-table '())
 
 (define-abbrev-table 'shell-mode-abbrev-table '())
+
+(define-abbrev-table 'slitex-mode-abbrev-table '())
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 
@@ -1181,6 +1210,10 @@
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
 
 (define-abbrev-table 'tar-mode-abbrev-table '())
+
+(define-abbrev-table 'tex-mode-abbrev-table '())
+
+(define-abbrev-table 'tex-shell-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 

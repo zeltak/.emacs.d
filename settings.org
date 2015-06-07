@@ -2212,6 +2212,8 @@ _h_tml    ^ ^        _A_SCII:
       ("u" z-fix-characters "fix unicode" )
       ("g" google-search "google searh selected" )
       ("c" z/comment-box "comment box" )
+      ("u" upcase-region  "upcase " )
+      ("d" downcase-region  "downcase " )
       ("R" revert-buffer  "revert buffer before changes" ) 
       ("q" nil "cancel")))
 
@@ -2975,7 +2977,7 @@ this command below will use helm for completion since in the above helm config w
    :Type: 
    :ID:   
    :END:
-
+%(org-meta-return)
 "
  )
 
