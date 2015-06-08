@@ -2045,7 +2045,7 @@ _h_tml    ^ ^        _A_SCII:
      :ID:       5d5567f8-9f16-4b76-adb6-8600ce16e2ec
      :END:
 
-#+BEGIN_SRC emacs-lisp :results nkone
+#+BEGIN_SRC emacs-lisp :results none
   (global-set-key
      (kbd "<f9>")
   (defhydra hydra-org (:color blue )
@@ -2081,8 +2081,6 @@ _h_tml    ^ ^        _A_SCII:
        ("q"     nil                          "cancel" )
   ))
 #+END_SRC
-(global-set-key (kbd "<f10> m p ") 'org-mobile-pull)
-(global-set-key (kbd "<f10> m s ") 'org-insert-push)
 
 **** extra org links commands
  #+BEGIN_SRC emacs-lisp :results none
@@ -2164,6 +2162,82 @@ _h_tml    ^ ^        _A_SCII:
  (define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
  (define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
  )
+
+*** agenda (F10)
+**** org agenda main
+     :PROPERTIES:
+     :ID:       5d5567f8-9f16-4b76-adb6-8600ce16e2ec
+     :END:
+
+#+BEGIN_SRC emacs-lisp :results none
+  (global-set-key
+     (kbd "<f10>")
+  (defhydra hydra-org-agenda (:color blue )
+  "
+  "
+      ("<f10>"  org-agenda   "search-headers")
+      ("a"  org-agenda   "search-headers")
+      ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+      ("f"    org-agenda-later    "go forward 1w ")
+      ("b"    org-agenda-earlier    "go back 1w ")
+      ("TAB"          "Today ")
+      ("t"    org-agenda-todo      "change todo")
+      ("k"    org-agenda-kill      "delete C-k")
+      ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+       ("q"     nil                          "cancel" )
+  ))
+#+END_SRC
+
+C-c C-w     (org-agenda-refile)
+Refile the entry at point. 
+C-c C-x C-a or short a     (org-agenda-archive-default-with-confirmation)
+Archive the subtree corresponding to the entry at point using the default archiving command set in org-archive-default-command. When using the a key, confirmation will be required. 
+
+C-c C-x C-s or short $     (org-agenda-archive)
+Archive the subtree corresponding to the current headline. This means the entry will be moved to the configured archive location, most likely a different file. 
+T     (org-agenda-show-tags)
+Show all tags associated with the current item. This is useful if you have turned off org-agenda-show-inherited-tags, but still want to see all tags of a headline occasionally. 
+:     (org-agenda-set-tags)
+Set tags for the current headline. If there is an active region in the agenda, change a tag for all headings in the region. 
+,
+Set the priority for the current item (org-agenda-priority). Org mode prompts for the priority character. If you reply with <SPC>, the priority cookie is removed from the entry. 
+P     (org-agenda-show-priority)
+Display weighted priority of current item. 
++ or S-<up>     (org-agenda-priority-up)
+Increase the priority of the current item. The priority is changed in the original buffer, but the agenda is not resorted. Use the r key for this. 
+- or S-<down>     (org-agenda-priority-down)
+Decrease the priority of the current item. 
+z or C-c C-z     (org-agenda-add-note)
+Add a note to the entry. This note will be recorded, and then filed to the same location where state change notes are put. Depending on org-log-into-drawer, this may be inside a drawer. 
+C-c C-a     (org-attach)
+Dispatcher for all command related to attachments. 
+C-c C-s     (org-agenda-schedule)
+Schedule this item. With prefix arg remove the scheduling timestamp 
+C-c C-d     (org-agenda-deadline)
+Set a deadline for this item. With prefix arg remove the deadline. 
+S-<right>     (org-agenda-do-date-later)
+Change the timestamp associated with the current line by one day into the future. If the date is in the past, the first call to this command will move it to today.
+With a numeric prefix argument, change it by that many days. For example, 3 6 5 S-<right> will change it by a year. With a C-u prefix, change the time by one hour. If you immediately repeat the command, it will continue to change hours even without the prefix arg. With a double C-u C-u prefix, do the same for changing minutes.
+The stamp is changed in the original Org file, but the change is not directly reflected in the agenda buffer. Use r or g to update the buffer. 
+S-<left>     (org-agenda-do-date-earlier)
+Change the timestamp associated with the current line by one day into the past. 
+>     (org-agenda-date-prompt)
+Change the timestamp associated with the current line. The key > has been chosen, because it is the same as S-. on my keyboard. 
+I     (org-agenda-clock-in)
+Start the clock on the current item. If a clock is running already, it is stopped first. 
+O     (org-agenda-clock-out)
+Stop the previously started clock. 
+X     (org-agenda-clock-cancel)
+Cancel the currently running clock. 
+J     (org-agenda-clock-goto)
+Jump to the running clock in another window. 
+k     (org-agenda-capture)
+Like org-capture, but use the date at point as the default date for the capture template. See org-capture-use-agenda-date to make this the default behavior of org-capture. 
+
+
+
+
+
 
 
 *** hydra spliter

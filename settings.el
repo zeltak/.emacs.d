@@ -1589,6 +1589,22 @@ _h_tml    ^ ^        _A_SCII:
    ("q" nil "cancel")
 )
 
+(global-set-key
+   (kbd "<f10>")
+(defhydra hydra-org-agenda (:color blue )
+"
+"
+    ("<f10>"  org-agenda   "search-headers")
+    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+    ("f"    org-agenda-later    "go forward 1w ")
+    ("b"    org-agenda-earlier    "go back 1w ")
+    ("TAB"          "Today ")
+    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+     ("q"     nil                          "cancel" )
+))
+
 ; (require 'hydra-examples)
 ; (hydra-create "C-M-o" hydra-example-move-window-splitter)
 
@@ -1626,6 +1642,8 @@ _h_tml    ^ ^        _A_SCII:
    ("u" z-fix-characters "fix unicode" )
    ("g" google-search "google searh selected" )
    ("c" z/comment-box "comment box" )
+   ("u" upcase-region  "upcase " )
+   ("d" downcase-region  "downcase " )
    ("R" revert-buffer  "revert buffer before changes" ) 
    ("q" nil "cancel")))
 
@@ -2100,9 +2118,9 @@ With prefix argument, also display headlines without a TODO keyword."
    :Type: 
    :ID:   
    :END:
-
-" )
-
+%(org-meta-return)
+"
+ )
 
 
             
@@ -2130,7 +2148,7 @@ With prefix argument, also display headlines without a TODO keyword."
 ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
  "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
-("q" "Quick Note" entry (file "~/org/quick-note.org")
+("n" "Quick Note" entry (file "~/org/quick-note.org")
   "* %?\n%U")
 
 ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
@@ -2755,6 +2773,8 @@ execute speed commands."
 ;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
+
+(require 'ox-odt)
 
 (setq org-publish-project-alist
            '(
