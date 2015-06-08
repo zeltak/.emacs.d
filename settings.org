@@ -3763,6 +3763,10 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 #+END_SRC 
 ** Export/publishing
+*** add ODT exporter
+#+BEGIN_SRC emacs-lisp :results none
+(require 'ox-odt)
+#+END_SRC
 *** export locations for publishing 
 #+BEGIN_SRC emacs-lisp :results none
      (setq org-publish-project-alist
