@@ -2064,7 +2064,8 @@ _h_tml    ^ ^        _A_SCII:
       ("r"     org-refile          "org-refile")
       ("R"     z/prefix-org-refile   "refile" )
       ("B"     org-bibtex-create   "org-bibtex-create")
-      ("s"     org-sort     "org-sort")
+      ("S"     org-sort     "org-sort")
+      ("s"   hydra-org-time/body      "schdeule menu ")
       ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
       ("W"     widen              "widen")
       ("w"     z/narrow-or-widen-dwim              "toggle wide/narrow")
@@ -2140,20 +2141,6 @@ _h_tml    ^ ^        _A_SCII:
 
 #+END_SRC
 
-**** orgmode time functions 
-
- #+BEGIN_SRC emacs-lisp :results none
-  (defhydra hydra-org-time (:color blue)
-    "time command"
-    ("s"  org-timestamp-select "select time stamp")
-    ("n" org-timestamp-now  "timestamp current" )
-    ("i" z-insert-date "insert current data")  
-    ("d" org-deadline  "set deadline")  
-    ("i" org-schedule  "set schedule")  
-    ("q" nil "cancel")
- )
- #+END_SRC
-
 **** TODO org agenda views 
  `TODO` 
  helm-my-org- search all org files 
@@ -2183,26 +2170,19 @@ _h_tml    ^ ^        _A_SCII:
       ("TAB"          "Today ")
       ("t"    org-agenda-todo      "change todo")
       ("k"    org-agenda-kill      "delete C-k")
-      ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+      ("x"   org-agenda-archive      "archive ")
+      ("W"   org-agenda-refile      "refile ")
+      (":"   org-agenda-set-tags      "set tags ")
+      (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
+      ("s"   org-agenda-schedule      "schedule task ")
+      ("d"   org-agenda-deadline      "deadline task ")
+      ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
+      (">"   org-agenda-date-prompt      "prompt date ")
+      ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
        ("q"     nil                          "cancel" )
   ))
 #+END_SRC
 
-C-c C-w     (org-agenda-refile)
-Refile the entry at point. 
-C-c C-x C-a or short a     (org-agenda-archive-default-with-confirmation)
-Archive the subtree corresponding to the entry at point using the default archiving command set in org-archive-default-command. When using the a key, confirmation will be required. 
-
-C-c C-x C-s or short $     (org-agenda-archive)
-Archive the subtree corresponding to the current headline. This means the entry will be moved to the configured archive location, most likely a different file. 
-T     (org-agenda-show-tags)
-Show all tags associated with the current item. This is useful if you have turned off org-agenda-show-inherited-tags, but still want to see all tags of a headline occasionally. 
-:     (org-agenda-set-tags)
-Set tags for the current headline. If there is an active region in the agenda, change a tag for all headings in the region. 
-,
-Set the priority for the current item (org-agenda-priority). Org mode prompts for the priority character. If you reply with <SPC>, the priority cookie is removed from the entry. 
-P     (org-agenda-show-priority)
-Display weighted priority of current item. 
 + or S-<up>     (org-agenda-priority-up)
 Increase the priority of the current item. The priority is changed in the original buffer, but the agenda is not resorted. Use the r key for this. 
 - or S-<down>     (org-agenda-priority-down)
@@ -2238,6 +2218,20 @@ Like org-capture, but use the date at point as the default date for the capture 
 
 
 
+
+**** orgmode time functions 
+
+ #+BEGIN_SRC emacs-lisp :results none
+  (defhydra hydra-org-time (:color blue)
+    "time command"
+    ("s"  org-timestamp-select "select time stamp")
+    ("n" org-timestamp-now  "timestamp current" )
+    ("i" z-insert-date "insert current data")  
+    ("d" org-deadline  "set deadline")  
+    ("i" org-schedule  "set schedule")  
+    ("q" nil "cancel")
+ )
+ #+END_SRC
 
 
 *** hydra spliter

@@ -1519,7 +1519,8 @@ _h_tml    ^ ^        _A_SCII:
       ("r"     org-refile          "org-refile")
       ("R"     z/prefix-org-refile   "refile" )
       ("B"     org-bibtex-create   "org-bibtex-create")
-      ("s"     org-sort     "org-sort")
+      ("S"     org-sort     "org-sort")
+      ("s"   hydra-org-time/body      "schdeule menu ")
       ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
       ("W"     widen              "widen")
       ("w"     z/narrow-or-widen-dwim              "toggle wide/narrow")
@@ -1579,6 +1580,31 @@ _h_tml    ^ ^        _A_SCII:
    ("s" hydra-org-time/body "time stamps" )
    ("q" nil "cancel")))
 
+(global-set-key
+   (kbd "<f10>")
+(defhydra hydra-org-agenda (:color blue )
+"
+"
+    ("<f10>"  org-agenda   "search-headers")
+    ("a"  org-agenda   "search-headers")
+    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
+    ("f"    org-agenda-later    "go forward 1w ")
+    ("b"    org-agenda-earlier    "go back 1w ")
+    ("TAB"          "Today ")
+    ("t"    org-agenda-todo      "change todo")
+    ("k"    org-agenda-kill      "delete C-k")
+    ("x"   org-agenda-archive      "archive ")
+    ("W"   org-agenda-refile      "refile ")
+    (":"   org-agenda-set-tags      "set tags ")
+    (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
+    ("s"   org-agenda-schedule      "schedule task ")
+    ("d"   org-agenda-deadline      "deadline task ")
+    ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
+    (">"   org-agenda-date-prompt      "prompt date ")
+    ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
+     ("q"     nil                          "cancel" )
+))
+
 (defhydra hydra-org-time (:color blue)
    "time command"
    ("s"  org-timestamp-select "select time stamp")
@@ -1588,22 +1614,6 @@ _h_tml    ^ ^        _A_SCII:
    ("i" org-schedule  "set schedule")  
    ("q" nil "cancel")
 )
-
-(global-set-key
-   (kbd "<f10>")
-(defhydra hydra-org-agenda (:color blue )
-"
-"
-    ("<f10>"  org-agenda   "search-headers")
-    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-    ("f"    org-agenda-later    "go forward 1w ")
-    ("b"    org-agenda-earlier    "go back 1w ")
-    ("TAB"          "Today ")
-    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-     ("q"     nil                          "cancel" )
-))
 
 ; (require 'hydra-examples)
 ; (hydra-create "C-M-o" hydra-example-move-window-splitter)
