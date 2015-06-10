@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("capture.settings" 0 16
+(#1=(#("qgis.org" 0 8
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/Uni/Guides/qgis.org")
+    (buffer-name . "qgis.org")
+    (front-context-string . "#+TITLE: Qgis\n\n*")
+    (rear-context-string)
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21878 37167 327975 798000))
+    (created . #2#)
+    (position . 1))
+#1=(#("capture.settings" 0 16
       (bmkp-full-record #1#))
     (end-position . 86924)
     (filename . "~/.emacs.d/settings.org")
@@ -332,8 +344,8 @@
     (rear-context-string . "ernal-browser.\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 2)
-    (time 21876 33551 966585 172000)
+    (visits . 3)
+    (time 21878 34761 117512 529000)
     (created 21790 12131 21781 501000)
     (position . 1159217))
 #1=(#("arch_installs" 0 13

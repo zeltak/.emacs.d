@@ -2785,6 +2785,8 @@ execute speed commands."
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 
 (require 'ox-odt)
+(require 'ox-beamer)
+(require 'ox-latex)
 
 (setq org-publish-project-alist
            '(
@@ -3496,3 +3498,6 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
   (insert "export TERM=screen-256color-bce")
   (insert "ssu zuni")
   (comint-send-input))
+
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-draft "wl" "Write draft with Wanderlust." t)

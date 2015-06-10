@@ -3831,9 +3831,12 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
 #+END_SRC 
 ** Export/publishing
-*** add ODT exporter
+*** add ODT, beamer etc  exporters
 #+BEGIN_SRC emacs-lisp :results none
 (require 'ox-odt)
+(require 'ox-beamer)
+(require 'ox-latex)
+
 #+END_SRC
 *** export locations for publishing 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4874,3 +4877,8 @@ If you need to access a lot of random systems you should try this, it has made m
 The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs –daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The –daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs –daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The –daemon option has the fringe benefit of leaving emacs running even if you log out.
 #+END_EXAMPLE
 
+** WL
+#+BEGIN_SRC emacs-lisp :results none
+(autoload 'wl "wl" "Wanderlust" t)
+(autoload 'wl-draft "wl" "Write draft with Wanderlust." t)
+#+END_SRC
