@@ -1493,6 +1493,12 @@ comment box."
   " insert #!/bin/sh  "
   (interactive)
   (insert "#!/bin/sh")
+
+(defun z/insert-play ()
+  " insert   ‣  "
+  (interactive)
+  (insert "‣")
+
 )
 
 
@@ -2332,6 +2338,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
   "unicode"
   ("k"    z/insert-keyboth  "【】") 
   ("b"     z/insert-bashscript  "#!") 
+  ("‣"     z/insert-play  " ‣") 
   ("q" nil "cancel" nil)
 )
 #+END_SRC
