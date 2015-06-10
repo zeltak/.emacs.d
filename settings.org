@@ -1498,6 +1498,7 @@ comment box."
   " insert   ‣  "
   (interactive)
   (insert "‣")
+)
 
 )
 
@@ -4446,12 +4447,6 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
 (mu4e-maildirs-extension)
-
-(setq mu4e-get-mail-command "offlineimap"
-      mu4e-update-interval 120
-      mu4e-headers-auto-update t)
-
-
 ;; list of my email addresses.
 (setq mu4e-user-mail-address-list '("ikloog@gmail.com"
                                     "ikloog@bgu.ac.il"
@@ -4459,6 +4454,15 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
 
 
 #+END_SRC
+*** fetching and indexing
+#+BEGIN_SRC emacs-lisp :results none
+(setq mu4e-update-interval 60)
+(setq mu4e-headers-auto-update t)
+#+END_SRC
+OLD:
+(setq mu4e-get-mail-command "offlineimap"
+      mu4e-update-interval 120
+    mu4e-headers-auto-update t)
 *** personal info
 #+BEGIN_SRC emacs-lisp :results none
 ;; something about ourselves

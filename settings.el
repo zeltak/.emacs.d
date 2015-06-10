@@ -1073,6 +1073,13 @@ comment box."
   " insert #!/bin/sh  "
   (interactive)
   (insert "#!/bin/sh")
+
+(defun z/insert-play ()
+  " insert   ‣  "
+  (interactive)
+  (insert "‣")
+)
+
 )
 
 (defun z/org-convert-header-samelevel  ()
@@ -1689,6 +1696,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
   "unicode"
   ("k"    z/insert-keyboth  "【】") 
   ("b"     z/insert-bashscript  "#!") 
+  ("‣"     z/insert-play  " ‣") 
   ("q" nil "cancel" nil)
 )
 
@@ -3209,16 +3217,13 @@ take care of the wrapping of each item for me"
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
 (mu4e-maildirs-extension)
-
-(setq mu4e-get-mail-command "offlineimap"
-      mu4e-update-interval 120
-      mu4e-headers-auto-update t)
-
-
 ;; list of my email addresses.
 (setq mu4e-user-mail-address-list '("ikloog@gmail.com"
                                     "ikloog@bgu.ac.il"
                                     "ekloog@hsph.harvard.edu"))
+
+(setq mu4e-update-interval 60)
+(setq mu4e-headers-auto-update t)
 
 ;; something about ourselves
 (setq

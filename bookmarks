@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("qgis.org" 0 8
+(#1=(#(".offlineimaprc" 0 14
+      (bmkp-full-record #1#))
+    (filename . "~/.offlineimaprc")
+    (buffer-name . ".offlineimaprc")
+    (front-context-string . "\n# Instead of cl")
+    (rear-context-string . "xconnections = 2")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21880 20095 20592 709000))
+    (created . #2#)
+    (position . 1124))
+#1=(#("qgis.org" 0 8
       (bmkp-full-record #1#))
     (filename . "~/org/files/Uni/Guides/qgis.org")
     (buffer-name . "qgis.org")
@@ -760,8 +772,8 @@
     (rear-context-string . "TUP: overview\n\n\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 15)
-    (time 21876 33547 801824 418000)
+    (visits . 17)
+    (time 21880 19790 766464 659000)
     (created 21790 12017 43737 553000)
     (position . 75))
 #1=(#(".pentadactylrc" 0 14
