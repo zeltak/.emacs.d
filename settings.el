@@ -2163,6 +2163,7 @@ With prefix argument, also display headlines without a TODO keyword."
 ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
  "* SHOP  %^{Description} " )
 
+;; for mail 
 ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
  "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
@@ -2172,8 +2173,11 @@ With prefix argument, also display headlines without a TODO keyword."
 ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
 
 ;agenda captures
-("r" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
+("R" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
  "* TODO  %^{Description} " )
+
+("T" "Research TODO" entry (file +headline "~/org/files/agenda/Research.org" "Short term Misc") 
+           "* TODO %?\n %U\n\n%a")
 
 
   )))
@@ -3332,6 +3336,74 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
 ;; additional non-Gmail addresses and want assign them different
 ;; behavior.)
+
+(defgroup mu4e-faces nil 
+  "Type faces (fonts) used in mu4e." 
+  :group 'mu4e 
+  :group 'faces) 
+
+(defface mu4e-basic-face 
+  '((t :inherit font-lock-keyword-face)) 
+  "Basic Face." 
+  :group 'mu4e-faces) 
+
+(defface mu4e-list-default 
+  '((t :inherit mu4e-basic-face)) 
+  "Basic list Face." 
+  :group 'mu4e-faces) 
+
+(defface mu4e-rw-default 
+  '((t :inherit mu4e-basic-face)) 
+  "Basic rw Face." 
+  :group 'mu4e-faces)
+
+;; basic face from where the rest inherits 
+ '(mu4e-basic-face ((t :inherit font-lock-keyword-face :weight normal :foreground "Gray10"))) 
+
+;; read-write group 
+ '(mu4e-rw-default ((t :inherit mu4e-basic-face))) ;; face from where all the read/write faces inherits 
+ '(mu4e-header-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-marks-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-title-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-highlight-face ((t :inherit mu4e-rw-default :foreground "Black" :background "LightGray"))) 
+ '(mu4e-compose-header-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-compose-separator-face ((t :inherit mu4e-rw-default :foreground "Gray30" :weight bold))) 
+ '(mu4e-footer-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-contact-face ((t :inherit mu4e-rw-default :foreground "Black"))) 
+ '(mu4e-cited-1-face ((t :inherit mu4e-rw-default :foreground "Gray10"))) 
+ '(mu4e-cited-2-face  ((t :inherit mu4e-cited-1-face :foreground "Gray20"))) 
+ '(mu4e-cited-3-face   ((t :inherit mu4e-cited-2-face :foreground "Gray30"))) 
+ '(mu4e-cited-4-face    ((t :inherit mu4e-cited-3-face :foreground "Gray40"))) 
+ '(mu4e-cited-5-face     ((t :inherit mu4e-cited-4-face :foreground "Gray50"))) 
+ '(mu4e-cited-6-face      ((t :inherit mu4e-cited-5-face :foreground "Gray60"))) 
+ '(mu4e-cited-7-face       ((t :inherit mu4e-cited-6-face :foreground "Gray70"))) 
+ '(mu4e-link-face ((t :inherit mu4e-rw-default :foreground "Blue" :weight bold))) 
+ '(mu4e-system-face ((t :inherit mu4e-rw-defaul :foreground "DarkOrchid"))) 
+ '(mu4e-url-number-face ((t :inherit mu4e-rw-default :weight bold))) 
+ '(mu4e-attach-number-face ((t :inherit mu4e-rw-default :weight bold :foreground "Blue"))) 
+
+;; lists (headers) group 
+ '(mu4e-list-default ((t :inherit mu4e-basic-face))) ;; basic list face from where lists inherits 
+ '(mu4e-draft-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-flagged-face ((t :inherit mu4e-list-default :weight bold :foreground "Black"))) 
+ '(mu4e-forwarded-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-list-default-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-title-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-trashed-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-warning-face ((t :inherit mu4e-list-default :foreground "OrangeRed1"))) 
+ '(mu4e-modeline-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-moved-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-ok-face ((t :inherit mu4e-list-default :foreground "ForestGreen"))) 
+ '(mu4e-read-face ((t :inherit mu4e-list-default :foreground "Gray80"))) 
+ '(mu4e-region-code-face ((t :inherit mu4e-list-default :background "Gray25"))) 
+ '(mu4e-replied-face ((t :inherit mu4e-list-default :foreground "Black"))) 
+ '(mu4e-unread-face ((t :inherit mu4e-list-default :foreground "Blue"))) 
+ '(mu4e-highlight-face ((t :inherit mu4e-unread-face))) 
+
+ '(mu4e-special-header-value-face ((t :inherit mu4e-contact-face))) 
+ '(mu4e-header-key-face ((t :inherit mu4e-contact-face :foreground "Gray50"))) 
+ '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
+ '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))
 
 (if (string= system-name "voices") 
 (progn
