@@ -685,12 +685,12 @@
  :config
   )
 
-(use-package mu4e-maildirs-extension
- :ensure t
- :config
-(setq mu4e-maildirs-extension-title "Mail")
+;(use-package mu4e-maildirs-extension
+; :ensure t
+; :config
+;(setq mu4e-maildirs-extension-title "Mail")
 ;(setq mu4e-maildirs-extension-custom-list (quote ("INBOX" "Starred"  )))
- )
+; )
 
 (use-package swiper 
  :ensure t
@@ -763,7 +763,8 @@
 (require 'password-store)
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
-;(require 'transmission)
+(require 'transmission)
+(setq transmission-host "10.0.0.2")
 
 (use-package golden-ratio
  :ensure t
@@ -773,6 +774,19 @@
  )
 
 (winner-mode 1)
+
+(use-package org-gcal 
+ :ensure t
+ :config
+(require 'org-gcal)
+(setq org-gcal-client-id "915933520493-ppckdh9b038tb5u039c0b8s06bdkio98.apps.googleusercontent.com"
+      org-gcal-client-secret "1hy--1nQE-xUjVyR8MLYt5W"
+      org-gcal-file-alist '(
+("ikloog@gmail.com" .  "~/org/files/agenda/gcal.org")
+
+))
+;for closing use package
+)
 
 (defun z-fix-characters 
 (start end) 
@@ -1399,6 +1413,7 @@ Repeated invocations toggle between the two most recently open buffers."
   ("g"     indent-guide-mode            "indent guide")
   ("f"     fci-mode                     "fci")
   ("k"     key-chord-mode               "key chord")
+  ("b"     bug-hunter-file               "bug hunter")
   ("l"     linum-mode             "linum")
   ("t"     lentic-mode             "lentic ")
   ("e"     evil-mode                    "evil mode")
@@ -1665,7 +1680,7 @@ _h_tml    ^ ^        _A_SCII:
    ("v" yas-visit-snippet-file "visit" :color blue)
    ("i" yas-insert-snippet "insert_point" :color blue)
    ("r" yas-reload-all  "reload" :color blue)
-   ("t" yas-tryout-snippe  "try snipet" :color blue)
+   ("t" yas-tryout-snippet  "try snipet" :color blue)
    ("q" nil "cancel")))
 
 (global-set-key                         
