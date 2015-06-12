@@ -1097,6 +1097,13 @@ https://github.com/Fuco1/dired-hacks
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
 #+END_SRC
+** transmission
+need to install let-alist and seq packages from melpa
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
+(require 'transmission)
+(setq transmission-host "10.0.0.2")
+#+END_SRC
 ** golden ratio
 https://github.com/roman/golden-ratio.el
 
@@ -1533,6 +1540,36 @@ comment box."
 broken this way, causes erros in init 
 #+BEGIN_SRC emacs-lisp :results none
 ;(fset 'z/prefix-org-refile (C-u M-x org-refile))   
+#+END_SRC
+
+*** agenda views
+**** org agenda work 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-work ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "r")
+)
+#+END_SRC
+
+**** org agenda all
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-all ()
+"open all agenda"
+(interactive)                                
+(org-agenda nil "a")
+)
+#+END_SRC
+**** org agenda search
+**** org agenda cook
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-cook ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "f")
+)
 #+END_SRC
 
 ** Root actions
@@ -2013,7 +2050,8 @@ _h_tml    ^ ^        _A_SCII:
   "
 "
   ("<f5>"     mu4e            "start mu4e")
-  ("u"     mu4e-update-mail-and-index           "Send/Recive")
+  ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
+  ("o"     mu4e-headers-change-sorting            "sort")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
@@ -2090,15 +2128,15 @@ _h_tml    ^ ^        _A_SCII:
   ))
 #+END_SRC
 
-**** extra org links commands
+**** TODO extra org links commands
  #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-links (:color blue )
       "
       "
-     ("l" org-store-link  "create and  cop link")
+     ("l" org-store-link  "create and copy link")
      ("i" org-insert-link   "insert (or edit if on link)" ) 
-     ("d" org-id-create "org id create")
-     ("c" org-id-copy  "copy org-id" ) 
+     ("d" org-id-create "just create Id")
+     ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
       ("q" nil "cancel" nil)
  )
@@ -2149,14 +2187,6 @@ _h_tml    ^ ^        _A_SCII:
 #+END_SRC
 
 **** TODO org agenda views 
- `TODO` 
- helm-my-org- search all org files 
-
- (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
- (define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
- (define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
- )
-
 *** agenda (F10)
 **** org agenda main
      :PROPERTIES:
@@ -2170,9 +2200,12 @@ _h_tml    ^ ^        _A_SCII:
   "
   "
       ("<f10>"  org-agenda   "search-headers")
-      ("a"  org-agenda   "search-headers")
+      ("w"  z/org-agenda-work   "agenda-work")
+      ("a"  z/org-agenda-all   "agenda-all")
+      ("s"  z/org-agenda-search   "agenda-search")
+      ("f"  z/org-agenda-cook   "agenda-cook")
       ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-      ("f"    org-agenda-later    "go forward 1w ")
+      ("F"    org-agenda-later    "go forward 1w ")
       ("b"    org-agenda-earlier    "go back 1w ")
       ("TAB"          "Today ")
       ("t"    org-agenda-todo      "change todo")
@@ -2181,7 +2214,7 @@ _h_tml    ^ ^        _A_SCII:
       ("W"   org-agenda-refile      "refile ")
       (":"   org-agenda-set-tags      "set tags ")
       (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
-      ("s"   org-agenda-schedule      "schedule task ")
+      ("S"   org-agenda-schedule      "schedule task ")
       ("d"   org-agenda-deadline      "deadline task ")
       ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
       (">"   org-agenda-date-prompt      "prompt date ")
@@ -2190,41 +2223,10 @@ _h_tml    ^ ^        _A_SCII:
   ))
 #+END_SRC
 
-+ or S-<up>     (org-agenda-priority-up)
-Increase the priority of the current item. The priority is changed in the original buffer, but the agenda is not resorted. Use the r key for this. 
-- or S-<down>     (org-agenda-priority-down)
-Decrease the priority of the current item. 
-z or C-c C-z     (org-agenda-add-note)
-Add a note to the entry. This note will be recorded, and then filed to the same location where state change notes are put. Depending on org-log-into-drawer, this may be inside a drawer. 
-C-c C-a     (org-attach)
-Dispatcher for all command related to attachments. 
-C-c C-s     (org-agenda-schedule)
-Schedule this item. With prefix arg remove the scheduling timestamp 
-C-c C-d     (org-agenda-deadline)
-Set a deadline for this item. With prefix arg remove the deadline. 
-S-<right>     (org-agenda-do-date-later)
-Change the timestamp associated with the current line by one day into the future. If the date is in the past, the first call to this command will move it to today.
-With a numeric prefix argument, change it by that many days. For example, 3 6 5 S-<right> will change it by a year. With a C-u prefix, change the time by one hour. If you immediately repeat the command, it will continue to change hours even without the prefix arg. With a double C-u C-u prefix, do the same for changing minutes.
-The stamp is changed in the original Org file, but the change is not directly reflected in the agenda buffer. Use r or g to update the buffer. 
-S-<left>     (org-agenda-do-date-earlier)
-Change the timestamp associated with the current line by one day into the past. 
->     (org-agenda-date-prompt)
-Change the timestamp associated with the current line. The key > has been chosen, because it is the same as S-. on my keyboard. 
-I     (org-agenda-clock-in)
-Start the clock on the current item. If a clock is running already, it is stopped first. 
-O     (org-agenda-clock-out)
-Stop the previously started clock. 
-X     (org-agenda-clock-cancel)
-Cancel the currently running clock. 
-J     (org-agenda-clock-goto)
-Jump to the running clock in another window. 
-k     (org-agenda-capture)
-Like org-capture, but use the date at point as the default date for the capture template. See org-capture-use-agenda-date to make this the default behavior of org-capture. 
-
-
-
-
-
+ (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
+ (define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
+ (define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
+ )
 
 **** orgmode time functions 
 
@@ -2769,7 +2771,6 @@ use setq org-support-shift-select:
 
 *** insert id based links
 this will make org-store-link use id when creating a link.
-
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-id-link-to-org-use-id t)
  #+END_SRC
@@ -2787,7 +2788,7 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-files '("~/org/files/agenda/"))
 #+END_SRC
 
-*** Base
+*** agenda view
 
 #+BEGIN_SRC emacs-lisp :results none
 ;change agenda colors
@@ -2806,39 +2807,32 @@ this will make org-store-link use id when creating a link.
 *** look and feel
 
 #+BEGIN_SRC emacs-lisp :results none
-   ;; Do not dim blocked tasks
-   (setq org-agenda-dim-blocked-tasks nil)
-   ;; Compact the block agenda view
-   (setq org-agenda-compact-blocks t)
+;; Do not dim blocked tasks
+(setq org-agenda-dim-blocked-tasks nil)
+;; Compact the block agenda view
+(setq org-agenda-compact-blocks t)
+;; Always hilight the current agenda line
+(add-hook 'org-agenda-mode-hook
+          '(lambda () (hl-line-mode 1))
+          'append)
 
+;; Show all agenda dates - even if they are empty
+(setq org-agenda-show-all-dates t)
 
-   ;; Always hilight the current agenda line
-   (add-hook 'org-agenda-mode-hook
-             '(lambda () (hl-line-mode 1))
-             'append)
+;;  Enable display of the time grid so we can see the marker for the current time
+(setq org-agenda-time-grid (quote ((daily today remove-match)
+                                  #("----------------" 0 16 (org-heading t))
+                                  (0900 1100 1300 1500 1700))))
 
-   ;; The following custom-set-faces create the highlights
-   ;; (custom-set-faces
-   ;;   ;; custom-set-faces was added by Custom.
-   ;;   ;; If you edit it by hand, you could mess it up so be careful.
-   ;;   ;; Your init file should contain only one such instance.
-   ;;   ;; If there is more than one, they won't work right.
-   ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
-
-   ;; Show all agenda dates - even if they are empty
-   (setq org-agenda-show-all-dates t)
-
-   ;;   Enable display of the time grid so we can see the marker for the current time
-  (setq org-agenda-time-grid (quote ((daily today remove-match)
-                                     #("----------------" 0 16 (org-heading t))
-                                     (0900 1100 1300 1500 1700))))
-
-   ;; Display tags farther right
-   (setq org-agenda-tags-column -102)
-
-
+;; Display tags farther right
+(setq org-agenda-tags-column -102)
 #+END_SRC
+
 *** TODO 'my custom agenda command'
+look here for more info
+http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+
+and here id:cf2c69b4-3d4c-4f81-a01d-bbbe1d120e62
 
 $Note$ that to get the priorities to appear first you need to use priorities-down.
 
@@ -2846,7 +2840,6 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 (setq org-agenda-custom-commands 
 '(
 
-("w" tags-todo "CATEGORY=\"work\"")
 ;first command
 ("r" "research" todo "TODO" 
          (
@@ -2867,8 +2860,7 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 )
 )
 
-;third
-("o" "orgmode" todo "TODO" 
+("t" "tech" todo "TODO" 
          (
          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
           (org-agenda-sorting-strategy 
@@ -2877,9 +2869,17 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 )
 )
 
+("h" "home" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/home.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
 
-;fourth (code block)
-("h" "Agenda and Home-related tasks"
+
+("x" "Agenda and Home-related tasks"
                (
                (agenda "")
                (tags-todo "+PRIORITY=\"A\"")
@@ -2887,7 +2887,9 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 )
 )
 
-;;finalize
+
+
+
 ;;end brackets for setq
 )
 )
@@ -2917,7 +2919,7 @@ thos  will be reminded of things in your org files, before the appointment time 
 You could also add this, so that the appointments refresh and new get added every time that you call the agenda:
 
 #+BEGIN_SRC emacs-lisp
- (add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
+(add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
 #+END_SRC
 
 ** Images

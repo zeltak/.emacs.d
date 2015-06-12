@@ -39,6 +39,8 @@
   '(
    ))
 
+(define-abbrev-table 'calc-trail-mode-abbrev-table '())
+
 (define-abbrev-table 'calendar-mode-abbrev-table '())
 
 (define-abbrev-table 'comint-mode-abbrev-table '())
@@ -90,6 +92,8 @@
 (define-abbrev-table 'epa-key-list-mode-abbrev-table '())
 
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'eshell-mode-abbrev-table '())
 
 (define-abbrev-table 'evil-command-window-mode-abbrev-table '())
 
@@ -387,6 +391,7 @@
     ("definately" "definitely" nil 0)
     ("definatly" "definitely" nil 2)
     ("definded" "defined" nil 0)
+    ("definintions" "definitions" nil 0)
     ("deinisty" "density" nil 0)
     ("departmens" "departments" nil 0)
     ("dependances" "dependencies" nil 0)
@@ -535,6 +540,7 @@
     ("garantee" "guarantee" nil 0)
     ("gaurd" "guard" nil 0)
     ("gemeral" "general" nil 0)
+    ("geogtaphy" "geography" nil 0)
     ("gerat" "great" nil 0)
     ("gerneral" "general" nil 0)
     ("geting" "getting" nil 0)
@@ -593,7 +599,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 8)
+    ("i" "I" nil 9)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -678,6 +684,7 @@
     ("liev" "live" nil 0)
     ("likly" "likely" nil 0)
     ("lisense" "license" nil 0)
+    ("lisure" "leisure" nil 0)
     ("litreture" "literature" nil 0)
     ("littel" "little" nil 0)
     ("litttle" "little" nil 0)

@@ -762,6 +762,9 @@
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
 
+(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
+;(require 'transmission)
+
 (use-package golden-ratio
  :ensure t
  :config
@@ -1100,6 +1103,24 @@ comment box."
         (self-insert-command 1)))))
 
 ;(fset 'z/prefix-org-refile (C-u M-x org-refile))
+
+(defun z/org-agenda-work ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "r")
+)
+
+(defun z/org-agenda-all ()
+"open all agenda"
+(interactive)                                
+(org-agenda nil "a")
+)
+
+(defun z/org-agenda-cook ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "f")
+)
 
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
@@ -1480,7 +1501,8 @@ _h_tml    ^ ^        _A_SCII:
   "
 "
   ("<f5>"     mu4e            "start mu4e")
-  ("u"     mu4e-update-mail-and-index           "Send/Recive")
+  ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
+  ("o"     mu4e-headers-change-sorting            "sort")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
@@ -1547,10 +1569,10 @@ _h_tml    ^ ^        _A_SCII:
 (defhydra hydra-org-links (:color blue )
      "
      "
-    ("l" org-store-link  "create and  cop link")
+    ("l" org-store-link  "create and copy link")
     ("i" org-insert-link   "insert (or edit if on link)" ) 
-    ("d" org-id-create "org id create")
-    ("c" org-id-copy  "copy org-id" ) 
+    ("d" org-id-create "just create Id")
+    ("c" org-id-copy  "copy(and create) to killring" ) 
     ("s" org-id-store-link  "store org-id" ) 
      ("q" nil "cancel" nil)
 )
@@ -1593,9 +1615,12 @@ _h_tml    ^ ^        _A_SCII:
 "
 "
     ("<f10>"  org-agenda   "search-headers")
-    ("a"  org-agenda   "search-headers")
+    ("w"  z/org-agenda-work   "agenda-work")
+    ("a"  z/org-agenda-all   "agenda-all")
+    ("s"  z/org-agenda-search   "agenda-search")
+    ("f"  z/org-agenda-cook   "agenda-cook")
     ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-    ("f"    org-agenda-later    "go forward 1w ")
+    ("F"    org-agenda-later    "go forward 1w ")
     ("b"    org-agenda-earlier    "go back 1w ")
     ("TAB"          "Today ")
     ("t"    org-agenda-todo      "change todo")
@@ -1604,7 +1629,7 @@ _h_tml    ^ ^        _A_SCII:
     ("W"   org-agenda-refile      "refile ")
     (":"   org-agenda-set-tags      "set tags ")
     (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
-    ("s"   org-agenda-schedule      "schedule task ")
+    ("S"   org-agenda-schedule      "schedule task ")
     ("d"   org-agenda-deadline      "deadline task ")
     ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
     (">"   org-agenda-date-prompt      "prompt date ")
@@ -1965,39 +1990,28 @@ helm _t_op
 (setq org-agenda-skip-scheduled-if-done t)
 
 ;; Do not dim blocked tasks
- (setq org-agenda-dim-blocked-tasks nil)
- ;; Compact the block agenda view
- (setq org-agenda-compact-blocks t)
+(setq org-agenda-dim-blocked-tasks nil)
+;; Compact the block agenda view
+(setq org-agenda-compact-blocks t)
+;; Always hilight the current agenda line
+(add-hook 'org-agenda-mode-hook
+          '(lambda () (hl-line-mode 1))
+          'append)
 
+;; Show all agenda dates - even if they are empty
+(setq org-agenda-show-all-dates t)
 
- ;; Always hilight the current agenda line
- (add-hook 'org-agenda-mode-hook
-           '(lambda () (hl-line-mode 1))
-           'append)
-
- ;; The following custom-set-faces create the highlights
- ;; (custom-set-faces
- ;;   ;; custom-set-faces was added by Custom.
- ;;   ;; If you edit it by hand, you could mess it up so be careful.
- ;;   ;; Your init file should contain only one such instance.
- ;;   ;; If there is more than one, they won't work right.
- ;;  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
-
- ;; Show all agenda dates - even if they are empty
- (setq org-agenda-show-all-dates t)
-
- ;;   Enable display of the time grid so we can see the marker for the current time
+;;  Enable display of the time grid so we can see the marker for the current time
 (setq org-agenda-time-grid (quote ((daily today remove-match)
-                                   #("----------------" 0 16 (org-heading t))
-                                   (0900 1100 1300 1500 1700))))
+                                  #("----------------" 0 16 (org-heading t))
+                                  (0900 1100 1300 1500 1700))))
 
- ;; Display tags farther right
- (setq org-agenda-tags-column -102)
+;; Display tags farther right
+(setq org-agenda-tags-column -102)
 
 (setq org-agenda-custom-commands 
 '(
 
-("w" tags-todo "CATEGORY=\"work\"")
 ;first command
 ("r" "research" todo "TODO" 
          (
@@ -2018,8 +2032,7 @@ helm _t_op
 )
 )
 
-;third
-("o" "orgmode" todo "TODO" 
+("t" "tech" todo "TODO" 
          (
          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
           (org-agenda-sorting-strategy 
@@ -2028,9 +2041,17 @@ helm _t_op
 )
 )
 
+("h" "home" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/home.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
 
-;fourth (code block)
-("h" "Agenda and Home-related tasks"
+
+("x" "Agenda and Home-related tasks"
                (
                (agenda "")
                (tags-todo "+PRIORITY=\"A\"")
@@ -2038,7 +2059,9 @@ helm _t_op
 )
 )
 
-;;finalize
+
+
+
 ;;end brackets for setq
 )
 )
