@@ -971,7 +971,6 @@ better parens match than bulit in Emacs one
 #+END_SRC
 ** mu4e-maildirs-extension
 https://github.com/agpchil/mu4e-maildirs-extension
-
 #+BEGIN_SRC emacs-lisp :results none
 ;(use-package mu4e-maildirs-extension
 ; :ensure t
@@ -1103,7 +1102,10 @@ need to install let-alist and seq packages from melpa
 (add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 (setq transmission-host "10.0.0.2")
+(setq transmission-rpc-path "/transmission/web/")
+(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
 #+END_SRC
+
 ** golden ratio
 https://github.com/roman/golden-ratio.el
 
@@ -1136,6 +1138,66 @@ allows to dynamically resize the non currently edited pane
 ;for closing use package
 )
 #+END_SRC 
+** xah-find
+http://ergoemacs.org/emacs/elisp-xah-find-text.html
+This is the home page for “xah-find.el”.
+
+This package provides emacs commands for find/replace in a directory, like {grep, rgrep, lgrep, unix sed}, but written entirely in emacs lisp.
+
+This package provides these commands:
+
+xah-find-text
+xah-find-text-regex
+xah-find-count
+xah-find-replace-text
+xah-find-replace-text-regex
+
+Press Enter ↵ on a link to jump to the file location. (or mouse click)
+Press 【Tab ↹】 to jump to next occurence. (【⇧ Shift+Tab ↹】 for previous)
+Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package xah-find
+ :ensure t
+ :config
+  )
+#+END_SRC 
+
+** org ref
+*** load 
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-ref/")
+;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
+;; in your load-path
+(require 'org-ref)
+;; optional but very useful libraries in org-ref
+(require 'doi-utils)
+(require 'jmax-bibtex)
+(require 'pubmed)
+(require 'arxiv)
+(require 'sci-id)
+#+END_SRC
+
+*** config 
+#+BEGIN_SRC emacs-lisp :results none
+;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
+(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
+
+;; see org-ref for use of these variables
+(setq org-ref-bibliography-notes "~/ZH_tmp/test.org"
+      org-ref-default-bibliography '("~/ZH_tmp/test.bib")
+      org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
+#+END_SRC
+** pdf tools
+https://github.com/politza/pdf-tools
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package pdf-tools
+ :ensure t
+ :config
+  )
+#+END_SRC 
+
 
 * Functions
 ** Encoding
@@ -2112,36 +2174,40 @@ _h_tml    ^ ^        _A_SCII:
      (kbd "<f9>")
   (defhydra hydra-org (:color blue )
   "
+_<f9>_: headlines     _u_: up                  _x_: Archive        _e_: export       _i_: images          _t_: todo             _T_: tags 
+_c_: columns          _C_: quit columns        _b_: bibtex yank    _B_: createbib    _r_: refile          _R_: refile(Cu)       _S_: sort     
+_s_: time             _n_: narrow              _w_: widen/narrow   _d_: screenshot   _D_: del.screenshot  _8_: conv.head        _7_: conv.head(Cu)      
+_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe   _f_: food.menu     
   "
-      ("<f9>"  helm-org-headlines   "search-headers")
-      ("u"     outline-up-heading  "outline-up-heading")
-      ("x"     org-archive-subtree "org-archive-subtree")
-      ("e"     org-export-dispatch "org-export-dispatch")
-      ("i"     org-toggle-inline-images  "org-toggle-inline-images")
-      ("t"     org-todo  "org-todo")
-      ("T"     org-set-tags  "org-tags")
-      ("c"     org-columns         "org-columns")
-      ("C"     org-columns-quit    "org-columns-quit")
-      ("b"     org-bibtex-yank     "org-bibtex-yank")
-      ("r"     org-refile          "org-refile")
-      ("R"     z/prefix-org-refile   "refile" )
-      ("B"     org-bibtex-create   "org-bibtex-create")
-      ("S"     org-sort     "org-sort")
-      ("s"   hydra-org-time/body      "schdeule menu ")
-      ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
-      ("W"     widen              "widen")
-      ("w"     z/narrow-or-widen-dwim              "toggle wide/narrow")
-      ("d"     org-download-screenshot "org-download-screenshot")
-      ("D"     org-download-delete "org-download-delete")
-      ("8"     org-toggle-heading   "convert>header (**)")
-      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
-      ("l"     hydra-org-links/body  "links")
-      ("h"     org-insert-heading  "org insert header")
+      ("<f9>"  helm-org-headlines)
+      ("u"     outline-up-heading)
+      ("x"     org-archive-subtree )
+      ("e"     org-export-dispatch )
+      ("i"     org-toggle-inline-images )
+      ("t"     org-todo  )
+      ("T"     org-set-tags )
+      ("c"     org-columns   )
+      ("C"     org-columns-quit )
+      ("b"     org-bibtex-yank   )
+      ("r"     org-refile         )
+      ("R"     z/prefix-org-refile )
+      ("B"     org-bibtex-create   )
+      ("S"     org-sort    )
+      ("s"   hydra-org-time/body )
+      ("n"     org-narrow-to-subtree )
+      ("W"     widen             )
+      ("w"     z/narrow-or-widen-dwim )
+      ("d"     org-download-screenshot )
+      ("D"     org-download-delete )
+      ("8"     org-toggle-heading   )
+      ("7"     z/org-convert-header-samelevel )
+      ("l"     hydra-org-links/body )
+      ("h"     org-insert-heading ) 
 ;need to escape \ with \\
-      ("\\"     hydra-org-table/body      "org tables")
-      ("X"     org-babel-execute-subtree      "exe.babel.subtree")
-      ("f"     hydra-org-food/body      "org-food")
-       ("q"     nil                          "cancel" )
+      ("\\"     hydra-org-table/body )
+      ("X"     org-babel-execute-subtree)
+      ("f"     hydra-org-food/body     )
+       ("q"     nil                    )
   ))
 #+END_SRC
 
@@ -2853,19 +2919,21 @@ and here id:cf2c69b4-3d4c-4f81-a01d-bbbe1d120e62
 
 $Note$ that to get the priorities to appear first you need to use priorities-down.
 
+("w" tags-todo "CATEGORY=\"work\"")
+
+
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-custom-commands 
 '(
 
-;first command
-("r" "research" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/Research.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-down effort-down)
-          ) 
-          )
-          )
+
+;work related only tasks (from research|bgu files)
+("w" "work" todo "TODO|BGU|EXP"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+         
 
 ;second
 ("f" "food" todo "COOK" 
@@ -3904,12 +3972,6 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 #+END_SRC
-** org ref
-
-#+BEGIN_SRC emacs-lisp :results none
-;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-#+END_SRC
-
 * look and feel
 ** Base
 
@@ -4910,23 +4972,6 @@ This recalls the R statement from your R statement history, but it tries to matc
                                              (switch-to-buffer (marker-buffer m))
                                              (goto-char m)
                                              (show-children))))))))))
-#+END_SRC
-#+END_SRCi** org ref
-
-http://kitchingroup.cheme.cmu.edu/blog/2014/05/13/Using-org-ref-for-citations-and-references/
-
-   
-*** load
-@this needs to load in last parts of config file since it depends on org stuff loading@
-
-#+BEGIN_SRC emacs-lisp :results none
-(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-#+END_SRC
-*** customize
-#+BEGIN_SRC emacs-lisp :results none
-(setq org-ref-bibliography-notes ""
-      org-ref-default-bibliography '("/home/zeltak/ZH_tmp/test.bib")
-      org-ref-pdf-directory "/home/zeltak/Dropbox/uni/zlib/pdf_lib")
 #+END_SRC
 
 ** config stuff

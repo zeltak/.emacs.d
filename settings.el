@@ -765,6 +765,8 @@
 (add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 (setq transmission-host "10.0.0.2")
+(setq transmission-rpc-path "/transmission/web/")
+(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
 
 (use-package golden-ratio
  :ensure t
@@ -787,6 +789,35 @@
 ))
 ;for closing use package
 )
+
+(use-package xah-find
+ :ensure t
+ :config
+  )
+
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-ref/")
+;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
+;; in your load-path
+(require 'org-ref)
+;; optional but very useful libraries in org-ref
+(require 'doi-utils)
+(require 'jmax-bibtex)
+(require 'pubmed)
+(require 'arxiv)
+(require 'sci-id)
+
+;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
+(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
+
+;; see org-ref for use of these variables
+(setq org-ref-bibliography-notes "~/ZH_tmp/test.org"
+      org-ref-default-bibliography '("~/ZH_tmp/test.bib")
+      org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(use-package pdf-tools
+ :ensure t
+ :config
+  )
 
 (defun z-fix-characters 
 (start end) 
@@ -1549,36 +1580,40 @@ _h_tml    ^ ^        _A_SCII:
      (kbd "<f9>")
   (defhydra hydra-org (:color blue )
   "
+_<f9>_: headlines     _u_: up                  _x_: Archive        _e_: export       _i_: images          _t_: todo             _T_: tags 
+_c_: columns          _C_: quit columns        _b_: bibtex yank    _B_: createbib    _r_: refile          _R_: refile(Cu)       _S_: sort     
+_s_: time             _n_: narrow              _w_: widen/narrow   _d_: screenshot   _D_: del.screenshot  _8_: conv.head        _7_: conv.head(Cu)      
+_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe   _f_: food.menu     
   "
-      ("<f9>"  helm-org-headlines   "search-headers")
-      ("u"     outline-up-heading  "outline-up-heading")
-      ("x"     org-archive-subtree "org-archive-subtree")
-      ("e"     org-export-dispatch "org-export-dispatch")
-      ("i"     org-toggle-inline-images  "org-toggle-inline-images")
-      ("t"     org-todo  "org-todo")
-      ("T"     org-set-tags  "org-tags")
-      ("c"     org-columns         "org-columns")
-      ("C"     org-columns-quit    "org-columns-quit")
-      ("b"     org-bibtex-yank     "org-bibtex-yank")
-      ("r"     org-refile          "org-refile")
-      ("R"     z/prefix-org-refile   "refile" )
-      ("B"     org-bibtex-create   "org-bibtex-create")
-      ("S"     org-sort     "org-sort")
-      ("s"   hydra-org-time/body      "schdeule menu ")
-      ("n"     org-narrow-to-subtree "org-narrow-to-subtree")
-      ("W"     widen              "widen")
-      ("w"     z/narrow-or-widen-dwim              "toggle wide/narrow")
-      ("d"     org-download-screenshot "org-download-screenshot")
-      ("D"     org-download-delete "org-download-delete")
-      ("8"     org-toggle-heading   "convert>header (**)")
-      ("7"     z/org-convert-header-samelevel  "convert>header (*)")
-      ("l"     hydra-org-links/body  "links")
-      ("h"     org-insert-heading  "org insert header")
+      ("<f9>"  helm-org-headlines)
+      ("u"     outline-up-heading)
+      ("x"     org-archive-subtree )
+      ("e"     org-export-dispatch )
+      ("i"     org-toggle-inline-images )
+      ("t"     org-todo  )
+      ("T"     org-set-tags )
+      ("c"     org-columns   )
+      ("C"     org-columns-quit )
+      ("b"     org-bibtex-yank   )
+      ("r"     org-refile         )
+      ("R"     z/prefix-org-refile )
+      ("B"     org-bibtex-create   )
+      ("S"     org-sort    )
+      ("s"   hydra-org-time/body )
+      ("n"     org-narrow-to-subtree )
+      ("W"     widen             )
+      ("w"     z/narrow-or-widen-dwim )
+      ("d"     org-download-screenshot )
+      ("D"     org-download-delete )
+      ("8"     org-toggle-heading   )
+      ("7"     z/org-convert-header-samelevel )
+      ("l"     hydra-org-links/body )
+      ("h"     org-insert-heading ) 
 ;need to escape \ with \\
-      ("\\"     hydra-org-table/body      "org tables")
-      ("X"     org-babel-execute-subtree      "exe.babel.subtree")
-      ("f"     hydra-org-food/body      "org-food")
-       ("q"     nil                          "cancel" )
+      ("\\"     hydra-org-table/body )
+      ("X"     org-babel-execute-subtree)
+      ("f"     hydra-org-food/body     )
+       ("q"     nil                    )
   ))
 
 (defhydra hydra-org-links (:color blue )
@@ -2027,15 +2062,14 @@ helm _t_op
 (setq org-agenda-custom-commands 
 '(
 
-;first command
-("r" "research" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/Research.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-down effort-down)
-          ) 
-          )
-          )
+
+;work related only tasks (from research|bgu files)
+("w" "work" todo "TODO|BGU|EXP"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+         
 
 ;second
 ("f" "food" todo "COOK" 
@@ -2862,8 +2896,6 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 
-;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-
 ;; Remove splash screen
 (setq inhibit-splash-screen t)
 
@@ -3600,12 +3632,6 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
                                              (switch-to-buffer (marker-buffer m))
                                              (goto-char m)
                                              (show-children))))))))))
-
-(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-
-(setq org-ref-bibliography-notes ""
-      org-ref-default-bibliography '("/home/zeltak/ZH_tmp/test.bib")
-      org-ref-pdf-directory "/home/zeltak/Dropbox/uni/zlib/pdf_lib")
 
 (defun zconn ()
   (interactive)
