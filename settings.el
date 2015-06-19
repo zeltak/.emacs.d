@@ -204,18 +204,19 @@
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-;(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
-(setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
+(setq helm-bibtex-notes-extension ".org")
 
-(setq helm-bibtex-additional-search-fields '(tags))
+(setq helm-bibtex-additional-search-fields '(Tags))
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
-(setq helm-bibtex-pdf-open-function
-  (lambda (fpath)
-    (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
+;(setq helm-bibtex-pdf-open-function
+; (lambda (fpath)
+ ;  (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
  )
 
 (use-package ebib
@@ -1442,7 +1443,8 @@ Repeated invocations toggle between the two most recently open buffers."
    (kbd "<f1>")
 (defhydra hydra-toggles (:color blue)
   "toggle Emacs configs"
-  ("g"     indent-guide-mode            "indent guide")
+  ("G"     indent-guide-mode            "indent guide")
+  ("g"     google-search           "google")
   ("f"     fci-mode                     "fci")
   ("k"     key-chord-mode               "key chord")
   ("b"     bug-hunter-file               "bug hunter")
@@ -1562,6 +1564,8 @@ _h_tml    ^ ^        _A_SCII:
 "
   ("<f6>"     helm-bibtex            "hbibtex")
   ("e"    ebib           "ebib")
+  ("k"   helm-bibtex-ikloog-publications           "ikloog")
+  ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
     ("q"     nil                          "cancel" )
 ))
 

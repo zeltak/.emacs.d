@@ -285,40 +285,55 @@ $Note$ the sign !package! means the package is disbaled
 no config needed 
 ** helm bibtex
 https://github.com/tmalsburg/helm-bibtex
-
+*** settings
 #+BEGIN_SRC emacs-lisp :results none
 (use-package helm-bibtex
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-;(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
-(setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
+(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
+(setq helm-bibtex-notes-extension ".org")
 
-(setq helm-bibtex-additional-search-fields '(tags))
+(setq helm-bibtex-additional-search-fields '(Tags))
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
-(setq helm-bibtex-pdf-open-function
-  (lambda (fpath)
-    (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
+;(setq helm-bibtex-pdf-open-function
+; (lambda (fpath)
+ ;  (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
  )
 #+END_SRC 
+**** my papers 
+ #+BEGIN_SRC elisp
+ ;; Define helm-search with predefined search expression:
+ (defun helm-bibtex-ikloog-publications ()
+   "Search BibTeX entries authored by me"
+   (interactive)
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "kloog"
+         :candidate-number-limit 500))
 
-#+BEGIN_SRC elisp
-;; Define helm-search with predefined search expression:
-(defun helm-bibtex-my-publications ()
-  "Search BibTeX entries authored by Xebar Sara."
-  (interactive)
-  (helm :sources '(helm-source-bibtex)
-        :full-frame t
-        :input "xebar saram"
-        :candidate-number-limit 500))
+ ;; Bind this search function to Ctrl-x p:
+ ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+ #+END_SRC
 
-;; Bind this search function to Ctrl-x p:
-(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
-#+END_SRC
+**** my prep
+ #+BEGIN_SRC elisp
+ ;; Define helm-search with predefined search expression:
+ (defun helm-bibtex-ikloog-prep         ()
+   "Search BibTeX entries in preperation with me"
+   (interactive)
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "prep"
+         :candidate-number-limit 500))
+
+ #+END_SRC
+
 
 ** ebib
 
@@ -1198,8 +1213,8 @@ Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
 (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/ZH_tmp/test.org"
-      org-ref-default-bibliography '("~/ZH_tmp/test.bib")
+(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/bib/notes/"
+      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
       org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 #+END_SRC
 ** pdf tools
@@ -2013,7 +2028,8 @@ Repeated invocations toggle between the two most recently open buffers."
    (kbd "<f1>")
 (defhydra hydra-toggles (:color blue)
   "toggle Emacs configs"
-  ("g"     indent-guide-mode            "indent guide")
+  ("G"     indent-guide-mode            "indent guide")
+  ("g"     google-search           "google")
   ("f"     fci-mode                     "fci")
   ("k"     key-chord-mode               "key chord")
   ("b"     bug-hunter-file               "bug hunter")
@@ -2150,7 +2166,8 @@ _h_tml    ^ ^        _A_SCII:
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
-*** bib (F6)
+*** bib (F6)-
+
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f6>")
@@ -2159,9 +2176,13 @@ _h_tml    ^ ^        _A_SCII:
 "
   ("<f6>"     helm-bibtex            "hbibtex")
   ("e"    ebib           "ebib")
+  ("k"   helm-bibtex-ikloog-publications           "ikloog")
+  ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
+  ("r"   helm-resume        "helm-resume")
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
+
 *** Helm (F7)
 
 #+BEGIN_SRC emacs-lisp :results none
