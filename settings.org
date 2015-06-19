@@ -100,43 +100,6 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 #+RESULTS:
 | UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
 
-** startup packages
-*** Elpa
-**** base
-this contains basic Elpa configurations to make package management better. 
-
-#+begin_src emacs-lisp 
-(require 'package)
-;since we are using use-packag-don't autoload anythings
-(setq package-enable-at-startup nil)
-
-;sources for package.el 
-(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
-                  ("elpa" . "http://tromey.com/elpa/")
-                  ;; TODO: Maybe, use this after emacs24 is released
-                  ;; (development versions of packages)
-                  ("melpa" . "http://melpa.milkbox.net/packages/")
-                  ))
-  (add-to-list 'package-archives source t))
-
-;; Initialize installed package
-(package-initialize)  
-
-;; Bootstrap `use-package'
-;(unless (package-installed-p 'use-package)
-;  (package-refresh-contents)
-;  (package-install 'use-package))
-
-#+end_src
-
-#+RESULTS:
-: t
-
-*** use-package
-#+BEGIN_SRC emacs-lisp :results none
-(require 'use-package)
-#+END_SRC
-
 * Packages
   
 $Note$ the sign !package! means the package is disbaled

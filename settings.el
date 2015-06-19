@@ -1,3 +1,4 @@
+
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
 
@@ -71,29 +72,6 @@
  
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-(require 'package)
-;since we are using use-packag-don't autoload anythings
-(setq package-enable-at-startup nil)
-
-;sources for package.el 
-(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
-                  ("elpa" . "http://tromey.com/elpa/")
-                  ;; TODO: Maybe, use this after emacs24 is released
-                  ;; (development versions of packages)
-                  ("melpa" . "http://melpa.milkbox.net/packages/")
-                  ))
-  (add-to-list 'package-archives source t))
-
-;; Initialize installed package
-(package-initialize)  
-
-;; Bootstrap `use-package'
-;(unless (package-installed-p 'use-package)
-;  (package-refresh-contents)
-;  (package-install 'use-package))
-
-(require 'use-package)
 
 (use-package key-chord 
   :ensure t
@@ -812,8 +790,8 @@
 (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "~/ZH_tmp/test.org"
-      org-ref-default-bibliography '("~/ZH_tmp/test.bib")
+(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/bib/notes/"
+      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
       org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
 (use-package pdf-tools
@@ -1566,6 +1544,7 @@ _h_tml    ^ ^        _A_SCII:
   ("e"    ebib           "ebib")
   ("k"   helm-bibtex-ikloog-publications           "ikloog")
   ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
+  ("r"   helm-resume        "helm-resume")
     ("q"     nil                          "cancel" )
 ))
 

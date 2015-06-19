@@ -5,7 +5,31 @@
 
 ;; Load up Org Mode and (now included) Org Babel for elisp embedded in Org Mode files
 
-(add-to-list 'load-path "~/.emacs.g/org-mode/lisp")
+(require 'package)
+;since we are using use-packag-don't autoload anythings
+(setq package-enable-at-startup nil)
+
+;sources for package.el 
+(dolist (source '(("marmalade" . "http://marmalade-repo.org/packages/")
+                  ("elpa" . "http://tromey.com/elpa/")
+                  ;; TODO: Maybe, use this after emacs24 is released
+                  ;; (development versions of packages)
+                  ("melpa" . "http://melpa.milkbox.net/packages/")
+                  ))
+  (add-to-list 'package-archives source t))
+
+;; Initialize installed package
+(package-initialize)  
+
+;; Bootstrap `use-package'
+;(unless (package-installed-p 'use-package)
+;  (package-refresh-contents)
+;  (package-install 'use-package))
+
+(require 'use-package)
+
+
+;(add-to-list 'load-path "~/.emacs.g/org-mode/lisp")
 (require 'org-install)
 
 (require 'org)
