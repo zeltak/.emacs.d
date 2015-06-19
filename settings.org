@@ -303,10 +303,22 @@ https://github.com/tmalsburg/helm-bibtex
 (setq helm-bibtex-pdf-open-function
   (lambda (fpath)
     (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
-
  )
 #+END_SRC 
 
+#+BEGIN_SRC elisp
+;; Define helm-search with predefined search expression:
+(defun helm-bibtex-my-publications ()
+  "Search BibTeX entries authored by Xebar Sara."
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "xebar saram"
+        :candidate-number-limit 500))
+
+;; Bind this search function to Ctrl-x p:
+(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+#+END_SRC
 
 ** ebib
 

@@ -518,6 +518,8 @@ more...")
    `(helm-selection ((,class (:foregrounf "black" :background "#2AA198")))) 
 
    `(helm-header ((,class (:foreground "white" :background "#073642")))) 
+    ;;modline color for helm inof there
+   `(helm-candidate-number ((,class (:foreground "green" :background "#073642")))) 
 
    `(helm-bookmarks-su-face ((,class (:foreground "#DC322F"))))
    `(helm-buffer-process ((,class (:foreground "#008200"))))

@@ -216,7 +216,6 @@
 (setq helm-bibtex-pdf-open-function
   (lambda (fpath)
     (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
-
  )
 
 (use-package ebib
