@@ -2,7 +2,25 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("zprime-theme.el" 0 15
+(#1=(#("dired.org" 0 9
+      (bmkp-full-record #1#))
+    (buffer-name . "files")
+    (front-context-string . "agenda\n  drwxr-x")
+    (rear-context-string . "0K Jun 19 09:22 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21891 46474 645421 938000))
+    (created . #2#)
+    (position . 123)
+    (filename . "/home/zeltak/org/files/")
+    (dired-directory . "~/org/files/")
+    (dired-marked)
+    (dired-switches . "-aBhl  --group-directories-first")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("zprime-theme.el" 0 15
       (bmkp-full-record #1#))
     (filename . "~/.emacs.d/themes/zprime-theme.el")
     (buffer-name . "zprime-theme.el")
@@ -52,9 +70,9 @@
     (rear-context-string . "    = {eng}\n}\n\n@")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21884 32781 111850 326000))
-    (created . #2#)
+    (visits . 1)
+    (time 21891 46438 429443 237000)
+    (created 21884 32781 111850 326000)
     (position . 503122))
 #1=(#("Epidemiology.org" 0 16
       (bmkp-full-record #1#))
