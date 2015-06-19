@@ -208,13 +208,15 @@
 (setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 
+(setq helm-bibtex-additional-search-fields '(tags))
+
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
+(setq helm-bibtex-pdf-open-function
+  (lambda (fpath)
+    (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
 
- (setq helm-bibtex-pdf-open-function
-   (lambda (fpath)
-     (start-process "okular" "*okular*" "okular" fpath)))
  )
 
 (use-package ebib
@@ -1466,6 +1468,7 @@ Repeated invocations toggle between the two most recently open buffers."
      "
      ("s" start-kbd-macro  "start macro" ) 
      ("e" end-kbd-macro  "end macro" ) 
+     ("e" kmacro-end-and-call-macro  "use C-x e" ) 
      ("n" name-last-kbd-macro  "name macro" ) 
      ("i" insert-kbd-macro  "insert macro" ) 
      ("q" nil "cancel" nil)
@@ -1564,16 +1567,55 @@ _h_tml    ^ ^        _A_SCII:
 ))
 
 (global-set-key
+   (kbd "<f7>")
+(defhydra hydra-helm (:color blue :hint nil)
+  "
+helm-mini _<f7>_  // h_e_lm extra
+_k_ill ring
+_m_ark ring
+_r_ecents
+_l_ocate
+_r_ecents
+"
+  ("<f7>"     helm-mini            "helm-mini")
+  ("e"     hydra-helm-extra/body            "extra helm commands")
+  ("k"     helm-show-kill-ring            "killring")
+  ("m"     helm-mark-ring            "markring")
+  ("r"     helm-recentf            "recents")
+  ("l"     helm-locate            "locate")
+  ("f"     helm-find-files            "find files")
+  ("a"     helm-apropos            "apropos")
+  ("c"     helm-occur            "occur")
+  ("b"     helm-buffer-list            "buffers")
+  ("o"     helm-my-org            "search org file")
+    ("q"     nil                          "cancel" )
+))
+
+(defhydra hydra-helm-extra (:color blue :hint nil )
+       "
+ helm meta-_x_ 
+helm _t_op
+       "
+       ("x" helm-M-x  "helm m-x" ) 
+       ("t"     helm-top            "helm top") 
+       ("q" nil "cancel" nil)
+  )
+
+(global-set-key
    (kbd "<f8>")
    (defhydra hydra-bookmark   (:color blue)
-     "bookmark  commands "
-     ("<f8>" helm-bookmarks  "choose bookmark"  )
-     ("m" bookmark-bmenu-list "B+ menu"  )
-     ("r" helm-recentf  "recents"  )
-     ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
-     ("f" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
-     ("c" helm-chrome-bookmarks "chrome bkmrks"  )
-     ("s" bookmark-save  "save bkmrks"  )
+"
+_<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: add BK       _f_: BK+ filter     _c_: chrome BK   _s_: Save BK 
+"
+
+
+     ("<f8>" helm-bookmarks  )
+     ("m" bookmark-bmenu-list )
+     ("r" helm-recentf  )
+     ("b" bmkp-bookmark-set-confirm-overwrite )
+     ("f" bmkp-bmenu-filter-tags-incrementally )
+     ("c" helm-chrome-bookmarks )
+     ("s" bookmark-save  )
      ("q" nil "cancel")))
 
 (global-set-key
@@ -1583,7 +1625,7 @@ _h_tml    ^ ^        _A_SCII:
 _<f9>_: headlines     _u_: up                  _x_: Archive        _e_: export       _i_: images          _t_: todo             _T_: tags 
 _c_: columns          _C_: quit columns        _b_: bibtex yank    _B_: createbib    _r_: refile          _R_: refile(Cu)       _S_: sort     
 _s_: time             _n_: narrow              _w_: widen/narrow   _d_: screenshot   _D_: del.screenshot  _8_: conv.head        _7_: conv.head(Cu)      
-_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe   _f_: food.menu     
+_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe    _f_: food.menu     
   "
       ("<f9>"  helm-org-headlines)
       ("u"     outline-up-heading)
@@ -1860,41 +1902,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("2" er/expand-region "expand")
   ("q" nil "quit"))
 
-(global-set-key
-   (kbd "<f7>")
-(defhydra hydra-helm (:color blue :hint nil)
-  "
-helm-mini _<f7>_  // h_e_lm extra
-_k_ill ring
-_m_ark ring
-_r_ecents
-_l_ocate
-_r_ecents
-"
-  ("<f7>"     helm-mini            "helm-mini")
-  ("e"     hydra-helm-extra/body            "extra helm commands")
-  ("k"     helm-show-kill-ring            "killring")
-  ("m"     helm-mark-ring            "markring")
-  ("r"     helm-recentf            "recents")
-  ("l"     helm-locate            "locate")
-  ("f"     helm-find-files            "find files")
-  ("a"     helm-apropos            "apropos")
-  ("c"     helm-occur            "occur")
-  ("b"     helm-buffer-list            "buffers")
-  ("o"     helm-my-org            "search org file")
-    ("q"     nil                          "cancel" )
-))
-
-(defhydra hydra-helm-extra (:color blue :hint nil )
-       "
- helm meta-_x_ 
-helm _t_op
-       "
-       ("x" helm-M-x  "helm m-x" ) 
-       ("t"     helm-top            "helm top") 
-       ("q" nil "cancel" nil)
-  )
-
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
   (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
@@ -1949,6 +1956,8 @@ helm _t_op
 (setq tramp-default-method "ssh")
 
 (setq explicit-shell-file-name "/bin/zsh")
+
+(setq cache-long-scans nil)
 
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
@@ -2341,15 +2350,15 @@ With prefix argument, also display headlines without a TODO keyword."
    (io)
    (java)
    (js)
-   (latex)
+   (latex .t)
    (ledger)
    (lilypond)
-   (lisp)
+   (lisp .t)
    (matlab)
    (maxima)
    (mscgen)
    (ocaml)
-   (octave)
+   (octave .t)
    (org . t)
    (perl)
    (picolisp)
@@ -3298,6 +3307,8 @@ take care of the wrapping of each item for me"
 
 (setq mu4e-update-interval 60)
 (setq mu4e-headers-auto-update t)
+(setq mu4e-index-update-error-warning  t)
+(setq mu4e-index-update-error-continue   t)
 
 ;; something about ourselves
 (setq

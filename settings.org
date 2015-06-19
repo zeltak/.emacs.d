@@ -1,4 +1,4 @@
- #+Title: setting.org
+#+Title: setting.org
  
 * Emacs startup
   :PROPERTIES:
@@ -295,13 +295,15 @@ https://github.com/tmalsburg/helm-bibtex
 (setq helm-bibtex-bibliography "~/ZH_tmp/xkloog_2014.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 
+(setq helm-bibtex-additional-search-fields '(tags))
+
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
+(setq helm-bibtex-pdf-open-function
+  (lambda (fpath)
+    (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
 
- (setq helm-bibtex-pdf-open-function
-   (lambda (fpath)
-     (start-process "okular" "*okular*" "okular" fpath)))
  )
 #+END_SRC 
 
@@ -2028,6 +2030,7 @@ Repeated invocations toggle between the two most recently open buffers."
       "
       ("s" start-kbd-macro  "start macro" ) 
       ("e" end-kbd-macro  "end macro" ) 
+      ("e" kmacro-end-and-call-macro  "use C-x e" ) 
       ("n" name-last-kbd-macro  "name macro" ) 
       ("i" insert-kbd-macro  "insert macro" ) 
       ("q" nil "cancel" nil)
@@ -2147,19 +2150,70 @@ _h_tml    ^ ^        _A_SCII:
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
+*** Helm (F7)
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f7>")
+(defhydra hydra-helm (:color blue :hint nil)
+  "
+helm-mini _<f7>_  // h_e_lm extra
+_k_ill ring
+_m_ark ring
+_r_ecents
+_l_ocate
+_r_ecents
+"
+  ("<f7>"     helm-mini            "helm-mini")
+  ("e"     hydra-helm-extra/body            "extra helm commands")
+  ("k"     helm-show-kill-ring            "killring")
+  ("m"     helm-mark-ring            "markring")
+  ("r"     helm-recentf            "recents")
+  ("l"     helm-locate            "locate")
+  ("f"     helm-find-files            "find files")
+  ("a"     helm-apropos            "apropos")
+  ("c"     helm-occur            "occur")
+  ("b"     helm-buffer-list            "buffers")
+  ("o"     helm-my-org            "search org file")
+    ("q"     nil                          "cancel" )
+))
+#+END_SRC
+
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+
+
+**** extra helm
+ #+BEGIN_SRC emacs-lisp :results none
+(defhydra hydra-helm-extra (:color blue :hint nil )
+       "
+ helm meta-_x_ 
+helm _t_op
+       "
+       ("x" helm-M-x  "helm m-x" ) 
+       ("t"     helm-top            "helm top") 
+       ("q" nil "cancel" nil)
+  )
+
+ #+END_SRC
+
+
 *** bookmark hydra (F8)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f8>")
    (defhydra hydra-bookmark   (:color blue)
-     "bookmark  commands "
-     ("<f8>" helm-bookmarks  "choose bookmark"  )
-     ("m" bookmark-bmenu-list "B+ menu"  )
-     ("r" helm-recentf  "recents"  )
-     ("b" bmkp-bookmark-set-confirm-overwrite "Add bookmark"  )
-     ("f" bmkp-bmenu-filter-tags-incrementally "B+ menu"  )
-     ("c" helm-chrome-bookmarks "chrome bkmrks"  )
-     ("s" bookmark-save  "save bkmrks"  )
+"
+_<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: add BK       _f_: BK+ filter     _c_: chrome BK   _s_: Save BK 
+"
+
+
+     ("<f8>" helm-bookmarks  )
+     ("m" bookmark-bmenu-list )
+     ("r" helm-recentf  )
+     ("b" bmkp-bookmark-set-confirm-overwrite )
+     ("f" bmkp-bmenu-filter-tags-incrementally )
+     ("c" helm-chrome-bookmarks )
+     ("s" bookmark-save  )
      ("q" nil "cancel")))
 #+END_SRC
 
@@ -2177,7 +2231,7 @@ _h_tml    ^ ^        _A_SCII:
 _<f9>_: headlines     _u_: up                  _x_: Archive        _e_: export       _i_: images          _t_: todo             _T_: tags 
 _c_: columns          _C_: quit columns        _b_: bibtex yank    _B_: createbib    _r_: refile          _R_: refile(Cu)       _S_: sort     
 _s_: time             _n_: narrow              _w_: widen/narrow   _d_: screenshot   _D_: del.screenshot  _8_: conv.head        _7_: conv.head(Cu)      
-_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe   _f_: food.menu     
+_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe    _f_: food.menu     
   "
       ("<f9>"  helm-org-headlines)
       ("u"     outline-up-heading)
@@ -2538,52 +2592,6 @@ pop-global-mark this will move you to prev position
 #+END_SRC
 (global-set-key (kbd "<f3> o") 'back-button-global)
 
-*** Helm (F7)
-
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "<f7>")
-(defhydra hydra-helm (:color blue :hint nil)
-  "
-helm-mini _<f7>_  // h_e_lm extra
-_k_ill ring
-_m_ark ring
-_r_ecents
-_l_ocate
-_r_ecents
-"
-  ("<f7>"     helm-mini            "helm-mini")
-  ("e"     hydra-helm-extra/body            "extra helm commands")
-  ("k"     helm-show-kill-ring            "killring")
-  ("m"     helm-mark-ring            "markring")
-  ("r"     helm-recentf            "recents")
-  ("l"     helm-locate            "locate")
-  ("f"     helm-find-files            "find files")
-  ("a"     helm-apropos            "apropos")
-  ("c"     helm-occur            "occur")
-  ("b"     helm-buffer-list            "buffers")
-  ("o"     helm-my-org            "search org file")
-    ("q"     nil                          "cancel" )
-))
-#+END_SRC
-
-(global-set-key (kbd "C-c h") 'helm-command-prefix)
-
-
-**** extra helm
- #+BEGIN_SRC emacs-lisp :results none
-(defhydra hydra-helm-extra (:color blue :hint nil )
-       "
- helm meta-_x_ 
-helm _t_op
-       "
-       ("x" helm-M-x  "helm m-x" ) 
-       ("t"     helm-top            "helm top") 
-       ("q" nil "cancel" nil)
-  )
-
- #+END_SRC
-
 *** TODO vim
 
 (global-set-key
@@ -2740,7 +2748,10 @@ $note its built into emacs no intsall needed$
 #+BEGIN_SRC emacs-lisp :results none
 (setq explicit-shell-file-name "/bin/zsh")
 #+END_SRC
-
+** performance improvement
+#+BEGIN_SRC emacs-lisp :results none
+(setq cache-long-scans nil)
+#+END_SRC
 * Org
 ** Base
 *** org base configs
@@ -3292,15 +3303,15 @@ this command below will use helm for completion since in the above helm config w
    (io)
    (java)
    (js)
-   (latex)
+   (latex .t)
    (ledger)
    (lilypond)
-   (lisp)
+   (lisp .t)
    (matlab)
    (maxima)
    (mscgen)
    (ocaml)
-   (octave)
+   (octave .t)
    (org . t)
    (perl)
    (picolisp)
@@ -3318,6 +3329,10 @@ this command below will use helm for completion since in the above helm config w
    (sqlite)))
 
 #+end_src
+
+#+RESULTS:
+: ((C . t) (R . t) (asymptote) (awk) (calc) (clojure) (comint) (css) (ditaa . t) (dot . t) (emacs-lisp . t) (fortran) (gnuplot . t) (haskell) (io) (java) (js) (latex .t) (ledger) (lilypond) (lisp .t) (matlab) (maxima) (mscgen) (ocaml) (octave .t) (org . t) (perl) (picolisp) (plantuml) (python . t) (ref) (ruby) (sass) (scala) (scheme) (screen) (sh . t) (shen) (sql) (sqlite))
+
 *** disable confirm for these languages
 #+BEGIN_SRC emacs-lisp :results none
   ;; (defun my-org-confirm-babel-evaluate (lang body)
@@ -4537,12 +4552,13 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
                                     "ikloog@bgu.ac.il"
                                     "ekloog@hsph.harvard.edu"))
 
-
 #+END_SRC
 *** fetching and indexing
 #+BEGIN_SRC emacs-lisp :results none
 (setq mu4e-update-interval 60)
 (setq mu4e-headers-auto-update t)
+(setq mu4e-index-update-error-warning  t)
+(setq mu4e-index-update-error-continue   t)
 #+END_SRC
 OLD:
 (setq mu4e-get-mail-command "offlineimap"
@@ -5035,3 +5051,6 @@ The super secret ingredient to all of this is emacs server and emacsclient. Emac
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-draft "wl" "Write draft with Wanderlust." t)
 #+END_SRC
+
+
+
