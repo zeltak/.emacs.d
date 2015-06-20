@@ -269,23 +269,27 @@ https://github.com/tmalsburg/helm-bibtex
  ;  (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
  )
 #+END_SRC 
+
 **** my papers 
- #+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp :results none
+
  ;; Define helm-search with predefined search expression:
  (defun helm-bibtex-ikloog-publications ()
    "Search BibTeX entries authored by me"
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog"
+         :input "kloog !prep"
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
  #+END_SRC
 
+
 **** my prep
- #+BEGIN_SRC elisp
+#+BEGIN_SRC emacs-lisp :results none
+
  ;; Define helm-search with predefined search expression:
  (defun helm-bibtex-ikloog-prep         ()
    "Search BibTeX entries in preperation with me"
