@@ -197,6 +197,27 @@
  ;  (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
  )
 
+;; Define helm-search with predefined search expression:
+(defun helm-bibtex-ikloog-publications ()
+  "Search BibTeX entries authored by me"
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "kloog !prep"
+        :candidate-number-limit 500))
+
+;; Bind this search function to Ctrl-x p:
+;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+
+;; Define helm-search with predefined search expression:
+(defun helm-bibtex-ikloog-prep         ()
+  "Search BibTeX entries in preperation with me"
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "prep"
+        :candidate-number-limit 500))
+
 (use-package ebib
  :ensure t
  :config
@@ -1419,59 +1440,164 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (global-set-key
    (kbd "<f1>")
-(defhydra hydra-toggles (:color blue)
-  "toggle Emacs configs"
-  ("G"     indent-guide-mode            "indent guide")
-  ("g"     google-search           "google")
-  ("f"     fci-mode                     "fci")
-  ("k"     key-chord-mode               "key chord")
-  ("b"     bug-hunter-file               "bug hunter")
-  ("l"     linum-mode             "linum")
-  ("t"     lentic-mode             "lentic ")
-  ("e"     evil-mode                    "evil mode")
-  ("r"     read-only-mode       "read only mode ") 
-  ("v"     view-mode       "view mode ") 
-  ("w"     whitespace-mode              "whitespace" )
-  ("=" text-scale-increase "font plus" :color red)
-  ("-" text-scale-decrease "font minus" :color red)
-  ("p" list-packages          "MELPA")
-  ("s" create-scratch-buffer   "create scratch")
-  ("c" cua-mode          "cua")
-  ("m"  hydra-toggles-macro/body "macros")
-  ("h"      hydra-toggles-help/body     "hel-keys")
-  ("q"     nil                          "cancel" )
+(defhydra hydra-toggles (:color blue :hint nil)
+
+"
+_a_:                   _b_: bug-hunter         _c_: cua-mode        _d_:                _e_: Evil mode          _f_: fci        _g_: google 
+_h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
+_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_:
+_w_:whitespace-mode    _x_:                    _y_:                 _z_:                _G_ indend-guide
+
+                       _=_ zoom in             _-_ zoom out
+_q_:quit
+"
+
+("a" nil  )
+("b" bug-hunter-file )
+("c" cua-mode )
+("d"  nil  )
+("e"  evil-mode)
+("f" fci-mode )
+("g" google-search )
+("h" hydra-toggles-help/body )
+("i"  nil )
+("j"  nil )
+("k" key-chord-mode  )
+("l" linum-mode  )
+("m"  hydra-toggles-macro/body)
+("n"  start-kbd-macro )
+("o" end-kbd-macro )
+("p" list-packages  )
+("r" read-only-mode )
+("s"  create-scratch-buffer)
+("t" lentic-mode  )
+("u"  nil )
+("v" view-mode )
+("w"  whitespace-mode)
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("=" text-scale-increase  )
+("-" text-scale-decrease )
+("G"  indent-guide-mode)
+("q" nil )
+
 ))
 
 (defhydra hydra-toggles-macro  (:color blue :hint nil )
      "macro commands
      "
      ("s" start-kbd-macro  "start macro" ) 
-     ("e" end-kbd-macro  "end macro" ) 
+     ("e"   "end macro" ) 
      ("e" kmacro-end-and-call-macro  "use C-x e" ) 
      ("n" name-last-kbd-macro  "name macro" ) 
      ("i" insert-kbd-macro  "insert macro" ) 
      ("q" nil "cancel" nil)
 )
 
-(defhydra hydra-toggles-help   (:color blue :hint nil )
-     "help commands
-     "
-     ("k" describe-key   "keybinds help" ) 
-     ("v" describe-variable    "variable help" ) 
-     ("f" describe-function   "function help" ) 
-     ("q" nil "cancel" nil)
-)
+(global-set-key
+   (kbd "")
+(defhydra hydra-toggles-help (:color blue :hint nil)
+
+"
+_k_ :describe key  _v_ describe variable _f_ describe functiom  
+M-1- change windows
+M-2 expand region (select gradualy regions)
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+M-` avy-jump
+
+_q_: 
+"
+
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d"  nil )
+("e"  nil )
+("f"  describe-function )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  describe-key )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  nil )
+("t"  nil )
+("u"  nil )
+("v"  describe-variable)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (global-set-key
-   (kbd "<f2>")
-(defhydra hydra-dired-main (:color blue)
-  "dired"
-  ("<f2>"     dired            "start dired")
-  ("j"  dired-jump  "jump current folder")
-  ("p"  peep-dired      "toggle peep mode")
-  ("t"   hydra-dired-configs/body      "dired toggles")
-  ("m"   diredp-mark/unmark-extensio      "mark")
-  ("q"     nil                          "cancel" )
+ (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue :hint nil)
+
+"_<f2>_:  start dired
+_a_:        _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_:        _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+
+"
+
+("<f2>" dired )
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  dired-jump )
+("k"  nil )
+("l"  nil )
+("m"  diredp-mark/unmark-extension )
+("n"  nil )
+("o"  nil )
+("p"  peep-dired )
+("r"  nil )
+("s"  nil )
+("t"  hydra-dired-configs/body)
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
 ))
 
 (defhydra hydra-dired-configs (:color blue )
@@ -1483,30 +1609,62 @@ Repeated invocations toggle between the two most recently open buffers."
 )
 
 (global-set-key
- (kbd "<f3>")
- (defhydra hydra-spell  ()
-   "spell checking "
-   ("<f3>" endless/ispell-word-then-abbrev  "check and add to abbrv" :color blue)
-   ("i"    ispell  "start spell checker" :color blue)
-   ("w"   ispell-word  "check word" :color blue)
-   ("b"   flyspell-goto-next-error  "go to next bad word" :color blue)
-   ("c"   flyspell-check-next-highlighted-word  "check next bad word" :color blue)
-   ("q" nil "cancel")))
+(kbd "<f3>")
+(defhydra hydra-spell  (:color blue :hint nil)
+
+"
+_<f3>_: check and add
+_a_:        _b_:                _c_:        _d_:       _e_:           _f_:                             _g_:  
+_h_:        _i_: ispell         _j_:        _k_:       _l_:           _m_:check next higlighted        _n_:goto next error      
+_o_:        _p_:                 _r_:       _s_:       _t_:           _u_:       
+_v_:        _w_:                 _x_:       _y_:       _z_: 
+_q_: 
+"
+("<f3>" endless/ispell-word-then-abbrev )
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d" nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  ispell )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  flyspell-check-next-highlighted-word )
+("n"  flyspell-goto-next-error )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  nil )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  ispell-word )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (global-set-key
     (kbd "<f4>")
-    (defhydra hydra-org-blocks ()
+    (defhydra hydra-org-blocks (:color blue :hint nil)
     "
-_c_enter  _q_uote    _L_aTeX:
+_<f4>_ wrap lisp  _r_ wrap R  _b_ wrap Bash
+_c_enter  _q_uote    _L_aTeX:   _z_: wrap menu
 _l_atex   _e_xample  _i_ndex:
 _a_scii   _v_erse    _I_NCLUDE:
 _s_rc     ^ ^        _H_TML:
-_h_tml    ^ ^        _A_SCII:
+_h_tml    ^ ^       _A_SCII:
 "
-      ("z"    org-dp-wrap-in-block   "multi_wrap" :color blue)
-      ("<f4>" z/hydra-wrap-elisp "elisp" :color blue)
-      ("r"    z/hydra-wrap-R "R" :color blue)
-      ("b"   z/hydra-wrap-bash  "bash" :color blue)
+    ("z"    org-dp-wrap-in-block  )
+    ("<f4>" z/hydra-wrap-elisp )
+    ("r"    z/hydra-wrap-R  )
+    ("b"   z/hydra-wrap-bash )
     ("s" (pl/hot-expand "<s"))
     ("e" (pl/hot-expand "<e"))
     ("q" (pl/hot-expand "<q"))
@@ -1521,7 +1679,7 @@ _h_tml    ^ ^        _A_SCII:
     ("H" (pl/hot-expand "<H"))
     ("A" (pl/hot-expand "<A"))
     ("<" self-insert-command "ins")
-      ("q" nil "cancel")))
+    ("q" nil "cancel")))
 
 (global-set-key
    (kbd "<f5>")
@@ -1544,7 +1702,9 @@ _h_tml    ^ ^        _A_SCII:
   ("e"    ebib           "ebib")
   ("k"   helm-bibtex-ikloog-publications           "ikloog")
   ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
-  ("r"   helm-resume        "helm-resume")
+  ("r"   helm-resume        "bibtex yank")
+  ("y"   org-bibtex-yank        "helm-resume")
+  ("c"   org-bibtex-create        "helm-resume")
     ("q"     nil                          "cancel" )
 ))
 
@@ -1601,44 +1761,55 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
      ("q" nil "cancel")))
 
 (global-set-key
-     (kbd "<f9>")
-  (defhydra hydra-org (:color blue )
-  "
-_<f9>_: headlines     _u_: up                  _x_: Archive        _e_: export       _i_: images          _t_: todo             _T_: tags 
-_c_: columns          _C_: quit columns        _b_: bibtex yank    _B_: createbib    _r_: refile          _R_: refile(Cu)       _S_: sort     
-_s_: time             _n_: narrow              _w_: widen/narrow   _d_: screenshot   _D_: del.screenshot  _8_: conv.head        _7_: conv.head(Cu)      
-_l_: links            _h_: ins.header          _s_: table          _X_: babel.exe    _f_: food.menu     
-  "
-      ("<f9>"  helm-org-headlines)
-      ("u"     outline-up-heading)
-      ("x"     org-archive-subtree )
-      ("e"     org-export-dispatch )
-      ("i"     org-toggle-inline-images )
-      ("t"     org-todo  )
-      ("T"     org-set-tags )
-      ("c"     org-columns   )
-      ("C"     org-columns-quit )
-      ("b"     org-bibtex-yank   )
-      ("r"     org-refile         )
-      ("R"     z/prefix-org-refile )
-      ("B"     org-bibtex-create   )
-      ("S"     org-sort    )
-      ("s"   hydra-org-time/body )
-      ("n"     org-narrow-to-subtree )
-      ("W"     widen             )
-      ("w"     z/narrow-or-widen-dwim )
-      ("d"     org-download-screenshot )
-      ("D"     org-download-delete )
-      ("8"     org-toggle-heading   )
-      ("7"     z/org-convert-header-samelevel )
-      ("l"     hydra-org-links/body )
-      ("h"     org-insert-heading ) 
-;need to escape \ with \\
-      ("\\"     hydra-org-table/body )
-      ("X"     org-babel-execute-subtree)
-      ("f"     hydra-org-food/body     )
-       ("q"     nil                    )
-  ))
+   (kbd "<f9>")
+(defhydra hydra-org (:color blue :hint nil)
+
+"
+_<f9>_ headline search
+_a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _e_: export              _f_: food menu  _g_: Set tags
+_h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
+_o_:                  _p_:                        _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
+_v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
+_-_ convert lowe level     _=_ convert same level    _\\_:  table  
+_q_: 
+
+"
+
+("<f9>" nil )
+("a"  org-sort )
+("b"  nil  )
+("c"  org-columns )
+("C"  org-columns-quit )
+("d"  org-download-screenshot )
+("D"  org-download-delete )
+("e"  org-export-dispatch )
+("f"  hydra-org-food/body )
+("g"  org-set-tags )
+("h"  org-insert-heading )
+("i"  org-toggle-inline-images )
+("j"  nil )
+("k"  nil )
+("l"  hydra-org-links/body )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  org-refile )
+("R"  z/prefix-org-refile )
+("s"  hydra-org-time/body )
+("t"  org-todo )
+("u"   outline-up-heading )
+("v"  org-babel-execute-subtree)
+("w"  z/narrow-or-widen-dwim )
+("x"  org-archive-subtree )
+("-"  org-toggle-heading )
+("="  z/org-convert-header-samelevel )
+("\\"  hydra-org-table/body )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (defhydra hydra-org-links (:color blue )
      "
@@ -1709,6 +1880,52 @@ _l_: links            _h_: ins.header          _s_: table          _X_: babel.ex
     (">"   org-agenda-date-prompt      "prompt date ")
     ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
      ("q"     nil                          "cancel" )
+))
+
+(global-set-key
+(kbd "<f10>")
+(defhydra hydra-org-agenda  (:color blue :hint nil)
+
+"
+_<f10>_:
+_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+
+"
+
+
+
+("<f10>" nil )
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  nil )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
 ))
 
 (defhydra hydra-org-time (:color blue)
@@ -1840,6 +2057,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("<f11>" switch-to-previous-buffer  "last buffer"  )
      ("q" nil "cancel")))
 
+(global-set-key (kbd "M-1") 'other-window)
+
 (global-set-key
  (kbd "<f12>")
  (defhydra hydra-window (:color blue)
@@ -1895,6 +2114,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+
+(global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -2202,6 +2423,10 @@ With prefix argument, also display headlines without a TODO keyword."
 %(org-meta-return)
 "
  )
+
+("F" "food" entry   (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+(function  blank-recipe-template))
+
 
 
             
