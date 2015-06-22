@@ -81,6 +81,8 @@
 
 (define-abbrev-table 'ebib-strings-mode-abbrev-table '())
 
+(define-abbrev-table 'edebug-eval-mode-abbrev-table '())
+
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
@@ -270,7 +272,9 @@
     ("bve" "be" nil 0)
     ("cafe" "cafe" nil 0)
     ("caharcter" "character" nil 0)
+    ("calander" "calendar" nil 0)
     ("calcullated" "calculated" nil 0)
+    ("calender" "calendar" nil 1)
     ("calulated" "calculated" nil 0)
     ("candidtae" "candidate" nil 0)
     ("candidtaes" "candidates" nil 0)
@@ -1183,6 +1187,8 @@
 (define-abbrev-table 'messages-buffer-mode-abbrev-table '())
 
 (define-abbrev-table 'mu4e-about-mode-abbrev-table '())
+
+(define-abbrev-table 'mu4e-org-mode-abbrev-table '())
 
 (define-abbrev-table 'mu4e~update-mail-mode-abbrev-table '())
 

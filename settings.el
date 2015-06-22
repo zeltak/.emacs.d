@@ -1150,16 +1150,28 @@ comment box."
 
 ;(fset 'z/prefix-org-refile (C-u M-x org-refile))
 
+(defun z/org-agenda-calendar ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "a")
+)
+
 (defun z/org-agenda-work ()
 "open work agenda"
 (interactive)                                
-(org-agenda nil "r")
+(org-agenda nil "w")
 )
 
-(defun z/org-agenda-all ()
-"open all agenda"
+(defun z/org-agenda-allan ()
+"open work agenda"
 (interactive)                                
-(org-agenda nil "a")
+(org-agenda nil "A")
+)
+
+(defun z/org-agenda-joel ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "j")
 )
 
 (defun z/org-agenda-cook ()
@@ -1859,13 +1871,8 @@ _q_:
 (defhydra hydra-org-agenda (:color blue )
 "
 "
-    ("<f10>"  org-agenda   "search-headers")
-    ("w"  z/org-agenda-work   "agenda-work")
-    ("a"  z/org-agenda-all   "agenda-all")
-    ("s"  z/org-agenda-search   "agenda-search")
-    ("f"  z/org-agenda-cook   "agenda-cook")
-    ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-    ("F"    org-agenda-later    "go forward 1w ")
+    ("j"          "org-agenda-goto-date ")
+    ("F"        "go forward 1w ")
     ("b"    org-agenda-earlier    "go back 1w ")
     ("TAB"          "Today ")
     ("t"    org-agenda-todo      "change todo")
@@ -1880,52 +1887,6 @@ _q_:
     (">"   org-agenda-date-prompt      "prompt date ")
     ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
      ("q"     nil                          "cancel" )
-))
-
-(global-set-key
-(kbd "<f10>")
-(defhydra hydra-org-agenda  (:color blue :hint nil)
-
-"
-_<f10>_:
-_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
-_q_: 
-
-"
-
-
-
-("<f10>" nil )
-("a" nil )
-("b"  nil  )
-("c"  nil )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
-("s"  nil )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"  nil )
-("q"  nil )
-
 ))
 
 (defhydra hydra-org-time (:color blue)
@@ -2276,12 +2237,30 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 ;work related only tasks (from research|bgu files)
-("w" "work" todo "TODO|BGU|EXP"
+("w" "work" todo "TODO|BGU|EXP" 
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
          
+
+
+; allan todos
+("A" "allan tasks" tags-todo "allan"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
+; Joel todos
+("J" "joel tasks" tags-todo "joel"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
 
 ;second
 ("f" "food" todo "COOK" 

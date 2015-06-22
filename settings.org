@@ -1617,6 +1617,16 @@ broken this way, causes erros in init
 #+END_SRC
 
 *** agenda views
+**** org agenda calendar
+  
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-calendar ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "a")
+)
+#+END_SRC
+
 **** org agenda work 
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1627,17 +1637,26 @@ broken this way, causes erros in init
 )
 #+END_SRC
 
-**** org agenda all
-
+**** org agenda search
+**** org agenda Allan
 #+BEGIN_SRC emacs-lisp :results none
-(defun z/org-agenda-all ()
-"open all agenda"
+(defun z/org-agenda-allan ()
+"open work agenda"
 (interactive)                                
-(org-agenda nil "a")
+(org-agenda nil "A")
 )
 #+END_SRC
-**** org agenda search
+
+**** org agenda Joel
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-joel ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "j")
+)
+#+END_SRC
 **** org agenda cook
+
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/org-agenda-cook ()
 "open work agenda"
@@ -1942,7 +1961,7 @@ Repeated invocations toggle between the two most recently open buffers."
    [?d ?x ?y ])
 
 #+END_SRC
-* qKey binds
+* Key binds
   :PROPERTIES:
   :ID:       d4e38ca1-43ac-4fb5-a31f-5b432a4c0418
   :END:
@@ -2493,13 +2512,8 @@ _q_:
   (defhydra hydra-org-agenda (:color blue )
   "
   "
-      ("<f10>"     "search-headers")
-      ("w"     "agenda-work")
-      ("a"     "agenda-all")
-      ("s"     "agenda-search")
-      ("f"  z/org-agenda-cook   "agenda-cook")
-      ("j"    org-agenda-goto-date      "org-agenda-goto-date ")
-      ("F"    org-agenda-later    "go forward 1w ")
+      ("j"          "org-agenda-goto-date ")
+      ("F"        "go forward 1w ")
       ("b"    org-agenda-earlier    "go back 1w ")
       ("TAB"          "Today ")
       ("t"    org-agenda-todo      "change todo")
@@ -2517,10 +2531,7 @@ _q_:
   ))
 #+END_SRC
 
- (define-key org-mode-map (kbd "<f1> S") (lambda () (interactive) (org-agenda nil "s" "<")))
- (define-key org-mode-map (kbd "<f1> v") (lambda () (interactive) (org-agenda nil "a" )))
- (define-key org-mode-map (kbd "<f1> r") (lambda () (interactive) (org-agenda nil "r" )))
- )
+
 
 #+BEGIN_SRC emacs-lisp :results none
 
@@ -2529,28 +2540,29 @@ _q_:
 (defhydra hydra-org-agenda  (:color blue :hint nil)
 
 "
-_<f10>_: work
-_a_: agenda menu         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
+_<f10>_: calendar 
+_a_: Allan               _b_:                    _c_: cook       _d_:         _e_:           _f_:           _g_:  
+_h_:                     _i_: agenda menu        _j_: Joel       _k_:         _l_:           _m_:           _n_:      
+_o_:                     _p_:                    _r_:            _s_:         _t_:           _u_:       
+_v_:                     _w_:                    _x_:            _y_:         _z_: 
 _q_: 
+
+* C-c a >> open org agenda menu
 
 "
 
 
-
-("<f10>" z/org-agenda-work )
-("a" org-agenda )
-("b"  z/org-agenda-all  )
-("c"  nil )
+("<f10>" z/org-agenda-calendar    )
+("a" z/org-agenda-allan )
+("b"  nil  )
+("c"  z/org-agenda-cook )
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
-("g"  nil )
+("g"  org-agenda-goto-date )
 ("h"  nil )
-("i"  nil )
-("j"  nil )
+("i"  org-agenda )
+("j"  z/org-agenda-joel )
 ("k"  nil )
 ("l"  nil )
 ("m"  nil )
@@ -2562,7 +2574,7 @@ _q_:
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
-("w"  nil )
+("w"  z/org-agenda-work )
 ("x"  nil )
 ("y"  nil )
 ("z"  nil )
@@ -3157,12 +3169,30 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 
 
 ;work related only tasks (from research|bgu files)
-("w" "work" todo "TODO|BGU|EXP"
+("w" "work" todo "TODO|BGU|EXP" 
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
          
+
+
+; allan todos
+("A" "allan tasks" tags-todo "allan"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
+; Joel todos
+("J" "joel tasks" tags-todo "joel"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
 
 ;second
 ("f" "food" todo "COOK" 
