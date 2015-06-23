@@ -182,7 +182,7 @@
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 (setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
 (setq helm-bibtex-notes-extension ".org")
@@ -1455,7 +1455,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (defhydra hydra-toggles (:color blue :hint nil)
 
 "
-_a_:                   _b_: bug-hunter         _c_: cua-mode        _d_:                _e_: Evil mode          _f_: fci        _g_: google 
+_a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
 _o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_:
 _w_:whitespace-mode    _x_:                    _y_:                 _z_:                _G_ indend-guide
@@ -1467,7 +1467,7 @@ _q_:quit
 ("a" nil  )
 ("b" bug-hunter-file )
 ("c" cua-mode )
-("d"  nil  )
+("d"  tool-bar-mode  )
 ("e"  evil-mode)
 ("f" fci-mode )
 ("g" google-search )
@@ -1787,7 +1787,7 @@ _q_:
 
 "
 
-("<f9>" nil )
+("<f9>" helm-org-headlines )
 ("a"  org-sort )
 ("b"  nil  )
 ("c"  org-columns )
