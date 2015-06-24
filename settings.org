@@ -301,7 +301,7 @@ https://github.com/tmalsburg/helm-bibtex
 
  #+END_SRC
 
-
+     
 ** ebib
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -441,7 +441,7 @@ https://github.com/tj64/org-dp
 *** TODO my wrap functions
 
 #+BEGIN_SRC emacs-lisp :results none
- (when (require 'org-dp-lib nil t)
+(when (require 'org-dp-lib nil t)
 
 ;;;;;;;;;; wrap in elisp
   (defun z/wrap-elisp ()
@@ -477,6 +477,16 @@ https://github.com/tj64/org-dp
 
 ;for hydra create interactive new functions
 (defun z/hydra-wrap-R () (interactive) (beginning-of-line) (z/wrap-R))
+
+;;;;;;;;;; wrap in latex
+  (defun z/wrap-latex ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "latex" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-latex () (interactive) (beginning-of-line) (z/wrap-latex))
+
+
 ;end paren
      )
 #+END_SRC
@@ -1830,32 +1840,6 @@ Repeated invocations toggle between the two most recently open buffers."
       (read-string "Google: ")))))
 #+END_SRC
 
-** test Emacs config
-#+BEGIN_SRC emacs-lisp :results none
-(defun ora-test-emacs ()
-  (interactive)
-  (require 'async)
-  (async-start
-   (lambda () (shell-command-to-string
-          "emacs --batch --eval \"
-(condition-case e
-    (progn
-      (load \\\"~/.emacs.d/settings.el\\\")
-      (message \\\"-OK-\\\"))
-  (error
-   (message \\\"ERROR!\\\")
-   (signal (car e) (cdr e))))\""))
-   `(lambda (output)
-      (if (string-match "-OK-" output)
-          (when ,(called-interactively-p 'any)
-            (message "All is well"))
-        (switch-to-buffer-other-window "*startup error*")
-        (delete-region (point-min) (point-max))
-        (insert output)
-        (search-backward "ERROR!")))))
-#+END_SRC
-** bibtex
-*** ebib
 * Macros
 ** org faces
 
@@ -2266,12 +2250,13 @@ _h_tml    ^ ^       _A_SCII:
     ("<f4>" z/hydra-wrap-elisp )
     ("r"    z/hydra-wrap-R  )
     ("b"   z/hydra-wrap-bash )
+    ("l"   z/hydra-wrap-latex )
     ("s" (pl/hot-expand "<s"))
     ("e" (pl/hot-expand "<e"))
     ("q" (pl/hot-expand "<q"))
     ("v" (pl/hot-expand "<v"))
     ("c" (pl/hot-expand "<c"))
-    ("l" (pl/hot-expand "<l"))
+    ("L" (pl/hot-expand "<l"))
     ("h" (pl/hot-expand "<h"))
     ("a" (pl/hot-expand "<a"))
     ("L" (pl/hot-expand "<L"))
@@ -3551,7 +3536,8 @@ this command below will use helm for completion since in the above helm config w
 #+END_SRC
 
 ** Babel
-*** languages
+*** #+LANGUAGE: en
+    uages
 #+begin_src emacs-lisp results none
 ; And add babel inline code execution
 ; babel, for executing code in org-mode.
@@ -3604,7 +3590,7 @@ this command below will use helm for completion since in the above helm config w
 
 #+RESULTS:
 : ((C . t) (R . t) (asymptote) (awk) (calc) (clojure) (comint) (css) (ditaa . t) (dot . t) (emacs-lisp . t) (fortran) (gnuplot . t) (haskell) (io) (java) (js) (latex .t) (ledger) (lilypond) (lisp .t) (matlab) (maxima) (mscgen) (ocaml) (octave .t) (org . t) (perl) (picolisp) (plantuml) (python . t) (ref) (ruby) (sass) (scala) (scheme) (screen) (sh . t) (shen) (sql) (sqlite))
-
+    
 *** disable confirm for these languages
 #+BEGIN_SRC emacs-lisp :results none
   ;; (defun my-org-confirm-babel-evaluate (lang body)
