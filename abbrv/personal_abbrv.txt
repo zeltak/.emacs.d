@@ -796,6 +796,7 @@
     ("parliment" "parliament" nil 0)
     ("partof" "part of" nil 0)
     ("paticular" "particular" nil 0)
+    ("patterb" "pattern" nil 0)
     ("paymetn" "payment" nil 0)
     ("paymetns" "payments" nil 0)
     ("pciture" "picture" nil 0)
@@ -925,6 +926,7 @@
     ("scheudle" "schedule" nil 0)
     ("scol" "scowl" nil 0)
     ("scoli" "scowl" nil 0)
+    ("seacrh" "search" nil 0)
     ("seance" "seance" nil 0)
     ("secratary" "secretary" nil 0)
     ("sectino" "section" nil 0)
@@ -1228,6 +1230,10 @@
 (define-abbrev-table 'python-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+
+(define-abbrev-table 'reb-lisp-mode-abbrev-table '())
+
+(define-abbrev-table 'reb-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 
