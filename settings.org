@@ -2140,25 +2140,28 @@ _q_:
 
 *** dired hydra (f2)
 **** main
+#+BEGIN_SRC emacs-lisp :results none
 
-#+BEGIN_SRC emacs-lisp :results noneq
 (global-set-key
- (kbd "<f2>")
+   (kbd "<f2>")
 (defhydra hydra-dired-main (:color blue :hint nil)
 
-"_<f2>_:  start dired
-_a_:        _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:        _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+"
+
+_a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:dired-jump       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:peep dired        _r_:       _s_:       _t_:           _u_:       
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
 "
 
+
+
 ("<f2>" dired )
 ("a" nil )
 ("b"  nil  )
-("c"  nil )
+("c"  hydra-dired-configs/body )
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
@@ -2174,7 +2177,7 @@ _q_:
 ("p"  peep-dired )
 ("r"  nil )
 ("s"  nil )
-("t"  hydra-dired-configs/body)
+("t"  nil )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -2185,9 +2188,6 @@ _q_:
 
 ))
 #+END_SRC
-
-#+RESULTS:
-: hydra-dired-main/body
 
 **** dired togles
  #+BEGIN_SRC emacs-lisp :results none
