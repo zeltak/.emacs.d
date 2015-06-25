@@ -255,9 +255,9 @@ https://github.com/tmalsburg/helm-bibtex
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
-(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
-(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/" )
+(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
 (setq helm-bibtex-notes-extension ".org")
 
 (setq helm-bibtex-format-citation-functions
@@ -277,7 +277,7 @@ https://github.com/tmalsburg/helm-bibtex
  )
 #+END_SRC 
 
-**** my papers 
+*** my papers 
 #+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
@@ -286,15 +286,14 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog !prep"
+;         :input "kloog !prep"
+         :input "kloog "
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
- #+END_SRC
-
-
-**** my prep
+#+END_SRC
+*** TODO my prep make it match on pubstate
 #+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
@@ -303,19 +302,18 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "prep"
+         :input "kloog prep"
          :candidate-number-limit 500))
 
  #+END_SRC
-
-     
+  
 ** ebib
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package ebib
  :ensure t
  :config
-(setq ebib-preload-bib-files '("~/ZH_tmp/xkloog_2014.bib")) 
+(setq ebib-preload-bib-files '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")) 
 
 (setq ebib-common-optional-fields
       '(translator keywords origlanguage url file location
@@ -341,7 +339,7 @@ https://github.com/tmalsburg/helm-bibtex
  #+BEGIN_SRC emacs-lisp :results none
 (use-package hydra
 :ensure t )
-#+END_SRC
+ #+END_SRC
 ** async
  $Note this is needed for org-download$
  #+BEGIN_SRC emacs-lisp :results none
@@ -1194,11 +1192,11 @@ Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
 *** config 
 #+BEGIN_SRC emacs-lisp :results none
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib"))
+(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/bib/notes/"
-      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
+(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
+      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
       org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
 (setq bibtex-autokey-year-length 4
@@ -2150,10 +2148,11 @@ _q_:
 
 _a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _f_:         _g_:  
 _h_:         _i_:         _j_:dired-jump       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:peep dired        _r_:       _s_:       _t_:           _u_:       
+_o_:        _p_:peep dired        _r_:       _s_:       _t_: toggles          _u_:       
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
+R: rename s: sort
 "
 
 
@@ -2177,7 +2176,7 @@ _q_:
 ("p"  peep-dired )
 ("r"  nil )
 ("s"  nil )
-("t"  nil )
+("t"  hydra-dired-configs/body )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -2283,7 +2282,7 @@ _h_tml    ^ ^       _A_SCII:
     ("q" nil "cancel")))
 
  #+END_SRC
-
+    
 *** mu4e (F5)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -2308,11 +2307,11 @@ _h_tml    ^ ^       _A_SCII:
 
 "
 _<f6>_: helm bibtex
-_a_:            _b_:              _c_:clean bib       _d_:                 _e_: ebib           _f_:        _g_:  
-_h_:            _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
-_o_:            _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
-_w_:            _x_:              _y_: yank           _z_: 
-_q_: 
+_a_:         _b_:              _c_:clean bib       _d_: doi add                _e_: ebib           _f_:        _g_:  
+_h_:        _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
+_o_:        _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
+_w_:        _x_:              _y_: yank           _z_: 
+_q_:        _V_: check duplictae keys
 
 "
 
@@ -2320,7 +2319,7 @@ _q_:
 ("a" nil )
 ("b"  nil  )
 ("c"  org-ref-clean-bibtex-entry )
-("d"  nil )
+("d"  doi-utils-insert-bibtex-entry-from-doi )
 ("e"  ebib )
 ("f"  nil )
 ("g"  nil )
@@ -2338,7 +2337,7 @@ _q_:
 ("t"  nil )
 ("u"  nil )
 ("v"  bibtex-validate)
-("V"  bibtex-validate-globally)
+("V"  bibtex-validate-globally) ; check for dup keys
 ("w"  nil )
 ("x"  nil )
 ("y"  org-bibtex-yank )
@@ -4711,7 +4710,7 @@ set currently to 100mb
 (setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
 
 (add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
-
+(bibtex-set-dialect 'biblatex)
 
 (setq TeX-command-BibTeX "Biber")
 
