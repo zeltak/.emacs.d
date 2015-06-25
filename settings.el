@@ -182,10 +182,16 @@
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 (setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
 (setq helm-bibtex-notes-extension ".org")
+
+(setq helm-bibtex-format-citation-functions
+  '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
+    (latex-mode    . helm-bibtex-format-citation-cite)
+    (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
+    (default       . helm-bibtex-format-citation-default)))
 
 (setq helm-bibtex-additional-search-fields '(Tags))
 
@@ -341,6 +347,16 @@
 
 ;for hydra create interactive new functions
 (defun z/hydra-wrap-R () (interactive) (beginning-of-line) (z/wrap-R))
+
+;;;;;;;;;; wrap in latex
+  (defun z/wrap-latex ()
+        (org-dp-wrap-in-block
+         nil '(src-block nil nil nil (:language "latex" :preserve-indent 1  :parameters ":results none" ))))
+
+;for hydra create interactive new functions
+(defun z/hydra-wrap-latex () (interactive) (beginning-of-line) (z/wrap-latex))
+
+
 ;end paren
      )
 
@@ -1309,28 +1325,6 @@ Repeated invocations toggle between the two most recently open buffers."
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
 
-(defun ora-test-emacs ()
-  (interactive)
-  (require 'async)
-  (async-start
-   (lambda () (shell-command-to-string
-          "emacs --batch --eval \"
-(condition-case e
-    (progn
-      (load \\\"~/.emacs.d/settings.el\\\")
-      (message \\\"-OK-\\\"))
-  (error
-   (message \\\"ERROR!\\\")
-   (signal (car e) (cdr e))))\""))
-   `(lambda (output)
-      (if (string-match "-OK-" output)
-          (when ,(called-interactively-p 'any)
-            (message "All is well"))
-        (switch-to-buffer-other-window "*startup error*")
-        (delete-region (point-min) (point-max))
-        (insert output)
-        (search-backward "ERROR!")))))
-
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -1626,7 +1620,7 @@ _q_:
 
 "
 _<f3>_: check and add
-_a_:        _b_:                _c_:        _d_:       _e_:           _f_:                             _g_:  
+_a_:        _b_:                _c_:        _d_:       _e_: Edit          _f_:                             _g_:  
 _h_:        _i_: ispell         _j_:        _k_:       _l_:           _m_:check next higlighted        _n_:goto next error      
 _o_:        _p_:                 _r_:       _s_:       _t_:           _u_:       
 _v_:        _w_:                 _x_:       _y_:       _z_: 
@@ -1637,7 +1631,7 @@ _q_:
 ("b"  nil  )
 ("c"  nil )
 ("d" nil )
-("e"  nil )
+("e"  hydra-editing/body )
 ("f"  nil )
 ("g"  nil )
 ("h"  nil )
@@ -1677,12 +1671,13 @@ _h_tml    ^ ^       _A_SCII:
     ("<f4>" z/hydra-wrap-elisp )
     ("r"    z/hydra-wrap-R  )
     ("b"   z/hydra-wrap-bash )
+    ("l"   z/hydra-wrap-latex )
     ("s" (pl/hot-expand "<s"))
     ("e" (pl/hot-expand "<e"))
     ("q" (pl/hot-expand "<q"))
     ("v" (pl/hot-expand "<v"))
     ("c" (pl/hot-expand "<c"))
-    ("l" (pl/hot-expand "<l"))
+    ("L" (pl/hot-expand "<l"))
     ("h" (pl/hot-expand "<h"))
     ("a" (pl/hot-expand "<a"))
     ("L" (pl/hot-expand "<L"))
@@ -1887,6 +1882,53 @@ _q_:
     (">"   org-agenda-date-prompt      "prompt date ")
     ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
      ("q"     nil                          "cancel" )
+))
+
+(global-set-key
+(kbd "<f10>")
+(defhydra hydra-org-agenda  (:color blue :hint nil)
+
+"
+_<f10>_: calendar 
+_a_: Allan               _b_:                    _c_: cook       _d_:         _e_:           _f_:           _g_:  
+_h_:                     _i_: agenda menu        _j_: Joel       _k_:         _l_:           _m_:           _n_:      
+_o_:                     _p_:                    _r_:            _s_:         _t_:           _u_:       
+_v_:                     _w_:                    _x_:            _y_:         _z_: 
+_q_: 
+
+C-c a >> open org agenda menu
+
+"
+
+
+("<f10>" z/org-agenda-calendar    )
+("a" z/org-agenda-allan )
+("b"  nil  )
+("c"  z/org-agenda-cook )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  org-agenda-goto-date )
+("h"  nil )
+("i"  org-agenda )
+("j"  z/org-agenda-joel )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  z/org-agenda-search )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  z/org-agenda-work )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
 ))
 
 (defhydra hydra-org-time (:color blue)
@@ -3393,6 +3435,8 @@ The app is chosen from your OS's preference."
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
+
+(setq TeX-command-BibTeX "Biber")
 
 (defun z-latex-bullets ()
 "This inserts the LaTeX \itemize environment into a document - LaTeX will

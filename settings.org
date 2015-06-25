@@ -248,16 +248,23 @@ $Note$ the sign !package! means the package is disbaled
 no config needed 
 ** helm bibtex
 https://github.com/tmalsburg/helm-bibtex
+
 *** settings
 #+BEGIN_SRC emacs-lisp :results none
 (use-package helm-bibtex
  :ensure t
  :config
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
 (setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
 (setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
 (setq helm-bibtex-notes-extension ".org")
+
+(setq helm-bibtex-format-citation-functions
+  '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
+    (latex-mode    . helm-bibtex-format-citation-cite)
+    (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
+    (default       . helm-bibtex-format-citation-default)))
 
 (setq helm-bibtex-additional-search-fields '(Tags))
 
@@ -1187,12 +1194,20 @@ Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
 *** config 
 #+BEGIN_SRC emacs-lisp :results none
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
+(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib"))
 
 ;; see org-ref for use of these variables
 (setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/bib/notes/"
-      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
       org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
 #+END_SRC
 ** pdf tools
 https://github.com/politza/pdf-tools
@@ -2187,7 +2202,7 @@ _q_:
 
 dired-omit-mode
 
-*** spelling (F3)
+*** spelling/editing  (F3)
 
 #+BEGIN_SRC emacs-lisp :results none
   (global-set-key
@@ -2196,7 +2211,7 @@ dired-omit-mode
 
   "
   _<f3>_: check and add
-  _a_:        _b_:                _c_:        _d_:       _e_:           _f_:                             _g_:  
+  _a_:        _b_:                _c_:        _d_:       _e_: Edit          _f_:                             _g_:  
   _h_:        _i_: ispell         _j_:        _k_:       _l_:           _m_:check next higlighted        _n_:goto next error      
   _o_:        _p_:                 _r_:       _s_:       _t_:           _u_:       
   _v_:        _w_:                 _x_:       _y_:       _z_: 
@@ -2207,7 +2222,7 @@ dired-omit-mode
   ("b"  nil  )
   ("c"  nil )
   ("d" nil )
-  ("e"  nil )
+  ("e"  hydra-editing/body )
   ("f"  nil )
   ("g"  nil )
   ("h"  nil )
@@ -2283,23 +2298,56 @@ _h_tml    ^ ^       _A_SCII:
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
-*** bib (F6)-
+*** latex/bib (F6)
 
 #+BEGIN_SRC emacs-lisp :results none
+
 (global-set-key
    (kbd "<f6>")
-(defhydra hydra-bib (:color blue :hint nil)
-  "
+(defhydra hydra-bib  (:color blue :hint nil)
+
 "
-  ("<f6>"     helm-bibtex            "hbibtex")
-  ("e"    ebib           "ebib")
-  ("k"   helm-bibtex-ikloog-publications           "ikloog")
-  ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
-  ("r"   helm-resume        "bibtex yank")
-  ("y"   org-bibtex-yank        "helm-resume")
-  ("c"   org-bibtex-create        "helm-resume")
-    ("q"     nil                          "cancel" )
+_<f6>_: helm bibtex
+_a_:            _b_:              _c_:clean bib       _d_:                 _e_: ebib           _f_:        _g_:  
+_h_:            _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
+_o_:            _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
+_w_:            _x_:              _y_: yank           _z_: 
+_q_: 
+
+"
+
+("<f6>" helm-bibtex )
+("a" nil )
+("b"  nil  )
+("c"  org-ref-clean-bibtex-entry )
+("d"  nil )
+("e"  ebib )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  helm-bibtex-ikloog-publications )
+("l"  nil )
+("m"  nil )
+("n"  org-bibtex-create )
+("o"  nil )
+("p"  helm-bibtex-ikloog-prep )
+("r"  helm-resume )
+("s"  bibtex-sort-buffer )
+("t"  nil )
+("u"  nil )
+("v"  bibtex-validate)
+("V"  bibtex-validate-globally)
+("w"  nil )
+("x"  nil )
+("y"  org-bibtex-yank )
+("z"  nil )
+("q"  nil )
+
 ))
+
+
 #+END_SRC
 
 *** Helm (F7)
@@ -4656,6 +4704,22 @@ set currently to 100mb
 (setq large-file-warning-threshold 100000000)
 #+END_SRC
 * LateX
+*** Auctex
+#+BEGIN_SRC emacs-lisp :results none
+(setq TeX-parse-self t) ; Enable parse on load.
+(setq TeX-auto-save t) ; Enable parse on save.
+(setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
+
+(add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
+
+
+(setq TeX-command-BibTeX "Biber")
+
+(eval-after-load "tex"
+'(add-to-list 'TeX-command-list
+'("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber") t))
+
+#+END_SRC
 *** bullets
 #+BEGIN_SRC emacs-lisp :results none
 (defun z-latex-bullets ()
