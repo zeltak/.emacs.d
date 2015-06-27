@@ -3514,7 +3514,6 @@ The app is chosen from your OS's preference."
 (setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
 
 (add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
-(bibtex-set-dialect 'biblatex)
 
 (setq TeX-command-BibTeX "Biber")
 

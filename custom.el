@@ -9,7 +9,7 @@
  '(ace-isearch-use-ace-jump (quote printing-char))
  '(ansi-color-names-vector
    ["#242424" "#E5786D" "#95E454" "#CAE682" "#8AC6F2" "#333366" "#CCAA8F" "#F6F3E8"])
- '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "/home/zeltak/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" . t)))
