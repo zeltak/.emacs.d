@@ -610,7 +610,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 11)
+    ("i" "I" nil 13)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -686,6 +686,7 @@
     ("lastyear" "last year" nil 0)
     ("launced" "launched" nil 0)
     ("learnign" "learning" nil 0)
+    ("lecturar" "lecturer" nil 0)
     ("lenght" "length" nil 0)
     ("levle" "level" nil 0)
     ("libary" "library" nil 0)
@@ -1226,6 +1227,10 @@
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
+
+(define-abbrev-table 'ps-mode-abbrev-table '())
+
+(define-abbrev-table 'ps-run-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 

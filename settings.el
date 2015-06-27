@@ -181,10 +181,12 @@
 (use-package helm-bibtex
  :ensure t
  :config
+
 (autoload 'helm-bibtex "helm-bibtex" "" t)
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/bib/kloog_2015.biblatex.bib")
-(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/")
-(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/bib/notes/")
+
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+;(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
+(setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
 (setq helm-bibtex-notes-extension ".org")
 
 (setq helm-bibtex-format-citation-functions
@@ -193,7 +195,7 @@
     (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
     (default       . helm-bibtex-format-citation-default)))
 
-(setq helm-bibtex-additional-search-fields '(Tags))
+(setq helm-bibtex-additional-search-fields '(tags))
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
@@ -216,18 +218,30 @@
 ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
 
 ;; Define helm-search with predefined search expression:
+(defun helm-bibtex-ikloog-publications-all ()
+  "Search BibTeX entries authored by me (ALL including prep)"
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "kloog"
+        :candidate-number-limit 500))
+
+;; Bind this search function to Ctrl-x p:
+;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+
+;; Define helm-search with predefined search expression:
 (defun helm-bibtex-ikloog-prep         ()
   "Search BibTeX entries in preperation with me"
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "prep"
+        :input "kloog PP"
         :candidate-number-limit 500))
 
 (use-package ebib
  :ensure t
  :config
-(setq ebib-preload-bib-files '("~/ZH_tmp/xkloog_2014.bib")) 
+(setq ebib-preload-bib-files '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")) 
 
 (setq ebib-common-optional-fields
       '(translator keywords origlanguage url file location
@@ -824,12 +838,20 @@
 (require 'sci-id)
 
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib"))
+(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
 
 ;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/bib/notes/"
-      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/bib/kloog_2014.bib")
+(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
+      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
       org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
+
+(setq bibtex-autokey-year-length 4
+      bibtex-autokey-name-year-separator "-"
+      bibtex-autokey-year-title-separator "-"
+      bibtex-autokey-titleword-separator "-"
+      bibtex-autokey-titlewords 2
+      bibtex-autokey-titlewords-stretch 1
+      bibtex-autokey-titleword-length 5)
 
 (use-package pdf-tools
  :ensure t
@@ -1435,6 +1457,9 @@ Repeated invocations toggle between the two most recently open buffers."
 (key-chord-define-global "yy"     'z/copy-line)
 (key-chord-define-global "jj"     'avi-goto-char-2)
 
+(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
+
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'avi-goto-char-2)
 
@@ -1564,22 +1589,26 @@ _q_:
 ))
 
 (global-set-key
- (kbd "<f2>")
+   (kbd "<f2>")
 (defhydra hydra-dired-main (:color blue :hint nil)
 
-"_<f2>_:  start dired
-_a_:        _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:        _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+"
+
+_a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:dired-jump       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:peep dired        _r_:       _s_:       _t_: toggles          _u_:       
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
+R: rename s: sort
 "
+
+
 
 ("<f2>" dired )
 ("a" nil )
 ("b"  nil  )
-("c"  nil )
+("c"  hydra-dired-configs/body )
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
@@ -1595,7 +1624,7 @@ _q_:
 ("p"  peep-dired )
 ("r"  nil )
 ("s"  nil )
-("t"  hydra-dired-configs/body)
+("t"  hydra-dired-configs/body )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -1702,17 +1731,48 @@ _h_tml    ^ ^       _A_SCII:
 
 (global-set-key
    (kbd "<f6>")
-(defhydra hydra-bib (:color blue :hint nil)
-  "
+(defhydra hydra-bib  (:color blue :hint nil)
+
 "
-  ("<f6>"     helm-bibtex            "hbibtex")
-  ("e"    ebib           "ebib")
-  ("k"   helm-bibtex-ikloog-publications           "ikloog")
-  ("p"   helm-bibtex-ikloog-prep        "ikloog-prep")
-  ("r"   helm-resume        "bibtex yank")
-  ("y"   org-bibtex-yank        "helm-resume")
-  ("c"   org-bibtex-create        "helm-resume")
-    ("q"     nil                          "cancel" )
+_<f6>_: helm bibtex
+_a_:         _b_:              _c_:clean bib       _d_: doi add                _e_: ebib           _f_:        _g_:  
+_h_:        _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
+_o_:        _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
+_w_:        _x_:              _y_: yank           _z_: 
+_q_:        _V_: check duplictae keys _K_: kloog_ALL
+
+"
+
+("<f6>" helm-bibtex )
+("a" nil )
+("b"  nil  )
+("c"  org-ref-clean-bibtex-entry )
+("d"  doi-utils-insert-bibtex-entry-from-doi )
+("e"  ebib )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  helm-bibtex-ikloog-publications )
+("K"  helm-bibtex-ikloog-publications-all )
+("l"  nil )
+("m"  nil )
+("n"  org-bibtex-create )
+("o"  nil )
+("p"  helm-bibtex-ikloog-prep )
+("r"  helm-resume )
+("s"  bibtex-sort-buffer )
+("t"  nil )
+("u"  nil )
+("v"  bibtex-validate)
+("V"  bibtex-validate-globally) ; check for dup keys
+("w"  nil )
+("x"  nil )
+("y"  org-bibtex-yank )
+("z"  nil )
+("q"  nil )
+
 ))
 
 (global-set-key
@@ -1775,7 +1835,7 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
 _<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _e_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
-_o_:                  _p_:                        _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
+_o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
 _v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
 _-_ convert lowe level     _=_ convert same level    _\\_:  table  
 _q_: 
@@ -1800,7 +1860,7 @@ _q_:
 ("m"  nil )
 ("n"  nil )
 ("o"  nil )
-("p"  nil )
+("p"  org-latex-export-to-pdf )
 ("r"  org-refile )
 ("R"  z/prefix-org-refile )
 ("s"  hydra-org-time/body )
@@ -3436,7 +3496,18 @@ The app is chosen from your OS's preference."
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
+(setq TeX-parse-self t) ; Enable parse on load.
+(setq TeX-auto-save t) ; Enable parse on save.
+(setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
+
+(add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
+(bibtex-set-dialect 'biblatex)
+
 (setq TeX-command-BibTeX "Biber")
+
+(eval-after-load "tex"
+'(add-to-list 'TeX-command-list
+'("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber") t))
 
 (defun z-latex-bullets ()
 "This inserts the LaTeX \itemize environment into a document - LaTeX will

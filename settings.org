@@ -254,10 +254,12 @@ https://github.com/tmalsburg/helm-bibtex
 (use-package helm-bibtex
  :ensure t
  :config
+
 (autoload 'helm-bibtex "helm-bibtex" "" t)
+
 (setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
-(setq helm-bibtex-library-path "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/" )
-(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
+;(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
+(setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
 (setq helm-bibtex-notes-extension ".org")
 
 (setq helm-bibtex-format-citation-functions
@@ -266,7 +268,7 @@ https://github.com/tmalsburg/helm-bibtex
     (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
     (default       . helm-bibtex-format-citation-default)))
 
-(setq helm-bibtex-additional-search-fields '(Tags))
+(setq helm-bibtex-additional-search-fields '(tags))
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
@@ -278,6 +280,7 @@ https://github.com/tmalsburg/helm-bibtex
 #+END_SRC 
 
 *** my papers 
+
 #+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
@@ -286,13 +289,30 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-;         :input "kloog !prep"
-         :input "kloog "
+         :input "kloog !prep"
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
 #+END_SRC
+
+*** my papers (all)
+
+#+BEGIN_SRC emacs-lisp :results none
+
+ ;; Define helm-search with predefined search expression:
+ (defun helm-bibtex-ikloog-publications-all ()
+   "Search BibTeX entries authored by me (ALL including prep)"
+   (interactive)
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "kloog"
+         :candidate-number-limit 500))
+
+ ;; Bind this search function to Ctrl-x p:
+ ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+#+END_SRC
+
 *** TODO my prep make it match on pubstate
 #+BEGIN_SRC emacs-lisp :results none
 
@@ -302,7 +322,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog prep"
+         :input "kloog PP"
          :candidate-number-limit 500))
 
  #+END_SRC
@@ -1988,6 +2008,14 @@ Repeated invocations toggle between the two most recently open buffers."
 (key-chord-define-global "jj"     'avi-goto-char-2)
 #+END_SRC
 
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
+(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
+#+END_SRC
+
+
+
+  
 ** movment
 #+BEGIN_SRC emacs-lisp :results none
 (global-unset-key (kbd "M-`"))
@@ -2311,7 +2339,7 @@ _a_:         _b_:              _c_:clean bib       _d_: doi add                _
 _h_:        _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
 _o_:        _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
 _w_:        _x_:              _y_: yank           _z_: 
-_q_:        _V_: check duplictae keys
+_q_:        _V_: check duplictae keys _K_: kloog_ALL
 
 "
 
@@ -2327,6 +2355,7 @@ _q_:        _V_: check duplictae keys
 ("i"  nil )
 ("j"  nil )
 ("k"  helm-bibtex-ikloog-publications )
+("K"  helm-bibtex-ikloog-publications-all )
 ("l"  nil )
 ("m"  nil )
 ("n"  org-bibtex-create )
@@ -2432,7 +2461,7 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
 _<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _e_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
-_o_:                  _p_:                        _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
+_o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
 _v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
 _-_ convert lowe level     _=_ convert same level    _\\_:  table  
 _q_: 
@@ -2457,7 +2486,7 @@ _q_:
 ("m"  nil )
 ("n"  nil )
 ("o"  nil )
-("p"  nil )
+("p"  org-latex-export-to-pdf )
 ("r"  org-refile )
 ("R"  z/prefix-org-refile )
 ("s"  hydra-org-time/body )
@@ -2492,7 +2521,7 @@ _q_:
 
 **** extra table commands
 
- #+BEGIN_SRC emacs-lisp :results none
+#+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-table  (:color red )
       "
       "
