@@ -80,59 +80,6 @@
 (setq key-chord-one-key-delay 0.20)
 )
 
-(use-package yasnippet
- :config 
-(yas-global-mode 1)
-;; Use custom snippets.
-;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
-(yas-reload-all)
-(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
-)
-
-(defun shk-yas/helm-prompt (prompt choices &optional display-fn)
-  "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
-  (interactive)
-  (setq display-fn (or display-fn 'identity))
-  (if (require 'helm-config)
-      (let (tmpsource cands result rmap)
-        (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
-        (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
-        (setq tmpsource
-              (list
-               (cons 'name prompt)
-               (cons 'candidates cands)
-               '(action . (("Expand" . (lambda (selection) selection))))
-               ))
-        (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
-        (if (null result)
-            (signal 'quit "user quit!")
-          (cdr (assoc result rmap))))
-    nil))
-
-;; (use-package yasnippet
-;; :diminish yas-minor-mode
-;; :commands yas-global-mode
-;; :ensure t
-;;   :bind ("M-=" . yas-insert-snippet)
-;;   :config
-;;   (progn
-;;     (defun my-yas/prompt (prompt choices &optional display-fn)
-;;       (let* ((names (loop for choice in choices
-;;                           collect (or (and display-fn
-;;                                            (funcall display-fn choice))
-;;                                       choice)))
-;;              (selected (helm-other-buffer
-;;                         `(((name . ,(format "%s" prompt))
-;;                            (candidates . names)
-;;                            (action . (("Insert snippet" . (lambda (arg)
-;;                                                             arg))))))
-;;                         "*helm yas/prompt*")))
-;;         (if selected
-;;             (let ((n (position selected names :test 'equal)))
-;;               (nth n choices))
-;;           (signal 'quit "user quit!"))))
-;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
-
 (use-package helm
 :ensure t
 :config
@@ -238,6 +185,11 @@
         :input "kloog PP"
         :candidate-number-limit 500))
 
+(use-package helm-mu
+ :ensure t
+ :config
+  )
+
 (use-package ebib
  :ensure t
  :config
@@ -304,6 +256,59 @@
 ;; (autoload 'edit-server-maybe-htmlize-buffer   "edit-server-htmlize" "edit-server-htmlize" t)
 ;; (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
 ;; (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
+
+(use-package yasnippet
+ :config 
+(yas-global-mode 1)
+;; Use custom snippets.
+;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
+(yas-reload-all)
+(setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
+)
+
+(defun shk-yas/helm-prompt (prompt choices &optional display-fn)
+  "Use helm to select a snippet. Put this into `yas/prompt-functions.'"
+  (interactive)
+  (setq display-fn (or display-fn 'identity))
+  (if (require 'helm-config)
+      (let (tmpsource cands result rmap)
+        (setq cands (mapcar (lambda (x) (funcall display-fn x)) choices))
+        (setq rmap (mapcar (lambda (x) (cons (funcall display-fn x) x)) choices))
+        (setq tmpsource
+              (list
+               (cons 'name prompt)
+               (cons 'candidates cands)
+               '(action . (("Expand" . (lambda (selection) selection))))
+               ))
+        (setq result (helm-other-buffer '(tmpsource) "*helm-select-yasnippet"))
+        (if (null result)
+            (signal 'quit "user quit!")
+          (cdr (assoc result rmap))))
+    nil))
+
+;; (use-package yasnippet
+;; :diminish yas-minor-mode
+;; :commands yas-global-mode
+;; :ensure t
+;;   :bind ("M-=" . yas-insert-snippet)
+;;   :config
+;;   (progn
+;;     (defun my-yas/prompt (prompt choices &optional display-fn)
+;;       (let* ((names (loop for choice in choices
+;;                           collect (or (and display-fn
+;;                                            (funcall display-fn choice))
+;;                                       choice)))
+;;              (selected (helm-other-buffer
+;;                         `(((name . ,(format "%s" prompt))
+;;                            (candidates . names)
+;;                            (action . (("Insert snippet" . (lambda (arg)
+;;                                                             arg))))))
+;;                         "*helm yas/prompt*")))
+;;         (if selected
+;;             (let ((n (position selected names :test 'equal)))
+;;               (nth n choices))
+;;           (signal 'quit "user quit!"))))
+;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 
 (use-package org-download 
  :ensure t
@@ -1476,8 +1481,8 @@ Repeated invocations toggle between the two most recently open buffers."
 "
 _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
-_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_:
-_w_:whitespace-mode    _x_:                    _y_:                 _z_:                _G_ indend-guide
+_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_: viewmode
+_w_:whitespace-mode    _x_: evalbuf                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
 _q_:quit
@@ -1505,7 +1510,7 @@ _q_:quit
 ("u"  nil )
 ("v" view-mode )
 ("w"  whitespace-mode)
-("x"  nil )
+("x"  eval-buffer )
 ("y"  nil )
 ("z"  nil )
 ("=" text-scale-increase  )
@@ -3168,6 +3173,14 @@ execute speed commands."
 (require 'ox-odt)
 (require 'ox-beamer)
 (require 'ox-latex)
+
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-mode/contrib/lisp/")
+
+
+(eval-after-load 'ox '(require 'ox-koma-letter))
+
+(eval-after-load 'ox-latex
+  '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
 
 (setq org-publish-project-alist
            '(
