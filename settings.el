@@ -90,10 +90,10 @@
 )
 
 (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
-      helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
+       helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-      helm-ff-file-name-history-use-recentf t)
+       helm-ff-file-name-history-use-recentf t
+)
 
 (setq helm-buffers-fuzzy-matching t
       helm-recentf-fuzzy-match    t)
@@ -131,7 +131,7 @@
 
 (autoload 'helm-bibtex "helm-bibtex" "" t)
 
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+(setq helm-bibtex-biblSSiography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
 ;(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
 (setq helm-bibtex-notes-extension ".org")
@@ -142,7 +142,10 @@
     (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
     (default       . helm-bibtex-format-citation-default)))
 
-(setq helm-bibtex-additional-search-fields '(tags))
+;(setq helm-bibtex-additional-search-fields '(tags))
+(setq helm-bibtex-additional-search-fields '(pubstate tags))
+
+
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
@@ -182,7 +185,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog PP"
+        :input "kloog prep"
         :candidate-number-limit 500))
 
 (use-package helm-mu
@@ -209,7 +212,6 @@
 ;index view
 (setq ebib-index-display-fields (quote (year author)))
 (setq ebib-sort-order (quote ((year) (author) )))
-
 
  )
 
@@ -309,6 +311,12 @@
 ;;               (nth n choices))
 ;;           (signal 'quit "user quit!"))))
 ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
+
+(use-package highlight-symbol
+ :ensure t
+ :config
+ 
+ )
 
 (use-package org-download 
  :ensure t
@@ -1655,10 +1663,10 @@ R: rename s: sort
 "
 _<f3>_: check and add
 _a_:        _b_:                _c_:        _d_:       _e_: Edit          _f_:                             _g_:  
-_h_:        _i_: ispell         _j_:        _k_:       _l_:           _m_:check next higlighted        _n_:goto next error      
+_h_: highlight-symbol          _i_: ispell         _j_: next hs        _k_: prev hs       _l_:           _m_:check next higlighted        _n_:goto next error      
 _o_:        _p_:                 _r_:       _s_:       _t_:           _u_:       
 _v_:        _w_:                 _x_:       _y_:       _z_: 
-_q_: 
+_q_: _H_: highlight-symb remove 
 "
 ("<f3>" endless/ispell-word-then-abbrev )
 ("a" nil )
@@ -1668,10 +1676,11 @@ _q_:
 ("e"  hydra-editing/body )
 ("f"  nil )
 ("g"  nil )
-("h"  nil )
+("h"  highlight-symbol )
+("H"  highlight-symbol-remove-all )
 ("i"  ispell )
-("j"  nil )
-("k"  nil )
+("j"  highlight-symbol-next  :color red )
+("k"  highlight-symbol-prev  :color red )
 ("l"  nil )
 ("m"  flyspell-check-next-highlighted-word )
 ("n"  flyspell-goto-next-error )
@@ -2200,12 +2209,19 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 ; save minibuffer history
 (require 'savehist)
-(savehist-mode t)
+
+(setq savehist-additional-variables '(search-ring
+                                      regexp-search-ring
+                                      file-name-history
+                                      extended-command-history
+                                      kill-ring))
 
 ;;autosave
 ;(setq auto-save-visited-file-name t)
 ;(setq auto-save-interval 20) ; twenty keystrokes
 (setq auto-save-timeout 60) ; ten idle seconds
+
+(savehist-mode t)
 
 (setq savehist-file "/home/zeltak/.cache/emacs/hist/hist.txt")
 (savehist-mode 1)

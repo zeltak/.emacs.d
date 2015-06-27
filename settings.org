@@ -133,9 +133,9 @@ $Note$ the sign !package! means the package is disbaled
  #+BEGIN_SRC emacs-lisp :results none
  (setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-       helm-ff-search-library-in-sexp        t ; search for library in `require' and `declare-function' sexp.
-       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
-       helm-ff-file-name-history-use-recentf t)
+      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+       helm-ff-file-name-history-use-recentf t
+)
  #+END_SRC
 **** helm mini
  enable fuzzy matching:
@@ -255,7 +255,7 @@ https://github.com/tmalsburg/helm-bibtex
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
 #+END_SRC
 
-*** TODO my prep make it match on pubstate
+*** my prep make it match on pubstate
 #+BEGIN_SRC emacs-lisp :respults none
 
  ;; Define helm-search with predefined search expression:
@@ -269,10 +269,6 @@ https://github.com/tmalsburg/helm-bibtex
 
  #+END_SRC
 
-#+RESULTS:
-: helm-bibtex-ikloog-prep
-
-  
 ** helm mu
 https://github.com/emacs-helm/helm-mu
 
@@ -309,11 +305,8 @@ To search for contacts use `helm-mu-contacts`
 (setq ebib-index-display-fields (quote (year author)))
 (setq ebib-sort-order (quote ((year) (author) )))
 
-
  )
 #+END_SRC 
-
-
 ** hydra
  #+BEGIN_SRC emacs-lisp :results none
 (use-package hydra
@@ -3030,12 +3023,19 @@ here we put these files in the /tmp dir
 
 ; save minibuffer history
 (require 'savehist)
-(savehist-mode t)
+
+(setq savehist-additional-variables '(search-ring
+                                      regexp-search-ring
+                                      file-name-history
+                                      extended-command-history
+                                      kill-ring))
 
 ;;autosave
 ;(setq auto-save-visited-file-name t)
 ;(setq auto-save-interval 20) ; twenty keystrokes
 (setq auto-save-timeout 60) ; ten idle seconds
+
+(savehist-mode t)
 
 #+END_SRC
 

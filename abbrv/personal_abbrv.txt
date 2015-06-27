@@ -479,11 +479,11 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 7)
+    ("emacs" "Emacs" nil 10)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
-    ("english" "English" nil 1)
+    ("english" "English" nil 4)
     ("enought" "enough" nil 0)
     ("entree" "entree" nil 0)
     ("epxeirence" "experience" nil 0)
@@ -876,6 +876,7 @@
     ("reconize" "recognize" nil 0)
     ("recrod" "record" nil 0)
     ("redirector" "re-director" nil 0)
+    ("refercnes" "reference" nil 0)
     ("refernce" "reference" nil 1)
     ("regardsless" "regardless" nil 0)
     ("regession" "regression" nil 0)
@@ -1256,9 +1257,13 @@
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
+(define-abbrev-table 'tablist-mode-abbrev-table '())
+
 (define-abbrev-table 'tabulated-list-mode-abbrev-table '())
 
 (define-abbrev-table 'tar-mode-abbrev-table '())
+
+(define-abbrev-table 'term-mode-abbrev-table '())
 
 (define-abbrev-table 'tex-mode-abbrev-table '())
 
