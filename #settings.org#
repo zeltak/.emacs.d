@@ -2120,8 +2120,8 @@ _q_:quit
 ("x"  eval-buffer )
 ("y"  nil )
 ("z"  nil )
-("=" text-scale-increase :color red )
-("-" text-scale-decrease :color red)
+("=" text-scale-increase  )
+("-" text-scale-decrease )
 ("G"  indent-guide-mode)
 ("q" nil )
 
@@ -4959,16 +4959,8 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
 #+END_SRC
 * mu4e
 *** base setup 
-for ubuntu
 #+BEGIN_SRC emacs-lisp :results none
-(when (string= system-name "zuni")
-(add-to-list 'load-path "~/mu/mu4e/")
-)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp :results none
-
-
+(add-to-list 'load-path "/usr/local/share/emacs/site-lisp/mu4e")
 (require 'mu4e)
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
@@ -4986,15 +4978,10 @@ for ubuntu
 (setq mu4e-index-update-error-warning  t)
 (setq mu4e-index-update-error-continue   t)
 #+END_SRC
-
 OLD:
-#+BEGIN_EXAMPLE
 (setq mu4e-get-mail-command "offlineimap"
       mu4e-update-interval 120
     mu4e-headers-auto-update t)
-#+END_EXAMPLE
-
-
 *** personal info
 #+BEGIN_SRC emacs-lisp :results none
 ;; something about ourselves

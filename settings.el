@@ -161,7 +161,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog !prep"
+        :input "kloog !prep article"
         :candidate-number-limit 500))
 
 ;; Bind this search function to Ctrl-x p:
@@ -1231,6 +1231,16 @@ comment box."
 (org-agenda nil "f")
 )
 
+(fset 'expdf
+      [?\C-c ?\C-e ?\l ?\o ])
+
+(defun z/comment-org-in-src-block ()    
+(interactive)
+(org-edit-special)
+(mark-whole-buffer)
+(comment-dwim nil)
+(org-edit-src-exit))
+
 (defun z-edit-file-as-root ()
   "Edit the file that is associated with the current buffer as root"
   (interactive)
@@ -1521,8 +1531,8 @@ _q_:quit
 ("x"  eval-buffer )
 ("y"  nil )
 ("z"  nil )
-("=" text-scale-increase  )
-("-" text-scale-decrease )
+("=" text-scale-increase :color red )
+("-" text-scale-decrease :color red)
 ("G"  indent-guide-mode)
 ("q" nil )
 
@@ -1847,7 +1857,7 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
 
 "
 _<f9>_ headline search
-_a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _e_: export              _f_: food menu  _g_: Set tags
+_a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
 _v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
@@ -1863,7 +1873,8 @@ _q_:
 ("C"  org-columns-quit )
 ("d"  org-download-screenshot )
 ("D"  org-download-delete )
-("e"  org-export-dispatch )
+("E"  org-export-dispatch )
+("e p"  org-latex-export-to-pdf )
 ("f"  hydra-org-food/body )
 ("g"  org-set-tags )
 ("h"  org-insert-heading )
@@ -1906,6 +1917,7 @@ _q_:
 (defhydra hydra-org-table  (:color red )
      "
      "
+    ("i" org-table-insert-row  "insert row" :color blue) 
     ("y" org-table-copy-region  "copy" :color blue) 
     ("d" org-table-cut-region  "cut" ) 
     ("p" org-table-paste-rectangle  "paste" :color red ) 
@@ -1932,6 +1944,7 @@ _q_:
    ("p" org-paste-subtree  "org paste" )
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )
+   (";" z/comment-org-in-src-block  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
    ("q" nil "cancel")))
 
@@ -3624,6 +3637,10 @@ take care of the wrapping of each item for me"
     "Generic mode for Vim configuration files.")
 
 
+
+(when (string= system-name "zuni")
+(add-to-list 'load-path "~/mu/mu4e/")
+)
 
 (require 'mu4e)
 (require 'mu4e-contrib) 
