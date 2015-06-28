@@ -1266,6 +1266,27 @@ https://github.com/politza/pdf-tools
   )
 #+END_SRC 
 
+** scratch
+Instant scratch buffer for current mode
+
+http://pragmaticemacs.com/emacs/instant-scratch-buffer-for-current-mode/
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package scratch
+ :ensure t
+ :config
+ (autoload 'scratch "scratch" nil t)
+ )
+#+END_SRC
+** TODO org-pandoc
+https://github.com/kawabata/ox-pandoc
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package org-pandoc
+ :ensure t
+ :config
+ )
+#+END_SRC 
 
 * Functions
 ** Encoding
@@ -1918,6 +1939,36 @@ Repeated invocations toggle between the two most recently open buffers."
       (read-string "Google: ")))))
 #+END_SRC
 
+** helm 
+*** swish-e
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun helm-swish-e-candidates (query)
+  "Generate a list of cons cells (swish-e result . path)."
+  (let* ((result (shell-command-to-string
+		  (format "swish-e -f ~/.swish-e/index.swish-e -x \"%%r\t%%p\n\" -w %s"
+			  (shell-quote-argument query))))
+	 (lines (s-split "\n" result t))
+	 (candidates '()))
+    (loop for line in lines
+	  unless (or  (s-starts-with? "#" line)
+		      (s-starts-with? "." line))
+	  collect (cons line (cdr (s-split "\t" line))))))
+
+
+(defun helm-swish-e (query)
+  "Run a swish-e query and provide helm selection buffer of the results."
+  (interactive "sQuery: ")
+  (helm :sources `(((name . ,(format "swish-e: %s" query))
+		    (candidates . ,(helm-swish-e-candidates query))
+		    (action . (("open" . (lambda (f)
+					   (find-file (car f)))))))
+		   ((name . "New search")
+		    (dummy)
+		    (action . (("search" . (lambda (f)
+					     (helm-swish-e helm-pattern)))))))))
+#+END_SRC
+
 * Macros
 ** org faces
 
@@ -2088,7 +2139,7 @@ Repeated invocations toggle between the two most recently open buffers."
 "
 _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
-_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_: viewmode
+_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_:            _v_: viewmode
 _w_:whitespace-mode    _x_: evalbuf                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
@@ -2112,7 +2163,8 @@ _q_:quit
 ("o" end-kbd-macro )
 ("p" list-packages  )
 ("r" read-only-mode )
-("s"  create-scratch-buffer)
+("s"  scratch)
+("S" create-scratch-buffer)
 ("t" lentic-mode  )
 ("u"  nil )
 ("v" view-mode )
@@ -2506,7 +2558,7 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
 "
 _<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
-_h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
+_h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:swish-helm      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
 _v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
 _-_ convert lowe level     _=_ convert same level    _\\_:  table  
@@ -2531,14 +2583,14 @@ _q_:
 ("k"  nil )
 ("l"  hydra-org-links/body )
 ("m"  nil )
-("n"  nil )
+("n"  helm-swish-e )
 ("o"  nil )
 ("p"  org-latex-export-to-pdf )
 ("r"  org-refile )
 ("R"  z/prefix-org-refile )
 ("s"  hydra-org-time/body )
 ("t"  org-todo )
-("u"   outline-up-heading )
+("u"  outline-up-heading )
 ("v"  org-babel-execute-subtree)
 ("w"  z/narrow-or-widen-dwim )
 ("x"  org-archive-subtree )
@@ -3669,7 +3721,6 @@ this command below will use helm for completion since in the above helm config w
 
 ** Babel
 *** #+LANGUAGE: en
-    uages
 #+begin_src emacs-lisp results none
 ; And add babel inline code execution
 ; babel, for executing code in org-mode.
