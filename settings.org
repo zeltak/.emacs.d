@@ -2182,7 +2182,7 @@ _o_:        _p_:peep dired        _r_:       _s_:       _t_: toggles          _u
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
-R: rename s: sort
+R: rename s: sort +:add dir
 "
 
 
