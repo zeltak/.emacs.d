@@ -180,7 +180,7 @@
     ("ameria" "America" nil 0)
     ("amke" "make" nil 0)
     ("amkes" "makes" nil 0)
-    ("anbd" "and" nil 0)
+    ("anbd" "and" nil 1)
     ("andone" "and one" nil 0)
     ("andt he" "and the" nil 0)
     ("andteh" "and the" nil 0)
@@ -226,7 +226,7 @@
     ("authetication" "authentication" nil 0)
     ("availalbe" "available" nil 0)
     ("avilability" "availability" nil 1)
-    ("avilable" "available" nil 2)
+    ("avilable" "available" nil 3)
     ("awya" "away" nil 0)
     ("aywa" "away" nil 0)
     ("bakc" "back" nil 0)
@@ -467,7 +467,7 @@
     ("doind" "doing" nil 0)
     ("dollers" "dollars" nil 0)
     ("donig" "doing" nil 0)
-    ("dont" "don't" nil 5)
+    ("dont" "don't" nil 6)
     ("dosent" "doesn't" nil 0)
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
@@ -618,7 +618,7 @@
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 13)
+    ("ie" "₆In example₆" nil 15)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -828,6 +828,7 @@
     ("possable" "possible" nil 0)
     ("postition" "position" nil 0)
     ("potentialy" "potentially" nil 0)
+    ("prefances" "preferences" nil 0)
     ("preformance" "performance" nil 0)
     ("prefure" "prefer" nil 0)
     ("pregnent" "pregnant" nil 0)
@@ -940,7 +941,7 @@
     ("selectoin" "selection" nil 0)
     ("sentance" "sentence" nil 0)
     ("separeate" "separate" nil 0)
-    ("seperate" "separate" nil 0)
+    ("seperate" "separate" nil 1)
     ("seperated" "separated" nil 0)
     ("sercumstances" "circumstances" nil 0)
     ("serveral" "several" nil 0)
@@ -1055,7 +1056,7 @@
     ("tihs" "this" nil 0)
     ("timne" "time" nil 1)
     ("tiogether" "together" nil 0)
-    ("tip" "%Tip%" nil 6)
+    ("tip" "%Tip%" nil 8)
     ("tje" "the" nil 0)
     ("tjhe" "the" nil 0)
     ("tkae" "take" nil 0)
@@ -1238,11 +1239,15 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-mode-abbrev-table '())
+
+(define-abbrev-table 'ruby-mode-abbrev-table '())
 
 (define-abbrev-table 'select-tags-table-mode-abbrev-table '())
 

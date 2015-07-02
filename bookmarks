@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("uni//Code" 0 9
+(#1=(#("Latex@linux.org" 0 15
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/Tech/linux.org")
+    (buffer-name . "linux.org")
+    (front-context-string . "*** LateX\n**** i")
+    (rear-context-string . "g-gcal-fetch .\n\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21904 1665 335094 964000))
+    (created . #2#)
+    (position . 1260563))
+#1=(#("uni//Code" 0 9
       (bmkp-full-record #1#))
     (buffer-name . "code")
     (front-context-string . "C00Matlab\n  drwx")
@@ -34,17 +46,17 @@
     (position . 22))
 #1=(#("kloog.2015.bib" 0 14
       (bmkp-full-record #1#))
-    (end-position . 231)
+    (end-position . 232)
     (filename . "~/org/files/Uni/papers/kloog.2015.bib")
     (buffer-name . "kloog.2015.bib")
     (front-context-string . "\n\n@article{acker")
     (rear-context-string . "t: biblatex -*-\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 3)
-    (time 21902 42519 128402 70000)
+    (visits . 4)
+    (time 21904 1597 133808 237000)
     (created 21902 15605 203368 787000)
-    (position . 231))
+    (position . 232))
 #1=(#("*Messages*" 0 10
       (bmkp-full-record #1#))
     (filename . "   - no file -")
@@ -515,8 +527,8 @@
     (rear-context-string . " GUI\n** Editors\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 18)
-    (time 21903 53004 860213 63000)
+    (visits . 19)
+    (time 21904 1631 979822 616000)
     (created 21790 12102 406935 267000)
     (position . 899563))
 #1=(#("arch_installs" 0 13

@@ -131,7 +131,7 @@
 
 (autoload 'helm-bibtex "helm-bibtex" "" t)
 
-(setq helm-bibtex-biblSSiography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
 ;(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
 (setq helm-bibtex-notes-extension ".org")
@@ -871,6 +871,17 @@
  :config
   )
 
+(use-package scratch
+ :ensure t
+ :config
+ (autoload 'scratch "scratch" nil t)
+ )
+
+(use-package org-pandoc
+ :ensure t
+ :config
+ )
+
 (defun z-fix-characters 
 (start end) 
 (interactive "r") 
@@ -1187,6 +1198,11 @@ comment box."
                      (let ((current-prefix-arg '(4)))             
                        (call-interactively #'org-toggle-heading)))
 
+(defun z/org-tangle-atpoint  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-babel-tangle)))
+
 (defun pl/hot-expand (str)
   "Expand org template."
   (insert str)
@@ -1370,94 +1386,30 @@ Repeated invocations toggle between the two most recently open buffers."
         (buffer-substring (region-beginning) (region-end))
       (read-string "Google: ")))))
 
-(fset 'orgstyle-tnote
-   [?! home ?!])
-(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+(defun helm-swish-e-candidates (query)
+  "Generate a list of cons cells (swish-e result . path)."
+  (let* ((result (shell-command-to-string
+                  (format "swish-e -f ~/.swish-e/index.swish-e -x \"%%r\t%%p\n\" -w %s"
+                          (shell-quote-argument query))))
+         (lines (s-split "\n" result t))
+         (candidates '()))
+    (loop for line in lines
+          unless (or  (s-starts-with? "#" line)
+                      (s-starts-with? "." line))
+          collect (cons line (cdr (s-split "\t" line))))))
 
 
-(fset 'orgstyle-warning
-   "@\341@WARNING:")
-(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
-
-(fset 'orgstyle-warning2
-   [?@ home ?@])
-(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
-
-
-
-(fset 'orgstyle-com1
-   [?~ home ?~])
-(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
-
-(fset 'orgstyle-note
-   "$\341$NOTE:")
-(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
-
-(fset 'orgstyle-note2
-   [?$ home ?$])
-(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
-
-(fset 'orgstyle-tip
-   "%\341%TIP:")
-(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
-
-
-(fset 'orgstyle-tip2
-   [?% home ?%])
-(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
-
-
-(fset 'orgstyle-code
-   [?^ home ?^])
-(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
-
-(fset 'orgstyle-header
-   [?& home ?&])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
-
-(fset 'orgstyle-bold
-   [?* home ?*])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
-
-(fset 'orgstyle-highlight-green
-   [?' home ?'])
-(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
-
-(fset 'orgstyle-com2
-   [?` home ?`])
-(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
-
-(fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
-
-;;;; Saved macros
-;; Saved macro - adds latex end-lines to verse passages
-(fset 'versify
-      [?\C-a ?\C-e ?\\ ?\\ down])
-
-;(global-set-key (kbd "") 'versify)
-
-(defmacro C-u (&rest args)
-  (let ((prefix (list 4)))
-    (while (cdr args)
-      (cond
-       ((eq (car args) 'C-u)
-        (setf (car prefix) (* 4 (car prefix))))
-       ((eq (car args) 'M-x)
-        ;; ignore
-        t)
-       (t
-        (error "Unknown arg %S" (car args))))
-      (setq args (cdr args)))
-    (unless (functionp (car args))
-      (error "%S is not a function" (car args)))
-    `(lambda ()
-       (interactive)
-       (let ((current-prefix-arg ',prefix))
-         (call-interactively ',(car args))))))
-
-(fset 'del_exe_mu4e
-   [?d ?x ?y ])
+(defun helm-swish-e (query)
+  "Run a swish-e query and provide helm selection buffer of the results."
+  (interactive "sQuery: ")
+  (helm :sources `(((name . ,(format "swish-e: %s" query))
+                    (candidates . ,(helm-swish-e-candidates query))
+                    (action . (("open" . (lambda (f)
+                                           (find-file (car f)))))))
+                   ((name . "New search")
+                    (dummy)
+                    (action . (("search" . (lambda (f)
+                                             (helm-swish-e helm-pattern)))))))))
 
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
@@ -1476,6 +1428,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-b"))
+(global-unset-key (kbd "C-M-t"))
 
 (key-chord-define-global "yy"     'z/copy-line)
 (key-chord-define-global "jj"     'avi-goto-char-2)
@@ -1499,7 +1452,7 @@ Repeated invocations toggle between the two most recently open buffers."
 "
 _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
-_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch        _t_: lentic             _u_:            _v_: viewmode
+_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_:            _v_: viewmode
 _w_:whitespace-mode    _x_: evalbuf                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
@@ -1523,7 +1476,8 @@ _q_:quit
 ("o" end-kbd-macro )
 ("p" list-packages  )
 ("r" read-only-mode )
-("s"  create-scratch-buffer)
+("s"  scratch)
+("S" create-scratch-buffer)
 ("t" lentic-mode  )
 ("u"  nil )
 ("v" view-mode )
@@ -1858,7 +1812,7 @@ _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: 
 "
 _<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
-_h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:      
+_h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:swish-helm      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
 _v_: org-exe          _w_: narrow/widen           _x_: Archive                     _y_:                          _z_:                 
 _-_ convert lowe level     _=_ convert same level    _\\_:  table  
@@ -1883,14 +1837,14 @@ _q_:
 ("k"  nil )
 ("l"  hydra-org-links/body )
 ("m"  nil )
-("n"  nil )
+("n"  helm-swish-e )
 ("o"  nil )
 ("p"  org-latex-export-to-pdf )
 ("r"  org-refile )
 ("R"  z/prefix-org-refile )
 ("s"  hydra-org-time/body )
 ("t"  org-todo )
-("u"   outline-up-heading )
+("u"  outline-up-heading )
 ("v"  org-babel-execute-subtree)
 ("w"  z/narrow-or-widen-dwim )
 ("x"  org-archive-subtree )
@@ -1947,6 +1901,48 @@ _q_:
    (";" z/comment-org-in-src-block  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
    ("q" nil "cancel")))
+
+(global-set-key
+   (kbd "C-M-v")
+(defhydra hydra-org-tangle  (:color blue :hint nil)
+
+"
+_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_: tang-atpoint        _r_:       _s_:       _t_: tangle file           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: quit 
+
+"
+
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  z/org-tangle-atpoint )
+("r"  nil )
+("s"  nil )
+("t"  org-babel-tangle )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (global-set-key
    (kbd "<f10>")
@@ -2206,6 +2202,95 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
 
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
+
+(fset 'orgstyle-tnote
+   [?! home ?!])
+(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+
+
+(fset 'orgstyle-warning
+   "@\341@WARNING:")
+(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
+
+(fset 'orgstyle-warning2
+   [?@ home ?@])
+(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
+
+
+
+(fset 'orgstyle-com1
+   [?~ home ?~])
+(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
+
+(fset 'orgstyle-note
+   "$\341$NOTE:")
+(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
+
+(fset 'orgstyle-note2
+   [?$ home ?$])
+(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
+
+(fset 'orgstyle-tip
+   "%\341%TIP:")
+(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
+
+
+(fset 'orgstyle-tip2
+   [?% home ?%])
+(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
+
+
+(fset 'orgstyle-code
+   [?^ home ?^])
+(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
+
+(fset 'orgstyle-header
+   [?& home ?&])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
+
+(fset 'orgstyle-bold
+   [?* home ?*])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
+
+(fset 'orgstyle-highlight-green
+   [?' home ?'])
+(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
+
+(fset 'orgstyle-com2
+   [?` home ?`])
+(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
+
+(fset 'underline_net_delete
+   [?\M-% ?\  return return ?!])
+
+;;;; Saved macros
+;; Saved macro - adds latex end-lines to verse passages
+(fset 'versify
+      [?\C-a ?\C-e ?\\ ?\\ down])
+
+;(global-set-key (kbd "") 'versify)
+
+(defmacro C-u (&rest args)
+  (let ((prefix (list 4)))
+    (while (cdr args)
+      (cond
+       ((eq (car args) 'C-u)
+        (setf (car prefix) (* 4 (car prefix))))
+       ((eq (car args) 'M-x)
+        ;; ignore
+        t)
+       (t
+        (error "Unknown arg %S" (car args))))
+      (setq args (cdr args)))
+    (unless (functionp (car args))
+      (error "%S is not a function" (car args)))
+    `(lambda ()
+       (interactive)
+       (let ((current-prefix-arg ',prefix))
+         (call-interactively ',(car args))))))
+
+(fset 'del_exe_mu4e
+   [?d ?x ?y ])
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
