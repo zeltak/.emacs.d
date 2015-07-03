@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*- <14/12/23 09:51:46 /home/zeltak/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <15/07/03 12:53:20 /home/zeltak/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
@@ -19,24 +19,8 @@
   ("perl-cwd-realpath" t)
   ("perl" "\\perl"))
  (["ssh" "zeltak" "uni" nil nil]
-  ("uname" "Linux 3.12-1-amd64")
-  ("test" "test")
-  ("remote-path"
-   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
-  ("remote-shell" "/bin/sh")
-  ("locale" "LC_ALL=en_US.utf8")
-  ("~" "/home/zeltak")
-  ("file-exists" "test -e")
-  ("ls" "/bin/ls --color=never")
-  ("ls-dired" t)
-  ("stat" "\\stat")
-  ("id" "/usr/bin/id")
-  ("gid-integer" 1000)
-  ("readlink" "\\readlink")
-  ("gid-string" "zeltak")
-  ("perl-file-spec" t)
-  ("perl-cwd-realpath" t)
-  ("perl" "\\perl")
-  ("uid-integer" 1000))
+  nil)
  (["ssh" nil "192.168.0.2" nil nil]
+  nil)
+ (["sudo" "root" "zx1voics" nil nil]
   nil))

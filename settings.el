@@ -161,7 +161,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog !prep article"
+        :input "kloog article !prep !talk !conf !invtalk "
         :candidate-number-limit 500))
 
 ;; Bind this search function to Ctrl-x p:
@@ -192,6 +192,12 @@
  :ensure t
  :config
   )
+
+(use-package helm-projectile
+ :ensure t
+ :config
+ 
+ )
 
 (use-package ebib
  :ensure t
@@ -882,6 +888,27 @@
  :config
  )
 
+(use-package projectile
+ :ensure t
+ :config
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
+ )
+
+(use-package grizzl
+ :ensure t
+ :config
+  )
+
+(use-package workgroups2
+ :ensure t
+ :config
+;(workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
+(require 'workgroups2)
+;; Change workgroups session file
+(setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+)
+
 (defun z-fix-characters 
 (start end) 
 (interactive "r") 
@@ -1436,6 +1463,27 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
 
+(defun z/insert-slsh ()
+  " insert     "
+  (interactive)
+  (insert "\\")
+)
+
+(progn
+   (define-prefix-command 'xah-fly-leader-key-map)
+   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+   (define-key xah-fly-leader-key-map (kbd "<backspace>") nil)
+   (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
+   (define-key xah-fly-leader-key-map (kbd "SPC") nil )
+   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
+   (define-key xah-fly-leader-key-map (kbd "TAB") nil)
+   (define-key xah-fly-leader-key-map (kbd "\\") 'z/insert-slsh)
+   (define-key xah-fly-leader-key-map (kbd "r") 'query-replace)
+
+ )
+
+(global-set-key (kbd "\\") 'xah-fly-leader-key-map)
+
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'avi-goto-char-2)
 
@@ -1577,7 +1625,7 @@ _o_:        _p_:peep dired        _r_:       _s_:       _t_: toggles          _u
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
-R: rename s: sort
+R: rename s: sort +:add dir
 "
 
 
@@ -1793,12 +1841,16 @@ helm _t_op
    (defhydra hydra-bookmark   (:color blue)
 "
 _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: add BK       _f_: BK+ filter     _c_: chrome BK   _s_: Save BK 
+_p_: projectile FF _o_:helm-projectile _i_:helm-proj-buffer
 "
 
 
      ("<f8>" helm-bookmarks  )
      ("m" bookmark-bmenu-list )
      ("r" helm-recentf  )
+     ("p" projectile-find-file  )
+     ("o" helm-projectile  )
+     ("i" helm-projectile-switch-to-buffer  )
      ("b" bmkp-bookmark-set-confirm-overwrite )
      ("f" bmkp-bmenu-filter-tags-incrementally )
      ("c" helm-chrome-bookmarks )
@@ -2172,7 +2224,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
         "horz")
    ("t" transpose-windows  "transpose")
    ("<f12>" other-window "other-window")
-   ("x" delete-window "delete window")
+   ("X" delete-window "delete window")
    ("x" delete-other-windows "delete all other  windows")
    ("i" ace-maximize-window "ace-one" )
    ("r" resize-window "resize" )
@@ -3753,7 +3805,8 @@ take care of the wrapping of each item for me"
 (setq mu4e-compose-signature-auto-include 't)
 
 ;; default
-(setq mu4e-maildir "~/Maildir")
+(setq mu4e-maildir "~/.mail/gmail/")
+;; (setq mu4e-maildir "~/Maildir")
 
 (setq mu4e-drafts-folder "/[Gmail].Drafts")
 (setq mu4e-sent-folder   "/[Gmail].Sent Mail")

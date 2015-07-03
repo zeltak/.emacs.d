@@ -231,7 +231,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog !prep article"
+         :input "kloog article !prep !talk !conf !invtalk "
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
@@ -281,6 +281,17 @@ To search for contacts use `helm-mu-contacts`
  :config
   )
 #+END_SRC 
+
+** helm-projectile
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package helm-projectile
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
 
 ** ebib
 
@@ -1286,7 +1297,40 @@ https://github.com/kawabata/ox-pandoc
  :ensure t
  :config
  )
+#+END_SRC
+
+** projectile
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package projectile
+ :ensure t
+ :config
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
+ )
 #+END_SRC 
+** grizzl
+for projectile fuzzy match
+#+BEGIN_SRC emacs-lisp :results none
+(use-package grizzl
+ :ensure t
+ :config
+  )
+#+END_SRC 
+
+** workgroup2
+http://workgroups2.readthedocs.org/en/latest/guide/installation.html
+#+BEGIN_SRC emacs-lisp :results none
+(use-package workgroups2
+ :ensure t
+ :config
+;(workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
+(require 'workgroups2)
+;; Change workgroups session file
+(setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+)
+#+END_SRC 
+
 
 * Functions
 ** Encoding
@@ -1640,7 +1684,7 @@ comment box."
     (set-marker e nil)))
 
 #+END_SRC
-*** insert Unicode texts
+*** TODO insert Unicode texts
 
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/insert-keyleft ()
@@ -2013,15 +2057,36 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
 #+END_SRC
+** leader 
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/insert-slsh ()
+  " insert     "
+  (interactive)
+  (insert "\\")
+)
 
+(progn
+   (define-prefix-command 'xah-fly-leader-key-map)
+   (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
+   (define-key xah-fly-leader-key-map (kbd "<backspace>") nil)
+   (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
+   (define-key xah-fly-leader-key-map (kbd "SPC") nil )
+   (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
+   (define-key xah-fly-leader-key-map (kbd "TAB") nil)
+   (define-key xah-fly-leader-key-map (kbd "\\") 'z/insert-slsh)
+   (define-key xah-fly-leader-key-map (kbd "r") 'query-replace)
 
+ )
+
+(global-set-key (kbd "\\") 'xah-fly-leader-key-map)
+
+#+END_SRC
 
   
 ** movment
 #+BEGIN_SRC emacs-lisp :results none
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'avi-goto-char-2)
-
 #+END_SRC
 
 ** org
@@ -2428,19 +2493,24 @@ helm _t_op
  #+END_SRC
 
 
-*** bookmark hydra (F8)
+*** TODO bookmark hydra (F8)
+combine with recent's  and organize
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f8>")
    (defhydra hydra-bookmark   (:color blue)
 "
 _<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: add BK       _f_: BK+ filter     _c_: chrome BK   _s_: Save BK 
+_p_: projectile FF _o_:helm-projectile _i_:helm-proj-buffer
 "
 
 
      ("<f8>" helm-bookmarks  )
      ("m" bookmark-bmenu-list )
      ("r" helm-recentf  )
+     ("p" projectile-find-file  )
+     ("o" helm-projectile  )
+     ("i" helm-projectile-switch-to-buffer  )
      ("b" bmkp-bookmark-set-confirm-overwrite )
      ("f" bmkp-bmenu-filter-tags-incrementally )
      ("c" helm-chrome-bookmarks )
@@ -5078,8 +5148,6 @@ for ubuntu
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none
-
-
 (require 'mu4e)
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
@@ -5123,7 +5191,8 @@ OLD:
 *** mail folders 
 #+BEGIN_SRC emacs-lisp :results none
 ;; default
-(setq mu4e-maildir "~/Maildir")
+(setq mu4e-maildir "~/.mail/gmail/")
+;; (setq mu4e-maildir "~/Maildir")
 
 (setq mu4e-drafts-folder "/[Gmail].Drafts")
 (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
