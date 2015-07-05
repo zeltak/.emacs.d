@@ -809,6 +809,31 @@
  
  )
 
+(use-package dired-rainbow
+ :ensure t
+ :config
+ (require 'dired-rainbow)
+
+(defconst dired-audio-files-extensions
+  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+  "Dired Audio files extensions")
+(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+(defconst dired-video-files-extensions
+    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+    "Dired Video files extensions")
+(dired-rainbow-define video "#006EFF" dired-video-files-extensions)
+
+(defconst dired-pdf-files-extensions
+  '("pdf" "PDF")
+  "Dired pdf files extensions")
+(dired-rainbow-define audio "#FF0000" dired-pdf-files-extensions)
+
+
+
+ )
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
 
@@ -1838,24 +1863,49 @@ helm _t_op
 
 (global-set-key
    (kbd "<f8>")
-   (defhydra hydra-bookmark   (:color blue)
+(defhydra  hydra-open (:color blue :hint nil)
+
 "
-_<f8>_: open BK     _m_: BK menu                  _r_:helm-recents         _b_: add BK       _f_: BK+ filter     _c_: chrome BK   _s_: Save BK 
-_p_: projectile FF _o_:helm-projectile _i_:helm-proj-buffer
+_<f8>_: open BK
+_a_:         _b_: add BM        _c_:chrome BM        _d_:        _e_:           _f_         _g_:  
+_h_:         _i_: helm-proj-buffer        _j_:       _k_:       _l_:          _m_: BM menu               _n_:      
+_o_:helm-projectile        _p_: projectile FF        _r_: helm recents       _s_:save BM       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+BK+: + filer 
 "
 
 
-     ("<f8>" helm-bookmarks  )
-     ("m" bookmark-bmenu-list )
-     ("r" helm-recentf  )
-     ("p" projectile-find-file  )
-     ("o" helm-projectile  )
-     ("i" helm-projectile-switch-to-buffer  )
-     ("b" bmkp-bookmark-set-confirm-overwrite )
-     ("f" bmkp-bmenu-filter-tags-incrementally )
-     ("c" helm-chrome-bookmarks )
-     ("s" bookmark-save  )
-     ("q" nil "cancel")))
+
+("<f8>" helm-bookmarks )
+("a" nil )
+("b"  bmkp-bookmark-set-confirm-overwrite  )
+("c"  helm-chrome-bookmarks )
+("d"  nil )
+("e"  nil )
+("f"  bmkp-bmenu-filter-tags-incrementally )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  helm-projectile-switch-to-buffer )
+("k"  nil )
+("l"  nil )
+("m"  bookmark-bmenu-list )
+("n"  nil )
+("o"  helm-projectile )
+("p"  projectile-find-file )
+("r"  helm-recentf )
+("s"  bookmark-save )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (global-set-key
    (kbd "<f9>")
@@ -3820,7 +3870,8 @@ take care of the wrapping of each item for me"
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-    '( ("/INBOX"               . ?i)
+    '( ("/[Gmail]"               . ?i)
+       ("/[Gmail]/.Starred"   . ?r)
        ("/[Gmail].Sent Mail"   . ?s)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
