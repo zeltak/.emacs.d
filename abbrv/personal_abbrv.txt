@@ -965,6 +965,7 @@
     ("sitll" "still" nil 0)
     ("smae" "same" nil 0)
     ("smoe" "some" nil 0)
+    ("snipets" "snippets" nil 0)
     ("soem" "some" nil 0)
     ("sohuld" "should" nil 0)
     ("sohw" "show" nil 0)
@@ -1239,9 +1240,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 

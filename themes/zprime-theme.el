@@ -34,7 +34,8 @@ more...")
       (diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
       (diff-none '(:foreground "gray33"))
       (diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
-      (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
+;      (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
+      (directory '(:weight bold  :foreground "#64CEFC" :background "#073642"))
       (highlight-line '(:background "#FFFFD7")) ; #F5F5F5
       (highlight-line-gnus '(:background "#DAEAFC")) ; defined in `gnus-zprime.el'
       (link '(:weight normal :underline t :foreground "#006DAF"))
@@ -471,6 +472,9 @@ more...")
    `(dircolors-face-tar ((,class (:foreground "red"))))
    `(dircolors-face-text ((,class (:foreground "black"))))
    `(dircolors-face-yacc ((,class (:foreground "black"))))
+
+;;;dired
+
    `(dired-directory ((,class ,directory)))
    `(dired-header ((,class ,directory)))
    `(dired-ignored ((,class (:strike-through t :foreground "red"))))
@@ -489,6 +493,9 @@ more...")
    `(diredp-ignored-file-name ((,class ,shadow)))
    `(diredp-read-priv ((,class (:background "#0A99FF"))))
    `(diredp-write-priv ((,class (:foreground "white" :background "#FF4040"))))
+
+;;latex 
+
    `(file-name-shadow ((,class ,shadow)))
    `(font-latex-bold-face ((,class (:weight bold :foreground "black"))))
    `(font-latex-italic-face ((,class (:slant italic :foreground "#1A1A1A"))))
@@ -501,6 +508,9 @@ more...")
    `(font-latex-sedate-face ((,class (:foreground "#FF5500"))))
    `(font-latex-string-face ((,class (:weight bold :foreground "#0066FF"))))
    `(font-latex-verbatim-face ((,class (:foreground "#000088" :background "#FFFFE0" :inherit nil))))
+
+;;git
+
    `(git-commit-summary-face ((,class (:foreground "#000000"))))
    `(git-commit-comment-face ((,class (:slant italic :foreground "#696969"))))
    `(google-translate-text-face ((t (:foreground "#777777" :background "#F5F5F5"))))
