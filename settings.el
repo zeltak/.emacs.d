@@ -831,6 +831,19 @@
 (dired-rainbow-define pdf "#FF0000" dired-pdf-files-extensions)
 
 
+(defconst dired-org-files-extensions
+  '("org" "ORG")
+  "Dired org files extensions")
+(dired-rainbow-define org "#FF00A2" dired-org-files-extensions)
+
+
+(defconst dired-compressed-files-extensions
+  '("zip" "ZIP"  "tar.bz" "tar.gz" "7zip" "7ZIP" "tar" "TAR" "rar" "RAR")
+  "Dired compressed files extensions")
+(dired-rainbow-define compressed "#B56A00" dired-compressed-files-extensions)
+
+
+
 
  )
 
@@ -1534,8 +1547,8 @@ Repeated invocations toggle between the two most recently open buffers."
 "
 
 _a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_:         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
-_o_:       du_p_licate  _s_:       _t_: helm-top           _u_:       
+_h_:         _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
+_o_: mark prev      du_p_licate  _s_:       _t_: helm-top           _u_:       
 _v_:        _w_:        _x_:       _y_: kill ring       _z_: 
 _q_: 
 
@@ -1551,13 +1564,13 @@ _q_:
 ("f"  nil )
 ("g"  nil )
 ("h"  nil )
-("i"  nil )
+("i"  hydra-editing-insert/body )
 ("j"  nil )
 ("k"  nil )
 ("l"  nil )
 ("m"  helm-mark-ring )
-("n"  mark-sexp )
-("o"  nil )
+("n"  set-mark-command )
+("o"  set-mark-command 4 )
 ("p"  duplicate-current-line-or-region )
 ("r"  nil )
 ("s"  nil )
@@ -1769,14 +1782,15 @@ R: rename s: sort +:add dir
 
 "
 _<f3>_: check and add
-_a_:        _b_:                _c_:        _d_:       _e_: Edit          _f_: helm-find                   _g_:  
-_h_: highlight-symbol          _i_: ispell         _j_: next hs        _k_: prev hs       _l_: helm-locate           _m_:check next higlighted        _n_:goto next error      
-_o_:        _p_:                 _r_:       _s_:       _t_:           _u_:       
+_a_: helm apropos        _b_:             _c_:                       _d_:           _e_: Edit 
+_f_: helm-find           _g_:             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
+_k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
+_o_: helm-occur       _p_:                 _r_:       _s_:       _t_:           _u_:       
 _v_:        _w_:                 _x_:       _y_:       _z_: 
 _q_: _H_: highlight-symb remove 
 "
 ("<f3>" endless/ispell-word-then-abbrev )
-("a" nil )
+("a" helm-apropos )
 ("b"  nil  )
 ("c"  nil )
 ("d" nil )
@@ -1791,7 +1805,7 @@ _q_: _H_: highlight-symb remove
 ("l"  helm-locate )
 ("m"  flyspell-check-next-highlighted-word )
 ("n"  flyspell-goto-next-error )
-("o"  nil )
+("o"  helm-occur )
 ("p"  nil )
 ("r"  nil )
 ("s"  nil )
@@ -1897,36 +1911,11 @@ _q_:        _V_: check duplictae keys _K_: kloog_ALL
 ))
 
 (global-set-key
-   (kbd "<f7>")
-(defhydra hydra-helm (:color blue :hint nil)
-  "
-helm-mini _<f7>_  // h_e_lm extra
-_k_ill ring
-_m_ark ring
-_r_ecents
-_l_ocate
-_r_ecents
-"
-  ("<f7>"     helm-mini            "helm-mini")
-  ("e"     hydra-helm-extra/body            "extra helm commands")
-  ("k"     helm-show-kill-ring            "killring")
-  ("m"     helm-mark-ring            "markring")
-  ("r"     helm-recentf            "recents")
-  ("l"     helm-locate            "locate")
-  ("f"     helm-find-files            "find files")
-  ("a"     helm-apropos            "apropos")
-  ("c"     helm-occur            "occur")
-  ("b"     helm-buffer-list            "buffers")
-  ("o"     helm-my-org            "search org file")
-    ("q"     nil                          "cancel" )
-))
-
-(global-set-key
    (kbd "<f8>")
 (defhydra  hydra-open (:color blue :hint nil)
 
 "
-_<f8>_: open BK
+_<f8>_: open BK  _<f7>_ buffers/recents
 _a_:         _b_: add BM        _c_:chrome BM        _d_:        _e_:           _f_         _g_:  
 _h_:         _i_: helm-proj-buffer        _j_:       _k_:       _l_:          _m_: BM menu               _n_:      
 _o_:helm-projectile        _p_: projectile FF        _r_: helm recents       _s_:save BM       _t_:           _u_:       
@@ -2351,6 +2340,47 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("c" goto-char "char")
   ("2" er/expand-region "expand")
   ("q" nil "quit"))
+
+(defhydra hydra-vi (:body-pre hydra-vi/pre
+                    :color    amaranth)
+  "vi"
+  ;; basic navigation
+  ("l"        forward-char                  nil)
+  ("h"        backward-char                 nil)
+  ("j"        next-line                     nil)
+  ("k"        previous-line                 nil)
+  ;; mark
+  ("m"        set-mark-command              "mark")
+  ("C-o"      (set-mark-command 4)          "jump to prev location")
+  ;; beginning/end of line
+  ("a"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+  ("^"        back-to-indentation-or-beginning-of-line "beg of line/indentation")
+  ("$"        move-end-of-line              "end of line")
+  ;; word navigation
+  ("e"        forward-word                  "end of word")
+  ("w"        modi/forward-word-begin       "beg of next word")
+  ("b"        backward-word                 "beg of word")
+  ;; page scrolling
+  ("<prior>"  scroll-down-command           "page up")
+  ("<next>"   scroll-up-command             "page down")
+  ;; delete/cut/copy/paste
+  ("x"        delete-forward-char           "del char")
+  ("d"        my/iregister-cut              "cut/del")
+  ("D"                 "cut/del line")
+  ("y"        my/iregister-copy             "copy")
+  ("p"        yank                          "paste")
+  ;; beginning/end of buffer and go to line
+  ("g"        hydra-vi/beginning-of-buffer  "beg of buffer/goto line")
+  ("G"        hydra-vi/end-of-buffer        "end of buffer/goto line")
+  ("<return>" goto-line                     "goto line")
+  ;; undo/redo
+  ("u"        undo-tree-undo                "undo")
+  ("C-r"      undo-tree-redo                "redo")
+  ;; misc
+  ("<SPC>"    ace-jump-mode                 "ace jump")
+  ;; exit points
+  ("q"        hydra-vi/post                 "cancel" :color blue))
+(bind-key "<f7>" 'hydra-vi/body ) ;
 
 (progn
   ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
