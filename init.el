@@ -15,6 +15,7 @@
                   ;; TODO: Maybe, use this after emacs24 is released
                   ;; (development versions of packages)
                   ("melpa" . "http://melpa.milkbox.net/packages/")
+		  ("SC"   . "http://joseito.republika.pl/sunrise-commander/")
                   ))
   (add-to-list 'package-archives source t))
 

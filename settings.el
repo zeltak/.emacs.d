@@ -759,6 +759,19 @@
  )
 
 (require 'dired-x)
+(setq dired-guess-shell-alist-user
+      '(("\\.e?ps$" "gv" "xloadimage" "lpr")
+        ("\\.chm$" "xchm")
+        ("\\.rar$" "unrar x")
+        ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
+        ("\\.pdf$" "okular" "zathura")
+        ("\\.flv$" "mplayer")
+        ("\\.mov$" "mplayer")
+        ("\\.3gp$" "mplayer")
+        ("\\.png$" "feh")
+        ("\\.jpg$" "feh")
+        ("\\.JPG$" "feh")
+        ("\\.avi$" "mplayer")))
 
 (use-package dired-sort
  :ensure t
@@ -954,6 +967,64 @@
 ;; Change workgroups session file
 (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
 )
+
+(use-package multiple-cursors
+ :ensure t
+ :config
+ (require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+
+ )
+
+(use-package anzu
+ :ensure t
+ :config
+(require 'anzu)
+(global-anzu-mode +1)
+
+(set-face-attribute 'anzu-mode-line nil
+                    :foreground "yellow" :weight 'bold)
+
+(custom-set-variables
+ '(anzu-mode-lighter "")
+ '(anzu-deactivate-region t)
+ '(anzu-search-threshold 1000)
+ '(anzu-replace-to-string-separator " => "))
+ 
+(global-set-key (kbd "M-%") 'anzu-query-replace)
+(global-set-key (kbd "C-M-%") 'anzu-query-replace-regexp)
+
+ )
+
+(use-package sunrise-commander
+ :ensure t
+ :config
+ (setq sr-attributes-display-mask '(nil nil nil nil t t t))
+
+ )
+
+(use-package auto-complete
+ :ensure t
+ :config
+(ac-config-default)
+
+;start after 4 characters
+(setq ac-auto-start 4)
+;fix linium issues
+(ac-linum-workaround)
+
+;; Examples
+(set-face-background 'ac-candidate-face "lightgray")
+(set-face-underline 'ac-candidate-face "darkgray")
+(set-face-background 'ac-selection-face "steelblue")
+
+)
+
+(use-package company
+ :ensure t
+ :config
+;(add-hook 'after-init-hook 'global-company-mode)
+ )
 
 (defun z-fix-characters 
 (start end) 
@@ -1249,7 +1320,7 @@ comment box."
 (defun z/insert-keyboth ()
   " insert 【】  "
   (interactive)
-  (insert "【 】")
+  (insert "【】")
 (backward-char 2)  
 )
 
@@ -1265,6 +1336,11 @@ comment box."
 )
 
 )
+
+(defun backward-kill-line (arg)
+  "Kill ARG lines backward."
+  (interactive "p")
+  (kill-line (- 1 arg)))
 
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
@@ -1490,6 +1566,61 @@ Repeated invocations toggle between the two most recently open buffers."
                     (action . (("search" . (lambda (f)
                                              (helm-swish-e helm-pattern)))))))))
 
+(defun z/del-nonorg-files ()
+(interactive)
+(dired-mark-files-regexp "\\.org$") 
+(dired-toggle-marks)
+(dired-do-delete)
+)
+
+(defun z/dired-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference."
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+
+(defun z/dired-open-in-desktop ()
+  "Show current file in desktop (OS's file manager)."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    ) ))
+
+(defun z/dired-get-size ()
+ (interactive)
+ (let ((files (dired-get-marked-files)))
+   (with-temp-buffer
+     (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+     (message "Size of all marked files: %s"
+              (progn 
+                (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                 (match-string 1))))))
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
@@ -1502,7 +1633,7 @@ Repeated invocations toggle between the two most recently open buffers."
 (global-unset-key (kbd "<f10>"))
 (global-unset-key (kbd "<f11>"))
 (global-unset-key (kbd "<f12>"))
-(global-unset-key (kbd "C-v "))
+(global-unset-key (kbd "C-v"))
 (global-unset-key (kbd "C-M-p"))
 (global-unset-key (kbd "C-M-e"))
 (global-unset-key (kbd "C-M-b"))
@@ -1547,7 +1678,7 @@ Repeated invocations toggle between the two most recently open buffers."
 "
 
 _a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
+_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
 _o_: mark prev      du_p_licate  _s_:       _t_: helm-top           _u_:       
 _v_:        _w_:        _x_:       _y_: kill ring       _z_: 
 _q_: 
@@ -1558,12 +1689,13 @@ _q_:
 
 ("a" nil )
 ("b"  nil  )
-("c"  comment-or-uncomment-region )
+;("c"  company-complete )
+("c"  auto-complete )
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
 ("g"  nil )
-("h"  nil )
+("h"  hide-sublevels )
 ("i"  hydra-editing-insert/body )
 ("j"  nil )
 ("k"  nil )
@@ -1582,6 +1714,7 @@ _q_:
 ("y"  helm-show-kill-ring )
 ("z"  nil )
 ("\\"  z/insert-slsh )
+(";"  comment-or-uncomment-region )
 ("q"  nil )
 
    ; (define-prefix-command 'xah-fly-leader-key-map)
@@ -1608,7 +1741,7 @@ _q_:
 _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
 _o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_:            _v_: viewmode
-_w_:whitespace-mode    _x_: evalbuf                    _y_:                 _z_:                _G_ indend-guide
+_w_:whitespace-mode    _x_: evalbuf _X_: eval region                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
 _q_:quit
@@ -1638,6 +1771,7 @@ _q_:quit
 ("v" view-mode )
 ("w" whitespace-mode)
 ("x" eval-buffer )
+("X" eval-region )
 ("y" nil )
 ("z" nil )
 ("=" text-scale-increase :color red )
@@ -1666,27 +1800,10 @@ _q_:quit
 _k_ :describe key  _v_ describe variable _f_ describe functiom  
 M-1- change windows
 M-2 expand region (select gradualy regions)
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
-M-` avy-jump
+~movment~ >> 【C-e//C-a】  (end/start of line)
+~editing~ >>  【C-BKSP//A-BKSP】 (kill word start/end of line)
+
+
 
 _q_: 
 "
@@ -1726,24 +1843,32 @@ _q_:
 
 "
 
-_a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _f_:         _g_:  
+_a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _ff_//_fd_//_fd_ (find/find lisp/dirs)         _g_:  
 _h_:         _i_:         _j_:dired-jump       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:peep dired        _r_:       _s_:       _t_: toggles          _u_:       
+_o_: dired operations       _p_:peep dired        _r_:       _s_:       _t_: toggles          _u_:       
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
-R: rename s: sort +:add dir
+【s】sort 【+】 add dir 【&/!】 EXE 【M-n】 cycle diredx guesses 
+【C/R/D/S】 copy/move(rename)/delete/symlink
+【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+
 "
 
 
 
 ("<f2>" dired )
+("<f1>" sunrise )
 ("a" nil )
 ("b"  nil  )
 ("c"  hydra-dired-configs/body )
 ("d"  nil )
 ("e"  nil )
-("f"  nil )
+("ff"  find-dired )
+("fl"  find-lisp-find-dired )
+("fd"  find-lisp-find-dired-subdirectories )
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
@@ -1752,7 +1877,7 @@ R: rename s: sort +:add dir
 ("l"  nil )
 ("m"  diredp-mark/unmark-extension )
 ("n"  nil )
-("o"  nil )
+("o"  hydra-dired-operation/body )
 ("p"  peep-dired )
 ("r"  nil )
 ("s"  nil )
@@ -1777,48 +1902,94 @@ R: rename s: sort +:add dir
 )
 
 (global-set-key
-(kbd "<f3>")
-(defhydra hydra-spell  (:color blue :hint nil)
+   (kbd "")
+(defhydra hydra-dired-operation (:color blue :hint nil)
 
 "
-_<f3>_: check and add
-_a_: helm apropos        _b_:             _c_:                       _d_:           _e_: Edit 
-_f_: helm-find           _g_:             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
-_k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
-_o_: helm-occur       _p_:                 _r_:       _s_:       _t_:           _u_:       
-_v_:        _w_:                 _x_:       _y_:       _z_: 
-_q_: _H_: highlight-symb remove 
+
+_a_:         _b_:         _c_: clean non-org        _d_:        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+
 "
-("<f3>" endless/ispell-word-then-abbrev )
-("a" helm-apropos )
+
+
+
+("a" nil )
 ("b"  nil  )
-("c"  nil )
-("d" nil )
-("e"  hydra-editing/body )
-("f"  helm-find-files )
+("c"  z/del-nonorg-files )
+("d"  nil )
+("e"  nil )
+("f"  nil )
 ("g"  nil )
-("h"  highlight-symbol )
-("H"  highlight-symbol-remove-all )
-("i"  ispell )
-("j"  highlight-symbol-next  :color red )
-("k"  highlight-symbol-prev  :color red )
-("l"  helm-locate )
-("m"  flyspell-check-next-highlighted-word )
-("n"  flyspell-goto-next-error )
-("o"  helm-occur )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
 ("p"  nil )
 ("r"  nil )
 ("s"  nil )
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
-("w"  ispell-word )
+("w"  nil )
 ("x"  nil )
 ("y"  nil )
 ("z"  nil )
 ("q"  nil )
 
 ))
+
+(global-set-key
+  (kbd "<f3>")
+  (defhydra hydra-spell  (:color blue :hint nil)
+
+  "
+  _<f3>_: check and add
+  _a_: helm apropos        _b_:             _c_: cycle spacing                       _d_:           _e_: Edit 
+  _f_: helm-find           _g_:rgrep             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
+  _k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
+  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_:       
+  _v_:        _w_:                 _x_:       _y_:       _z_: 
+  _q_: _H_: highlight-symb remove 
+【C-SPACE】 recntangle select 
+ "
+  ("<f3>" endless/ispell-word-then-abbrev )
+  ("a" helm-apropos )
+  ("b"  backward-kill-line  )
+  ("c"  cycle-spacing )
+  ("d" nil )
+  ("e"  hydra-editing/body )
+  ("f"  helm-find-files )
+  ("g"  rgrep )
+  ("h"  highlight-symbol )
+  ("H"  highlight-symbol-remove-all )
+  ("i"  ispell )
+  ("j"  highlight-symbol-next  :color red )
+  ("k"  highlight-symbol-prev  :color red )
+  ("l"  helm-locate )
+  ("m"  flyspell-check-next-highlighted-word )
+  ("n"  flyspell-goto-next-error )
+  ("o"  helm-occur )
+  ("p"  nil )
+  ("r"  anzu-query-replace-at-cursor)
+  ("s"  nil )
+  ("t"  nil )
+  ("u"  nil )
+  ("v"  nil)
+  ("w"  ispell-word )
+  ("x"  nil )
+  ("y"  nil )
+  ("z"  nil )
+  ("q"  nil )
+
+  ))
 
 (global-set-key
     (kbd "<f4>")
@@ -2536,6 +2707,31 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq explicit-shell-file-name "/bin/zsh")
 
 (setq cache-long-scans nil)
+
+;Spelling
+(autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
+(autoload 'flyspell-delay-command "flyspell" "Delay on command." t)
+(autoload 'tex-mode-flyspell-verify "flyspell" "" t) 
+
+
+(defun flyspell-check-next-highlighted-word ()
+  "custom function to spell check next highlighted word"
+  (interactive)
+  (flyspell-goto-next-error)
+  (ispell-word)
+  )
+
+;; warn when opening files bigger than 100MB
+(setq large-file-warning-threshold 100000000)
+
+;; kill line if no region active                      
+;; http://emacs-fu.blogspot.co.uk/2009/11/copying-lines-without-selecting-them.html
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no active region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
 
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
@@ -3682,7 +3878,9 @@ scroll-step 1)
 (setq evil-replace-state-cursor '("red" box))
 (setq evil-operator-state-cursor '("red" hollow))
 
-(setq dired-listing-switches "-aBhl  --group-directories-first")
+;; Make sizes human-readable by default, sort version numbers
+;; correctly, and put dotfiles and capital-letters first.
+(setq-default dired-listing-switches "-alhv --group-directories-first ")
 
 (setq dired-dwim-target t)
 
@@ -3690,55 +3888,18 @@ scroll-step 1)
 
 (setq dired-recursive-deletes 'always); “always” means no asking
 ;Always recursively copy directory
-(setq dired-recursive-copies 'top) ; “top” means ask once
+;(setq dired-recursive-copies 'top) ; “top” means ask once
+(setq dired-recursive-copies 'always) ; never ask
 
-(defun z/dired-open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference."
-  (interactive)
-  (let* (
-         (ξfile-list
-          (if (string-equal major-mode "dired-mode")
-              (dired-get-marked-files)
-            (list (buffer-file-name))))
-         (ξdo-it-p (if (<= (length ξfile-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
+;; Allow running multiple async commands simultaneously
+(defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
+  (when (get-buffer "*Async Shell Command*")
+    (with-current-buffer "*Async Shell Command*"
+      (rename-uniquely))))
+(ad-activate 'shell-command)
 
-    (when ξdo-it-p
-      (cond
-       ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda (fPath)
-           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
-       ((string-equal system-type "darwin")
-        (mapc
-         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
-       ((string-equal system-type "gnu/linux")
-        (mapc
-         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
-
-(defun z/dired-open-in-desktop ()
-  "Show current file in desktop (OS's file manager)."
-  (interactive)
-  (cond
-   ((string-equal system-type "windows-nt")
-    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
-   ((string-equal system-type "darwin") (shell-command "open ."))
-   ((string-equal system-type "gnu/linux")
-    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
-    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
-    ) ))
-
-(defun z/dired-get-size ()
- (interactive)
- (let ((files (dired-get-marked-files)))
-   (with-temp-buffer
-     (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-     (message "Size of all marked files: %s"
-              (progn 
-                (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-                 (match-string 1))))))
+(require 'find-dired)
+(setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 
 (setq-default dired-omit-mode t)
 
@@ -3800,21 +3961,24 @@ The app is chosen from your OS's preference."
 ;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
 ;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))) ;
 
-;Spelling
-(autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
-(autoload 'flyspell-delay-command "flyspell" "Delay on command." t)
-(autoload 'tex-mode-flyspell-verify "flyspell" "" t) 
+;; Handle zip compression
+(eval-after-load "dired-aux"
+  '(add-to-list 'dired-compress-file-suffixes
+                '("\\.zip\\'" ".zip" "unzip")))
+
+(add-hook 'isearch-mode-end-hook 
+  (lambda ()
+    (when (and (eq major-mode 'dired-mode)
+           (not isearch-mode-end-hook-quit))
+      (dired-find-file))))
 
 
-(defun flyspell-check-next-highlighted-word ()
-  "custom function to spell check next highlighted word"
-  (interactive)
-  (flyspell-goto-next-error)
-  (ispell-word)
-  )
 
-;; warn when opening files bigger than 100MB
-(setq large-file-warning-threshold 100000000)
+(add-hook 'isearch-mode-end-hook 
+  (lambda ()
+    (when (and (eq major-mode 'sunrise-mode)
+           (not isearch-mode-end-hook-quit))
+      (dired-find-file))))
 
 (setq TeX-parse-self t) ; Enable parse on load.
 (setq TeX-auto-save t) ; Enable parse on save.

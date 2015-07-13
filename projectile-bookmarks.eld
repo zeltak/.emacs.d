@@ -1,1 +1,1 @@
-("~/org/files/" "~/.emacs.d/" "~/" "~/dotfiles/" "~/.emacs.g/tmtxt-dired-async/")
+("~/dotfiles/" "~/" "~/org/files/" "~/.emacs.d/" "~/.emacs.g/tmtxt-dired-async/")

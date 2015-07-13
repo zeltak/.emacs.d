@@ -34,8 +34,8 @@ more...")
       (diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
       (diff-none '(:foreground "gray33"))
       (diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
-;      (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
-      (directory '(:weight bold  :foreground "#64CEFC" :background "#073642"))
+      (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
+;      (directory '(:weight bold  :foreground "#64CEFC" :background "#073642"))
       (highlight-line '(:background "#FFFFD7")) ; #F5F5F5
       (highlight-line-gnus '(:background "#DAEAFC")) ; defined in `gnus-zprime.el'
       (link '(:weight normal :underline t :foreground "#006DAF"))
@@ -493,6 +493,31 @@ more...")
    `(diredp-ignored-file-name ((,class ,shadow)))
    `(diredp-read-priv ((,class (:background "#0A99FF"))))
    `(diredp-write-priv ((,class (:foreground "white" :background "#FF4040"))))
+
+;;;sunrise
+
+     `(sr-active-path-face ((t (:bold t :background "#ace6ac" :foreground "yellow" :weight bold))))
+     `(sr-alt-marked-dir-face ((t (:bold t :foreground "DeepPink" :weight bold))))
+     `(sr-alt-marked-file-face ((t (:foreground "DeepPink"))))
+     `(sr-broken-link-face ((t (:italic t :foreground "red" :slant italic))))
+     `(sr-clex-hotchar-face ((t (:bold t :foreground "red" :weight bold))))
+     `(sr-compressed-face ((t (:foreground "magenta"))))
+     `(sr-directory-face ((t (:bold t :foreground "blue1" :weight bold))))
+      `(sr-editing-path-face ((t (:bold t :background "red" :foreground "yellow" :weight bold))))
+      `(sr-encrypted-face ((t (:foreground "DarkOrange1"))))
+      `(sr-highlight-path-face ((t (:bold t :background "yellow" :foreground "#ace6ac" :weight bold))))
+      `(sr-html-face ((t (:foreground "DarkOliveGreen"))))
+      `(sr-log-face ((t (:foreground "brown"))))
+      `(sr-marked-dir-face ((t (:bold t :foreground "red" :weight bold))))
+      `(sr-marked-file-face ((t (:foreground "red"))))
+      `(sr-mirror-path-face ((t (:bold t :background "blue" :foreground "yellow" :weight bold))))
+      `(sr-packaged-face ((t (:foreground "DarkMagenta"))))
+      `(sr-passive-path-face ((t (:bold t :background "white" :foreground "lightgray" :weight bold))))
+      `(sr-symlink-directory-face ((t (:italic t :foreground "blue1" :slant italic))))
+      `(sr-symlink-face ((t (:italic t :foreground "DeepSkyBlue" :slant italic))))
+      `(sr-xml-face ((t (:foreground "DarkGreen"))))
+
+
 
 ;;latex 
 
