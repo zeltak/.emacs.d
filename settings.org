@@ -2918,6 +2918,7 @@ _q_:
 ("-"  org-toggle-heading )
 ("="  z/org-convert-header-samelevel )
 ("\\"  hydra-org-table/body )
+(";"  z/comment-org-in-src-block )
 ("y"  nil )
 ("z"  nil )
 ("q"  nil )
