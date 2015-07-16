@@ -28,7 +28,8 @@
     ("/home/zeltak/org/files/agenda/Research.org" "/home/zeltak/org/files/agenda/TODO.org" "/home/zeltak/org/files/agenda/dl.org" "/home/zeltak/org/files/agenda/food.org" "/home/zeltak/org/files/agenda/travel.org")))
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
- '(org-download-screenshot-method "gm import %s"))
+ '(org-download-screenshot-method "gm import %s")
+ '(sr-windows-default-ratio 88))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

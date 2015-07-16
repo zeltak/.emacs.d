@@ -881,7 +881,7 @@
  :ensure t
  :config
  (require 'golden-ratio)
- (golden-ratio-mode 1)
+; (golden-ratio-mode 1)
  )
 
 (winner-mode 1)
@@ -1000,8 +1000,14 @@
  :ensure t
  :config
  (setq sr-attributes-display-mask '(nil nil nil nil t t t))
-
  )
+
+(use-package sunrise-x-popviewer
+  :ensure t
+  :config
+(require 'sunrise-x-popviewer)
+(sr-popviewer-mode 1)
+  )
 
 (use-package auto-complete
  :ensure t
