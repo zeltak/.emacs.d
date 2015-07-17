@@ -1000,13 +1000,10 @@
 (use-package sunrise-commander
  :ensure t
  :config
-(setq sr-attributes-display-mask '(nil nil nil t t t t))
+;(setq sr-attributes-display-mask '(nil nil nil t t t t))
 ;;disbale F keys
-(setq sr-use-commander-keys nil)
-(setq sr-listing-switches "-lXGh --group-directories-first")
-
-(setq sr-terminal-kill-buffer-on-exit t)                             ;; Don't leave any traces behind.
-(setq sr-kill-unused-buffers t)                                      ;; Don't leave any traces behind.
+;(setq sr-use-commander-keys nil)
+;(setq sr-listing-switches "-lXGh --group-directories-first")
 
 ;Here’s how to disable “click to visit file” and “cursor follows mouse”.
 (setq sr-cursor-follows-mouse nil)
@@ -1014,40 +1011,69 @@
 (define-key sr-mode-map [mouse-1]        nil)
 (define-key sr-mode-map [mouse-movement] nil)
 
-;;; Adding files opened with external apps to the history of recent files.
-(defadvice openwith-file-handler
-  (around advice-openwith-file-handler (operation &rest args))
-  (condition-case description
-      ad-do-it
-    (error (progn
-             (recentf-add-file (car args))
-             (error (cadr description))))))
-(ad-activate 'openwith-file-handler)
-
-(defun er/sunrise-flatten ()
- (interactive)
- (sr-find "-type f"))
-
-; Kill all sunrise and dired buffers when closing Sunrise Commander
-(defun er/kill-all-sunrise-buffers()
-      "Kill all dired buffers."
-      (interactive)
-      (save-excursion
-        (let((count 0))
-          (dolist(buffer (buffer-list))
-            (set-buffer buffer)
-            (when (derived-mode-p 'dired-mode 'sr-virtual-mode 'sr-mode)
-                (setq count (1+ count))
-                (kill-buffer buffer)))
-          (message "Killed %i sunrise buffer(s)." count ))))
-(setq sr-quit-hook 'er/kill-all-sunrise-buffers)
-
  )
 
 (define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
 (define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
 (define-key sr-mode-map (kbd "\\") 'sr-checkpoint-restore ) 
-(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body )
+(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body ) 
+;lynx like
+(define-key sr-mode-map (kbd "<left>") 'sr-dired-prev-subdir ) 
+(define-key sr-mode-map (kbd "<right>") 'sr-advertised-find-file ) 
+;move back/forward im history
+(define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
+(define-key sr-mode-map (kbd "M-<right>") 'sr-history-next )
+
+(defhydra hydra-sunrise-leader  (:color blue :hint nil)
+
+"
+
+_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
+_o_: mark prev   _p_ _q_ _r_ wdired   du_p_licate  _s_:       _t_: term           _u_:       
+_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
+_q_: 
+
+Sunrise:
+【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes 【C-enter】open in next pane 
+【N】copy/rename same dir 【s/r】sort/reverse 【X】exe file 【K】clone (cp tree) 【y】calc size
+
+
+"
+
+("a" find-file  )
+("b"  nil  )
+;("c"  company-complete )
+("c"  auto-complete )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  hide-sublevels )
+("i"  hydra-editing-insert/body )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  helm-mark-ring )
+("n"  set-mark-command )
+("o"  set-mark-command 4 )
+("p"  duplicate-current-line-or-region )
+("r"  sr-editable-pane )
+("s"  nil )
+("t"  sr-term-cd )
+("T"  sr-term )
+("<f9>"  sr-term-cd-newterm )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  helm-show-kill-ring )
+("z"  nil )
+("\\"  z/insert-slsh )
+(";"  comment-or-uncomment-region )
+("q"  nil )
+
+)
 
 (use-package sunrise-x-popviewer
   :ensure t
@@ -1087,6 +1113,34 @@
  :ensure t
  :config
   )
+
+;;; Adding files opened with external apps to the history of recent files.
+(defadvice openwith-file-handler
+  (around advice-openwith-file-handler (operation &rest args))
+  (condition-case description
+      ad-do-it
+    (error (progn
+             (recentf-add-file (car args))
+             (error (cadr description))))))
+(ad-activate 'openwith-file-handler)
+
+(defun er/sunrise-flatten ()
+ (interactive)
+ (sr-find "-type f"))
+
+; Kill all sunrise and dired buffers when closing Sunrise Commander
+(defun er/kill-all-sunrise-buffers()
+      "Kill all dired buffers."
+      (interactive)
+      (save-excursion
+        (let((count 0))
+          (dolist(buffer (buffer-list))
+            (set-buffer buffer)
+            (when (derived-mode-p 'dired-mode 'sr-virtual-mode 'sr-mode)
+                (setq count (1+ count))
+                (kill-buffer buffer)))
+          (message "Killed %i sunrise buffer(s)." count ))))
+(setq sr-quit-hook 'er/kill-all-sunrise-buffers)
 
 (use-package auto-complete
  :ensure t
@@ -1939,10 +1993,6 @@ _q_:
 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
 【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
 【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-------------------------
-Sunrise:
-【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes
-【N】copy/rename same dir 【s/r】sort/reverse
 
 "
 
@@ -2034,50 +2084,6 @@ _q_:
 ("q"  nil )
 
 ))
-
-(defhydra hydra-sunrise-leader  (:color blue :hint nil)
-
-"
-
-_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
-_o_: mark prev      du_p_licate  _s_:       _t_: helm-top           _u_:       
-_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
-_q_: 
-
-"
-
-("a" find-file  )
-("b"  nil  )
-;("c"  company-complete )
-("c"  auto-complete )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  hide-sublevels )
-("i"  hydra-editing-insert/body )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  helm-mark-ring )
-("n"  set-mark-command )
-("o"  set-mark-command 4 )
-("p"  duplicate-current-line-or-region )
-("r"  nil )
-("s"  nil )
-("t"  helm-top )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  helm-show-kill-ring )
-("z"  nil )
-("\\"  z/insert-slsh )
-(";"  comment-or-uncomment-region )
-("q"  nil )
-
-)
 
 (global-set-key
   (kbd "<f3>")

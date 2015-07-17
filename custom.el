@@ -34,6 +34,7 @@
  '(sr-popviewer-enabled t)
  '(sr-show-hidden-files t)
  '(sr-traditional-other-window nil)
+ '(sr-use-commander-keys nil)
  '(sr-windows-default-ratio 88))
 
 (custom-set-faces
