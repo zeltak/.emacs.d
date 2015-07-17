@@ -29,11 +29,19 @@
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
  '(org-download-screenshot-method "gm import %s")
+ '(sr-avfs-root "~/.avfs")
+ '(sr-history-length 30)
+ '(sr-popviewer-enabled t)
+ '(sr-show-hidden-files t)
+ '(sr-traditional-other-window nil)
  '(sr-windows-default-ratio 88))
+
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t))
+ '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t)
+ '(sr-active-path-face ((t (:background "DodgerBlue4" :foreground "deep sky blue" :weight bold))))
+ '(sr-symlink-face ((t (:foreground "dim gray" :slant italic)))))

@@ -600,6 +600,7 @@
 (use-package openwith 
 :ensure t
 :config
+(require 'openwith)
 (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
 (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
 (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
@@ -999,14 +1000,92 @@
 (use-package sunrise-commander
  :ensure t
  :config
- (setq sr-attributes-display-mask '(nil nil nil nil t t t))
+(setq sr-attributes-display-mask '(nil nil nil t t t t))
+;;disbale F keys
+(setq sr-use-commander-keys nil)
+(setq sr-listing-switches "-lXGh --group-directories-first")
+
+(setq sr-terminal-kill-buffer-on-exit t)                             ;; Don't leave any traces behind.
+(setq sr-kill-unused-buffers t)                                      ;; Don't leave any traces behind.
+
+;Here’s how to disable “click to visit file” and “cursor follows mouse”.
+(setq sr-cursor-follows-mouse nil)
+(setq sr-toggle-attribute 1)
+(define-key sr-mode-map [mouse-1]        nil)
+(define-key sr-mode-map [mouse-movement] nil)
+
+;;; Adding files opened with external apps to the history of recent files.
+(defadvice openwith-file-handler
+  (around advice-openwith-file-handler (operation &rest args))
+  (condition-case description
+      ad-do-it
+    (error (progn
+             (recentf-add-file (car args))
+             (error (cadr description))))))
+(ad-activate 'openwith-file-handler)
+
+(defun er/sunrise-flatten ()
+ (interactive)
+ (sr-find "-type f"))
+
+; Kill all sunrise and dired buffers when closing Sunrise Commander
+(defun er/kill-all-sunrise-buffers()
+      "Kill all dired buffers."
+      (interactive)
+      (save-excursion
+        (let((count 0))
+          (dolist(buffer (buffer-list))
+            (set-buffer buffer)
+            (when (derived-mode-p 'dired-mode 'sr-virtual-mode 'sr-mode)
+                (setq count (1+ count))
+                (kill-buffer buffer)))
+          (message "Killed %i sunrise buffer(s)." count ))))
+(setq sr-quit-hook 'er/kill-all-sunrise-buffers)
+
  )
+
+(define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
+(define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
+(define-key sr-mode-map (kbd "\\") 'sr-checkpoint-restore ) 
+(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body )
 
 (use-package sunrise-x-popviewer
   :ensure t
   :config
 (require 'sunrise-x-popviewer)
 (sr-popviewer-mode 1)
+;; to open in next pane and not new window
+(setq sr-popviewer-select-viewer-action
+         (lambda nil (let ((sr-running nil)) (other-window 1))))
+  )
+
+(use-package sunrise-x-mirror
+ :ensure t
+ :config
+ (require 'sunrise-x-mirror)
+(setq sr-mirror-unionfs-impl (quote unionfs-fuse))
+ )
+
+(use-package sunrise-x-loop
+ :ensure t
+ :config
+(require 'sunrise-x-loop) 
+ )
+
+(use-package  sunrise-x-modeline
+ :ensure t
+ :config
+ )
+
+(use-package sunrise-x-tabs
+ :ensure t
+ :config
+;(require 'sunrise‐x‐tabs) 
+ )
+
+(use-package sunrise-x-checkpoints
+ :ensure t
+ :config
   )
 
 (use-package auto-complete
@@ -1855,11 +1934,15 @@ _o_: dired operations       _p_:peep dired        _r_:       _s_:       _t_: tog
 _v_:        _w_:        _x_:       _y_:       _z_: 
 _q_: 
 
-【s】sort 【+】 add dir 【&/!】 EXE 【M-n】 cycle diredx guesses 
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
 【C/R/D/S】 copy/move(rename)/delete/symlink
 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
 【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
 【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+------------------------
+Sunrise:
+【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes
+【N】copy/rename same dir 【s/r】sort/reverse
 
 "
 
@@ -1951,6 +2034,50 @@ _q_:
 ("q"  nil )
 
 ))
+
+(defhydra hydra-sunrise-leader  (:color blue :hint nil)
+
+"
+
+_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
+_o_: mark prev      du_p_licate  _s_:       _t_: helm-top           _u_:       
+_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
+_q_: 
+
+"
+
+("a" find-file  )
+("b"  nil  )
+;("c"  company-complete )
+("c"  auto-complete )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  hide-sublevels )
+("i"  hydra-editing-insert/body )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  helm-mark-ring )
+("n"  set-mark-command )
+("o"  set-mark-command 4 )
+("p"  duplicate-current-line-or-region )
+("r"  nil )
+("s"  nil )
+("t"  helm-top )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  helm-show-kill-ring )
+("z"  nil )
+("\\"  z/insert-slsh )
+(";"  comment-or-uncomment-region )
+("q"  nil )
+
+)
 
 (global-set-key
   (kbd "<f3>")
@@ -2683,7 +2810,9 @@ comment _e_macs function  // copy-paste-comment-function _r_
                                       regexp-search-ring
                                       file-name-history
                                       extended-command-history
-                                      kill-ring))
+                                      kill-ring
+                                      sr-history-registry
+                                        ))
 
 ;;autosave
 ;(setq auto-save-visited-file-name t)
