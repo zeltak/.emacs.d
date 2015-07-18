@@ -893,6 +893,8 @@
 (define-key sr-mode-map [mouse-1]        nil)
 (define-key sr-mode-map [mouse-movement] nil)
 
+;sorting
+(setq sr-listing-switches "--time-style=locale --group-directories-first -AlDhgG")
  )
 
 (define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 

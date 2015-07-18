@@ -1297,6 +1297,8 @@ http://www.emacswiki.org/emacs/Sunrise_Commander_Tips
 (define-key sr-mode-map [mouse-1]        nil)
 (define-key sr-mode-map [mouse-movement] nil)
 
+;sorting
+(setq sr-listing-switches "--time-style=locale --group-directories-first -AlDhgG")
  )
 #+END_SRC 
 *** keys
@@ -1539,7 +1541,7 @@ xah-find-count
 xah-find-replace-text
 xah-find-replace-text-regex
 
-Press Enter ↵ on a link to jump to the file location. (or mouse click)
+Press Enter ↵ on a link to jump to the file location. (or mouse clic)k
 Press 【Tab ↹】 to jump to next occurence. (【⇧ Shift+Tab ↹】 for previous)
 Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
 
