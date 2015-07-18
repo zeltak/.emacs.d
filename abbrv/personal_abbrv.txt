@@ -620,7 +620,7 @@
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 15)
+    ("ie" "₆In example₆" nil 17)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -687,6 +687,7 @@
     ("konwn" "known" nil 0)
     ("konws" "knows" nil 0)
     ("labratory" "laboratory" nil 0)
+    ("lamguages" "languages" nil 0)
     ("languange" "language" nil 0)
     ("lastyear" "last year" nil 0)
     ("launced" "launched" nil 0)
@@ -884,6 +885,7 @@
     ("redirector" "re-director" nil 0)
     ("refercnes" "reference" nil 0)
     ("refernce" "reference" nil 1)
+    ("reffer" "refer" nil 0)
     ("regardsless" "regardless" nil 0)
     ("regession" "regression" nil 0)
     ("regresion" "regression" nil 0)
@@ -1265,6 +1267,10 @@
 (define-abbrev-table 'special-mode-abbrev-table '())
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
+
+(define-abbrev-table 'sr-mode-abbrev-table '())
+
+(define-abbrev-table 'sr-virtual-mode-abbrev-table '())
 
 (define-abbrev-table 'tablist-mode-abbrev-table '())
 
