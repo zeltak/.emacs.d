@@ -344,16 +344,16 @@
 (toggle-diredp-find-file-reuse-dir 1)
   )
 
-(use-package dired-details
- :ensure t
- :config
-(setq dired-details-hide-link-targets nil)
- )
+;; (use-package dired-details
+;;  :ensure t
+;;  :config
+;; (setq dired-details-hide-link-targets nil)
+;;  )
 
-(use-package dired-details+
- :ensure t
- :config
- )
+;; (use-package dired-details+
+;;  :ensure t
+;;  :config
+;;  )
 
 (use-package peep-dired
  :ensure t
@@ -882,10 +882,17 @@
 (use-package sunrise-commander
  :ensure t
  :config
-;(setq sr-attributes-display-mask '(nil nil nil t t t t))
+;;what to shoe in list view
+(setq sr-attributes-display-mask '(nil nil t t t t t))
+;start with no attributes in view (if set to nil)
+(setq sr-show-file-attributes nil)
+;sorting
+(setq sr-listing-switches "--time-style=locale --group-directories-first -AlDhgG")
+
+
 ;;disbale F keys
 ;(setq sr-use-commander-keys nil)
-;(setq sr-listing-switches "-lXGh --group-directories-first")
+
 
 ;Here’s how to disable “click to visit file” and “cursor follows mouse”.
 (setq sr-cursor-follows-mouse nil)
@@ -893,8 +900,11 @@
 (define-key sr-mode-map [mouse-1]        nil)
 (define-key sr-mode-map [mouse-movement] nil)
 
-;sorting
-(setq sr-listing-switches "--time-style=locale --group-directories-first -AlDhgG")
+;;nicer icons in modline
+(setq sr-modeline-use-utf8-marks t)
+;;where is avfs root
+(setq sr-avfs-root "~/.avfs")
+
  )
 
 (define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
@@ -1053,14 +1063,14 @@ Sunrise:
 
 (winner-mode 1)
 
-(use-package workgroups2
- :ensure t
- :config
+;(use-package workgroups2
+; :ensure t
+; :config
 ;(workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
-(require 'workgroups2)
+;(require 'workgroups2)
 ;; Change workgroups session file
-(setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
-)
+;(setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+;)
 
 (use-package xah-find
  :ensure t
@@ -1742,7 +1752,7 @@ The app is chosen from your OS's preference."
 (global-unset-key (kbd "C-M-t"))
 
 (key-chord-define-global "yy"     'z/copy-line)
-(key-chord-define-global "jj"     'avi-goto-char-2)
+(key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
@@ -1764,7 +1774,7 @@ The app is chosen from your OS's preference."
 ;(global-set-key (kbd "\\") 'xah-fly-leader-key-map)
 
 (global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'avi-goto-char-2)
+(global-set-key (kbd "M-`") 'avy-goto-word-or-subword-1)
 
 ;Create an ID for the entry at point if it does not yet have one.
 (global-set-key "\C-ca" 'org-agenda)

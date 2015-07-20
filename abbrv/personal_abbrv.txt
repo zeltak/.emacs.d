@@ -9,9 +9,7 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -31,13 +29,9 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -304,7 +298,7 @@
     ("charectraistics" "characteristics" nil 0)
     ("cheif" "chief" nil 0)
     ("chekc" "check" nil 0)
-    ("chnage" "change" nil 0)
+    ("chnage" "change" nil 1)
     ("cieling" "ceiling" nil 0)
     ("circut" "circuit" nil 0)
     ("citatrions" "citations" nil 0)
@@ -837,6 +831,7 @@
     ("pregnent" "pregnant" nil 0)
     ("prelease" "release" nil 0)
     ("prelimnary" "preliminary" nil 0)
+    ("premissions" "permissions" nil 0)
     ("preperation" "preparation" nil 0)
     ("prerelease" "pre-release" nil 0)
     ("presance" "presence" nil 0)
@@ -1188,9 +1183,7 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1210,9 +1203,7 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1228,9 +1219,7 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
