@@ -29,6 +29,7 @@
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
  '(org-download-screenshot-method "gm import %s")
+ '(sr-avfs-root "~/.avfs")
  '(sr-history-length 30)
  '(sr-popviewer-enabled t)
  '(sr-show-hidden-files t)

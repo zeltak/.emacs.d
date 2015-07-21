@@ -198,16 +198,6 @@
 ;;            (insert "~/")
 ;;          (call-interactively 'self-insert-command))))))
 
-;; some proposals for binding:
- 
-;  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
-;  (define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
-;  (define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
-   
-  ;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
-  ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
-  ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
-
 (use-package ace-window
     :config
 ;set keys to only these 
@@ -222,20 +212,20 @@
   :ensure ace-jump-zap
 )
 
-;use-package ace-isearch
-;:ensure t
-;:config
-;(ace-isearch-mode +1)
-;(global-ace-isearch-mode +1)
-;)
+(use-package ace-isearch
+ :ensure t
+ :config
+ (ace-isearch-mode +1)
+ (global-ace-isearch-mode +1)
+(setq ace-isearch-function 'avy-goto-word-1)
+ )
 
-;(custom-set-variables
-; '(ace-isearch-input-length 7)
-; '(ace-isearch-input-idle-delay 0.4)
-; '(ace-isearch-submode 'ace-jump-char-mode)
-; '(ace-isearch-use-ace-jump 'printing-char))
-
-;(ace-isearch-set-ace-jump-after-isearch-exit t)
+(custom-set-variables
+  '(ace-isearch-input-length 9)
+  '(ace-isearch-input-idle-delay 0.4)
+  '(ace-isearch-submode 'ace-jump-char-mode)
+  '(ace-isearch-use-ace-jump 'printing-char)
+)
 
 (use-package anzu
  :ensure t
@@ -283,9 +273,11 @@
 (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
   "Keys for jumping.")
 
-(global-set-key (kbd "C-;") 'avi-goto-char-2)
-
-(setq avi-background t)
+(use-package avy-zap
+ :ensure t
+ :config
+ 
+ )
 
 (use-package bookmark+
 :ensure t
@@ -1036,6 +1028,11 @@ Sunrise:
           (message "Killed %i sunrise buffer(s)." count ))))
 (setq sr-quit-hook 'er/kill-all-sunrise-buffers)
 
+(use-package sr-speedbar
+ :ensure t
+ :config
+  )
+
 (use-package swiper 
  :ensure t
  :config
@@ -1060,6 +1057,44 @@ Sunrise:
 :ensure t
 :config
 )
+
+(use-package weechat
+   :ensure t
+   :config
+  (require 'weechat)
+(setq weechat-modules '(weechat-button
+                        weechat-complete
+                        weechat-spelling
+                        weechat-corrector
+                        weechat-tracking
+                        weechat-notifications))
+   )
+
+(eval-after-load 'weechat
+  '(progn
+     (setq weechat-host-default "karif.server-speed.net"
+           weechat-port-default 9001
+           weechat-color-list
+           '(unspecified "black" "dark gray" "dark red" "red"
+                         "dark green" "light green" "brown"
+                         "yellow" "RoyalBlue3"
+                         "light blue"
+                         "dark magenta" "magenta" "dark cyan"
+                         "light cyan" "gray" "white")
+           weechat-prompt "> "
+           weechat-notification-mode t
+           weechat-auto-monitor-buffers t 
+           weechat-complete-nick-ignore-self nil
+           weechat-button-buttonize-nicks nil
+           weechat-tracking-types '(:highlight (".+#weechat.el" . :message))
+           weechat-sync-active-buffer t)
+     (setq weechat-auto-monitor-buffers
+      '("freenode.#gmpc"
+        "bitlbee.rasi"))
+     (set-face-background 'weechat-highlight-face "dark red")
+     (set-face-foreground 'weechat-highlight-face "light grey")
+     (add-hook 'weechat-mode-hook 'visual-line-mode)
+     (tracking-mode)))
 
 (winner-mode 1)
 
@@ -1851,7 +1886,7 @@ _q_:
 "
 _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
-_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_:            _v_: viewmode
+_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_: pair-mode            _v_: viewmode
 _w_:whitespace-mode    _x_: evalbuf _X_: eval region                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
@@ -1878,7 +1913,7 @@ _q_:quit
 ("s" scratch)
 ("S" create-scratch-buffer)
 ("t" lentic-mode  )
-("u" nil )
+("u" electric-pair-mode )
 ("v" view-mode )
 ("w" whitespace-mode)
 ("x" eval-buffer )
@@ -2066,7 +2101,7 @@ _q_:
   _a_: helm apropos        _b_:             _c_: cycle spacing                       _d_:           _e_: Edit 
   _f_: helm-find           _g_:rgrep             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
   _k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
-  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_:       
+  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_: imenu       
   _v_:        _w_:                 _x_:       _y_:       _z_: 
   _q_: _H_: highlight-symb remove 
 【C-SPACE】 recntangle select 
@@ -2092,7 +2127,7 @@ _q_:
   ("r"  anzu-query-replace-at-cursor)
   ("s"  nil )
   ("t"  nil )
-  ("u"  nil )
+  ("u"  imenu )
   ("v"  nil)
   ("w"  ispell-word )
   ("x"  nil )
@@ -2136,12 +2171,12 @@ _h_tml    ^ ^       _A_SCII:
 
 (global-set-key
    (kbd "<f5>")
-(defhydra hydra-mu4e (:color blue :hint nil)
+(defhydra hydra-mu4e (:color blue  :columns 2)
   "
+mu4e
 "
   ("<f5>"     mu4e            "start mu4e")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
-  ("o"     mu4e-headers-change-sorting            "sort")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
