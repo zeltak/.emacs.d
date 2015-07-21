@@ -244,20 +244,6 @@ $note its built into emacs no intsall needed$
   ;;          (call-interactively 'self-insert-command))))))
 #+END_SRC
 
-** Ace jump
-*** evil mode specifics 
-#+BEGIN_SRC emacs-lisp :results none 
-  ;; some proposals for binding:
- 
-;  (define-key evil-motion-state-map (kbd "SPC") #'evil-ace-jump-char-mode)
-;  (define-key evil-motion-state-map (kbd "C-SPC") #'evil-ace-jump-word-mode)
-;  (define-key evil-motion-state-map (kbd "M-SPC") #'evil-ace-jump-line-mode)
-   
-  ;; (define-key evil-operator-state-map (kbd "SPC") #'evil-ace-jump-char-mode)      ; similar to f
-  ;; (define-key evil-operator-state-map (kbd "C-SPC") #'evil-ace-jump-char-to-mode) ; similar to t
-  ;; (define-key evil-operator-state-map (kbd "M-SPC") #'evil-ace-jump-word-mode)
-  
-#+END_SRC
 ** Ace window
 *** use package
 sets to only use homekeys 
@@ -284,23 +270,23 @@ sets to only use homekeys
 https://github.com/tam17aki/ace-isearch
 *** start ace-isearch
 #+BEGIN_SRC emacs-lisp :results none
-;use-package ace-isearch
-;:ensure t
-;:config
-;(ace-isearch-mode +1)
-;(global-ace-isearch-mode +1)
-;)
+  (use-package ace-isearch
+  :ensure t
+  :config
+  (ace-isearch-mode +1)
+  (global-ace-isearch-mode +1)
+ (setq ace-isearch-function 'avy-goto-word-1)
+  )
 #+END_SRC
 *** customize 
 
 #+BEGIN_SRC emacs-lisp :results none
-;(custom-set-variables
-; '(ace-isearch-input-length 7)
-; '(ace-isearch-input-idle-delay 0.4)
-; '(ace-isearch-submode 'ace-jump-char-mode)
-; '(ace-isearch-use-ace-jump 'printing-char))
-
-;(ace-isearch-set-ace-jump-after-isearch-exit t)
+  (custom-set-variables
+  '(ace-isearch-input-length 9)
+  '(ace-isearch-input-idle-delay 0.4)
+  '(ace-isearch-submode 'ace-jump-char-mode)
+  '(ace-isearch-use-ace-jump 'printing-char)
+)
 #+END_SRC
 
 ** anzu
@@ -367,13 +353,18 @@ https://github.com/syohex/emacs-anzu
   "Keys for jumping.")
 #+END_SRC
 
+** TODO avy zap
+https://github.com/cute-jumper/avy-zap
 #+BEGIN_SRC emacs-lisp :results none
-(global-set-key (kbd "C-;") 'avi-goto-char-2)
-#+END_SRC
+(use-package avy-zap
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
 
-#+BEGIN_SRC emacs-lisp :results none
-(setq avi-background t)
-#+END_SRC
+
+
 
 ** Bookmark+
 #+BEGIN_SRC emacs-lisp :results none
@@ -1479,6 +1470,17 @@ when yo need to copy of move any big files, just prefix the appropriate command 
 (setq sr-quit-hook 'er/kill-all-sunrise-buffers)
 
 #+END_SRC 
+** TODO sr-speedbar
+SrSpeedbar is mode make SpeedBar show in Current Frame 
+http://www.emacswiki.org/emacs/SrSpeedbar
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package sr-speedbar
+ :ensure t
+ :config
+  )
+#+END_SRC 
+
 ** swiper
 #+BEGIN_SRC emacs-lisp :results none
 (use-package swiper 
@@ -1518,6 +1520,50 @@ makes or unmakes a marked section wider/shorter (look fill command)
 :ensure t
 :config
 )
+#+END_SRC
+
+** weechat.el
+
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package weechat
+   :ensure t
+   :config
+  (require 'weechat)
+(setq weechat-modules '(weechat-button
+                        weechat-complete
+                        weechat-spelling
+                        weechat-corrector
+                        weechat-tracking
+                        weechat-notifications))
+   )
+#+END_SRC 
+
+#+BEGIN_SRC emacs-lisp :results none
+(eval-after-load 'weechat
+  '(progn
+     (setq weechat-host-default "karif.server-speed.net"
+           weechat-port-default 9001
+           weechat-color-list
+           '(unspecified "black" "dark gray" "dark red" "red"
+                         "dark green" "light green" "brown"
+                         "yellow" "RoyalBlue3"
+                         "light blue"
+                         "dark magenta" "magenta" "dark cyan"
+                         "light cyan" "gray" "white")
+           weechat-prompt "> "
+           weechat-notification-mode t
+           weechat-auto-monitor-buffers t 
+           weechat-complete-nick-ignore-self nil
+           weechat-button-buttonize-nicks nil
+           weechat-tracking-types '(:highlight (".+#weechat.el" . :message))
+           weechat-sync-active-buffer t)
+     (setq weechat-auto-monitor-buffers
+      '("freenode.#gmpc"
+        "bitlbee.rasi"))
+     (set-face-background 'weechat-highlight-face "dark red")
+     (set-face-foreground 'weechat-highlight-face "light grey")
+     (add-hook 'weechat-mode-hook 'visual-line-mode)
+     (tracking-mode)))
 #+END_SRC
 
 ** winner-mode
@@ -2800,7 +2846,7 @@ _q_:
   _a_: helm apropos        _b_:             _c_: cycle spacing                       _d_:           _e_: Edit 
   _f_: helm-find           _g_:rgrep             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
   _k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
-  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_:       
+  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_: imenu       
   _v_:        _w_:                 _x_:       _y_:       _z_: 
   _q_: _H_: highlight-symb remove 
 【C-SPACE】 recntangle select 
@@ -2826,7 +2872,7 @@ _q_:
   ("r"  anzu-query-replace-at-cursor)
   ("s"  nil )
   ("t"  nil )
-  ("u"  nil )
+  ("u"  imenu )
   ("v"  nil)
   ("w"  ispell-word )
   ("x"  nil )
@@ -2877,12 +2923,12 @@ _h_tml    ^ ^       _A_SCII:
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f5>")
-(defhydra hydra-mu4e (:color blue :hint nil)
+(defhydra hydra-mu4e (:color blue  :columns 2)
   "
+mu4e
 "
   ("<f5>"     mu4e            "start mu4e")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
-  ("o"     mu4e-headers-change-sorting            "sort")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
