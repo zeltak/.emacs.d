@@ -289,6 +289,17 @@ https://github.com/tam17aki/ace-isearch
 )
 #+END_SRC
 
+** ace link
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package ace-link
+ :ensure t
+ :config
+(ace-link-setup-default)
+ 
+ )
+#+END_SRC 
+
 ** anzu
 https://github.com/syohex/emacs-anzu
 
@@ -348,10 +359,17 @@ https://github.com/syohex/emacs-anzu
 #+END_SRC
 
 ** Avy
+https://github.com/abo-abo/avy
+
 #+BEGIN_SRC emacs-lisp :results none
+(use-package avy
+ :ensure t
+ :config
 (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-  "Keys for jumping.")
-#+END_SRC
+  "Keys for jumping.") 
+ )
+#+END_SRC 
+
 
 ** TODO avy zap
 https://github.com/cute-jumper/avy-zap
@@ -362,9 +380,6 @@ https://github.com/cute-jumper/avy-zap
  
  )
 #+END_SRC 
-
-
-
 
 ** Bookmark+
 #+BEGIN_SRC emacs-lisp :results none
@@ -1251,6 +1266,18 @@ http://julien.danjou.info/projects/emacs-packages#rainbow-mode
                 ))
   (add-hook hook 'rainbow-mode))
 #+END_SRC
+** TODO Ranger
+https://github.com/ralesi/ranger/
+
+#+BEGIN_SRC emacs-lisp :results none
+;(use-package ranger
+; :ensure t
+; :config
+;
+; )
+#+END_SRC 
+
+
 ** scratch
 Instant scratch buffer for current mode
 
@@ -1488,6 +1515,13 @@ http://www.emacswiki.org/emacs/SrSpeedbar
  :config
  )
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun swiper-at-point ()
+  (interactive)
+  (swiper (thing-at-point 'symbol)))
+#+END_SRC
+
 ** transmission
 need to install let-alist and seq packages from melpa
 #+BEGIN_SRC emacs-lisp :results none
@@ -2518,7 +2552,7 @@ The app is chosen from your OS's preference."
 ** movment
 #+BEGIN_SRC emacs-lisp :results none
 (global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "M-`") 'avy-goto-line)
 #+END_SRC
 
 ** org
@@ -2531,6 +2565,21 @@ The app is chosen from your OS's preference."
 #+END_SRC
 
 ** hydra
+*** hydra faces
+#+BEGIN_SRC emacs-lisp :results none
+(defface hydra-face-orange
+    '((t (:foreground "orange" :bold t)))
+  "Orange face. For fun.")
+
+(defface hydra-face-red
+    '((t (:foreground "red" :bold t)))
+  "red face. For fun.")
+
+(defface hydra-face-green
+    '((t (:foreground "green" :bold t)))
+  "green face. For fun.")
+#+END_SRC
+
 *** TODO hydra leader
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2599,24 +2648,26 @@ _q_:
 #+END_SRC
 *** Emacs//toggles (f1)
 **** main toggles 
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "<f1>")
-(defhydra hydra-toggles (:color blue :hint nil)
-
-"
-_a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
+     _a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
 _h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
 _o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_: pair-mode            _v_: viewmode
 _w_:whitespace-mode    _x_: evalbuf _X_: eval region                    _y_:                 _z_:                _G_ indend-guide
 
                        _=_ zoom in             _-_ zoom out
 _q_:quit
+
+(global-set-key
+   (kbd "<f1>")
+(defhydra hydra-toggles (:color blue :hint nil))
+
+"
+【M-g M-g】 goto line
+
 "
 
 ("a" nil  )
-("b" bug-hunter-file )
-("c" cua-mode )
+("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
+("c" cua-mode "cua" :face 'hydra-face-red )
 ("d" tool-bar-mode  )
 ("e" evil-mode)
 ("f" fci-mode )
@@ -2646,6 +2697,46 @@ _q_:quit
 ("G"  indent-guide-mode)
 ("q" nil )
 
+)
+:face 'hydra-face-orange 
+
+
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f1>")
+(defhydra hydra-toggles (:color blue  :columns 6)
+"Toggles:   【M-g M-g】 goto line"
+("a" nil  )
+("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
+("c" cua-mode "cua" :face 'hydra-face-red )
+("d" tool-bar-mode "toggle toolbar"   )
+("e" evil-mode "evil")
+("f" fci-mode "fci" )
+("g" google-search "google")
+("h" hydra-toggles-help/body "help" )
+("i"  nil )
+("j"  nil )
+("k" key-chord-mode "key-chord"  )
+("l" linum-mode  "linium")
+("m" hydra-toggles-macro/body "macro menu")
+("n" start-kbd-macro "start macro" :face 'hydra-face-green)
+("o" end-kbd-macro "end macro" :face 'hydra-face-red)
+("p" list-packages "elpa"  )
+("r" read-only-mode "read-only")
+("s" scratch "scratch")
+("S" create-scratch-buffer "New scratch" )
+("t" lentic-mode  "lentic")
+("u" electric-pair-mode "electric-pair")
+("v" view-mode "view-mode")
+("w" whitespace-mode "whitespace")
+("x" eval-buffer "eval buffer")
+("X" eval-region "eval-region")
+("y" nil )
+("z" nil )
+("=" text-scale-increase :color red )
+("-" text-scale-decrease :color red)
+("G"  indent-guide-mode "guide-mode")
+("q" nil "cancel")
 ))
 #+END_SRC
 
@@ -2939,45 +3030,39 @@ mu4e
 
 (global-set-key
    (kbd "<f6>")
-(defhydra hydra-bib  (:color blue :hint nil)
+(defhydra hydra-bib  (:color blue :hint nil :columns 4)
 
 "
-_<f6>_: helm bibtex
-_a_:         _b_:              _c_:clean bib       _d_: doi add                _e_: ebib           _f_:        _g_:  
-_h_:        _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
-_o_:        _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
-_w_:        _x_:              _y_: yank           _z_: 
-_q_:        _V_: check duplictae keys _K_: kloog_ALL
-
+Bib:
 "
 
-("<f6>" helm-bibtex )
+("<f6>" helm-bibtex "helm-bibtex")
 ("a" nil )
 ("b"  nil  )
-("c"  org-ref-clean-bibtex-entry )
-("d"  doi-utils-insert-bibtex-entry-from-doi )
+("c"  org-ref-clean-bibtex-entry "clean bib" )
+("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
 ("e"  ebib )
 ("f"  nil )
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
 ("j"  nil )
-("k"  helm-bibtex-ikloog-publications )
-("K"  helm-bibtex-ikloog-publications-all )
+("k"  helm-bibtex-ikloog-publications "kloog papers" )
+("K"  helm-bibtex-ikloog-publications-all "kloog ALL")
 ("l"  nil )
 ("m"  nil )
-("n"  org-bibtex-create )
+("n"  org-bibtex-create "new bib entry")
 ("o"  nil )
-("p"  helm-bibtex-ikloog-prep )
-("r"  helm-resume )
-("s"  bibtex-sort-buffer )
+("p"  helm-bibtex-ikloog-prep "kloog prep")
+("r"  helm-resume "helm resume")
+("s"  bibtex-sort-buffer "sort buffer")
 ("t"  nil )
 ("u"  nil )
-("v"  bibtex-validate)
-("V"  bibtex-validate-globally) ; check for dup keys
+("v"  bibtex-validate "validtae" )
+("V"  bibtex-validate-globally "validate-check for dups") ; check for dup keys
 ("w"  nil )
 ("x"  nil )
-("y"  org-bibtex-yank )
+("y"  org-bibtex-yank "yank bibtex")
 ("z"  nil )
 ("q"  nil )
 

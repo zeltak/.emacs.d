@@ -527,7 +527,7 @@
     (position . 53164))
 #1=(#("plugins.emacs" 0 13
       (bmkp-full-record #1#))
-    (end-position . 1064061)
+    (end-position . 1067211)
     (annotation)
     (tags)
     (filename . "~/org/files/Tech/linux.org")
@@ -536,10 +536,10 @@
     (rear-context-string . "nil)\n#+END_SRC \n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 3)
-    (time 21927 53796 506998 370000)
+    (visits . 4)
+    (time 21935 6877 484891 419000)
     (created 21891 44847 394149 185000)
-    (position . 1064061))
+    (position . 1067211))
 #1=(#("install_clients" 0 15
       (bmkp-full-record #1#))
     (filename . "~/org/files/Tech/linux.org")
@@ -976,8 +976,8 @@
     (rear-context-string . "ARTUP: overview\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 6)
-    (time 21926 25712 344665 190000)
+    (visits . 7)
+    (time 21934 22151 229132 564000)
     (created 21886 45092 280208 844000)
     (position . 73))
 #1=(#(".pentadactylrc" 0 14

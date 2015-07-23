@@ -227,6 +227,13 @@
   '(ace-isearch-use-ace-jump 'printing-char)
 )
 
+(use-package ace-link
+ :ensure t
+ :config
+(ace-link-setup-default)
+ 
+ )
+
 (use-package anzu
  :ensure t
  :config
@@ -270,8 +277,12 @@
 
 )
 
+(use-package avy
+ :ensure t
+ :config
 (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-  "Keys for jumping.")
+  "Keys for jumping.") 
+ )
 
 (use-package avy-zap
  :ensure t
@@ -859,6 +870,12 @@
                 text-mode-hook
                 ))
   (add-hook hook 'rainbow-mode))
+
+;(use-package ranger
+; :ensure t
+; :config
+;
+; )
 
 (use-package scratch
  :ensure t
@@ -1809,13 +1826,21 @@ The app is chosen from your OS's preference."
 ;(global-set-key (kbd "\\") 'xah-fly-leader-key-map)
 
 (global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'avy-goto-word-or-subword-1)
+(global-set-key (kbd "M-`") 'avy-goto-line)
 
 ;Create an ID for the entry at point if it does not yet have one.
 (global-set-key "\C-ca" 'org-agenda)
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key "\C-cl" 'org-store-link)
+
+(defface hydra-face-orange
+    '((t (:foreground "orange" :bold t)))
+  "Orange face. For fun.")
+
+(defface hydra-face-red
+    '((t (:foreground "red" :bold t)))
+  "Orange face. For fun.")
 
 (global-set-key
    (kbd "\\")
@@ -1881,21 +1906,11 @@ _q_:
 
 (global-set-key
    (kbd "<f1>")
-(defhydra hydra-toggles (:color blue :hint nil)
-
-"
-_a_:                   _b_: bug-hunter         _c_: cua-mode        _d_: toolbar        _e_: Evil mode          _f_: fci        _g_: google 
-_h_:help               _i_:                    _j_:                 _k_: key chord      _l_: linium             _m_: macros     _n_: start macro      
-_o_: end macro         _p_:melpa               _r_: read only       _s_: scratch _S_: Lisp scratch       _t_: lentic             _u_: pair-mode            _v_: viewmode
-_w_:whitespace-mode    _x_: evalbuf _X_: eval region                    _y_:                 _z_:                _G_ indend-guide
-
-                       _=_ zoom in             _-_ zoom out
-_q_:quit
-"
-
+(defhydra hydra-toggles (:color blue  :columns 4)
+"Projectile"
 ("a" nil  )
-("b" bug-hunter-file )
-("c" cua-mode )
+("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
+("c" cua-mode "cua" :face 'hydra-face-red )
 ("d" tool-bar-mode  )
 ("e" evil-mode)
 ("f" fci-mode )
@@ -1923,8 +1938,7 @@ _q_:quit
 ("=" text-scale-increase :color red )
 ("-" text-scale-decrease :color red)
 ("G"  indent-guide-mode)
-("q" nil )
-
+("q" nil "cancel")
 ))
 
 (defhydra hydra-toggles-macro  (:color blue :hint nil )
@@ -2183,45 +2197,39 @@ mu4e
 
 (global-set-key
    (kbd "<f6>")
-(defhydra hydra-bib  (:color blue :hint nil)
+(defhydra hydra-bib  (:color blue :hint nil :columns 4)
 
 "
-_<f6>_: helm bibtex
-_a_:         _b_:              _c_:clean bib       _d_: doi add                _e_: ebib           _f_:        _g_:  
-_h_:        _i_:              _j_:                _k_: kloog pub       _l_:                _m_:        _n_: new bib     
-_o_:        _p_: kloog prep   _r_: resume         _s_:sort             _t_:                _u_:        _v_:validate 
-_w_:        _x_:              _y_: yank           _z_: 
-_q_:        _V_: check duplictae keys _K_: kloog_ALL
-
+Bib:
 "
 
-("<f6>" helm-bibtex )
+("<f6>" helm-bibtex "helm-bibtex")
 ("a" nil )
 ("b"  nil  )
-("c"  org-ref-clean-bibtex-entry )
-("d"  doi-utils-insert-bibtex-entry-from-doi )
+("c"  org-ref-clean-bibtex-entry "clean bib" )
+("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
 ("e"  ebib )
 ("f"  nil )
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
 ("j"  nil )
-("k"  helm-bibtex-ikloog-publications )
-("K"  helm-bibtex-ikloog-publications-all )
+("k"  helm-bibtex-ikloog-publications "kloog papers" )
+("K"  helm-bibtex-ikloog-publications-all "kloog ALL")
 ("l"  nil )
 ("m"  nil )
-("n"  org-bibtex-create )
+("n"  org-bibtex-create "new bib entry")
 ("o"  nil )
-("p"  helm-bibtex-ikloog-prep )
-("r"  helm-resume )
-("s"  bibtex-sort-buffer )
+("p"  helm-bibtex-ikloog-prep "kloog prep")
+("r"  helm-resume "helm resume")
+("s"  bibtex-sort-buffer "sort buffer")
 ("t"  nil )
 ("u"  nil )
-("v"  bibtex-validate)
-("V"  bibtex-validate-globally) ; check for dup keys
+("v"  bibtex-validate "validtae" )
+("V"  bibtex-validate-globally "validate-check for dups") ; check for dup keys
 ("w"  nil )
 ("x"  nil )
-("y"  org-bibtex-yank )
+("y"  org-bibtex-yank "yank bibtex")
 ("z"  nil )
 ("q"  nil )
 
