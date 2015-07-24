@@ -1055,6 +1055,10 @@ Sunrise:
  :config
  )
 
+(defun swiper-at-point ()
+  (interactive)
+  (swiper (thing-at-point 'symbol)))
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 (setq transmission-host "10.0.0.2")
@@ -1840,7 +1844,11 @@ The app is chosen from your OS's preference."
 
 (defface hydra-face-red
     '((t (:foreground "red" :bold t)))
-  "Orange face. For fun.")
+  "red face. For fun.")
+
+(defface hydra-face-green
+    '((t (:foreground "green" :bold t)))
+  "green face. For fun.")
 
 (global-set-key
    (kbd "\\")
@@ -1906,38 +1914,38 @@ _q_:
 
 (global-set-key
    (kbd "<f1>")
-(defhydra hydra-toggles (:color blue  :columns 4)
-"Projectile"
+(defhydra hydra-toggles (:color blue  :columns 6)
+"Toggles:   【M-g M-g】 goto line"
 ("a" nil  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
-("d" tool-bar-mode  )
-("e" evil-mode)
-("f" fci-mode )
-("g" google-search )
-("h" hydra-toggles-help/body )
+("d" tool-bar-mode "toggle toolbar"   )
+("e" evil-mode "evil")
+("f" fci-mode "fci" )
+("g" google-search "google")
+("h" hydra-toggles-help/body "help" )
 ("i"  nil )
 ("j"  nil )
-("k" key-chord-mode  )
-("l" linum-mode  )
-("m" hydra-toggles-macro/body)
-("n" start-kbd-macro )
-("o" end-kbd-macro )
-("p" list-packages  )
-("r" read-only-mode )
-("s" scratch)
-("S" create-scratch-buffer)
-("t" lentic-mode  )
-("u" electric-pair-mode )
-("v" view-mode )
-("w" whitespace-mode)
-("x" eval-buffer )
-("X" eval-region )
+("k" key-chord-mode "key-chord"  )
+("l" linum-mode  "linium")
+("m" hydra-toggles-macro/body "macro menu")
+("n" start-kbd-macro "start macro" :face 'hydra-face-green)
+("o" end-kbd-macro "end macro" :face 'hydra-face-red)
+("p" list-packages "elpa"  )
+("r" read-only-mode "read-only")
+("s" scratch "scratch")
+("S" create-scratch-buffer "New scratch" )
+("t" lentic-mode  "lentic")
+("u" electric-pair-mode "electric-pair")
+("v" view-mode "view-mode")
+("w" whitespace-mode "whitespace")
+("x" eval-buffer "eval buffer")
+("X" eval-region "eval-region")
 ("y" nil )
 ("z" nil )
 ("=" text-scale-increase :color red )
 ("-" text-scale-decrease :color red)
-("G"  indent-guide-mode)
+("G"  indent-guide-mode "guide-mode")
 ("q" nil "cancel")
 ))
 
