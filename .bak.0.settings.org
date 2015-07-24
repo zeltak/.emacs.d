@@ -4096,7 +4096,6 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 
 ("w" tags-todo "CATEGORY=\"work\"")
 
-
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-custom-commands 
 '(
