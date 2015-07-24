@@ -720,6 +720,7 @@
     ("mantain" "maintain" nil 0)
     ("marraige" "marriage" nil 0)
     ("maunscript" "manuscript" nil 1)
+    ("meetinmgs" "meetings" nil 0)
     ("memeber" "member" nil 0)
     ("merchent" "merchant" nil 0)
     ("mesage" "message" nil 0)
