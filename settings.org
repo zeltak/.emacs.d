@@ -2419,6 +2419,37 @@ Repeated invocations toggle between the two most recently open buffers."
 					     (helm-swish-e helm-pattern)))))))))
 #+END_SRC
 
+*** TODO helm hotspot menu
+#+BEGIN_SRC emacs-lisp :results none
+(defun hotspots ()
+  "helm interface to my hotspots, which includes my locations,
+org-files and bookmarks"
+  (interactive)
+  (helm :sources `(((name . "Mail and News")
+                    (candidates . (("Mail" . (lambda ()
+                                               (if (get-buffer "*mu4e-headers*")
+                                                   (progn
+                                                     (switch-to-buffer "*mu4e-headers*")
+                                                     (delete-other-windows))
+
+                                                 (mu4e))))
+                                   ("Calendar" . (lambda ()  (browse-url "https://www.google.com/calendar/render")))
+                                   ("RSS" . elfeed)
+                                   ("Agenda" . (lambda () (org-agenda "" "w")))))
+                    (action . (("Open" . (lambda (x) (funcall x))))))
+                   ((name . "My Locations")
+                    (candidates . (("master" . "~/org/files/")
+                                   (".emacs.d" . "~/.emacs.d/" )
+                                   ("todo" . "~/org/files/agenda/todo.org")))
+                    (action . (("Open" . (lambda (x) (find-file x))))))
+
+                   ((name . "My org files")
+                    (candidates . ,(f-entries "~/org/files/"))
+                    (action . (("Open" . (lambda (x) (find-file x))))))
+                   helm-source-recentf
+                   helm-source-bookmarks
+                   helm-source-bookmark-set)))
+#+END_SRC
 ** dired
 *** marks
 **** mark non org
@@ -5756,6 +5787,7 @@ for ubuntu
                                     "ikloog@bgu.ac.il"
                                     "ekloog@hsph.harvard.edu"))
 
+
 #+END_SRC
 *** fetching and indexing
 #+BEGIN_SRC emacs-lisp :results none
@@ -5764,15 +5796,10 @@ for ubuntu
 (setq mu4e-index-update-error-warning  t)
 (setq mu4e-index-update-error-continue   t)
 #+END_SRC
-
 OLD:
 #+BEGIN_EXAMPLE
-(setq mu4e-get-mail-command "offlineimap"
-      mu4e-update-interval 120
-    mu4e-headers-auto-update t)
+(setq mu4e-get-mail-command "offlineimap")
 #+END_EXAMPLE
-
-
 *** personal info
 #+BEGIN_SRC emacs-lisp :results none
 ;; something about ourselves
@@ -5782,7 +5809,7 @@ OLD:
    mu4e-compose-signature
     (concat
       "itai kloog\n"
-      "http://www.example.com\n"))
+      "http://www.bgu.ac.il\n"))
 
 (setq mu4e-compose-signature-auto-include 't)
 #+END_SRC
@@ -5790,13 +5817,12 @@ OLD:
 *** mail folders 
 #+BEGIN_SRC emacs-lisp :results none
 ;; default
-(setq mu4e-maildir "~/.mail/gmail/")
-;; (setq mu4e-maildir "~/Maildir")
+;;(setq mu4e-maildir "~/.mail/gmail/")
+(setq mu4e-maildir "/home/zeltak/Maildir")
 
 (setq mu4e-drafts-folder "/[Gmail].Drafts")
 (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
 (setq mu4e-trash-folder  "/[Gmail].Trash")
-
 (setq mu4e-attachment-dir  "~/Downloads")
 
 #+END_SRC
@@ -5808,13 +5834,11 @@ OLD:
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-    '( ("/[Gmail]"               . ?i)
-       ("/[Gmail]/.Starred"   . ?r)
+    '( ("INBOX"               . ?i)
+       ("Starred"   . ?r)
        ("/[Gmail].Sent Mail"   . ?s)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
-
-
 #+END_SRC
 *** composing
 #+BEGIN_SRC emacs-lisp :results none
@@ -6054,7 +6078,7 @@ COMMAND2
 
 
 #+END_EXAMPLE
-** edit with emacs
+** edit webpages with emacs
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
@@ -6130,133 +6154,6 @@ This recalls the R statement from your R statement history, but it tries to matc
 #+END_SRC
 
 * test
-** helm org wiki
-#+BEGIN_SRC emacs-lisp :results none
-(defgroup helm-org-wiki nil
-      "Simple jump-to-org-file package."
-      :group 'org
-      :prefix "helm-org-wiki-")
-    (defcustom helm-org-wiki-directory "~/org/files/"
-      "Directory where files for `helm-org-wiki' are stored."
-      :group 'helm-org-wiki
-      :type 'directory)
-    (defun helm-org-wiki-files ()
-      "Return .org files in `helm-org-wiki-directory'."
-      (let ((default-directory helm-org-wiki-directory))
-        (mapcar 'file-name-sans-extension
-                (file-expand-wildcards "*.org"))))
-    (defvar helm-source-org-wiki
-      `((name . "Projects")
-        (candidates . helm-org-wiki-files)
-        (action . ,(lambda (x)
-                      (find-file (expand-file-name
-                                  (format "%s.org" x)
-                                  helm-org-wiki-directory))))))
-    (defvar helm-source-org-wiki-not-found
-      `((name . "Create org-wiki")
-        (dummy)
-        (action . (lambda (x)
-                    (helm-switch-to-buffer
-                     (find-file
-                      (format "%s/%s.org"
-                              helm-org-wiki-directory x)))))))
-    ;;;###autoload
-    (defun helm-org-wiki ()
-      "Select an org-file to jump to."
-      (interactive)
-      (helm :sources
-            '(helm-source-org-wiki
-              helm-source-org-wiki-not-found)))
-    (provide 'helm-org-wiki)
-#+END_SRC
-** helm agenda
-#+BEGIN_SRC emacs-lisp :results none
-(defun helm-agenda-candidates (query)
-  (let ((results '()))
-    (mapc (lambda (f)
-      (with-current-buffer (find-file-noselect f)
-        (org-map-entries
-         (lambda ()
-           (add-to-list 'results
-                        (cons
-                         (concat
-                          (file-name-nondirectory f) " | "
-                          (make-string (nth 1 (org-heading-components)) ?*)
-                          " "
-                          (org-get-heading))
-                         (point-marker))))
-         query))) (org-agenda-files))
-    results))
-
-
-(defun helm-query-agenda (query)
-  "Helm interface to headlines with TODO status in current buffer."
-  (interactive "sQuery: ")
-  (let ((candidates (helm-agenda-candidates query)))
-    (helm :sources '(((name . "TODO headlines")
-                      (candidates . candidates)
-                      (action . (("open" . (lambda (m)
-                                             (switch-to-buffer (marker-buffer m))
-                                             (goto-char m)
-                                             (show-children))))))))))
-#+END_SRC
-
-** config stuff
-*** org appoint
-   #+BEGIN_EXAMPLE
- Add org-mode appointments to the diary
-
-Diary offers reminders, which can be useful when scheduling appointments.
-
-(defadvice org-agenda-redo (after ext:org-agenda-redo-add-appts)
-  "Pressing `r' on the agenda will also add appointments."
-  (setq appt-time-msg-list nil)
-  (org-agenda-to-appt))
-
-
-
-   #+END_EXAMPLE
-*** scroll line
-However, this doesn't work when running Emacs as a Daemon. So instead I specify it in the default-frame-alist.
-
-(vertical-scroll-bars . nil)
-*** prelude functions
-https://github.com/seth/my-emacs-dot-d/blob/master/emacs-init.org
-** function to connect to R remotly
-#+BEGIN_SRC emacs-lisp :results none
-(defun zconn ()
-  (interactive)
-  (eshell)
-  (insert "export TERM=screen-256color-bce")
-  (insert "ssu zuni")
-  (comint-send-input))
-#+END_SRC
-** connect to ssh link in xterm in org file
-One day after being particularly frustrated when I couldn’t get into a box, I was adding yet another entry to ~/.ssh/config only to realize it was in there twice already, I decided to turn this problem into a nail so I could use my universal hammer, emacs.
-
-#+BEGIN_EXAMPLE
-(defun jgk/xterm-ssh (host)
-  "Spawn a xterm with a ssh to the host"
-  (start-process-shell-command "*org-xterm-ssh*" "ssh-xterm" "xterm" "-e"
-                               (concat "'ssh -AY "  host "'")))
-#+END_EXAMPLE
-
-I now have an org file for each project I work on and can create links that will let me ssh into a system with a ‘click’
-
-#+BEGIN_EXAMPLE
-[[elisp:(jgk/xterm-ssh "username@192.168.15.218")][Magical Mystery Machine]]
-#+END_EXAMPLE
-
-Since it is in org mode I can now categorize and tag these links. I can take notes and use tramp to open directories.
-
-I am slowly adding systems in as I need them. I have found the ability to keep notes and a basic log of what and why I was there to be invaluable.
-
-If you need to access a lot of random systems you should try this, it has made my life sane
-** Emacs deamon
-#+BEGIN_EXAMPLE
-The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs –daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The –daemon option has the fringe benefit of leaving emacs running even if you log out.The super secret ingredient to all of this is emacs server and emacsclient. Emacs server allows you to connect to a running instance of emacs to do things (like edit files or run elisp functions) without starting a whole new emacs instance. That makes it really fast. You can start emacs server by running M-x server-start or have it happen automatically when emacs starts by putting (server-start) in $HOME/.emacs. You can even use emacs –daemon to start emacs in the background when you log in or with the @reboot tag in cron to start it when the machine starts. The –daemon option has the fringe benefit of leaving emacs running even if you log out.
-#+END_EXAMPLE
-
 ** WL
 #+BEGIN_SRC emacs-lisp :results none
 (autoload 'wl "wl" "Wanderlust" t)

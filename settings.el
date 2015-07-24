@@ -1733,6 +1733,35 @@ Repeated invocations toggle between the two most recently open buffers."
                     (action . (("search" . (lambda (f)
                                              (helm-swish-e helm-pattern)))))))))
 
+(defun hotspots ()
+  "helm interface to my hotspots, which includes my locations,
+org-files and bookmarks"
+  (interactive)
+  (helm :sources `(((name . "Mail and News")
+                    (candidates . (("Mail" . (lambda ()
+                                               (if (get-buffer "*mu4e-headers*")
+                                                   (progn
+                                                     (switch-to-buffer "*mu4e-headers*")
+                                                     (delete-other-windows))
+
+                                                 (mu4e))))
+                                   ("Calendar" . (lambda ()  (browse-url "https://www.google.com/calendar/render")))
+                                   ("RSS" . elfeed)
+                                   ("Agenda" . (lambda () (org-agenda "" "w")))))
+                    (action . (("Open" . (lambda (x) (funcall x))))))
+                   ((name . "My Locations")
+                    (candidates . (("master" . "~/org/files/")
+                                   (".emacs.d" . "~/.emacs.d/" )
+                                   ("todo" . "~/org/files/agenda/todo.org")))
+                    (action . (("Open" . (lambda (x) (find-file x))))))
+
+                   ((name . "My org files")
+                    (candidates . ,(f-entries "~/org/files/"))
+                    (action . (("Open" . (lambda (x) (find-file x))))))
+                   helm-source-recentf
+                   helm-source-bookmarks
+                   helm-source-bookmark-set)))
+
 (defun z/del-nonorg-files ()
 (interactive)
 (dired-mark-files-regexp "\\.org$") 
@@ -4274,18 +4303,17 @@ take care of the wrapping of each item for me"
    mu4e-compose-signature
     (concat
       "itai kloog\n"
-      "http://www.example.com\n"))
+      "http://www.bgu.ac.il\n"))
 
 (setq mu4e-compose-signature-auto-include 't)
 
 ;; default
-(setq mu4e-maildir "~/.mail/gmail/")
-;; (setq mu4e-maildir "~/Maildir")
+;;(setq mu4e-maildir "~/.mail/gmail/")
+(setq mu4e-maildir "/home/zeltak/Maildir")
 
 (setq mu4e-drafts-folder "/[Gmail].Drafts")
 (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
 (setq mu4e-trash-folder  "/[Gmail].Trash")
-
 (setq mu4e-attachment-dir  "~/Downloads")
 
 ;; setup some handy shortcuts
@@ -4294,8 +4322,8 @@ take care of the wrapping of each item for me"
 ;; the 'All Mail' folder by pressing ``ma''.
 
 (setq mu4e-maildir-shortcuts
-    '( ("/[Gmail]"               . ?i)
-       ("/[Gmail]/.Starred"   . ?r)
+    '( ("INBOX"               . ?i)
+       ("Starred"   . ?r)
        ("/[Gmail].Sent Mail"   . ?s)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
@@ -4536,79 +4564,6 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
  )
 
 (setq ess-eval-visibly 'nowait)
-
-(defgroup helm-org-wiki nil
-      "Simple jump-to-org-file package."
-      :group 'org
-      :prefix "helm-org-wiki-")
-    (defcustom helm-org-wiki-directory "~/org/files/"
-      "Directory where files for `helm-org-wiki' are stored."
-      :group 'helm-org-wiki
-      :type 'directory)
-    (defun helm-org-wiki-files ()
-      "Return .org files in `helm-org-wiki-directory'."
-      (let ((default-directory helm-org-wiki-directory))
-        (mapcar 'file-name-sans-extension
-                (file-expand-wildcards "*.org"))))
-    (defvar helm-source-org-wiki
-      `((name . "Projects")
-        (candidates . helm-org-wiki-files)
-        (action . ,(lambda (x)
-                      (find-file (expand-file-name
-                                  (format "%s.org" x)
-                                  helm-org-wiki-directory))))))
-    (defvar helm-source-org-wiki-not-found
-      `((name . "Create org-wiki")
-        (dummy)
-        (action . (lambda (x)
-                    (helm-switch-to-buffer
-                     (find-file
-                      (format "%s/%s.org"
-                              helm-org-wiki-directory x)))))))
-    ;;;###autoload
-    (defun helm-org-wiki ()
-      "Select an org-file to jump to."
-      (interactive)
-      (helm :sources
-            '(helm-source-org-wiki
-              helm-source-org-wiki-not-found)))
-    (provide 'helm-org-wiki)
-
-(defun helm-agenda-candidates (query)
-  (let ((results '()))
-    (mapc (lambda (f)
-      (with-current-buffer (find-file-noselect f)
-        (org-map-entries
-         (lambda ()
-           (add-to-list 'results
-                        (cons
-                         (concat
-                          (file-name-nondirectory f) " | "
-                          (make-string (nth 1 (org-heading-components)) ?*)
-                          " "
-                          (org-get-heading))
-                         (point-marker))))
-         query))) (org-agenda-files))
-    results))
-
-
-(defun helm-query-agenda (query)
-  "Helm interface to headlines with TODO status in current buffer."
-  (interactive "sQuery: ")
-  (let ((candidates (helm-agenda-candidates query)))
-    (helm :sources '(((name . "TODO headlines")
-                      (candidates . candidates)
-                      (action . (("open" . (lambda (m)
-                                             (switch-to-buffer (marker-buffer m))
-                                             (goto-char m)
-                                             (show-children))))))))))
-
-(defun zconn ()
-  (interactive)
-  (eshell)
-  (insert "export TERM=screen-256color-bce")
-  (insert "ssu zuni")
-  (comint-send-input))
 
 (autoload 'wl "wl" "Wanderlust" t)
 (autoload 'wl-draft "wl" "Write draft with Wanderlust." t)
