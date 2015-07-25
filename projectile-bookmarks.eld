@@ -1,1 +1,1 @@
-("~/org/files/" "~/" "~/dotfiles/" "~/.password-store/" "~/.emacs.d/" "~/.oh-my-zsh/" "~/BK/org/org/files/" "~/.avfs/home/zeltak/" "~/.emacs.g/tmtxt-dired-async/")
+("~/" "~/dotfiles/" "~/.password-store/" "~/org/files/" "~/.emacs.d/" "~/.oh-my-zsh/" "~/BK/org/org/files/" "~/.avfs/home/zeltak/" "~/.emacs.g/tmtxt-dired-async/")
