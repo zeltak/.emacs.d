@@ -3542,7 +3542,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key                         
     (kbd "C-M-p")
-    (defhydra hydra-password-store (:color blue)
+    (defhydra hydra-password-store (:color blue :columns 4 :hint nil)
       "password store command"
       ("e" password-store-edit   "edit pass" )
       ("d" password-store-remove   "delete pass" )
@@ -5768,6 +5768,7 @@ https://github.com/redguardtoo/mastering-emacs-in-one-year-guide/blob/master/gnu
 
 #+BEGIN_SRC emacs-lisp :results none
 #+END_SRC
+
 * mu4e
 *** base setup 
 for ubuntu
