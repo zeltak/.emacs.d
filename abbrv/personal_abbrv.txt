@@ -390,6 +390,7 @@
     ("cutsomers" "customers" nil 0)
     ("cxan" "can" nil 0)
     ("czecj" "czech" nil 0)
+    ("czsech" "czech" nil 0)
     ("danceing" "dancing" nil 0)
     ("dcument" "document" nil 0)
     ("deatils" "details" nil 0)

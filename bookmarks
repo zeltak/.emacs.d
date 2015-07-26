@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("download.st" 0 11
+(#1=(#("ngu" 0 3
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/Uni/Projects/code/P031.MAIAC.France/final/CS005_prepareDB.org")
+    (buffer-name . "CS005_prepareDB.org")
+    (front-context-string . "\n\n\n  ###########")
+    (rear-context-string . "2003.PM25.rds\")\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(21940 48021 725489 160000))
+    (created . #2#)
+    (position . 11800))
+#1=(#("download.st" 0 11
       (bmkp-full-record #1#))
     (time 21927 58174 10256 188000)
     (visits . 1)
@@ -212,8 +224,8 @@
     (rear-context-string . "e and documents\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 5)
-    (time 21927 22359 461944 476000)
+    (visits . 6)
+    (time 21940 48025 464597 165000)
     (created 21882 43775 338546 974000)
     (position . 4917))
 #1=(#("orgfiles" 0 8
@@ -506,9 +518,9 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21793 18421 344285 220000))
-    (created . #2#)
+    (visits . 1)
+    (time 21940 40661 82288 758000)
+    (created 21793 18421 344285 220000)
     (position . 1))
 #1=(#("hydra" 0 5
       (bmkp-full-record #1#))
@@ -779,8 +791,8 @@
     (rear-context-string . "96 Nov  6 07:31 ")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 8)
-    (time 21925 62255 722894 716000)
+    (visits . 9)
+    (time 21940 42086 876259 67000)
     (created 21605 59707 550236 354000)
     (position . 191)
     (filename . "/home/zeltak/org/files/Uni/Projects/code/")
