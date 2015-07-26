@@ -2453,7 +2453,6 @@ org-files and bookmarks"
 ** dired
 *** marks
 **** mark non org
-
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/del-nonorg-files ()
 (interactive)
@@ -2461,8 +2460,6 @@ org-files and bookmarks"
 (dired-toggle-marks)
 (dired-do-delete)
 )
-
-
 #+END_SRC
 *** open in external (default) app
 http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
@@ -2520,6 +2517,18 @@ The app is chosen from your OS's preference."
                (progn 
                  (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                   (match-string 1))))))
+#+END_SRC
+
+*** beet import
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/dired-beet-import ()
+(interactive)
+(sr-term )
+(insert "beet import" )
+(insert " ")
+;(insert "%f" )
+;(eshell-send-input)
+)
 #+END_SRC
 
 * Key binds
