@@ -101,7 +101,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 | UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
 
 * Packages
-  
+ 
 $Note$ the sign !package! means the package is disbaled
 
 ** !hippie expand! 
@@ -2521,14 +2521,14 @@ The app is chosen from your OS's preference."
 
 *** beet import
 #+BEGIN_SRC emacs-lisp :results none
-(defun z/dired-beet-import ()
-(interactive)
-(sr-term )
-(insert "beet import" )
-(insert " ")
+;(defun z/dired-beet-import ()
+;(interactive)
+;(sr-term )
+;(insert "beet import" )
+;(insert " ")
 ;(insert "%f" )
 ;(eshell-send-input)
-)
+;)
 #+END_SRC
 
 * Key binds
