@@ -1546,7 +1546,6 @@ when yo need to copy of move any big files, just prefix the appropriate command 
 #+END_SRC
 
 
-
 ** TODO sr-speedbar
 SrSpeedbar is mode make SpeedBar show in Current Frame 
 http://www.emacswiki.org/emacs/SrSpeedbar
@@ -2679,6 +2678,17 @@ The app is chosen from your OS's preference."
 (eshell-send-input)
 )
 #+END_SRC
+** lgs
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/dired-backup-lgs ()
+"run laptop git script"
+(interactive)
+(sr-term )
+(insert "~/bin/lgs.sh" )
+(eshell-send-input)
+)
+#+END_SRC
+
 *** TODO additional commands
 cuetag.sh {f}  *.flac
 shnsplit -f {F}  -o flac {oF}
