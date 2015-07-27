@@ -916,17 +916,6 @@
 
  )
 
-(define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
-(define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
-(define-key sr-mode-map (kbd "\\") 'sr-checkpoint-restore ) 
-(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body ) 
-;lynx like
-(define-key sr-mode-map (kbd "<left>") 'sr-dired-prev-subdir ) 
-(define-key sr-mode-map (kbd "<right>") 'sr-advertised-find-file ) 
-;move back/forward im history
-(define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
-(define-key sr-mode-map (kbd "M-<right>") 'sr-history-next )
-
 (defhydra hydra-sunrise-leader  (:color blue :hint nil)
 
 "
@@ -1044,6 +1033,58 @@ Sunrise:
                 (kill-buffer buffer)))
           (message "Killed %i sunrise buffer(s)." count ))))
 (setq sr-quit-hook 'er/kill-all-sunrise-buffers)
+
+(defun chd/dired-Dowloads ()
+  "  "
+  (interactive)
+  (find-file "~/Downloads/")     
+)
+
+(define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
+(define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
+(define-key sr-mode-map (kbd "\\") 'hydra-sr-chd/body ) 
+(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body ) 
+;lynx like
+(define-key sr-mode-map (kbd "<left>") 'sr-dired-prev-subdir ) 
+(define-key sr-mode-map (kbd "<right>") 'sr-advertised-find-file ) 
+;move back/forward im history
+(define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
+(define-key sr-mode-map (kbd "M-<right>") 'sr-history-next )
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-sr-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" nil )
+("b"  nil  )
+("c"  nil )
+("d"  chd/dired-Dowloads "Downloads" )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  nil )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
 
 (use-package sr-speedbar
  :ensure t
@@ -1817,14 +1858,84 @@ The app is chosen from your OS's preference."
                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
 
-;(defun z/dired-beet-import ()
-;(interactive)
-;(sr-term )
-;(insert "beet import" )
-;(insert " ")
-;(insert "%f" )
-;(eshell-send-input)
-;)
+(defun z/dired-beet-import ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "beet import %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-beet-import-single ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "beet import -s %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-make-exec ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "chmod +x %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-fb-upload ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "fb %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input)
+      (shell-command "notify-send fb uploaded")
+)))
+
+(defun z/dired-mpd-add ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "mpc add file:/ %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-ssh-qnap ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid \n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(fset 'z/dired-media-info
+   [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
+
+(defun z/dired-nmap-network ()
+"map all available IP on my netwrok"
+(interactive)
+(sr-term )
+(insert " nmap -sP 10.0.0.1/24" )
+(eshell-send-input)
+)
 
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
@@ -4187,24 +4298,6 @@ scroll-step 1)
    "Return a string which is a concatenation of all elements of the list separated by spaces" 
     (mapconcat '(lambda (obj) (format "%s" obj)) list " "))
 
-(setq TeX-parse-self t) ; Enable parse on load.
-(setq TeX-auto-save t) ; Enable parse on save.
-(setq TeX-PDF-mode t); PDF mode (rather than DVI-mode)
-
-(add-hook 'TeX-mode-hook 'flyspell-mode); Enable Flyspell mode for TeX modes such as AUCTeX. Highlights all misspelled words.
-
-(setq TeX-command-BibTeX "Biber")
-
-(eval-after-load "tex"
-'(add-to-list 'TeX-command-list
-'("Biber" "biber %s" TeX-run-Biber nil t :help "Run Biber") t))
-
-(defun z-latex-bullets ()
-"This inserts the LaTeX \itemize environment into a document - LaTeX will
-take care of the wrapping of each item for me"
-(interactive)
-(insert-file-contents "/home/zeltak/Uni/bgu_courses/planner_gis/bullets.tex"))
-
 (defalias 'yes-or-no-p 'y-or-n-p) ; y or n is enough
 (defalias 'list-buffers 'ibuffer) ; always use ibuffer
 (defalias '~ 'make-backup)
@@ -4294,7 +4387,9 @@ take care of the wrapping of each item for me"
 (require 'mu4e)
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
-(mu4e-maildirs-extension)
+
+;;;;$Note-this may screw up header updates$ 
+;(mu4e-maildirs-extension)
 ;; list of my email addresses.
 (setq mu4e-user-mail-address-list '("ikloog@gmail.com"
                                     "ikloog@bgu.ac.il"
@@ -4482,16 +4577,14 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
  '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
  '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))
 
-(if (string= system-name "voices") 
+(if (string= system-name "zuni") 
 (progn
 
 (defvar xah-filelist nil "alist for files i need to open frequently. Key is a short abbrev, Value is file path.")
 (setq xah-filelist
       '(
-        ("t" . "~/org/files/agenda/TODO.org" )
-        ("r" . "~/org/files/agenda/Research.org" )
-        ("z" . "~/org/files/agenda/z1.org" )
-        ("k " . "~/org/files/help/keys.org" )
+        ("z" . "~/ZH_tmp/" )
+        ("k " . "~/BK/" )
         ("l" . "~/org/files/Tech/linux.org" )
         ("f" . "~/org/files/agenda/food.org" )
         ("v" . "~/org/files/Home/travel.org" )
@@ -4516,20 +4609,34 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 (defvar xah-filelist nil "alist for files i need to open frequently. Key is a short abbrev, Value is file path.")
 (setq xah-filelist
       '(
-        ("e" . "~/.emacs.d/settings.org"  )
+       ("z" . "~/ZH_tmp/" )
+        ("k " . "~/BK/" )
+        ("l" . "~/org/files/Tech/linux.org" )
+        ("f" . "~/org/files/agenda/food.org" )
+        ("v" . "~/org/files/Home/travel.org" )
+        ("h" . "~/org/files/Home/home.org" )
+        ("m" . "~/org/files/from-mobile.org" )
+        ("v" . "~/org/files/files/agenda/travel.org" )
+        ("h" . "~/org/files/files/Home/home.org" )
+        ("p" . "~/org/files/files/uni/papers/papers.org" )
+        ("E" . "~/.emacs.d/init.el" )
+        ("B" . "/home/zeltak/.config/beets/config.yaml" )
+        ("S" . "~/.config/sxhkd/sxhkdrc" )
+        ("I" . "~/.i3/config" )
+        ("X" . "~/.xinitrc" )
+        ("B" . "~/.interrobangrc" )
+        ("Z" . "~/.zshrc" )
+        ("o" . "~/org/attach/" )
         ) )
-
 )
 )
 
-(defun z-open-file-fast (openCode)
+(defun z/dired-jump-folders  (openCode)
   "Prompt to open a file from a pre-defined set."
   (interactive
    (list (ido-completing-read "Open:" (mapcar (lambda (x) (car x)) xah-filelist)))
    )
   (find-file (cdr (assoc openCode xah-filelist)) ) )
-
-;(global-set-key (kbd "XXX") 'z-open-file-fast)
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)

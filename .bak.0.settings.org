@@ -5791,7 +5791,9 @@ for ubuntu
 (require 'mu4e)
 (require 'mu4e-contrib) 
 ;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
-(mu4e-maildirs-extension)
+
+;;;;$Note-this may screw up header updates$ 
+;(mu4e-maildirs-extension)
 ;; list of my email addresses.
 (setq mu4e-user-mail-address-list '("ikloog@gmail.com"
                                     "ikloog@bgu.ac.il"
