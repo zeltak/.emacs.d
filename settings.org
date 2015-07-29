@@ -1329,7 +1329,157 @@ http://www.emacswiki.org/emacs/Sunrise_Commander_Tips
 
  )
 #+END_SRC 
-*** TODO sunrise leader
+*** plugins
+**** sunrise-x-popviewer
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package sunrise-x-popviewer
+  :ensure t
+  :config
+(require 'sunrise-x-popviewer)
+(sr-popviewer-mode 1)
+;; to open in next pane and not new window
+(setq sr-popviewer-select-viewer-action
+         (lambda nil (let ((sr-running nil)) (other-window 1))))
+  )
+ #+END_SRC 
+**** sunrise-x-mirror
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package sunrise-x-mirror
+ :ensure t
+ :config
+ (require 'sunrise-x-mirror)
+(setq sr-mirror-unionfs-impl (quote unionfs-fuse))
+ )
+#+END_SRC 
+**** sunrise-x-loop
+when yo need to copy of move any big files, just prefix the appropriate command with C-u.
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package sunrise-x-loop
+ :ensure t
+ :config
+(require 'sunrise-x-loop) 
+ )
+#+END_SRC 
+
+**** sunrise-x-modeline
+#+BEGIN_SRC emacs-lisp :results none
+  (use-package  sunrise-x-modeline
+   :ensure t
+   :config
+   )
+#+END_SRC 
+
+**** sunrise-x-tabs
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package sunrise-x-tabs
+ :ensure t
+ :config
+;(require 'sunrise‐x‐tabs) 
+ )
+#+END_SRC 
+
+**** sunrise-x-checkpoints
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package sunrise-x-checkpoints
+ :ensure t
+ :config
+  )
+#+END_SRC 
+*** functions
+**** open with external programs
+#+BEGIN_SRC emacs-lisp :results none
+;;; Adding files opened with external apps to the history of recent files.
+(defadvice openwith-file-handler
+  (around advice-openwith-file-handler (operation &rest args))
+  (condition-case description
+      ad-do-it
+    (error (progn
+             (recentf-add-file (car args))
+             (error (cadr description))))))
+(ad-activate 'openwith-file-handler)
+
+(defun er/sunrise-flatten ()
+ (interactive)
+ (sr-find "-type f"))
+
+; Kill all sunrise and dired buffers when closing Sunrise Commander
+(defun er/kill-all-sunrise-buffers()
+      "Kill all dired buffers."
+      (interactive)
+      (save-excursion
+        (let((count 0))
+          (dolist(buffer (buffer-list))
+            (set-buffer buffer)
+            (when (derived-mode-p 'dired-mode 'sr-virtual-mode 'sr-mode)
+                (setq count (1+ count))
+                (kill-buffer buffer)))
+          (message "Killed %i sunrise buffer(s)." count ))))
+(setq sr-quit-hook 'er/kill-all-sunrise-buffers)
+
+#+END_SRC 
+*** keys
+**** main 
+#+BEGIN_SRC emacs-lisp :results none
+(define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
+(define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
+(define-key sr-mode-map (kbd "\\") 'hydra-sr-chd/body ) 
+(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body ) 
+;lynx like
+(define-key sr-mode-map (kbd "<left>") 'sr-dired-prev-subdir ) 
+(define-key sr-mode-map (kbd "<right>") 'sr-advertised-find-file ) 
+;move back/forward im history
+(define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
+(define-key sr-mode-map (kbd "M-<right>") 'sr-history-next ) 
+#+END_SRC
+**** hydra chd
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "")
+(defhydra hydra-sr-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" (find-file "~/AUR/") "AUR" )
+("b"  (find-file "~/bin/") "bin" )
+("c"  nil )
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  nil )
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "~/mtp") "mtp" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  nil )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("."  (find-file "~/.config/") "config")
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
+
+#+END_SRC
+
+**** sunrise leader
 
 #+BEGIN_SRC emacs-lisp :results none
 
@@ -1385,166 +1535,6 @@ Sunrise:
 )
 #+END_SRC
 
-*** plugins
-**** sunrise-x-popviewer
-
- #+BEGIN_SRC emacs-lisp :results none
- (use-package sunrise-x-popviewer
-  :ensure t
-  :config
-(require 'sunrise-x-popviewer)
-(sr-popviewer-mode 1)
-;; to open in next pane and not new window
-(setq sr-popviewer-select-viewer-action
-         (lambda nil (let ((sr-running nil)) (other-window 1))))
-  )
- #+END_SRC 
-**** sunrise-x-mirror
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package sunrise-x-mirror
- :ensure t
- :config
- (require 'sunrise-x-mirror)
-(setq sr-mirror-unionfs-impl (quote unionfs-fuse))
- )
-#+END_SRC 
-
-
-**** sunrise-x-loop
-when yo need to copy of move any big files, just prefix the appropriate command with C-u.
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package sunrise-x-loop
- :ensure t
- :config
-(require 'sunrise-x-loop) 
- )
-#+END_SRC 
-
-**** sunrise-x-modeline
-#+BEGIN_SRC emacs-lisp :results none
-  (use-package  sunrise-x-modeline
-   :ensure t
-   :config
-   )
-#+END_SRC 
-
-**** sunrise-x-tabs
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package sunrise-x-tabs
- :ensure t
- :config
-;(require 'sunrise‐x‐tabs) 
- )
-#+END_SRC 
-
-**** sunrise-x-checkpoints
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package sunrise-x-checkpoints
- :ensure t
- :config
-  )
-#+END_SRC 
-
-
-
-*** functions
-**** open with external programs
-#+BEGIN_SRC emacs-lisp :results none
-;;; Adding files opened with external apps to the history of recent files.
-(defadvice openwith-file-handler
-  (around advice-openwith-file-handler (operation &rest args))
-  (condition-case description
-      ad-do-it
-    (error (progn
-             (recentf-add-file (car args))
-             (error (cadr description))))))
-(ad-activate 'openwith-file-handler)
-
-(defun er/sunrise-flatten ()
- (interactive)
- (sr-find "-type f"))
-
-; Kill all sunrise and dired buffers when closing Sunrise Commander
-(defun er/kill-all-sunrise-buffers()
-      "Kill all dired buffers."
-      (interactive)
-      (save-excursion
-        (let((count 0))
-          (dolist(buffer (buffer-list))
-            (set-buffer buffer)
-            (when (derived-mode-p 'dired-mode 'sr-virtual-mode 'sr-mode)
-                (setq count (1+ count))
-                (kill-buffer buffer)))
-          (message "Killed %i sunrise buffer(s)." count ))))
-(setq sr-quit-hook 'er/kill-all-sunrise-buffers)
-
-#+END_SRC 
-**** change dirs
-#+BEGIN_SRC emacs-lisp :results none
-(defun chd/dired-Dowloads ()
-  "  "
-  (interactive)
-  (find-file "~/Downloads/")     
-)
-#+END_SRC
-
-*** keys
-**** main 
-#+BEGIN_SRC emacs-lisp :results none
-(define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
-(define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
-(define-key sr-mode-map (kbd "\\") 'hydra-sr-chd/body ) 
-(define-key sr-mode-map (kbd "`") 'hydra-sunrise-leader/body ) 
-;lynx like
-(define-key sr-mode-map (kbd "<left>") 'sr-dired-prev-subdir ) 
-(define-key sr-mode-map (kbd "<right>") 'sr-advertised-find-file ) 
-;move back/forward im history
-(define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
-(define-key sr-mode-map (kbd "M-<right>") 'sr-history-next ) 
-#+END_SRC
-**** hydra chd
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "")
-(defhydra hydra-sr-chd  (:color blue :hint nil :columns 4)
-
-"
-"
-("a" nil )
-("b"  nil  )
-("c"  nil )
-("d"  chd/dired-Dowloads "Downloads" )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
-("s"  nil )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"  nil )
-("q"  nil )
-
-))
-
-#+END_SRC
-
 
 ** TODO sr-speedbar
 SrSpeedbar is mode make SpeedBar show in Current Frame 
@@ -1573,12 +1563,13 @@ http://www.emacswiki.org/emacs/SrSpeedbar
 
 ** transmission
 need to install let-alist and seq packages from melpa
+https://github.com/holomorph/transmission/issues/1
+
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
+;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
-(setq transmission-host "10.0.0.2")
-(setq transmission-rpc-path "/transmission/web/")
-(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
+;(setq transmission-host "10.0.0.2")
+;(setq transmission-rpc-path "/transmission/web/")
 #+END_SRC
 
 ** Undo tree

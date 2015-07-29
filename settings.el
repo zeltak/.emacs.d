@@ -916,57 +916,6 @@
 
  )
 
-(defhydra hydra-sunrise-leader  (:color blue :hint nil)
-
-"
-
-_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
-_o_: mark prev   _p_ _q_ _r_ wdired   du_p_licate  _s_:       _t_: term           _u_:       
-_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
-_q_: 
-
-Sunrise:
-【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes 【C-enter】open in next pane 
-【N】copy/rename same dir 【s/r】sort/reverse 【X】exe file 【K】clone (cp tree) 【y】calc size
-
-
-"
-
-("a" find-file  )
-("b"  nil  )
-;("c"  company-complete )
-("c"  auto-complete )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  hide-sublevels )
-("i"  hydra-editing-insert/body )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  helm-mark-ring )
-("n"  set-mark-command )
-("o"  set-mark-command 4 )
-("p"  duplicate-current-line-or-region )
-("r"  sr-editable-pane )
-("s"  nil )
-("t"  sr-term-cd )
-("T"  sr-term )
-("<f9>"  sr-term-cd-newterm )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  helm-show-kill-ring )
-("z"  nil )
-("\\"  z/insert-slsh )
-(";"  comment-or-uncomment-region )
-("q"  nil )
-
-)
-
 (use-package sunrise-x-popviewer
   :ensure t
   :config
@@ -1034,12 +983,6 @@ Sunrise:
           (message "Killed %i sunrise buffer(s)." count ))))
 (setq sr-quit-hook 'er/kill-all-sunrise-buffers)
 
-(defun chd/dired-Dowloads ()
-  "  "
-  (interactive)
-  (find-file "~/Downloads/")     
-)
-
 (define-key sr-mode-map (kbd "/") 'sr-fuzzy-narrow) 
 (define-key sr-mode-map (kbd "") 'er/sunrise-flatten) 
 (define-key sr-mode-map (kbd "\\") 'hydra-sr-chd/body ) 
@@ -1057,34 +1000,89 @@ Sunrise:
 
 "
 "
-("a" nil )
-("b"  nil  )
+("a" (find-file "~/AUR/") "AUR" )
+("b"  (find-file "~/bin/") "bin" )
 ("c"  nil )
-("d"  chd/dired-Dowloads "Downloads" )
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  nil )
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "~/mtp") "mtp" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  nil )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("."  (find-file "~/.config/") "config")
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
+
+(defhydra hydra-sunrise-leader  (:color blue :hint nil)
+
+"
+
+_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
+_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
+_o_: mark prev   _p_ _q_ _r_ wdired   du_p_licate  _s_:       _t_: term           _u_:       
+_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
+_q_: 
+
+Sunrise:
+【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes 【C-enter】open in next pane 
+【N】copy/rename same dir 【s/r】sort/reverse 【X】exe file 【K】clone (cp tree) 【y】calc size
+
+
+"
+
+("a" find-file  )
+("b"  nil  )
+;("c"  company-complete )
+("c"  auto-complete )
+("d"  nil )
 ("e"  nil )
 ("f"  nil )
 ("g"  nil )
-("h"  nil )
-("i"  nil )
+("h"  hide-sublevels )
+("i"  hydra-editing-insert/body )
 ("j"  nil )
 ("k"  nil )
 ("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
+("m"  helm-mark-ring )
+("n"  set-mark-command )
+("o"  set-mark-command 4 )
+("p"  duplicate-current-line-or-region )
+("r"  sr-editable-pane )
 ("s"  nil )
-("t"  nil )
+("t"  sr-term-cd )
+("T"  sr-term )
+("<f9>"  sr-term-cd-newterm )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
 ("x"  nil )
-("y"  nil )
+("y"  helm-show-kill-ring )
 ("z"  nil )
+("\\"  z/insert-slsh )
+(";"  comment-or-uncomment-region )
 ("q"  nil )
 
-))
+)
 
 (use-package sr-speedbar
  :ensure t
@@ -1100,11 +1098,11 @@ Sunrise:
   (interactive)
   (swiper (thing-at-point 'symbol)))
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
+;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
-(setq transmission-host "10.0.0.2")
-(setq transmission-rpc-path "/transmission/web/")
-(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
+;(setq transmission-host "10.0.0.2")
+;(setq transmission-rpc-path "/transmission/web/")
+;(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
 
 (use-package undo-tree 
 :ensure t
@@ -1934,6 +1932,14 @@ The app is chosen from your OS's preference."
 (interactive)
 (sr-term )
 (insert " nmap -sP 10.0.0.1/24" )
+(eshell-send-input)
+)
+
+(defun z/dired-backup-lgs ()
+"run laptop git script"
+(interactive)
+(sr-term )
+(insert "~/bin/lgs.sh" )
 (eshell-send-input)
 )
 
