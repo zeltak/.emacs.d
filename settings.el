@@ -1101,8 +1101,6 @@ Sunrise:
 ;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 ;(setq transmission-host "10.0.0.2")
-;(setq transmission-rpc-path "/transmission/web/")
-;(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
 
 (use-package undo-tree 
 :ensure t
