@@ -9,7 +9,9 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -29,13 +31,19 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table '())
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
 (define-abbrev-table 'calendar-mode-abbrev-table '())
+
+(define-abbrev-table 'change-log-mode-abbrev-table '())
 
 (define-abbrev-table 'comint-mode-abbrev-table '())
 
@@ -64,6 +72,8 @@
 (define-abbrev-table 'diary-fancy-display-mode-abbrev-table '())
 
 (define-abbrev-table 'diary-mode-abbrev-table '())
+
+(define-abbrev-table 'diff-mode-abbrev-table '())
 
 (define-abbrev-table 'doctex-mode-abbrev-table '())
 
@@ -220,7 +230,7 @@
     ("authetication" "authentication" nil 0)
     ("availalbe" "available" nil 0)
     ("avilability" "availability" nil 2)
-    ("avilable" "available" nil 3)
+    ("avilable" "available" nil 4)
     ("awya" "away" nil 0)
     ("aywa" "away" nil 0)
     ("bakc" "back" nil 0)
@@ -244,6 +254,7 @@
     ("beggining" "beginning" nil 0)
     ("begining" "beginning" nil 0)
     ("beginining" "beginning" nil 0)
+    ("begviour" "behavior" nil 0)
     ("behabviour" "behaviour" nil 0)
     ("behaivior" "behaviour" nil 0)
     ("behavour" "behaviour" nil 0)
@@ -292,7 +303,6 @@
     ("charachter" "character" nil 0)
     ("charachters" "characters" nil 0)
     ("charactor" "character" nil 0)
-    ("charectaristcis" "characteristics" nil 0)
     ("charectaristics" "characteristics" nil 0)
     ("charecter" "character" nil 0)
     ("charector" "character" nil 0)
@@ -391,6 +401,7 @@
     ("cutsomers" "customers" nil 0)
     ("cxan" "can" nil 0)
     ("czecj" "czech" nil 0)
+    ("czsech" "czech" nil 0)
     ("danceing" "dancing" nil 0)
     ("dcument" "document" nil 0)
     ("deatils" "details" nil 0)
@@ -482,7 +493,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 16)
+    ("emacs" "Emacs" nil 20)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
@@ -619,7 +630,7 @@
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 18)
+    ("ie" "₆In example₆" nil 20)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -843,7 +854,7 @@
     ("prelease" "release" nil 0)
     ("prelimnary" "preliminary" nil 0)
     ("premissions" "permissions" nil 0)
-    ("preperation" "preparation" nil 1)
+    ("preperation" "preparation" nil 0)
     ("prerelease" "pre-release" nil 0)
     ("presance" "presence" nil 0)
     ("presue" "peruse" nil 0)
@@ -1087,7 +1098,6 @@
     ("traditionaly" "traditionally" nil 0)
     ("traditionalyl" "traditionally" nil 0)
     ("transfered" "transferred" nil 0)
-    ("triemesters" "trimesters" nil 0)
     ("truely" "truly" nil 0)
     ("truley" "truly" nil 0)
     ("tryed" "tried" nil 0)
@@ -1101,7 +1111,6 @@
     ("uneeded" "unneeded" nil 0)
     ("unicode" "Unicode" nil 2)
     ("unitedstates" "United States" nil 0)
-    ("univeristy" "university" nil 0)
     ("unliek" "unlike" nil 0)
     ("unpleasently" "unpleasantly" nil 0)
     ("unregistared" "unregistered" nil 0)
@@ -1197,13 +1206,45 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
 (define-abbrev-table 'lisp-mode-abbrev-table '())
 
+(define-abbrev-table 'log-edit-mode-abbrev-table '())
+
 (define-abbrev-table 'log4e-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-cherry-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-diff-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-log-select-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-popup-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-popup-sequence-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-process-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-reflog-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-refs-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-revision-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stash-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-stashes-mode-abbrev-table '())
+
+(define-abbrev-table 'magit-status-mode-abbrev-table '())
 
 (define-abbrev-table 'message-mode-abbrev-table '())
 
@@ -1217,7 +1258,9 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1233,7 +1276,9 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 

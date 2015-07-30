@@ -612,7 +612,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog article !prep !talk !conf !invtalk "
+        :input "kloog !unpublished !prep "
         :candidate-number-limit 500))
 
 ;; Bind this search function to Ctrl-x p:
@@ -624,7 +624,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog"
+        :input "kloog !unpublished"
         :candidate-number-limit 500))
 
 ;; Bind this search function to Ctrl-x p:
@@ -3055,10 +3055,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq org-default-notes-file "~/org/files/refile.org")
 
 ;associate these files with org
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-;don’t insert blank lines
-(setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 ;make new headings appear after the content for the current one
 (setq org-insert-heading-respect-content t)
@@ -3110,6 +3108,11 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;; (add-hook 'org-mode-hook 'tj/reset-view-mode)
 
 (setq org-support-shift-select 't)
+
+;; when creating new headers make sure there isn't a space
+(setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+;;;this will make sure there are no empty lines betwwn headers after collapsing headers 
+(setq org-cycle-separator-lines 0)
 
 (org-add-link-type
  "grep"

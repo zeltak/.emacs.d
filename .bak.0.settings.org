@@ -1569,7 +1569,6 @@ https://github.com/holomorph/transmission/issues/1
 ;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 ;(setq transmission-host "10.0.0.2")
-;(setq transmission-rpc-path "/transmission/web/")
 #+END_SRC
 
 ** Undo tree
