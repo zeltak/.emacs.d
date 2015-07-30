@@ -37,9 +37,7 @@
  '(sr-show-hidden-files t)
  '(sr-traditional-other-window nil)
  '(sr-use-commander-keys nil)
- '(sr-windows-default-ratio 88)
- '(transmission-file-size-units nil)
- '(transmission-host "10.0.0.2"))
+ '(sr-windows-default-ratio 88))
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.

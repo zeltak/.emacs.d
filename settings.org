@@ -842,7 +842,7 @@ https://github.com/tmalsburg/helm-bibtex
     (default       . helm-bibtex-format-citation-default)))
 
 ;(setq helm-bibtex-additional-search-fields '(tags))
-(setq helm-bibtex-additional-search-fields '(pubstate tags))
+(setq helm-bibtex-additional-search-fields '(tags))
 
 
 
@@ -888,8 +888,8 @@ https://github.com/tmalsburg/helm-bibtex
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
 #+END_SRC
 
-*** my prep make it match on pubstate
-#+BEGIN_SRC emacs-lisp :respults none
+*** my prepared maunscripts
+#+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
  (defun helm-bibtex-ikloog-prep         ()
@@ -897,7 +897,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog prep"
+         :input "kloog prep !unpublished"
          :candidate-number-limit 500))
 
  #+END_SRC
@@ -2253,6 +2253,15 @@ broken this way, causes erros in init
 (org-edit-src-exit))
 
 #+END_SRC
+*** link to file
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-link-file  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-insert-link)))
+
+#+END_SRC
+
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -3391,7 +3400,7 @@ _q_:
    
 **** TODO extra org links commands
  #+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-org-links (:color blue )
+ (defhydra hydra-org-links (:color blue  :hint nil :columns 4)
       "
       "
      ("l" org-store-link  "create and copy link")
@@ -3399,6 +3408,7 @@ _q_:
      ("d" org-id-create "just create Id")
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
+     ("f" z/org-link-file  "link to file" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC

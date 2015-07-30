@@ -865,7 +865,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog article !prep !talk !conf !invtalk "
+         :input "kloog !unpublished !prep "
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
@@ -873,7 +873,6 @@ https://github.com/tmalsburg/helm-bibtex
 #+END_SRC
 
 *** my papers (all)
-
 #+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
@@ -882,7 +881,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog"
+         :input "kloog !unpublished"
          :candidate-number-limit 500))
 
  ;; Bind this search function to Ctrl-x p:
@@ -4118,14 +4117,11 @@ set currently to 100mb
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
 #+END_SRC 
-
 **** main configs
 #+BEGIN_SRC emacs-lisp :results none
 ;associate these files with org
-(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
-;don’t insert blank lines
-(setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\|txt\\)$" . org-mode))
 
 ;make new headings appear after the content for the current one
 (setq org-insert-heading-respect-content t)
@@ -4204,6 +4200,13 @@ use setq org-support-shift-select:
 (setq org-support-shift-select 't)
 #+END_SRC
 
+*** Header behavior
+#+BEGIN_SRC emacs-lisp :results none
+;; when creating new headers make sure there isn't a space
+(setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
+;;;this will make sure there are no empty lines betwwn headers after collapsing headers 
+(setq org-cycle-separator-lines 0) 
+#+END_SRC 
 ** custom link types
 *** grep link
 #+BEGIN_SRC emacs-lisp :results none

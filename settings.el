@@ -594,7 +594,7 @@
     (default       . helm-bibtex-format-citation-default)))
 
 ;(setq helm-bibtex-additional-search-fields '(tags))
-(setq helm-bibtex-additional-search-fields '(pubstate tags))
+(setq helm-bibtex-additional-search-fields '(tags))
 
 
 
@@ -636,7 +636,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog prep"
+        :input "kloog prep !unpublished"
         :candidate-number-limit 500))
 
 (use-package helm-mu
@@ -1610,6 +1610,11 @@ comment box."
 (comment-dwim nil)
 (org-edit-src-exit))
 
+(defun z/org-link-file  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-insert-link)))
+
 (defun z/insert-slsh ()
   " insert     "
   (interactive)
@@ -2496,7 +2501,7 @@ _q_:
 
 ))
 
-(defhydra hydra-org-links (:color blue )
+(defhydra hydra-org-links (:color blue  :hint nil :columns 4)
      "
      "
     ("l" org-store-link  "create and copy link")
@@ -2504,6 +2509,7 @@ _q_:
     ("d" org-id-create "just create Id")
     ("c" org-id-copy  "copy(and create) to killring" ) 
     ("s" org-id-store-link  "store org-id" ) 
+    ("f" z/org-link-file  "link to file" ) 
      ("q" nil "cancel" nil)
 )
 
