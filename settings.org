@@ -957,6 +957,8 @@ highlight word at point and move forward next to other words
 ** ispell
 #+BEGIN_SRC emacs-lisp :results none
 (setq ispell-personal-dictionary "~/.emacs.d/ispell-dico-personal")
+;;below command skipps checking inside org mode code blocks 
+(add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
 #+END_SRC
 ** key-chord
 
@@ -1212,6 +1214,19 @@ https://github.com/tj64/org-dp
 ;for closing use package
 )
 #+END_SRC 
+** TODO org-vcard
+https://github.com/flexibeast/org-vcard
+
+also explore how this relates to org-contacs
+#+BEGIN_SRC emacs-lisp :results none
+(use-package org-vcard
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
+
 ** TODO org-pandoc
 https://github.com/kawabata/ox-pandoc
 
@@ -1594,6 +1609,17 @@ makes or unmakes a marked section wider/shorter (look fill command)
 )
 #+END_SRC
 
+** TODO worf
+look here for more details on keybinds
+https://github.com/abo-abo/worf/blob/master/worf.el
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package worf
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
 ** weechat.el
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2228,7 +2254,6 @@ broken this way, causes erros in init
 )
 #+END_SRC
 **** org agenda cook
-
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/org-agenda-cook ()
 "open work agenda"
@@ -2242,6 +2267,17 @@ broken this way, causes erros in init
 (fset 'expdf
       [?\C-c ?\C-e ?\l ?\o ])
 #+END_SRC
+
+**** TODO org TODO spares tree
+add all todo states to sparse tree
+#+begin_src emacs-lisp
+  (defun z/org-sparse-todo ()
+    "all todo sparse"
+    (interactive)
+    (org-match-sparse-tree t )
+)
+#+end_src
+
 
 *** comment code block 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2262,6 +2298,7 @@ broken this way, causes erros in init
 
 #+END_SRC
 
+*** Helm realted
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -2780,6 +2817,7 @@ shnsplit -f {F}  -o flac {oF}
 (defface hydra-face-green
     '((t (:foreground "green" :bold t)))
   "green face. For fun.")
+
 #+END_SRC
 
 *** TODO hydra leader
@@ -3346,10 +3384,9 @@ BK+: + filer
 
 (global-set-key
    (kbd "<f9>")
-(defhydra hydra-org (:color blue :hint nil)
+(defhydra hydra-org (:color blue :hint nil :colums 4)
 
 "
-_<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:swish-helm      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
@@ -3359,11 +3396,12 @@ _q_:
 
 "
 
-("<f9>" helm-org-headlines )
-("a"  org-sort )
+("<f9>" helm-org-headlines "helm org headers")
+("<f10>" worf-goto "worf org headers")
+("a"  org-sort "sort")
 ("b"  nil  )
-("c"  org-columns )
-("C"  org-columns-quit )
+("c"  org-columns "Columns" )
+("C"  org-columns-quit "quit Columns" )
 ("d"  org-download-screenshot )
 ("D"  org-download-delete )
 ("E"  org-export-dispatch )
@@ -3374,7 +3412,7 @@ _q_:
 ("i"  org-toggle-inline-images )
 ("j"  nil )
 ("k"  nil )
-("l"  hydra-org-links/body )
+("l"  hydra-org-links/body "link menu" :face 'hydra-face-green)
 ("m"  nil )
 ("n"  helm-swish-e )
 ("o"  nil )
@@ -3445,7 +3483,7 @@ _q_:
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-o")
- (defhydra hydra-org-edit (:color blue)
+ (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
    "orgmode editing "
    ("t" org-insert-todo-heading-respect-content "insert TODO" )
    ("d" org-cut-subtree  "org cut" )
@@ -3455,6 +3493,7 @@ _q_:
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/comment-org-in-src-block  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
+   ("w" worf-mode "Worf mode" )
    ("q" nil "cancel")))
 
 #+END_SRC
@@ -4227,6 +4266,30 @@ use setq org-support-shift-select:
    (grep-compute-defaults)
    (rgrep regexp "*" (expand-file-name "./"))))
 #+END_SRC 
+*** dired links
+#+BEGIN_SRC emacs-lisp :results none
+  (org-add-link-type "file+emacs+dired" 'org-open-file-with-emacs-dired)
+  (add-hook 'org-store-link-functions 'org-dired-store-link)
+
+  (defun org-open-file-with-emacs-dired (path)
+    "Open in dired."
+    (let ((d (file-name-directory path))
+          (f (file-name-nondirectory path)))
+      (dired d)
+      (goto-char (point-min))
+      (search-forward f nil t)))
+
+  (defun org-dired-store-link ()
+    "Store link to files/directories from dired."
+    (require 'dired+)
+    (when (eq major-mode 'dired-mode)
+      (let ((f (dired-get-filename)))
+        (setq link (concat "file+emacs+dired" ":" f)
+              desc (concat f " (dired)"))
+        (org-add-link-props :link link :description desc)
+        link)))
+#+end_src
+
 *** org link open with
 #+BEGIN_SRC emacs-lisp :results none
 (push (cons "\\.pdf\\'" 'emacs) org-file-apps)
@@ -4253,8 +4316,13 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-files '("~/org/files/agenda/"))
 #+END_SRC
 
-*** agenda view
+*** agenda popup behivour
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-agenda-window-setup "current-window")
+(setq org-agenda-restore-windows-after-quit t)
+#+END_SRC
 
+*** agenda view
 #+BEGIN_SRC emacs-lisp :results none
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -5061,11 +5129,11 @@ and the number of lines to be wrapped."
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
 
-  (defun cooking-sparse-tree-main ()
+  (defun cooking-sparse-tree-sweet ()
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
 
-  (defun cooking-sparse-tree-main ()
+  (defun cooking-sparse-tree-meat ()
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
 

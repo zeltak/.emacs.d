@@ -842,7 +842,7 @@ https://github.com/tmalsburg/helm-bibtex
     (default       . helm-bibtex-format-citation-default)))
 
 ;(setq helm-bibtex-additional-search-fields '(tags))
-(setq helm-bibtex-additional-search-fields '(pubstate tags))
+(setq helm-bibtex-additional-search-fields '(tags))
 
 
 
@@ -888,8 +888,8 @@ https://github.com/tmalsburg/helm-bibtex
  ;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
 #+END_SRC
 
-*** my prep make it match on pubstate
-#+BEGIN_SRC emacs-lisp :respults none
+*** my prepared maunscripts
+#+BEGIN_SRC emacs-lisp :results none
 
  ;; Define helm-search with predefined search expression:
  (defun helm-bibtex-ikloog-prep         ()
@@ -897,7 +897,7 @@ https://github.com/tmalsburg/helm-bibtex
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog prep"
+         :input "kloog prep !unpublished"
          :candidate-number-limit 500))
 
  #+END_SRC
@@ -957,6 +957,8 @@ highlight word at point and move forward next to other words
 ** ispell
 #+BEGIN_SRC emacs-lisp :results none
 (setq ispell-personal-dictionary "~/.emacs.d/ispell-dico-personal")
+;;below command skipps checking inside org mode code blocks 
+(add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
 #+END_SRC
 ** key-chord
 
@@ -1212,6 +1214,17 @@ https://github.com/tj64/org-dp
 ;for closing use package
 )
 #+END_SRC 
+** TODO org-vcard
+https://github.com/flexibeast/org-vcard
+#+BEGIN_SRC emacs-lisp :results none
+(use-package org-vcard
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
+
 ** TODO org-pandoc
 https://github.com/kawabata/ox-pandoc
 
@@ -2243,6 +2256,18 @@ broken this way, causes erros in init
       [?\C-c ?\C-e ?\l ?\o ])
 #+END_SRC
 
+**** TODO org TODO spares tree
+add all todo states to sparse tree
+#+begin_src emacs-lisp
+  (defun z/org-sparse-todo ()
+    (interactive)
+    (org-match-sparse-tree t "+TODO=\"TODO\""))
+#+end_src
+
+#+RESULTS:
+: z/org-sparse-todo
+
+
 *** comment code block 
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/comment-org-in-src-block ()    
@@ -2253,6 +2278,15 @@ broken this way, causes erros in init
 (org-edit-src-exit))
 
 #+END_SRC
+*** link to file
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-link-file  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-insert-link)))
+
+#+END_SRC
+   
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -2771,6 +2805,7 @@ shnsplit -f {F}  -o flac {oF}
 (defface hydra-face-green
     '((t (:foreground "green" :bold t)))
   "green face. For fun.")
+)
 #+END_SRC
 
 *** TODO hydra leader
@@ -3337,10 +3372,9 @@ BK+: + filer
 
 (global-set-key
    (kbd "<f9>")
-(defhydra hydra-org (:color blue :hint nil)
+(defhydra hydra-org (:color blue :hint nil :colums 4)
 
 "
-_<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:swish-helm      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
@@ -3350,11 +3384,12 @@ _q_:
 
 "
 
-("<f9>" helm-org-headlines )
-("a"  org-sort )
+("<f9>" helm-org-headlines "helm org headers")
+("<f10>" worf-goto "worf org headers")
+("a"  org-sort "sort")
 ("b"  nil  )
-("c"  org-columns )
-("C"  org-columns-quit )
+("c"  org-columns "Columns" )
+("C"  org-columns-quit "quit Columns" )
 ("d"  org-download-screenshot )
 ("D"  org-download-delete )
 ("E"  org-export-dispatch )
@@ -3365,7 +3400,7 @@ _q_:
 ("i"  org-toggle-inline-images )
 ("j"  nil )
 ("k"  nil )
-("l"  hydra-org-links/body )
+("l"  hydra-org-links/body "link menu" :face 'hydra-face-green)
 ("m"  nil )
 ("n"  helm-swish-e )
 ("o"  nil )
@@ -3391,7 +3426,7 @@ _q_:
    
 **** TODO extra org links commands
  #+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-org-links (:color blue )
+ (defhydra hydra-org-links (:color blue  :hint nil :columns 4)
       "
       "
      ("l" org-store-link  "create and copy link")
@@ -3399,6 +3434,7 @@ _q_:
      ("d" org-id-create "just create Id")
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
+     ("f" z/org-link-file  "link to file" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -3435,7 +3471,7 @@ _q_:
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-o")
- (defhydra hydra-org-edit (:color blue)
+ (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
    "orgmode editing "
    ("t" org-insert-todo-heading-respect-content "insert TODO" )
    ("d" org-cut-subtree  "org cut" )
@@ -3445,6 +3481,7 @@ _q_:
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/comment-org-in-src-block  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
+   ("w" worf-mode "Worf mode" )
    ("q" nil "cancel")))
 
 #+END_SRC
@@ -5051,11 +5088,11 @@ and the number of lines to be wrapped."
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
 
-  (defun cooking-sparse-tree-main ()
+  (defun cooking-sparse-tree-sweet ()
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
 
-  (defun cooking-sparse-tree-main ()
+  (defun cooking-sparse-tree-meat ()
     (interactive)
     (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
 

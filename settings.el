@@ -665,6 +665,8 @@
 )
 
 (setq ispell-personal-dictionary "~/.emacs.d/ispell-dico-personal")
+;;below command skipps checking inside org mode code blocks 
+(add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
 
 (use-package key-chord 
   :ensure t
@@ -836,6 +838,12 @@
 ))
 ;for closing use package
 )
+
+(use-package org-vcard
+ :ensure t
+ :config
+ 
+ )
 
 (use-package org-pandoc
  :ensure t
@@ -1115,6 +1123,12 @@ Sunrise:
 :ensure t
 :config
 )
+
+(use-package worf
+ :ensure t
+ :config
+ 
+ )
 
 (use-package weechat
    :ensure t
@@ -1602,6 +1616,12 @@ comment box."
 
 (fset 'expdf
       [?\C-c ?\C-e ?\l ?\o ])
+
+(defun z/org-sparse-todo ()
+    "all todo sparse"
+    (interactive)
+    (org-match-sparse-tree t )
+)
 
 (defun z/comment-org-in-src-block ()    
 (interactive)
@@ -2450,10 +2470,9 @@ BK+: + filer
 
 (global-set-key
    (kbd "<f9>")
-(defhydra hydra-org (:color blue :hint nil)
+(defhydra hydra-org (:color blue :hint nil :colums 4)
 
 "
-_<f9>_ headline search
 _a_: sort headers     _b_:                        _c_: column view (quit with C)   _d_: Screenshot (del with D)  _E_: export              _f_: food menu  _g_: Set tags
 _h_: insert header    _i_: toogle images          _j_:                             _k_:                          _l_: Links menu          _m_:            _n_:swish-helm      
 _o_:                  _p_: ex pdf                       _r_: Refile (prefix with R)      _s_: Time menu                _t_: Todo select         _u_: goto top level       
@@ -2463,11 +2482,12 @@ _q_:
 
 "
 
-("<f9>" helm-org-headlines )
-("a"  org-sort )
+("<f9>" helm-org-headlines "helm org headers")
+("<f10>" worf-goto "worf org headers")
+("a"  org-sort "sort")
 ("b"  nil  )
-("c"  org-columns )
-("C"  org-columns-quit )
+("c"  org-columns "Columns" )
+("C"  org-columns-quit "quit Columns" )
 ("d"  org-download-screenshot )
 ("D"  org-download-delete )
 ("E"  org-export-dispatch )
@@ -2478,7 +2498,7 @@ _q_:
 ("i"  org-toggle-inline-images )
 ("j"  nil )
 ("k"  nil )
-("l"  hydra-org-links/body )
+("l"  hydra-org-links/body "link menu" :face 'hydra-face-green)
 ("m"  nil )
 ("n"  helm-swish-e )
 ("o"  nil )
@@ -2535,7 +2555,7 @@ _q_:
 
 (global-set-key
  (kbd "C-M-o")
- (defhydra hydra-org-edit (:color blue)
+ (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
    "orgmode editing "
    ("t" org-insert-todo-heading-respect-content "insert TODO" )
    ("d" org-cut-subtree  "org cut" )
@@ -2545,6 +2565,7 @@ _q_:
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/comment-org-in-src-block  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
+   ("w" worf-mode "Worf mode" )
    ("q" nil "cancel")))
 
 (global-set-key
@@ -3127,6 +3148,27 @@ comment _e_macs function  // copy-paste-comment-function _r_
    (grep-compute-defaults)
    (rgrep regexp "*" (expand-file-name "./"))))
 
+(org-add-link-type "file+emacs+dired" 'org-open-file-with-emacs-dired)
+(add-hook 'org-store-link-functions 'org-dired-store-link)
+
+(defun org-open-file-with-emacs-dired (path)
+  "Open in dired."
+  (let ((d (file-name-directory path))
+        (f (file-name-nondirectory path)))
+    (dired d)
+    (goto-char (point-min))
+    (search-forward f nil t)))
+
+(defun org-dired-store-link ()
+  "Store link to files/directories from dired."
+  (require 'dired+)
+  (when (eq major-mode 'dired-mode)
+    (let ((f (dired-get-filename)))
+      (setq link (concat "file+emacs+dired" ":" f)
+            desc (concat f " (dired)"))
+      (org-add-link-props :link link :description desc)
+      link)))
+
 (push (cons "\\.pdf\\'" 'emacs) org-file-apps)
 (push (cons "\\.html\\'" 'emacs) org-file-apps)
 (push (cons "\\.mp4\\'" 'vlc) org-file-apps)
@@ -3136,6 +3178,9 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (add-to-list 'org-modules "org-habit")
 
 (setq org-agenda-files '("~/org/files/agenda/"))
+
+(setq org-agenda-window-setup "current-window")
+(setq org-agenda-restore-windows-after-quit t)
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -3746,11 +3791,11 @@ and the number of lines to be wrapped."
   (interactive)
   (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
 
-(defun cooking-sparse-tree-main ()
+(defun cooking-sparse-tree-sweet ()
   (interactive)
   (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
 
-(defun cooking-sparse-tree-main ()
+(defun cooking-sparse-tree-meat ()
   (interactive)
   (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
 

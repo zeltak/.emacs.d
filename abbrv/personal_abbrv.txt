@@ -9,9 +9,7 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
@@ -31,13 +29,9 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -362,6 +356,7 @@
     ("conected" "connected" nil 0)
     ("conferance" "conference" nil 0)
     ("configration" "configuration" nil 0)
+    ("confim" "confirm" nil 0)
     ("confirmmation" "confirmation" nil 0)
     ("confiuration" "configuration" nil 0)
     ("conjuntion" "conjunction" nil 0)
@@ -763,7 +758,7 @@
     ("neighbour" "neighbor" nil 0)
     ("neighbours" "neighbors" nil 1)
     ("nkow" "know" nil 0)
-    ("note" "$Note$" nil 15)
+    ("note" "$Note$" nil 17)
     ("nothign" "nothing" nil 0)
     ("numric" "numeric" nil 0)
     ("nver" "never" nil 0)
@@ -1206,9 +1201,7 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1258,9 +1251,7 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1276,9 +1267,7 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
