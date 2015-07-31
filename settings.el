@@ -212,20 +212,20 @@
   :ensure ace-jump-zap
 )
 
-(use-package ace-isearch
- :ensure t
- :config
- (ace-isearch-mode +1)
- (global-ace-isearch-mode +1)
-(setq ace-isearch-function 'avy-goto-word-1)
- )
+;  (use-package ace-isearch
+;  :ensure t
+;  :config
+;  (ace-isearch-mode +1)
+;  (global-ace-isearch-mode +1)
+; (setq ace-isearch-function 'avy-goto-word-1)
+;  )
 
-(custom-set-variables
-  '(ace-isearch-input-length 9)
-  '(ace-isearch-input-idle-delay 0.4)
-  '(ace-isearch-submode 'ace-jump-char-mode)
-  '(ace-isearch-use-ace-jump 'printing-char)
-)
+;;   (custom-set-variables
+;;   '(ace-isearch-input-length 9)
+;;   '(ace-isearch-input-idle-delay 0.4)
+;;   '(ace-isearch-submode 'ace-jump-char-mode)
+;;   '(ace-isearch-use-ace-jump 'printing-char)
+;; )
 
 (use-package ace-link
  :ensure t
@@ -305,6 +305,11 @@
 )
 
 (use-package bug-hunter
+ :ensure t
+ :config
+  )
+
+(use-package counsel
  :ensure t
  :config
   )
@@ -457,6 +462,17 @@
 (setq ebib-sort-order (quote ((year) (author) )))
 
  )
+
+(use-package easy-kill
+   :ensure t
+   :config
+(global-set-key [remap kill-ring-save] 'easy-kill)
+   )
+
+(use-package easy-kill-extras
+   :ensure t
+   :config
+   )
 
 ;; (require 'edit-server)
 ;;  (edit-server-start)
@@ -873,19 +889,19 @@
 (setq projectile-completion-system 'grizzl)
  )
 
-(use-package rainbow-mode
-:ensure t
-:config
-)
+;; (use-package rainbow-mode
+;; :ensure t
+;; :config
+;; )
 
-(dolist (hook '(css-mode-hook
-                html-mode-hook
-                js-mode-hook
-                emacs-lisp-mode-hook
-                org-mode-hook
-                text-mode-hook
-                ))
-  (add-hook hook 'rainbow-mode))
+;; (dolist (hook '(css-mode-hook
+;;                 html-mode-hook
+;;                 js-mode-hook
+;;                 emacs-lisp-mode-hook
+;;                 org-mode-hook
+;;                 text-mode-hook
+;;                 ))
+;;   (add-hook hook 'rainbow-mode))
 
 ;(use-package ranger
 ; :ensure t
@@ -1108,6 +1124,11 @@ Sunrise:
 (use-package swiper 
  :ensure t
  :config
+;(ivy-mode 1)
+(setq ivy-use-virtual-buffers t)
+(global-set-key "\C-s" 'swiper)
+(global-set-key "\C-r" 'swiper-at-point)
+(global-set-key (kbd "C-c C-r") 'ivy-resume)
  )
 
 (defun swiper-at-point ()
@@ -1578,8 +1599,6 @@ comment box."
                      (let ((current-prefix-arg '(4)))             
                        (call-interactively #'org-babel-tangle)))
 
-;(fset 'z/prefix-org-refile (C-u M-x org-refile))
-
 (defun z/org-agenda-calendar ()
 "open work agenda"
 (interactive)                                
@@ -1618,13 +1637,6 @@ comment box."
     (interactive)
     (org-match-sparse-tree t )
 )
-
-(defun z/comment-org-in-src-block ()    
-(interactive)
-(org-edit-special)
-(mark-whole-buffer)
-(comment-dwim nil)
-(org-edit-src-exit))
 
 (defun z/org-link-file  ()
                      (interactive)                                
@@ -1717,117 +1729,65 @@ font-lock-face '(:background "#FFE3E3")))))
 "read_only"))
 (add-hook 'org-mode-hook 'org-mark-readonly)
 
-(defun z-wrap-cblock-example ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_EXAMPLE\n")
-        (goto-char (point-max))
-        (insert "#+END_EXAMPLE\n")
-        (deactivate-mark))))
+(defun z/org-cblock-comment ()    
+(interactive)
+(org-edit-special)
+(mark-whole-buffer)
+(comment-dwim nil)
+(org-edit-src-exit))
 
-(defun z-wrap-cblock-sh ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC sh\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
+(defun  z/org-cblock-paste-sh ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC emacs-lisp\n")
+  (yank)
+  (insert "\n#+END_SRC"))
 
-(defun  z/org-paste-cblock-sh ()
+(defun  z/org-cblock-paste-sh ()
    "paste in already quote block"
   (interactive)
   (insert "#+BEGIN_SRC sh\n")
   (yank)
   (insert "\n#+END_SRC"))
 
-(defun z-wrap-cblock-r ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC R\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
+(defun  z/org-cblock-paste-sh ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC EXAMPLE\n")
+  (yank)
+  (insert "\n#+END_EXAMPLE"))
 
-(defun z-wrap-region-in-quote-block ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_QUOTE\n")
-        (goto-char (point-max))
-        (insert "#+END_QUOTE\n")
-        (deactivate-mark))))
+(defun  z/org-cblock-paste-R ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC R\n")
+  (yank)
+  (insert "\n#+END_SRC"))
 
-(defun z-wrap-cblock-lisp ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC emacs-lisp :results none\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
+(defun  z/org-cblock-paste-SAS ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC SAS\n")
+  (yank)
+  (insert "\n#+END_SRC"))
 
-(defun z-wrap-cblock-sas ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC sas\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
+(defun  z/org-cblock-paste-QUOTE ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_QUOTE\n")
+  (yank)
+  (insert "\n#+END_QUOTE"))
 
-(defun org-wrap-in-src-block (&optional lang lines)
+(defun z/org-cblock-iwrap-emacs-lisp (&optional lang lines)
   "Wrap sexp-at-point or region in src-block.
-
 Use Org-Babel LANGuage for the src-block if given, Emacs-Lisp
 otherwise. A region instead of the sexp-at-point is wrapped if
 either
-
    - optional argument LINES is an (positive or negative) integer
    - or the region is active
-
 In the first case the region is determined by moving +/- LINES
 forward/backward from point using `forward-line', in the second
 case the active region is used.
-
 When called with prefix argument 'C-u', prompt the user for the
 Org-Babel language to use. When called with two prefix arguments
 'C-u C-u', prompt the user for both the Org-Babel language to use
@@ -1877,27 +1837,25 @@ and the number of lines to be wrapped."
       (if lines "" "\n")))
     (set-marker marker nil)))
 
-;; (global-set-key (kbd "C-c w l")
-;;                 (lambda ()
-;;                   (interactive)
-;;                   (let ((current-prefix-arg '(4)))
-;;                      (call-interactively
-;;                       'org-wrap-in-src-block ))))
+(defun z/org-cblock-iwrap-ASK ()
+(interactive)
+(let ((current-prefix-arg '(4)))
+(call-interactively
+'z/org-cblock-iwrap-emacs-lisp)))
 
-;; (global-set-key (kbd "C-c w n")
-;;                 (lambda ()
-;;                   (interactive)
-;;                   (let ((current-prefix-arg '(16)))
-;;                      (call-interactively
-;;                       'org-wrap-in-src-block))))
+(defun z/org-cblock-iwrap-ASK-LINE ()
+(interactive)
+(let ((current-prefix-arg '(4)))
+(call-interactively
+'z/org-cblock-iwrap-emacs-lisp)))
 
-;; (global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
+(defun z/org-cblock-iwrap-R ()
+(interactive)
+(z/org-cblock-iwrap-emacs-lisp  "R" ))
 
-
-;; (global-set-key (kbd "C-c w y")
-;;                 (lambda ()
-;;                   (interactive)
-;;                       (org-wrap-in-src-block  "shell" 1)))
+(defun z/org-cblock-iwrap-sh ()
+(interactive)
+(z/org-cblock-iwrap-emacs-lisp  "sh" ))
 
 (defun cooking-sparse-tree-breakfeast ()
   (interactive)
@@ -2339,6 +2297,22 @@ The app is chosen from your OS's preference."
 (eshell-send-input)
 )
 
+(defun z/dired-sort-menu ()
+  "Sort dired dir listing in different ways.
+Prompt for a choice.
+URL `http://ergoemacs.org/emacs/dired_sort.html'
+Version 2015-07-30"
+  (interactive)
+  (let (ξsort-by ξarg)
+    (setq ξsort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (cond
+     ((equal ξsort-by "name") (setq ξarg "-Al --si --time-style long-iso "))
+     ((equal ξsort-by "date") (setq ξarg "-Al --si --time-style long-iso -t"))
+     ((equal ξsort-by "size") (setq ξarg "-Al --si --time-style long-iso -S"))
+     ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
+     (t (error "logic error 09535" )))
+    (dired-sort-other ξarg )))
+
 (defun z/dired-backup-lgs ()
 "run laptop git script"
 (interactive)
@@ -2675,45 +2649,38 @@ _q_:
 
 (global-set-key
   (kbd "<f3>")
-  (defhydra hydra-spell  (:color blue :hint nil)
+  (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
   "
-  _<f3>_: check and add
-  _a_: helm apropos        _b_:             _c_: cycle spacing                       _d_:           _e_: Edit 
-  _f_: helm-find           _g_:rgrep             _h_: highlight-symbol      _i_: ispell    _j_: next hs   
-  _k_: prev hs             _l_: helm-locate _m_:check next higlighted  _n_:goto next error      
-  _o_: helm-occur       _p_:                 _r_: replace ar cursor      _s_:       _t_:           _u_: imenu       
-  _v_:        _w_:                 _x_:       _y_:       _z_: 
-  _q_: _H_: highlight-symb remove 
 【C-SPACE】 recntangle select 
  "
-  ("<f3>" endless/ispell-word-then-abbrev )
-  ("a" helm-apropos )
-  ("b"  backward-kill-line  )
-  ("c"  cycle-spacing )
+  ("<f3>" endless/ispell-word-then-abbrev "check and add" )
+  ("a" helm-apropos "Helm-Apropos")
+  ("b"  backward-kill-line  "kill backwards")
+  ("c"  cycle-spacing "cycle spacing")
   ("d" nil )
-  ("e"  hydra-editing/body )
-  ("f"  helm-find-files )
-  ("g"  rgrep )
-  ("h"  highlight-symbol )
-  ("H"  highlight-symbol-remove-all )
-  ("i"  ispell )
-  ("j"  highlight-symbol-next  :color red )
-  ("k"  highlight-symbol-prev  :color red )
-  ("l"  helm-locate )
-  ("m"  flyspell-check-next-highlighted-word )
-  ("n"  flyspell-goto-next-error )
-  ("o"  helm-occur )
+  ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
+  ("f"  helm-find-files "Helm FF" )
+  ("g"  rgrep "Rgrep")
+  ("h"  highlight-symbol "HS symbol")
+  ("H"  highlight-symbol-remove-all "HS remove")
+  ("i"  ispell "ispell")
+  ("j"  highlight-symbol-next  :color red  "HS Next")
+  ("k"  highlight-symbol-prev  :color red  "HS Prev")
+  ("l"  helm-locate "helm-locate")
+  ("m"  flyspell-check-next-highlighted-word "check next error")
+  ("n"  flyspell-goto-next-error "check next error" )
+  ("o"  helm-occur "helm Occur")
   ("p"  nil )
-  ("r"  anzu-query-replace-at-cursor)
-  ("s"  nil )
+  ("r"  anzu-query-replace-at-cursor "Replace@cursor")
+  ("s"  isearch-forward "isearch" )
   ("t"  nil )
-  ("u"  imenu )
+  ("u"  imenu "imenu")
   ("v"  nil)
-  ("w"  ispell-word )
+  ("w"  ispell-word "ispeel word" )
   ("x"  nil )
   ("y"  nil )
-  ("z"  nil )
+  ("z"  counsel-recoll "recoll" )
   ("q"  nil )
 
   ))
@@ -2723,11 +2690,11 @@ _q_:
     (defhydra hydra-org-blocks (:color blue :hint nil :columns 4)
     "
 "
-    ("z"    org-dp-wrap-in-block  )
-    ("<f4>" z/hydra-wrap-elisp )
-    ("r"    z/hydra-wrap-R  )
-    ("b"   z/hydra-wrap-bash )
-    ("l"   z/hydra-wrap-latex )
+    ("<f4>" z/org-cblock-iwrap-emacs-lisp "WRAP-Elisp" )
+    ("r" z/org-cblock-iwrap-emacs-R "WRAP-R" )
+    ("a" z/org-cblock-iwrap-ASK  "Ask" )
+    ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
+    ("l"    z/org-cblock-iwrap-ASK-LINE "Ask line" )
     ("q" nil "cancel")))
 
 (global-set-key
@@ -2915,21 +2882,6 @@ _q_:
 )
 
 (global-set-key
- (kbd "C-M-o")
- (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
-   "orgmode editing "
-   ("t" org-insert-todo-heading-respect-content "insert TODO" )
-   ("d" org-cut-subtree  "org cut" )
-   ("y" org-copy-subtree "org copy" )
-   ("p" org-paste-subtree  "org paste" )
-   ("h" org-set-line-headline "line to headline" )
-   ("c" org-set-line-checkbox  "line to checkbox" )
-   (";" z/comment-org-in-src-block  "line to checkbox" )
-   ("s" hydra-org-time/body "time stamps" )
-   ("w" worf-mode "Worf mode" )
-   ("q" nil "cancel")))
-
-(global-set-key
    (kbd "C-M-v")
 (defhydra hydra-org-tangle  (:color blue :hint nil)
 
@@ -2970,6 +2922,22 @@ _q_: quit
 ("q"  nil )
 
 ))
+
+(global-set-key
+ (kbd "C-M-o")
+ (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
+   "orgmode editing "
+   ("t" org-insert-todo-heading-respect-content "insert TODO" )
+   ("d" org-cut-subtree  "org cut" )
+   ("y" org-copy-subtree "org copy" )
+   ("p" org-paste-subtree  "org paste" )
+   ("r" org-copy  "copy via refile" )
+   ("h" org-set-line-headline "line to headline" )
+   ("c" org-set-line-checkbox  "line to checkbox" )
+   (";" z/org-cblock-comment  "line to checkbox" )
+   ("s" hydra-org-time/body "time stamps" )
+   ("w" worf-mode "Worf mode" )
+   ("q" nil "cancel")))
 
 (global-set-key
    (kbd "<f10>")
@@ -3429,15 +3397,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
-
-;; kill line if no region active                      
-;; http://emacs-fu.blogspot.co.uk/2009/11/copying-lines-without-selecting-them.html
-(defadvice kill-region (before slick-cut activate compile)
-  "When called interactively with no active region, kill a single line instead."
-  (interactive
-   (if mark-active (list (region-beginning) (region-end))
-     (list (line-beginning-position)
-           (line-beginning-position 2)))))
 
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
@@ -4407,7 +4366,86 @@ scroll-step 1)
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
+; -*- Lisp -*-
+(require 'nnir)
 
+;;@see http://www.emacswiki.org/emacs/GnusGmail#toc1
+(setq gnus-select-method '(nntp "news.gmane.org")) ;; if you read news groups 
+
+;; ask encyption password once
+(setq epa-file-cache-passphrase-for-symmetric-encryption t)
+
+(setq smtpmail-auth-credentials "~/.gnupg/ikloogmail.gpg")
+
+;;@see http://gnus.org/manual/gnus_397.html
+(add-to-list 'gnus-secondary-select-methods
+             '(nnimap "gmail"
+                      (nnimap-address "imap.gmail.com")
+                      (nnimap-server-port 993)
+                      (nnimap-stream ssl)
+                      (nnir-search-engine imap)
+                      (nnimap-authinfo-file "~/.gnupg/ikloogmail.gpg")
+                      ; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
+                      ;; press 'E' to expire email
+                      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
+                      (nnmail-expiry-wait 90)))
+
+(setq gnus-thread-sort-functions
+      '((not gnus-thread-sort-by-date)
+        (not gnus-thread-sort-by-number)))
+
+; NO 'passive
+(setq gnus-use-cache t)
+
+;; BBDB: Address list
+;(add-to-list 'load-path "/where/you/place/bbdb/")
+(require 'bbdb)
+(bbdb-initialize 'message 'gnus 'sendmail)
+(setq bbdb-file "~/.bbdb") ;; OPTIONAL, because I'm sharing my ~/.emacs.d
+(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(setq bbdb/mail-auto-create-p t
+      bbdb/news-auto-create-p t)
+
+;; auto-complete emacs address using bbdb's own UI
+(add-hook 'message-mode-hook
+          '(lambda ()
+             (flyspell-mode t)
+             (local-set-key "<TAB>" 'bbdb-complete-name)))
+
+;; Fetch only part of the article if we can.  I saw this in someone
+;; else's .gnus
+(setq gnus-read-active-file 'some)
+
+;; Tree view for groups.  I like the organisational feel this has.
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+
+;; Threads!  I hate reading un-threaded email -- especially mailing
+;; lists.  This helps a ton!
+(setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+
+;; Also, I prefer to see only the top level message.  If a message has
+;; several replies or is part of a thread, only show the first
+;; message.  'gnus-thread-ignore-subject' will ignore the subject and
+;; look at 'In-Reply-To:' and 'References:' headers.
+(setq gnus-thread-hide-subtree t)
+(setq gnus-thread-ignore-subject t)
+
+;; Personal Information
+(setq user-full-name "Itai Kloog"
+      user-mail-address "ikloog@gmail.com")
+
+;; You need install the command line brower 'w3m' and Emacs plugin 'w3m'
+(setq mm-text-html-renderer 'w3m)
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-local-domain "homepc")
+;; http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
+(setq gnus-use-correct-string-widths nil)
 
 (when (string= system-name "zuni")
 (add-to-list 'load-path "~/mu/mu4e/")

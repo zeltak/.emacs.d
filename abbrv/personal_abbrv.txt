@@ -11,6 +11,8 @@
 
 (define-abbrev-table 'awk-mode-abbrev-table '())
 
+(define-abbrev-table 'bbdb-mode-abbrev-table '())
+
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
 (define-abbrev-table 'bmkp-edit-bookmark-record-mode-abbrev-table '())
@@ -488,7 +490,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 20)
+    ("emacs" "Emacs" nil 22)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
@@ -577,6 +579,7 @@
     ("gruops" "groups" nil 0)
     ("grwo" "grow" nil 0)
     ("guidlines" "guidelines" nil 0)
+    ("gunctions" "functions" nil 0)
     ("hadbeen" "had been" nil 0)
     ("hadnt" "hadn't" nil 0)
     ("haev" "have" nil 0)
@@ -758,7 +761,7 @@
     ("neighbour" "neighbor" nil 0)
     ("neighbours" "neighbors" nil 1)
     ("nkow" "know" nil 0)
-    ("note" "$Note$" nil 17)
+    ("note" "$Note$" nil 18)
     ("nothign" "nothing" nil 0)
     ("numric" "numeric" nil 0)
     ("nver" "never" nil 0)
@@ -1178,7 +1181,19 @@
     ("yuor" "your" nil 0)
    ))
 
+(define-abbrev-table 'gnus-article-edit-mode-abbrev-table '())
+
+(define-abbrev-table 'gnus-article-mode-abbrev-table '())
+
+(define-abbrev-table 'gnus-browse-mode-abbrev-table '())
+
+(define-abbrev-table 'gnus-category-mode-abbrev-table '())
+
 (define-abbrev-table 'gnus-group-mode-abbrev-table '())
+
+(define-abbrev-table 'gnus-score-mode-abbrev-table '())
+
+(define-abbrev-table 'gnus-sticky-article-mode-abbrev-table '())
 
 (define-abbrev-table 'google-contacts-mode-abbrev-table '())
 
