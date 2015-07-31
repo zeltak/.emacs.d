@@ -740,6 +740,16 @@ allows to dynamically resize the non currently edited pane
 :config
 )
 #+END_SRC
+** gnorb
+
+  #+BEGIN_SRC emacs-lisp :results none
+  (use-package gnorb
+   :ensure t
+   :config
+      )
+  #+END_SRC 
+  
+  
 ** grizzl
 for projectile fuzzy match
 #+BEGIN_SRC emacs-lisp :results none
@@ -1101,7 +1111,13 @@ First mark the word, then add more cursors.
       bibtex-autokey-titlewords-stretch 1
       bibtex-autokey-titleword-length 5)
 #+END_SRC
-** on-sudo
+** TODO org link edit
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
+(require 'org-link-edit)
+#+END_SRC
+
+** ob-sudo
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ob-sudo/")
 #+END_SRC
@@ -1775,7 +1791,7 @@ Press 【Alt+p】 or 【Alt+n】 to move cursor to previous/next file name.
   ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 #+END_SRC
 
-
+    
 * Functions
 ** Encoding
 *** fix unicode characters
@@ -2193,21 +2209,6 @@ comment box."
 
 #+END_SRC
 
-*** expand code block keys 
-#+BEGIN_SRC emacs-lisp :results none
-(defun pl/hot-expand (str)
-  "Expand org template."
-  (insert str)
-  (org-try-structure-completion))
-
-(with-eval-after-load "org"
-  (define-key org-mode-map "<"
-    (lambda () (interactive)
-      (if (looking-back "^")
-          (hydra-org-template/body)
-        (self-insert-command 1)))))
-
-#+END_SRC
 *** TODO org refile with prefix
 broken this way, causes erros in init 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2299,6 +2300,477 @@ add all todo states to sparse tree
 #+END_SRC
 
 *** Helm realted
+*** terminal
+**** org evaluate to term
+
+ #+begin_src emacs-lisp
+ (defadvice org-babel-execute:sh (around sacha activate)
+   (if (assoc-default :term (ad-get-arg 1) nil)
+     (let ((buffer (make-term "babel" "/bin/zsh")))
+       (with-current-buffer buffer
+	 (insert (org-babel-expand-body:generic
+	      body params (org-babel-variable-assignments:sh params)))
+	 (term-send-input))
+ (pop-to-buffer buffer))
+     ad-do-it))
+ #+end_src
+
+*** editing
+**** Insert current time stamp
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-timestamp-now ()
+  "Inserts org timestamp at end of heading"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (org-end-of-line nil)
+    (insert " ")
+    (org-insert-time-stamp nil nil t nil nil nil)))
+#+END_SRC
+
+**** Insert time stamp selector 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-timestamp-select ()
+  "Inserts org timestamp at end of heading"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (org-end-of-line nil)
+    (org-time-stamp-inactive nil)))
+
+#+END_SRC
+**** import ods file into org table
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-table-import-ods (&optional file-name)
+(interactive "fFile: ")
+(let ((csv-file (org-odt-convert file-name "csv"))
+(pos (point)))
+(save-excursion
+(insert (with-temp-buffer
+(insert-file-contents csv-file)
+(org-table-convert-region (point-min) (point-max) '(4))
+(buffer-string))))))
+#+END_SRC
+**** convert lines to checkboxes
+ 
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-set-line-checkbox (arg)
+  (interactive "P")
+  (let ((n (or arg 1)))
+    (when (region-active-p)
+      (setq n (count-lines (region-beginning)
+                           (region-end)))
+      (goto-char (region-beginning)))
+    (dotimes (i n)
+      (beginning-of-line)
+      (insert "- [ ] ")
+      (forward-line))
+    (beginning-of-line)))
+#+END_SRC
+    
+**** convert lines to headline
+ 
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-set-line-headline (arg)
+  (interactive "P")
+  (let ((n (or arg 1)))
+    (when (region-active-p)
+      (setq n (count-lines (region-beginning)
+                           (region-end)))
+      (goto-char (region-beginning)))
+    (dotimes (i n)
+      (beginning-of-line)
+      (insert "** TODO ")
+      (forward-line))
+    (beginning-of-line)))
+#+END_SRC
+    
+**** read only function
+Make some org-sections read-only
+
+$Note- you !MUST! tag the header :read_only: other wise it wont work$ 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-mark-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element)))
+(add-text-properties begin (- end 1) '(read-only t
+font-lock-face '(:background "#FFE3E3")))))
+"read_only")
+(message "Made readonly!"))
+(defun org-remove-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element))
+(inhibit-read-only t))
+(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
+"read_only"))
+(add-hook 'org-mode-hook 'org-mark-readonly)
+#+END_SRC
+
+*** code wraps 
+**** cr example
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-wrap-cblock-example ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_EXAMPLE\n")
+        (goto-char (point-max))
+        (insert "#+END_EXAMPLE\n")
+        (deactivate-mark))))
+#+END_SRC
+**** cr bash 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-wrap-cblock-sh ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_SRC sh\n")
+        (goto-char (point-max))
+        (insert "#+END_SRC\n")
+        (deactivate-mark))))
+        
+#+END_SRC
+
+**** TODO cr bash PASTE
+#+BEGIN_SRC emacs-lisp  :results none
+(defun  z/org-paste-cblock-sh ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC sh\n")
+  (yank)
+  (insert "\n#+END_SRC"))
+#+END_SRC
+**** cr R 
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-wrap-cblock-r ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_SRC R\n")
+        (goto-char (point-max))
+        (insert "#+END_SRC\n")
+        (deactivate-mark))))
+
+#+END_SRC
+**** cr quote
+		    
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-wrap-region-in-quote-block ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_QUOTE\n")
+        (goto-char (point-max))
+        (insert "#+END_QUOTE\n")
+        (deactivate-mark))))
+
+
+#+END_SRC 
+
+**** cr lisp 
+		   
+#+begin_src emacs-lisp results none
+(defun z-wrap-cblock-lisp ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_SRC emacs-lisp :results none\n")
+        (goto-char (point-max))
+        (insert "#+END_SRC\n")
+        (deactivate-mark))))
+
+#+end_src
+**** cr SAS  
+#+BEGIN_SRC emacs-lisp :results none
+(defun z-wrap-cblock-sas ()
+   "Wrap region in quote block"
+   (interactive)
+   (save-excursion
+     (save-restriction
+       (and
+        (region-active-p)
+        (use-region-p)
+        (narrow-to-region (region-beginning) (region-end)))
+        (goto-char (point-min))
+        (insert "#+BEGIN_SRC sas\n")
+        (goto-char (point-max))
+        (insert "#+END_SRC\n")
+        (deactivate-mark))))
+#+END_SRC
+**** interactive wrap  
+will wrap in lisp unless using a prefix C-u and then it will prompt 
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun org-wrap-in-src-block (&optional lang lines)
+  "Wrap sexp-at-point or region in src-block.
+
+Use Org-Babel LANGuage for the src-block if given, Emacs-Lisp
+otherwise. A region instead of the sexp-at-point is wrapped if
+either
+
+   - optional argument LINES is an (positive or negative) integer
+   - or the region is active
+
+In the first case the region is determined by moving +/- LINES
+forward/backward from point using `forward-line', in the second
+case the active region is used.
+
+When called with prefix argument 'C-u', prompt the user for the
+Org-Babel language to use. When called with two prefix arguments
+'C-u C-u', prompt the user for both the Org-Babel language to use
+and the number of lines to be wrapped."
+  (interactive
+   (cond
+    ((equal current-prefix-arg nil) nil)
+    ((equal current-prefix-arg '(4))
+     (list
+      (ido-completing-read "Org-Babel language: "
+                           (mapcar
+                            (lambda (--lang)
+                              (symbol-name (car --lang)))
+                            org-babel-load-languages)
+                           nil nil nil nil "emacs-lisp")))
+    ((equal current-prefix-arg '(16))
+     (list
+      (ido-completing-read "Org-Babel language: "
+                           (mapcar
+                            (lambda (--lang)
+                              (symbol-name (car --lang)))
+                            org-babel-load-languages)
+                           nil nil nil nil "emacs-lisp")
+      (read-number "Number of lines to wrap: " 1)))))
+  (let* ((language (or lang "emacs-lisp"))
+         (beg (or (and (not lines)
+		       (region-active-p)
+		       (region-beginning))
+                  (point)))
+         (marker (save-excursion (goto-char beg) (point-marker)))
+         (bol (save-excursion (goto-char beg) (bolp)))
+         (end (cond
+	       (lines (save-excursion
+                        (forward-line lines) (point)))
+	       ((region-active-p)(region-end))
+	       (t (save-excursion
+                    (forward-sexp) (point)))))
+         (cut-strg (buffer-substring beg end)))
+    (delete-region beg end)
+    (goto-char (marker-position marker))
+    (insert
+     (format
+      "%s#+begin_src %s\n%s%s#+end_src\n"
+      (if (or (and lines (< lines 0)) bol) "" "\n")
+      language
+      cut-strg
+      (if lines "" "\n")))
+    (set-marker marker nil)))
+#+end_src
+
+#+BEGIN_SRC emacs-lisp :results none
+  ;; (global-set-key (kbd "C-c w l")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                   (let ((current-prefix-arg '(4)))
+  ;;                      (call-interactively
+  ;;                       'org-wrap-in-src-block ))))
+
+  ;; (global-set-key (kbd "C-c w n")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                   (let ((current-prefix-arg '(16)))
+  ;;                      (call-interactively
+  ;;                       'org-wrap-in-src-block))))
+
+  ;; (global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
+
+
+  ;; (global-set-key (kbd "C-c w y")
+  ;;                 (lambda ()
+  ;;                   (interactive)
+  ;;                       (org-wrap-in-src-block  "shell" 1)))
+#+END_SRC
+
+*** food 	
+**** specific sparse trees 
+****** breakfeast
+#+BEGIN_SRC emacs-lisp :results none
+  (defun cooking-sparse-tree-breakfeast ()
+    (interactive)
+    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"breakfest\""))
+
+  (defun cooking-sparse-tree-main ()
+    (interactive)
+    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
+
+  (defun cooking-sparse-tree-sweet ()
+    (interactive)
+    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
+
+  (defun cooking-sparse-tree-meat ()
+    (interactive)
+    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
+
+  (defun cooking-sparse-tree-fav ()
+    (interactive)
+    (org-match-sparse-tree t "+Fav=\"y\""))
+
+#+end_src
+**** inbox Recipe Template
+based on the following blog post:
+http://lebensverrueckt.haktar.org/articles/org-mode-Food/#comment-1348609811
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun recipe-template ()
+        (interactive)
+        (goto-line 0)
+        (search-forward "* Inbox")
+         (org-meta-return)
+         (org-metaright)
+         (setq recipe-name (read-string "Title: "))
+         (insert recipe-name)
+         (org-todo "COOK") 
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Ingridients")
+         (org-meta-return)
+         (insert "Preperation")
+         (search-backward recipe-name)
+         (setq src1 (read-string "Time: "))
+         (org-set-property "Time" src1)
+         (setq src2 (read-string "Rating: "))
+         (org-set-property "Rating" src2)
+         (setq src3 (read-string "Sources: "))
+         (org-set-property "Source" src3)
+         (setq src4 (read-string "Ammount: "))
+         (org-set-property "Ammount" src4)
+         (setq src5 (read-string "Fav: "))
+         (org-set-property "Fav" src5)
+         (search-forward "Ingridients")
+         (evil-open-below 1)
+         (beginning-of-visual-line)
+)
+#+END_SRC
+**** ADD Recipe Template
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun blank-recipe-template ()
+        (interactive)
+         (org-meta-return)
+         (org-metaright)
+         (setq recipe-name (read-string "Title: "))
+         (insert recipe-name)
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Ingridients")
+         (org-meta-return)
+         (insert "Preperation")
+         (search-backward recipe-name)
+         (setq src1 (read-string "Time: "))
+         (org-set-property "Time" src1)
+         (setq src2 (read-string "Rating: "))
+         (org-set-property "Rating" src2)
+         (setq src3 (read-string "Sources: "))
+         (org-set-property "Source" src3)
+         (setq src4 (read-string "Ammount: "))
+         (org-set-property "Ammount" src4)
+         (setq src5 (read-string "Fav: "))
+         (org-set-property "Fav" src5)
+         (search-forward "Ingridients")
+         (evil-open-below 1)
+         (beginning-of-visual-line)
+)
+#+END_SRC
+**** add Travel Template
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun travel-template ()
+        (interactive)
+        (goto-line 0)
+        (search-forward "* Inbox")
+         (org-meta-return)
+         (org-metaright)
+         (setq travel-name (read-string "Title: "))
+         (insert travel-name)
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Details")
+         (org-meta-return)
+         (search-backward travel-name)
+         (setq src1 (read-string "Rating: "))
+         (org-set-property "Rating" src1)
+         (setq src2 (read-string "Sources: "))
+         (org-set-property "Source" src2)
+         (setq src3 (read-string "Fav: "))
+         (org-set-property "Fav" src3)
+         (search-forward "Details")
+         (evil-open-below 1)
+)
+#+END_SRC
+
+*** movment org specific
+**** go to top header
+
+#+BEGIN_SRC emacs-lisp :results none
+; Speed commands are really useful, but I often want to make use of
+; them when I'm not at the beginning of a header. Ths command brings
+; you back to the beginning of an item's header, so that you can do
+; speed commands.
+ 
+(defun org-go-speed ()
+"Goes to the beginning of an element's header, so that you can
+execute speed commands."
+(interactive)
+(when (equal major-mode 'org-mode)
+(if (org-at-heading-p)
+(org-beginning-of-line)
+(org-up-element))))
+ 
+#+END_SRC
+
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -3214,38 +3686,18 @@ _q_:
   ))
 #+END_SRC
 
-*** code blocks (F4)
+*** TODO code blocks (F4)
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key
     (kbd "<f4>")
-    (defhydra hydra-org-blocks (:color blue :hint nil)
+    (defhydra hydra-org-blocks (:color blue :hint nil :columns 4)
     "
-_<f4>_ wrap lisp  _r_ wrap R  _b_ wrap Bash
-_c_enter  _q_uote    _L_aTeX:   _z_: wrap menu
-_l_atex   _e_xample  _i_ndex:
-_a_scii   _v_erse    _I_NCLUDE:
-_s_rc     ^ ^        _H_TML:
-_h_tml    ^ ^       _A_SCII:
 "
     ("z"    org-dp-wrap-in-block  )
     ("<f4>" z/hydra-wrap-elisp )
     ("r"    z/hydra-wrap-R  )
     ("b"   z/hydra-wrap-bash )
     ("l"   z/hydra-wrap-latex )
-    ("s" (pl/hot-expand "<s"))
-    ("e" (pl/hot-expand "<e"))
-    ("q" (pl/hot-expand "<q"))
-    ("v" (pl/hot-expand "<v"))
-    ("c" (pl/hot-expand "<c"))
-    ("L" (pl/hot-expand "<l"))
-    ("h" (pl/hot-expand "<h"))
-    ("a" (pl/hot-expand "<a"))
-    ("L" (pl/hot-expand "<L"))
-    ("i" (pl/hot-expand "<i"))
-    ("I" (pl/hot-expand "<I"))
-    ("H" (pl/hot-expand "<H"))
-    ("A" (pl/hot-expand "<A"))
-    ("<" self-insert-command "ins")
     ("q" nil "cancel")))
 
  #+END_SRC
@@ -4323,7 +4775,7 @@ this will make org-store-link use id when creating a link.
 #+END_SRC
 
 *** agenda view
-#+BEGIN_SRC emacs-lisp :results none
+P#+BEGIN_SRC emacs-lisp :results none
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
@@ -4794,469 +5246,6 @@ this command below will use helm for completion since in the above helm config w
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
 #+END_SRC 
-** Orgmode functions
-*** terminal
-**** org evaluate to term
-
- #+begin_src emacs-lisp
- (defadvice org-babel-execute:sh (around sacha activate)
-   (if (assoc-default :term (ad-get-arg 1) nil)
-     (let ((buffer (make-term "babel" "/bin/zsh")))
-       (with-current-buffer buffer
-         (insert (org-babel-expand-body:generic
-              body params (org-babel-variable-assignments:sh params)))
-         (term-send-input))
- (pop-to-buffer buffer))
-     ad-do-it))
- #+end_src
-
-*** editing
-**** Insert current time stamp
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-timestamp-now ()
-  "Inserts org timestamp at end of heading"
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (org-end-of-line nil)
-    (insert " ")
-    (org-insert-time-stamp nil nil t nil nil nil)))
-#+END_SRC
-
-**** Insert time stamp selector 
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-timestamp-select ()
-  "Inserts org timestamp at end of heading"
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (org-end-of-line nil)
-    (org-time-stamp-inactive nil)))
-
-#+END_SRC
-**** import ods file into org table
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-table-import-ods (&optional file-name)
-(interactive "fFile: ")
-(let ((csv-file (org-odt-convert file-name "csv"))
-(pos (point)))
-(save-excursion
-(insert (with-temp-buffer
-(insert-file-contents csv-file)
-(org-table-convert-region (point-min) (point-max) '(4))
-(buffer-string))))))
-#+END_SRC
-**** convert lines to checkboxes
- 
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-set-line-checkbox (arg)
-  (interactive "P")
-  (let ((n (or arg 1)))
-    (when (region-active-p)
-      (setq n (count-lines (region-beginning)
-                           (region-end)))
-      (goto-char (region-beginning)))
-    (dotimes (i n)
-      (beginning-of-line)
-      (insert "- [ ] ")
-      (forward-line))
-    (beginning-of-line)))
-#+END_SRC
-    
-**** convert lines to headline
- 
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-set-line-headline (arg)
-  (interactive "P")
-  (let ((n (or arg 1)))
-    (when (region-active-p)
-      (setq n (count-lines (region-beginning)
-                           (region-end)))
-      (goto-char (region-beginning)))
-    (dotimes (i n)
-      (beginning-of-line)
-      (insert "** TODO ")
-      (forward-line))
-    (beginning-of-line)))
-#+END_SRC
-    
-**** read only function
-Make some org-sections read-only
-
-$Note- you !MUST! tag the header :read_only: other wise it wont work$ 
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-mark-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element)))
-(add-text-properties begin (- end 1) '(read-only t
-font-lock-face '(:background "#FFE3E3")))))
-"read_only")
-(message "Made readonly!"))
-(defun org-remove-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element))
-(inhibit-read-only t))
-(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
-"read_only"))
-(add-hook 'org-mode-hook 'org-mark-readonly)
-#+END_SRC
-
-*** code wraps 
-**** cr example
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-wrap-cblock-example ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_EXAMPLE\n")
-        (goto-char (point-max))
-        (insert "#+END_EXAMPLE\n")
-        (deactivate-mark))))
-#+END_SRC
-**** cr bash 
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-wrap-cblock-sh ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC sh\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
-        
-#+END_SRC
-
-**** cr R 
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-wrap-cblock-r ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC R\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
-
-#+END_SRC
-**** cr quote
-		    
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-wrap-region-in-quote-block ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_QUOTE\n")
-        (goto-char (point-max))
-        (insert "#+END_QUOTE\n")
-        (deactivate-mark))))
-
-
-#+END_SRC 
-
-**** cr lisp 
-		   
-#+begin_src emacs-lisp results none
-(defun z-wrap-cblock-lisp ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC emacs-lisp :results none\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
-
-#+end_src
-**** cr SAS  
-#+BEGIN_SRC emacs-lisp :results none
-(defun z-wrap-cblock-sas ()
-   "Wrap region in quote block"
-   (interactive)
-   (save-excursion
-     (save-restriction
-       (and
-        (region-active-p)
-        (use-region-p)
-        (narrow-to-region (region-beginning) (region-end)))
-        (goto-char (point-min))
-        (insert "#+BEGIN_SRC sas\n")
-        (goto-char (point-max))
-        (insert "#+END_SRC\n")
-        (deactivate-mark))))
-#+END_SRC
-**** interactive wrap  
-will wrap in lisp unless using a prefix C-u and then it will prompt 
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun org-wrap-in-src-block (&optional lang lines)
-  "Wrap sexp-at-point or region in src-block.
-
-Use Org-Babel LANGuage for the src-block if given, Emacs-Lisp
-otherwise. A region instead of the sexp-at-point is wrapped if
-either
-
-   - optional argument LINES is an (positive or negative) integer
-   - or the region is active
-
-In the first case the region is determined by moving +/- LINES
-forward/backward from point using `forward-line', in the second
-case the active region is used.
-
-When called with prefix argument 'C-u', prompt the user for the
-Org-Babel language to use. When called with two prefix arguments
-'C-u C-u', prompt the user for both the Org-Babel language to use
-and the number of lines to be wrapped."
-  (interactive
-   (cond
-    ((equal current-prefix-arg nil) nil)
-    ((equal current-prefix-arg '(4))
-     (list
-      (ido-completing-read "Org-Babel language: "
-                           (mapcar
-                            (lambda (--lang)
-                              (symbol-name (car --lang)))
-                            org-babel-load-languages)
-                           nil nil nil nil "emacs-lisp")))
-    ((equal current-prefix-arg '(16))
-     (list
-      (ido-completing-read "Org-Babel language: "
-                           (mapcar
-                            (lambda (--lang)
-                              (symbol-name (car --lang)))
-                            org-babel-load-languages)
-                           nil nil nil nil "emacs-lisp")
-      (read-number "Number of lines to wrap: " 1)))))
-  (let* ((language (or lang "emacs-lisp"))
-         (beg (or (and (not lines)
-		       (region-active-p)
-		       (region-beginning))
-                  (point)))
-         (marker (save-excursion (goto-char beg) (point-marker)))
-         (bol (save-excursion (goto-char beg) (bolp)))
-         (end (cond
-	       (lines (save-excursion
-                        (forward-line lines) (point)))
-	       ((region-active-p)(region-end))
-	       (t (save-excursion
-                    (forward-sexp) (point)))))
-         (cut-strg (buffer-substring beg end)))
-    (delete-region beg end)
-    (goto-char (marker-position marker))
-    (insert
-     (format
-      "%s#+begin_src %s\n%s%s#+end_src\n"
-      (if (or (and lines (< lines 0)) bol) "" "\n")
-      language
-      cut-strg
-      (if lines "" "\n")))
-    (set-marker marker nil)))
-#+end_src
-
-#+BEGIN_SRC emacs-lisp :results none
-  ;; (global-set-key (kbd "C-c w l")
-  ;;                 (lambda ()
-  ;;                   (interactive)
-  ;;                   (let ((current-prefix-arg '(4)))
-  ;;                      (call-interactively
-  ;;                       'org-wrap-in-src-block ))))
-
-  ;; (global-set-key (kbd "C-c w n")
-  ;;                 (lambda ()
-  ;;                   (interactive)
-  ;;                   (let ((current-prefix-arg '(16)))
-  ;;                      (call-interactively
-  ;;                       'org-wrap-in-src-block))))
-
-  ;; (global-set-key (kbd "C-c w w") 'org-wrap-in-src-block)
-
-
-  ;; (global-set-key (kbd "C-c w y")
-  ;;                 (lambda ()
-  ;;                   (interactive)
-  ;;                       (org-wrap-in-src-block  "shell" 1)))
-#+END_SRC
-
-*** food 	
-**** specific sparse trees 
-****** breakfeast
-#+BEGIN_SRC emacs-lisp :results none
-  (defun cooking-sparse-tree-breakfeast ()
-    (interactive)
-    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"breakfest\""))
-
-  (defun cooking-sparse-tree-main ()
-    (interactive)
-    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
-
-  (defun cooking-sparse-tree-sweet ()
-    (interactive)
-    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
-
-  (defun cooking-sparse-tree-meat ()
-    (interactive)
-    (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
-
-  (defun cooking-sparse-tree-fav ()
-    (interactive)
-    (org-match-sparse-tree t "+Fav=\"y\""))
-
-#+end_src
-**** inbox Recipe Template
-based on the following blog post:
-http://lebensverrueckt.haktar.org/articles/org-mode-Food/#comment-1348609811
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun recipe-template ()
-        (interactive)
-        (goto-line 0)
-        (search-forward "* Inbox")
-         (org-meta-return)
-         (org-metaright)
-         (setq recipe-name (read-string "Title: "))
-         (insert recipe-name)
-         (org-todo "COOK") 
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Ingridients")
-         (org-meta-return)
-         (insert "Preperation")
-         (search-backward recipe-name)
-         (setq src1 (read-string "Time: "))
-         (org-set-property "Time" src1)
-         (setq src2 (read-string "Rating: "))
-         (org-set-property "Rating" src2)
-         (setq src3 (read-string "Sources: "))
-         (org-set-property "Source" src3)
-         (setq src4 (read-string "Ammount: "))
-         (org-set-property "Ammount" src4)
-         (setq src5 (read-string "Fav: "))
-         (org-set-property "Fav" src5)
-         (search-forward "Ingridients")
-         (evil-open-below 1)
-         (beginning-of-visual-line)
-)
-#+END_SRC
-**** ADD Recipe Template
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun blank-recipe-template ()
-        (interactive)
-         (org-meta-return)
-         (org-metaright)
-         (setq recipe-name (read-string "Title: "))
-         (insert recipe-name)
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Ingridients")
-         (org-meta-return)
-         (insert "Preperation")
-         (search-backward recipe-name)
-         (setq src1 (read-string "Time: "))
-         (org-set-property "Time" src1)
-         (setq src2 (read-string "Rating: "))
-         (org-set-property "Rating" src2)
-         (setq src3 (read-string "Sources: "))
-         (org-set-property "Source" src3)
-         (setq src4 (read-string "Ammount: "))
-         (org-set-property "Ammount" src4)
-         (setq src5 (read-string "Fav: "))
-         (org-set-property "Fav" src5)
-         (search-forward "Ingridients")
-         (evil-open-below 1)
-         (beginning-of-visual-line)
-)
-#+END_SRC
-**** add Travel Template
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun travel-template ()
-        (interactive)
-        (goto-line 0)
-        (search-forward "* Inbox")
-         (org-meta-return)
-         (org-metaright)
-         (setq travel-name (read-string "Title: "))
-         (insert travel-name)
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Details")
-         (org-meta-return)
-         (search-backward travel-name)
-         (setq src1 (read-string "Rating: "))
-         (org-set-property "Rating" src1)
-         (setq src2 (read-string "Sources: "))
-         (org-set-property "Source" src2)
-         (setq src3 (read-string "Fav: "))
-         (org-set-property "Fav" src3)
-         (search-forward "Details")
-         (evil-open-below 1)
-)
-#+END_SRC
-
-*** movment org specific
-**** go to top header
-
-#+BEGIN_SRC emacs-lisp :results none
-; Speed commands are really useful, but I often want to make use of
-; them when I'm not at the beginning of a header. Ths command brings
-; you back to the beginning of an item's header, so that you can do
-; speed commands.
- 
-(defun org-go-speed ()
-"Goes to the beginning of an element's header, so that you can
-execute speed commands."
-(interactive)
-(when (equal major-mode 'org-mode)
-(if (org-at-heading-p)
-(org-beginning-of-line)
-(org-up-element))))
- 
-#+END_SRC
-
 ** font locks
  
 

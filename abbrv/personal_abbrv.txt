@@ -879,6 +879,7 @@
     ("quetion" "question" nil 0)
     ("quetions" "questions" nil 0)
     ("raidus" "RADIUS" nil 0)
+    ("realted" "related" nil 0)
     ("realyl" "really" nil 0)
     ("reccomend" "recommend" nil 0)
     ("reccomendation" "recommendation" nil 0)
@@ -1270,6 +1271,8 @@
 (define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
+
+(define-abbrev-table 'plstore-mode-abbrev-table '())
 
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
