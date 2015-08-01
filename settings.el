@@ -326,6 +326,11 @@
 ;(add-hook 'after-init-hook 'global-company-mode)
  )
 
+(add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
+(add-hook 'org-mode-hook
+          (lambda () (set (make-local-variable 'company-backends)
+                     '((company-org-headings)))))
+
 (require 'dired-x)
 (setq dired-guess-shell-alist-user
       '(("\\.e?ps$" "gv" "xloadimage" "lpr")
@@ -785,7 +790,7 @@
  :ensure t
  :config
  (setq-default org-download-heading-lvl nil)
- (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+ (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
 )
 
 ;; (setq org-download-method 'attach
@@ -3685,6 +3690,17 @@ With prefix argument, also display headlines without a TODO keyword."
   (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
     ad-do-it))
 (ad-activate 'org-capture)
+
+(require 'org-capture)
+(defun my-capture-finalize ()
+  (interactive)
+  (org-capture-finalize)
+  (delete-frame))
+
+(add-hook 'org-capture-mode-hook
+          (lambda ()
+            (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
+((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 
 (setq org-capture-templates
         (quote (           

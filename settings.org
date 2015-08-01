@@ -439,6 +439,13 @@ $Note- is different inside screen or tmux$
 
  
 
+** company-org-headings
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
+(add-hook 'org-mode-hook
+	  (lambda () (set (make-local-variable 'company-backends)
+		     '((company-org-headings)))))
+#+END_SRC
 ** dired plugins
 *** dired-x
 http://www.gnu.org/software/emacs/manual/html_node/dired-x/Shell-Command-Guessing.html
@@ -1210,7 +1217,7 @@ First mark the word, then add more cursors.
    :ensure t
    :config
    (setq-default org-download-heading-lvl nil)
-   (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+   (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
   )
  #+END_SRC
 
@@ -5072,6 +5079,19 @@ this command below will use helm for completion since in the above helm config w
   (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
     ad-do-it))
 (ad-activate 'org-capture)
+#+END_SRC
+*** make C-c x close and save frame
+#+BEGIN_SRC emacs-lisp :results none
+(require 'org-capture)
+(defun my-capture-finalize ()
+  (interactive)
+  (org-capture-finalize)
+  (delete-frame))
+
+(add-hook 'org-capture-mode-hook
+          (lambda ()
+            (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
+((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 #+END_SRC
 *** TODO templates
 **** my templates
