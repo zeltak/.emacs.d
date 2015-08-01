@@ -1135,6 +1135,11 @@ Sunrise:
   (interactive)
   (swiper (thing-at-point 'symbol)))
 
+(use-package swiper-helm
+ :ensure t
+ :config
+  )
+
 ;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 ;(setq transmission-host "10.0.0.2")
@@ -3675,6 +3680,11 @@ With prefix argument, also display headlines without a TODO keyword."
                                  (org-agenda-files :maxlevel . 9))))
 
 (require 'org-protocol)
+
+(defadvice org-capture (around bp/org-capture--around)
+  (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+    ad-do-it))
+(ad-activate 'org-capture)
 
 (setq org-capture-templates
         (quote (           

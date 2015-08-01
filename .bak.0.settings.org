@@ -102,9 +102,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 
 * Packages
  
-$Note$ the sign !package! means the package is disbaled
-
-** !hippie expand! 
+** hippie expand
 
 $note its built into emacs no intsall needed$
 
@@ -192,7 +190,7 @@ $note its built into emacs no intsall needed$
   
 #+END_SRC
   
-** !ido!
+** ido
 
 $note its built into emacs no intsall needed$
 
@@ -2644,7 +2642,6 @@ and the number of lines to be wrapped."
 (interactive)
 (z/org-cblock-iwrap-emacs-lisp  "R" ))
 #+end_src
-
 ***** z/org-cblock-iwrap-sh
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/org-cblock-iwrap-sh ()
