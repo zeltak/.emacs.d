@@ -50,6 +50,7 @@
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
 (add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
+;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
 )
 
 ;; fontso in Win
@@ -1653,6 +1654,18 @@ comment box."
                      (let ((current-prefix-arg '(4)))             
                        (call-interactively #'org-insert-link)))
 
+(defun z/org-insert-heading-link (dir)
+  "select a headline from org-files in dir and insert a link to it."
+  (interactive  (list (read-directory-name "Directory: ")))
+  (let ((org-agenda-files (f-entries
+                           dir
+                           (lambda (f)
+                             (string=
+                              "org"
+                              (file-name-extension f)))
+                           t)))
+    (helm-org-agenda-files-headings)))
+
 (defadvice org-babel-execute:sh (around sacha activate)
   (if (assoc-default :term (ad-get-arg 1) nil)
     (let ((buffer (make-term "babel" "/bin/zsh")))
@@ -2684,6 +2697,7 @@ _q_:
   ("p"  nil )
   ("r"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
+  ("S"  isearch-forward-symbol-at-point "isearch@point" )
   ("t"  nil )
   ("u"  imenu "imenu")
   ("v"  nil)
@@ -2855,6 +2869,9 @@ _q_:
 (";"  z/comment-org-in-src-block )
 ("y"  nil )
 ("z"  nil )
+("<home>" outline-up-heading  "up main header" :color red)
+("<down>" org-forward-heading-same-level  "up header" :color red)
+("<up>" org-backward-heading-same-level  "down header" :color red)
 ("q"  nil )
 
 ))
@@ -3138,6 +3155,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("a" write-file  "save as.."  )
      ("x" kill-this-buffer "kill buffer"  )
      ("o" z-kill-other-buffers "kill all but current" )
+     ("d" delete-frame "delete frame")
      ("i" kill-buffer  "ido-kill" )
      ("c" z-save-buffer-close-window "save and close"  )
      ("k" kill-buffer "helm kill buffer" )
