@@ -97,9 +97,6 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
 
-#+RESULTS:
-| UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
-
 * Packages
  
 ** hippie expand
@@ -1677,6 +1674,13 @@ http://www.emacswiki.org/emacs/SrSpeedbar
   (swiper (thing-at-point 'symbol)))
 #+END_SRC
 
+** swiper helm
+#+BEGIN_SRC emacs-lisp :results none
+(use-package swiper-helm
+ :ensure t
+ :config
+  )
+#+END_SRC 
 ** transmission
 need to install let-alist and seq packages from melpa
 https://github.com/holomorph/transmission/issues/1
@@ -5058,6 +5062,16 @@ this command below will use helm for completion since in the above helm config w
 *** load org-protocl
 #+BEGIN_SRC emacs-lisp :results none
 (require 'org-protocol)
+#+END_SRC
+*** make org take up 1 frame
+    :PROPERTIES:
+    :ID:       14e63bf0-0966-4074-98af-bdce51a5f2d4
+    :END:
+#+BEGIN_SRC emacs-lisp :results none
+(defadvice org-capture (around bp/org-capture--around)
+  (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+    ad-do-it))
+(ad-activate 'org-capture)
 #+END_SRC
 *** TODO templates
 **** my templates
