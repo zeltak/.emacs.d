@@ -1654,7 +1654,19 @@ comment box."
                      (let ((current-prefix-arg '(4)))             
                        (call-interactively #'org-insert-link)))
 
-(defun z/org-insert-heading-link (dir)
+;; (defun z/org-insert-heading-link (dir)
+;;   "select a headline from org-files in dir and insert a link to it."
+;;   (interactive  (list (read-directory-name "Directory: ")))
+;;   (let ((org-agenda-files (f-entries
+;;                            dir
+;;                            (lambda (f)
+;;                              (string=
+;;                               "org"
+;;                               (file-name-extension f)))
+;;                            t)))
+;;     (helm-org-agenda-files-headings)))
+
+(defun insert-heading-link (dir)
   "select a headline from org-files in dir and insert a link to it."
   (interactive  (list (read-directory-name "Directory: ")))
   (let ((org-agenda-files (f-entries
@@ -1665,6 +1677,29 @@ comment box."
                               (file-name-extension f)))
                            t)))
     (helm-org-agenda-files-headings)))
+
+(defun helm-org-insert-id-link-to-heading-at-marker (marker)
+  (with-current-buffer (marker-buffer marker)
+    (let ((file-name (buffer-file-name))
+          (id (save-excursion (goto-char (marker-position marker))
+                              (org-id-get-create)
+                              (org-id-store-link))))
+
+      (with-helm-current-buffer
+        (org-insert-link
+         file-name id)))))
+
+
+(cl-defun helm-source-org-headings-for-files (filenames
+                                              &optional (min-depth 1) (max-depth 8))
+  (helm-build-sync-source "Org Headings"
+    :candidates (helm-org-get-candidates filenames min-depth max-depth)
+    :action '(("Go to line" . helm-org-goto-marker)
+              ("Refile to this heading" . helm-org-heading-refile)
+              ("Insert link to this heading"
+               . helm-org-insert-link-to-heading-at-marker)
+              ("Insert id link to this heading" .
+               helm-org-insert-id-link-to-heading-at-marker))))
 
 (defadvice org-babel-execute:sh (around sacha activate)
   (if (assoc-default :term (ad-get-arg 1) nil)
@@ -1879,26 +1914,6 @@ and the number of lines to be wrapped."
 (defun z/org-cblock-iwrap-sh ()
 (interactive)
 (z/org-cblock-iwrap-emacs-lisp  "sh" ))
-
-(defun cooking-sparse-tree-breakfeast ()
-  (interactive)
-  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"breakfest\""))
-
-(defun cooking-sparse-tree-main ()
-  (interactive)
-  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
-
-(defun cooking-sparse-tree-sweet ()
-  (interactive)
-  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
-
-(defun cooking-sparse-tree-meat ()
-  (interactive)
-  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
-
-(defun cooking-sparse-tree-fav ()
-  (interactive)
-  (org-match-sparse-tree t "+Fav=\"y\""))
 
 (defun recipe-template ()
         (interactive)
@@ -2487,6 +2502,7 @@ _q_:
 ("m" hydra-toggles-macro/body "macro menu")
 ("n" start-kbd-macro "start macro" :face 'hydra-face-green)
 ("o" end-kbd-macro "end macro" :face 'hydra-face-red)
+("O" org-mode "org-mode" )
 ("p" list-packages "elpa"  )
 ("r" read-only-mode "read-only")
 ("s" scratch "scratch")
@@ -2681,7 +2697,7 @@ _q_:
   ("a" helm-apropos "Helm-Apropos")
   ("b"  backward-kill-line  "kill backwards")
   ("c"  cycle-spacing "cycle spacing")
-  ("d" nil )
+  ("d"  helm-do-grep "helm-grep" )
   ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
   ("f"  helm-find-files "Helm FF" )
   ("g"  rgrep "Rgrep")
@@ -3445,6 +3461,18 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq org-speed-commands-user nil)
 (setq org-src-fontify-natively t);; syntax highlighting the source code
 
+;; (defun update-last-edited (beg end length)
+;;   (when
+;;       (and
+;;        (not (org-before-first-heading-p))
+;;        (org-get-heading))
+;;     (org-entry-put nil "LAST-EDITED" (format-time-string "[%d-%m-%Y(%H:%M)]"))))
+
+;; (add-to-list 'after-change-functions 'update-last-edited)
+
+;; (add-hook 'org-mode-hook (lambda ()
+;; (add-to-list 'after-change-functions 'update-last-edited)))
+
 (run-at-time "00:59" 3600 'org-save-all-org-buffers)
 
 ;enable flyspelll
@@ -3543,6 +3571,26 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 ;; Display tags farther right
 (setq org-agenda-tags-column -102)
+
+(defun cooking-sparse-tree-breakfeast ()
+  (interactive)
+  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"breakfest\""))
+
+(defun cooking-sparse-tree-main ()
+  (interactive)
+  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"main\""))
+
+(defun cooking-sparse-tree-sweet ()
+  (interactive)
+  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"sweet\""))
+
+(defun cooking-sparse-tree-meat ()
+  (interactive)
+  (org-match-sparse-tree t "+TODO=\"COOK\"+Type=\"meat\""))
+
+(defun cooking-sparse-tree-fav ()
+  (interactive)
+  (org-match-sparse-tree t "+Fav=\"y\""))
 
 (setq org-agenda-custom-commands 
 '(

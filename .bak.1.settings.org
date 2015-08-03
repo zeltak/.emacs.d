@@ -73,6 +73,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
 (add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
+;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
 )
 
 ;; fontso in Win
@@ -96,6 +97,9 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 #+end_src
+
+#+RESULTS:
+| UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
 
 * Packages
  
@@ -439,6 +443,13 @@ $Note- is different inside screen or tmux$
 
  
 
+** company-org-headings
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
+(add-hook 'org-mode-hook
+	  (lambda () (set (make-local-variable 'company-backends)
+		     '((company-org-headings)))))
+#+END_SRC
 ** dired plugins
 *** dired-x
 http://www.gnu.org/software/emacs/manual/html_node/dired-x/Shell-Command-Guessing.html
@@ -1197,7 +1208,7 @@ First mark the word, then add more cursors.
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ob-sudo/")
 #+END_SRC
-** org-downlaod							     :ATTACH:
+** org-Download 						     :ATTACH:
    :PROPERTIES:
    :ID:       54e01618-35eb-45c5-b0b7-6f830faef316
    :Attachments: screenshot_2015-04-05_08:15:22.png
@@ -1210,7 +1221,7 @@ First mark the word, then add more cursors.
    :ensure t
    :config
    (setq-default org-download-heading-lvl nil)
-   (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
+   (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
   )
  #+END_SRC
 
@@ -1887,7 +1898,6 @@ $Note-all my (zeltak) functions should follow the following base syntax$
 #+BEGIN_EXAMPLE
 Z/MODENAME-HEADER-SUBHEADER-NAME
 #+END_EXAMPLE
-
 ** Encoding
 *** fix unicode characters
 #+BEGIN_SRC emacs-lisp :results none
@@ -2377,6 +2387,22 @@ add all todo states to sparse tree
                        (call-interactively #'org-insert-link)))
 
 #+END_SRC
+*** link to any header
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-insert-heading-link (dir)
+  "select a headline from org-files in dir and insert a link to it."
+  (interactive  (list (read-directory-name "Directory: ")))
+  (let ((org-agenda-files (f-entries
+                           dir
+                           (lambda (f)
+                             (string=
+                              "org"
+                              (file-name-extension f)))
+                           t)))
+    (helm-org-agenda-files-headings)))
+#+END_SRC
+gives  helm buffer to select headlines from org-files in the directory I select and when I press f3 (for the third action), it inserts a link to the selected headline. 
+It does the file finding recursively, so big folders can be slow
 
 *** Helm related
 *** terminal
@@ -3707,6 +3733,7 @@ _q_:
   ("p"  nil )
   ("r"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
+  ("S"  isearch-forward-symbol-at-point "isearch@point" )
   ("t"  nil )
   ("u"  imenu "imenu")
   ("v"  nil)
@@ -3917,6 +3944,9 @@ _q_:
 (";"  z/comment-org-in-src-block )
 ("y"  nil )
 ("z"  nil )
+("<home>" outline-up-heading  "up main header" :color red)
+("<down>" org-forward-heading-same-level  "up header" :color red)
+("<up>" org-backward-heading-same-level  "down header" :color red)
 ("q"  nil )
 
 ))
@@ -4276,6 +4306,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
      ("a" write-file  "save as.."  )
      ("x" kill-this-buffer "kill buffer"  )
      ("o" z-kill-other-buffers "kill all but current" )
+     ("d" delete-frame "delete frame")
      ("i" kill-buffer  "ido-kill" )
      ("c" z-save-buffer-close-window "save and close"  )
      ("k" kill-buffer "helm kill buffer" )
@@ -5072,6 +5103,19 @@ this command below will use helm for completion since in the above helm config w
   (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
     ad-do-it))
 (ad-activate 'org-capture)
+#+END_SRC
+*** make C-c x close and save frame
+#+BEGIN_SRC emacs-lisp :results none
+(require 'org-capture)
+(defun my-capture-finalize ()
+  (interactive)
+  (org-capture-finalize)
+  (delete-frame))
+
+(add-hook 'org-capture-mode-hook
+          (lambda ()
+            (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
+((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 #+END_SRC
 *** TODO templates
 **** my templates
