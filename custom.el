@@ -31,7 +31,6 @@
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
  '(org-download-screenshot-method "gm import %s")
- '(org-index-id "b68bdb2c-f2b8-4528-bcd1-a7317d6e8b4e")
  '(sr-avfs-root "~/.avfs")
  '(sr-history-length 30)
  '(sr-popviewer-enabled t)
