@@ -51,6 +51,7 @@
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
 (add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
 ;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
+;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
 )
 
 ;; fontso in Win
@@ -2003,46 +2004,44 @@ execute speed commands."
 (org-beginning-of-line)
 (org-up-element))))
 
-;; (defun z/org-email-heading ()
-;;   "Send the current org-mode heading as the body of an email, with headline as the subject.
-;; use these properties
-;; TO
-;; CC
-;; BCC
-;; OTHER-HEADERS is an alist specifying additional
-;; header fields.  Elements look like (HEADER . VALUE) where both
-;; HEADER and VALUE are strings.
-;; Save when it was sent as a SENT property. this is overwritten on
-;; subsequent sends."
-;;   (interactive)
-;;   ; store location.
-;;   (setq *email-heading-point* (set-marker (make-marker) (point)))
-;;   (save-excursion
-;;     (org-mark-subtree)
-;;     (let ((content (buffer-substring (point) (mark)))
-;;           (TO (org-entry-get (point) "TO" t))
-;;           (CC (org-entry-get (point) "CC" t))
-;;           (BCC (org-entry-get (point) "BCC" t))
-;;           (SUBJECT (nth 4 (org-heading-components)))
-;;           (OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
-;;           (continue nil)
-;;           (switch-function nil)
-;;           (yank-action nil)
-;;           (send-actions '((email-send-action . nil)))
-;;           (return-action '(email-heading-return)))
+(defun z/org-email-heading ()
+  "Send the current org-mode heading as the body of an email, with headline as the subject.
+use these properties
+TO
+CC
+BCC
+OTHER-HEADERS is an alist specifying additional
+header fields.  Elements look like (HEADER . VALUE) where both
+HEADER and VALUE are strings.
+Save when it was sent as a SENT property. this is overwritten on
+subsequent sends."
+  (interactive)
+  ; store location.
+  (setq *email-heading-point* (set-marker (make-marker) (point)))
+  (save-excursion
+    (org-mark-subtree)
+    (let ((content (buffer-substring (point) (mark)))
+          (TO (org-entry-get (point) "TO" t))
+          (SUBJECT (nth 4 (org-heading-components)))
+          (OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
+          (continue nil)
+          (switch-function nil)
+          (yank-action nil)
+          (send-actions '((email-send-action . nil)))
+          (return-action '(email-heading-return)))
       
-;;       (compose-mail TO SUBJECT OTHER-HEADERS continue switch-function yank-action send-actions return-action)
-;;       (message-goto-body)
-;;       (insert content)
-;;       (when CC
-;;         (message-goto-cc)
-;;         (insert CC))
-;;       (when BCC
-;;         (message-goto-bcc)
-;;         (insert BCC))
-;;       (if TO
-;;           (message-goto-body)
-;;         (message-goto-to)))))
+      (compose-mail TO SUBJECT OTHER-HEADERS continue switch-function yank-action send-actions return-action)
+      (message-goto-body)
+      (insert content)
+      (when CC
+        (message-goto-cc)
+        (insert CC))
+      (when BCC
+        (message-goto-bcc)
+        (insert BCC))
+      (if TO
+          (message-goto-body)
+        (message-goto-to)))))
 
 (defun z/insert-slsh ()
   " insert     "
@@ -2455,20 +2454,11 @@ Version 2015-07-30"
 
 (global-set-key
    (kbd "\\")
-(defhydra hydra-leader  (:color blue :hint nil)
+(defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
 
 "
-
-_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
-_o_: mark prev      du_p_licate  _s_:       _t_: helm-top           _u_:       
-_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
-_q_: 
-
+LEADER:
 "
-
-
-
 ("a" nil )
 ("b"  nil  )
 ;("c"  company-complete )
@@ -2477,41 +2467,27 @@ _q_:
 ("e"  nil )
 ("f"  nil )
 ("g"  nil )
-("h"  hide-sublevels )
-("i"  hydra-editing-insert/body )
+("h"  hide-sublevels "collapse tree")
+("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
 ("k"  nil )
 ("l"  nil )
-("m"  helm-mark-ring )
-("n"  set-mark-command )
-("o"  set-mark-command 4 )
-("p"  duplicate-current-line-or-region )
+("m"  helm-mark-ring "HELM mark ")
+("n"  set-mark-command "mark position")
+("o"  set-mark-command 4 "mark prev" )
+("p"  duplicate-current-line-or-region "duplicate")
 ("r"  nil )
 ("s"  nil )
-("t"  helm-top )
+("t"  helm-top "top")
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
 ("x"  nil )
-("y"  helm-show-kill-ring )
+("y"  helm-show-kill-ring "kill ring")
 ("z"  nil )
-("\\"  z/insert-slsh )
+("\\"  z/insert-slsh "insert \\")
 (";"  comment-or-uncomment-region )
 ("q"  nil )
-
-   ; (define-prefix-command 'xah-fly-leader-key-map)
-   ; (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-   ; (define-key xah-fly-leader-key-map (kbd "<backspace>") nil)
-   ; (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
-   ; (define-key xah-fly-leader-key-map (kbd "SPC") nil )
-   ; (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
-   ; (define-key xah-fly-leader-key-map (kbd "TAB") nil)
-   ; (define-key xah-fly-leader-key-map (kbd "\\") 'z/insert-slsh)
-   ; (define-key xah-fly-leader-key-map (kbd "r") 'query-replace)
-   ; (define-key xah-fly-leader-key-map (kbd "h") 'hippie-expand)
-
-
-
 
 ))
 
@@ -2771,13 +2747,14 @@ _q_:
 
 (global-set-key
    (kbd "<f5>")
-(defhydra hydra-mu4e (:color blue  :columns 2)
+(defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
   "
-mu4e
+Mail:
 "
   ("<f5>"     mu4e            "start mu4e")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
   ("o"     mu4e-headers-change-sorting            "sort")
+  ("z"   z/org-email-heading              "email header")
     ("q"     nil                          "cancel" )
 ))
 
