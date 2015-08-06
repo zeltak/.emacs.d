@@ -2880,6 +2880,26 @@ execute speed commands."
 
 #+END_SRC
 
+*** Send email to myself
+#+BEGIN_SRC emacs-lisp
+(defun z/org-email-heading-me ()
+  "Send the current org-mode heading as the body of an email, with headline as the subject."
+  (interactive)
+  (save-excursion
+    (org-mark-subtree)
+    (let ((content (buffer-substring (point) (mark)))
+          (SUBJECT (nth 4 (org-heading-components))))
+
+      (compose-mail "ikloog@gmail.com" SUBJECT)
+      (message-goto-body)
+      (insert content)
+      (message-send)
+      (message-kill-buffer))))
+#+END_SRC
+
+#+RESULTS:
+: z/org-email-heading-me
+
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -3400,6 +3420,7 @@ shnsplit -f {F}  -o flac {oF}
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-cb" 'org-iswitchb)
 #+END_SRC
 
 ** hydra
@@ -3822,40 +3843,31 @@ whats this:  (global-set-key (kbd "C-c h") 'helm-command-prefix)
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f8>")
-(defhydra  hydra-open (:color blue :hint nil)
-
+(defhydra  hydra-open  (:color blue :hint nil :columns 4)
 "
-_<f8>_: open BK  _<f7>_ buffers/recents
-_a_:         _b_: add BM        _c_:chrome BM        _d_:        _e_:           _f_         _g_:  
-_h_:         _i_: helm-proj-buffer        _j_:       _k_:       _l_:          _m_: BM menu               _n_:      
-_o_:helm-projectile        _p_: projectile FF        _r_: helm recents       _s_:save BM       _t_:           _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
-_q_: 
-BK+: + filer 
+BKMK Menu
 "
-
-
-
-("<f8>" helm-bookmarks )
-("<f7>" helm-mini )
+("<f8>" helm-bookmarks "BKMK's")
+("<f7>" helm-mini "helm-mini")
+("<f9>" org-iswitchb "org buffers")
 ("a" nil )
-("b"  bmkp-bookmark-set-confirm-overwrite  )
-("c"  helm-chrome-bookmarks )
+("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
+("c"  helm-chrome-bookmarks "Chorme BKMK")
 ("d"  nil )
 ("e"  nil )
-("f"  bmkp-bmenu-filter-tags-incrementally )
+("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
-("j"  helm-projectile-switch-to-buffer )
+("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
 ("l"  nil )
-("m"  bookmark-bmenu-list )
+("m"  bookmark-bmenu-list "BKMK menu")
 ("n"  nil )
-("o"  helm-projectile )
-("p"  projectile-find-file )
-("r"  helm-recentf )
-("s"  bookmark-save )
+("o"  helm-projectile "Helm Projectile")
+("p"  projectile-find-file "projectile find file")
+("r"  helm-recentf "Helm Recents" )
+("s"  bookmark-save "BKMK Save" )
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
@@ -3867,12 +3879,7 @@ BK+: + filer
 
 ))
 
-
 #+END_SRC
-
-
-
-
 
 *** org (F9)
 **** org main
@@ -4810,6 +4817,10 @@ use setq org-support-shift-select:
 this will make org-store-link use id when creating a link.
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-id-link-to-org-use-id t)
+;; Use global IDs
+(require 'org-id)
+;; Update ID file .org-id-locations on startup
+(org-id-update-id-locations)
  #+END_SRC
 
 ** loading on startup
@@ -5187,7 +5198,10 @@ this command below will use helm for completion since in the above helm config w
 ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
  "*  %^{Description}" )
 
-("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "Home TD's")
+("t" "TechTODO" entry (file+headline "~/org/files/agenda/TODO.org" "Home TD's")
+ "* TODO  %?\n%T" )
+
+("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "`TODO`")
  "* TODO  %?\n%T" )
 
 ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")

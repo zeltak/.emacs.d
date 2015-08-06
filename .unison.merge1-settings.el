@@ -2043,20 +2043,6 @@ subsequent sends."
           (message-goto-body)
         (message-goto-to)))))
 
-(defun z/org-email-heading-me ()
-  "Send the current org-mode heading as the body of an email, with headline as the subject."
-  (interactive)
-  (save-excursion
-    (org-mark-subtree)
-    (let ((content (buffer-substring (point) (mark)))
-          (SUBJECT (nth 4 (org-heading-components))))
-
-      (compose-mail "ikloog@gmail.com" SUBJECT)
-      (message-goto-body)
-      (insert content)
-      (message-send)
-      (message-kill-buffer))))
-
 (defun z/insert-slsh ()
   " insert     "
   (interactive)
@@ -2453,7 +2439,6 @@ Version 2015-07-30"
 (global-set-key (kbd "C-c c") 'org-capture)
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key "\C-cl" 'org-store-link)
-(global-set-key "\C-cb" 'org-iswitchb)
 
 (defface hydra-face-orange
     '((t (:foreground "orange" :bold t)))
@@ -2815,31 +2800,40 @@ Bib:
 
 (global-set-key
    (kbd "<f8>")
-(defhydra  hydra-open  (:color blue :hint nil :columns 4)
+(defhydra  hydra-open (:color blue :hint nil)
+
 "
-BKMK Menu
+_<f8>_: open BK  _<f7>_ buffers/recents
+_a_:         _b_: add BM        _c_:chrome BM        _d_:        _e_:           _f_         _g_:  
+_h_:         _i_: helm-proj-buffer        _j_:       _k_:       _l_:          _m_: BM menu               _n_:      
+_o_:helm-projectile        _p_: projectile FF        _r_: helm recents       _s_:save BM       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+BK+: + filer 
 "
-("<f8>" helm-bookmarks "BKMK's")
-("<f7>" helm-mini "helm-mini")
-("<f9>" org-iswitchb "org buffers")
+
+
+
+("<f8>" helm-bookmarks )
+("<f7>" helm-mini )
 ("a" nil )
-("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
-("c"  helm-chrome-bookmarks "Chorme BKMK")
+("b"  bmkp-bookmark-set-confirm-overwrite  )
+("c"  helm-chrome-bookmarks )
 ("d"  nil )
 ("e"  nil )
-("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
+("f"  bmkp-bmenu-filter-tags-incrementally )
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
-("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
+("j"  helm-projectile-switch-to-buffer )
 ("k"  nil )
 ("l"  nil )
-("m"  bookmark-bmenu-list "BKMK menu")
+("m"  bookmark-bmenu-list )
 ("n"  nil )
-("o"  helm-projectile "Helm Projectile")
-("p"  projectile-find-file "projectile find file")
-("r"  helm-recentf "Helm Recents" )
-("s"  bookmark-save "BKMK Save" )
+("o"  helm-projectile )
+("p"  projectile-find-file )
+("r"  helm-recentf )
+("s"  bookmark-save )
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
@@ -3557,10 +3551,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (push (cons "\\.mp4\\'" 'vlc) org-file-apps)
 
 (setq org-id-link-to-org-use-id t)
-;; Use global IDs
-(require 'org-id)
-;; Update ID file .org-id-locations on startup
-(org-id-update-id-locations)
 
 (add-to-list 'org-modules "org-habit")
 
@@ -3815,10 +3805,7 @@ With prefix argument, also display headlines without a TODO keyword."
 ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
  "*  %^{Description}" )
 
-("t" "TechTODO" entry (file+headline "~/org/files/agenda/TODO.org" "Home TD's")
- "* TODO  %?\n%T" )
-
-("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "`TODO`")
+("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "Home TD's")
  "* TODO  %?\n%T" )
 
 ("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
