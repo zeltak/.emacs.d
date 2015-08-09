@@ -142,7 +142,7 @@ $note its built into emacs no intsall needed$
 #+END_SRC
 
 ** Ace window
-*** TODO use package
+https://github.com/abo-abo/ace-window
 sets to only use homekeys 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package ace-window
@@ -160,28 +160,7 @@ sets to only use homekeys
 
 )
 #+END_SRC
-
-inestigate this:
-
-(defvar aw-dispatch-alist
-'((?x aw-delete-window " Ace - Delete Window")
-    (?m aw-swap-window " Ace - Swap Window")
-    (?n aw-flip-window)
-    (?= aw-split-window-vert " Ace - Split Vert Window")
-    (?- aw-split-window-horz " Ace - Split Horz Window")
-    (?i delete-other-windows " Ace - Maximize Window")
-    (?o delete-other-windows))
-"List of actions for `aw-dispatch-default'.")
-
-
-
-** ace zap
-#+BEGIN_SRC emacs-lisp :results none
-(use-package ace-jump-zap
-  :ensure ace-jump-zap
-)
-#+END_SRC
-** Ace-isearch
+arch
 https://github.com/tam17aki/ace-isearch
 *** start ace-isearch
 #+BEGIN_SRC emacs-lisp :results none
@@ -204,13 +183,13 @@ https://github.com/tam17aki/ace-isearch
 #+END_SRC
 
 ** ace link
+https://github.com/abo-abo/ace-link
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package ace-link
  :ensure t
  :config
 (ace-link-setup-default)
- 
  )
 #+END_SRC 
 
@@ -272,15 +251,15 @@ https://github.com/syohex/emacs-anzu
 )
 #+END_SRC
 
-** Avy
+** Avy Jump
 https://github.com/abo-abo/avy
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package avy
  :ensure t
  :config
-(defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-  "Keys for jumping.") 
+ (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+ "Keys for jumping.") 
  )
 #+END_SRC 
 
@@ -967,7 +946,7 @@ highlight word at point and move forward next to other words
  :config
  )
 #+END_SRC 
-** ivy
+** ivy (completion package by abo-abo)
 http://oremacs.com/2015/04/16/ivy-mode/
 *** enable fuzzy matching by default
 #+BEGIN_SRC emacs-lisp :results none
@@ -988,7 +967,7 @@ C-n and C-p naturally select the next and the previous candidate.
 
 ** org highlight
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.g/highlights")
+;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
 ;require 'highlights)
@@ -997,7 +976,10 @@ C-n and C-p naturally select the next and the previous candidate.
 ** hydra
  #+BEGIN_SRC emacs-lisp :results none
 (use-package hydra
-:ensure t )
+:ensure t 
+:config
+(require 'hydra-examples) ;;for window splits etc
+)
  #+END_SRC
 ** indent guide
 #+BEGIN_SRC emacs-lisp :results none
@@ -1005,8 +987,6 @@ C-n and C-p naturally select the next and the previous candidate.
 :ensure t
 :config
 )
-
-
 #+END_SRC
 ** ispell
 #+BEGIN_SRC emacs-lisp :results none
@@ -1015,7 +995,6 @@ C-n and C-p naturally select the next and the previous candidate.
 (add-to-list 'ispell-skip-region-alist '("#\\+begin_src". "#\\+end_src"))
 #+END_SRC
 ** key-chord
-
  #+BEGIN_SRC emacs-lisp :results none
 (use-package key-chord 
   :ensure t
@@ -1024,7 +1003,6 @@ C-n and C-p naturally select the next and the previous candidate.
 (setq key-chord-one-key-delay 0.20)
 )
 #+END_SRC
-
 ** lentic mode
 https://github.com/phillord/lentic
 
@@ -1034,8 +1012,6 @@ https://github.com/phillord/lentic
  :config
  )
 #+END_SRC
-
-
 ** TODO magit
    
 
@@ -1182,8 +1158,8 @@ https://github.com/sabof/org-bullets
    :ID:       54e01618-35eb-45c5-b0b7-6f830faef316
    :Attachments: screenshot_2015-04-05_08:15:22.png
    :END:
- provides function to drag images from browser and link address
- $Note$ this requires package async to be installed, @async must be loaded before this package@
+provides function to drag images from browser and link address
+$Note$ this requires package async to be installed, @async must be loaded before this package@
 
 #+BEGIN_SRC emacs-lisp :results none
   (use-package org-download 
@@ -1299,8 +1275,6 @@ also explore how this relates to org-contacs
  
  )
 #+END_SRC 
-
-
 ** TODO org-pandoc
 https://github.com/kawabata/ox-pandoc
 
@@ -1379,11 +1353,8 @@ https://github.com/ralesi/ranger/
 ;
 ; )
 #+END_SRC 
-
-
 ** scratch
 Instant scratch buffer for current mode
-
 http://pragmaticemacs.com/emacs/instant-scratch-buffer-for-current-mode/
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1748,17 +1719,18 @@ makes or unmakes a marked section wider/shorter (look fill command)
 ** TODO visible-mark
 
 #+BEGIN_SRC emacs-lisp :results none
-(use-package  visible-mark 
- :ensure t
- :config
- (defface visible-mark-active ;; put this before (require 'visible-mark)
-  '((((type tty) (class mono)))
-    (t (:background "magenta"))) "")
-(require 'visible-mark)
-(global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
-(setq visible-mark-max 2)
-(setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
- )
+  ;; (use-package  visible-mark 
+
+  ;;  :ensure t
+  ;;  :config
+  ;;  (defface visible-mark-active ;; put this before (require 'visible-mark)
+  ;;   '((((type tty) (class mono)))
+  ;;     (t (:background "magenta"))) "")
+  ;; (require 'visible-mark)
+  ;; (global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
+  ;; (setq visible-mark-max 2)
+  ;; (setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+  ;;  )
 #+END_SRC 
 
 
@@ -3120,49 +3092,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (kill-this-buffer)
   )
 #+END_SRC
-** windows (panes)
-*** resize via menu
-#+BEGIN_SRC emacs-lisp :results none
-(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
-  "*Resize window interactively."
-  (interactive "p")
-  (if (one-window-p) (error "Cannot resize sole window"))
-  (or arg (setq arg 1))
-  (let (c)
-    (catch 'done
-      (while t
-	(message
-	 "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
-	 arg)
-	(setq c (read-char))
-	(condition-case ()
-	    (cond
-	     ((= c ?h) (enlarge-window arg))
-	     ((= c ?s) (shrink-window arg))
-	     ((= c ?w ) (enlarge-window-horizontally arg))
-	     ((= c ?n) (shrink-window-horizontally arg))
-	     ((= c ?\^G) (keyboard-quit))
-	     ((= c ?q) (throw 'done t))
-	     ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
-	     (t (beep)))
-	  (error (beep)))))
-    (message "Done.")))
-#+END_SRC
-*** swap window location
-#+BEGIN_SRC emacs-lisp :results none
-(defun transpose-windows (arg)
-   "Transpose the buffers shown in two windows."
-   (interactive "p")
-   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-     (while (/= arg 0)
-       (let ((this-win (window-buffer))
-             (next-win (window-buffer (funcall selector))))
-         (set-window-buffer (selected-window) next-win)
-         (set-window-buffer (funcall selector) this-win)
-         (select-window (funcall selector)))
-       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-#+END_SRC
-
 ** open a specific dir
 #+BEGIN_SRC emacs-lisp :results none
 (defun ood () (interactive) (dired "/home/zeltak/org"))
@@ -3557,7 +3486,6 @@ shnsplit -f {F}  -o flac {oF}
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 #+END_SRC
 
-
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
@@ -3565,7 +3493,7 @@ shnsplit -f {F}  -o flac {oF}
 ** movment
 #+BEGIN_SRC emacs-lisp :results none
 (global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'avy-goto-line)
+;(global-set-key (kbd "M-`") 'avy-goto-line)
 (global-set-key (kbd "C-<up>") 'windmove-up)
 (global-set-key (kbd "C-<down>") 'windmove-down)
 (global-set-key (kbd "C-<right>") 'windmove-right)
@@ -3628,7 +3556,7 @@ quick switch other windw
 #+END_SRC
 
 *** TODO hydra leader
-
+ 
 #+BEGIN_SRC emacs-lisp :results none
 
 (global-set-key
@@ -3638,6 +3566,8 @@ quick switch other windw
 "
 LEADER:【C-A-W】-append to killring
 "
+("\]" z/insert-slsh "insert \\")
+("\\"  avy-goto-word-or-subword-1  "avy jump")
 ("a" nil )
 ("b"  nil  )
 ;("c"  company-complete )
@@ -3645,12 +3575,12 @@ LEADER:【C-A-W】-append to killring
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
-("g"  nil )
+("g"  hydra-goto/body )
 ("h"  hide-sublevels "collapse tree")
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
 ("k"  nil )
-("l"  nil )
+("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("o"  set-mark-command 4 "mark prev" )
@@ -3664,7 +3594,6 @@ LEADER:【C-A-W】-append to killring
 ("x"  nil )
 ("y"  helm-show-kill-ring "kill ring")
 ("z"  nil )
-("\\"  z/insert-slsh "insert \\")
 (";"  comment-or-uncomment-region )
 ("q"  nil )
 
@@ -4238,6 +4167,8 @@ _q_: quit
    (";" z/org-cblock-comment  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
    ("w" worf-mode "Worf mode" )
+   ("<up>" org-move-subtree-up "header up" :color red )
+   ("<down>" org-move-subtree-down "header down" :color red)
    ("q" nil "cancel")))
 
 #+END_SRC
@@ -4498,55 +4429,60 @@ add the org faces macros here (%Tip%, $Note$ etc)
 
 *** windows (F12)
 
-#+BEGIN_SRC emacs-lisp :results none
+#+BEGIN_SRC emacs-lisp :results noneq
 (global-set-key
  (kbd "<f12>")
- (defhydra hydra-window (:color blue :hint nil :columns 4)
-   "window"
-   ("h" windmove-left "move left")
-   ("j" windmove-down "move down")
-   ("k" windmove-up "move up")
-   ("l" windmove-right "move right")
-   ("a" (lambda ()
-          (interactive)
-          (ace-window 1)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "ace window")
+ (defhydra hydra-window (:color blue :hint nil :columns 5)
+ "Window and buffer Operations"
+   ("<f12>" switch-to-previous-buffer  "last buffer"  )
+   ("<f11>" ace-delete-window "delete window")
+   ("a" ace-window "ace-window//also M-1" :exit t)   
    ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
-        "vert")
+        "Split Vertical |")
    ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
-        "horz")
-   ("t" transpose-windows  "transpose")
-   ("<f12>" other-window "other-window")
-   ("X" delete-window "delete window")
-   ("x" delete-other-windows "delete all other  windows")
+        "Split horzizontal -")
+   ("<left>" hydra-move-splitter-left "resize left"  :color red)
+   ("<right>" hydra-move-splitter-right "resize right"  :color red)
+   ("<up>" hydra-move-splitter-up "resize up"  :color red)
+   ("<down>" hydra-move-splitter-down "resize down"  :color red)
+   ("t" ace-swap-window  "transpose (ace-swap)")
    ("i" ace-maximize-window "ace-one" )
-   ("r" resize-window "resize" )
+   ("r" resize-window "resize menu" )
+   ;;Note winer mode must be enabled
+   ("u" winner-undo "winner undo")
+   ("s" save-buffer "save buffer"  )
+   ("a" write-file  "save as.."  )
+   ("x" kill-this-buffer "kill buffer"  )
+   ("c" z-save-buffer-close-window "save and close"  )
+   ("n" next-user-buffer  "next buffer" )
+   ("p" previous-user-buffer "prev buffer"  )
+   ("N" next-emacs-buffer "next Emacs  buffer"  )
+   ("P" previous-emacs-buffer "prev emacs buffer"  )
+   ("da" ace-delete-window)
+   ("db" kill-this-buffer)
+   ("df" delete-frame "delete frame")
+   ("kw" delete-window "delete window")
+   ("ka" delete-other-windows "delete all other  windows")
+   ("kh" kill-buffer "helm kill buffer" )
+   ("kb" z-kill-other-buffers "kill all but current" )
    ("q" nil "cancel")))
 
 #+END_SRC
-
-
-*** movment
+*** hydra goto
 pop-global-mark this will move you to prev position 
 
 #+BEGIN_SRC emacs-lisp :results none
-(defhydra hydra-goto-line (:pre (progn
-                                  (linum-mode 1))
-                           :post (progn
-                                   (linum-mode -1))
-                           :color blue)
+(defhydra hydra-goto  (:color blue :hint nil :columns 5)
   "goto"
   ("g" goto-line "line")
   ("c" goto-char "char")
+  ("o" ace-link-org "goto org link")
   ("2" er/expand-region "expand")
   ("q" nil "quit"))
 #+END_SRC

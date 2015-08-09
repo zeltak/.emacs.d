@@ -138,10 +138,6 @@
 
 )
 
-(use-package ace-jump-zap
-  :ensure ace-jump-zap
-)
-
 ;  (use-package ace-isearch
 ;  :ensure t
 ;  :config
@@ -161,7 +157,6 @@
  :ensure t
  :config
 (ace-link-setup-default)
- 
  )
 
 (use-package anzu
@@ -210,8 +205,8 @@
 (use-package avy
  :ensure t
  :config
-(defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
-  "Keys for jumping.") 
+ (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+ "Keys for jumping.") 
  )
 
 (use-package avy-zap
@@ -625,13 +620,16 @@
 
 (setq ivy-count-format "(%d/%d) ")
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/highlights")
+;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
 ;require 'highlights)
 
 (use-package hydra
-:ensure t )
+:ensure t 
+:config
+(require 'hydra-examples) ;;for window splits etc
+)
 
 (use-package indent-guide
 :ensure t
@@ -1133,17 +1131,18 @@ Sunrise:
 :config
 )
 
-(use-package  visible-mark 
- :ensure t
- :config
- (defface visible-mark-active ;; put this before (require 'visible-mark)
-  '((((type tty) (class mono)))
-    (t (:background "magenta"))) "")
-(require 'visible-mark)
-(global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
-(setq visible-mark-max 2)
-(setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
- )
+;; (use-package  visible-mark 
+
+;;  :ensure t
+;;  :config
+;;  (defface visible-mark-active ;; put this before (require 'visible-mark)
+;;   '((((type tty) (class mono)))
+;;     (t (:background "magenta"))) "")
+;; (require 'visible-mark)
+;; (global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
+;; (setq visible-mark-max 2)
+;; (setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+;;  )
 
 (use-package worf
  :ensure t
@@ -2180,43 +2179,6 @@ Repeated invocations toggle between the two most recently open buffers."
     (kill-this-buffer)
   )
 
-(defun resize-window (&optional arg)    ; Hirose Yuuji and Bob Wiener
-  "*Resize window interactively."
-  (interactive "p")
-  (if (one-window-p) (error "Cannot resize sole window"))
-  (or arg (setq arg 1))
-  (let (c)
-    (catch 'done
-      (while t
-        (message
-         "h=heighten, s=shrink, w=widen, n=narrow (by %d);  1-9=unit, q=quit"
-         arg)
-        (setq c (read-char))
-        (condition-case ()
-            (cond
-             ((= c ?h) (enlarge-window arg))
-             ((= c ?s) (shrink-window arg))
-             ((= c ?w ) (enlarge-window-horizontally arg))
-             ((= c ?n) (shrink-window-horizontally arg))
-             ((= c ?\^G) (keyboard-quit))
-             ((= c ?q) (throw 'done t))
-             ((and (> c ?0) (<= c ?9)) (setq arg (- c ?0)))
-             (t (beep)))
-          (error (beep)))))
-    (message "Done.")))
-
-(defun transpose-windows (arg)
-   "Transpose the buffers shown in two windows."
-   (interactive "p")
-   (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
-     (while (/= arg 0)
-       (let ((this-win (window-buffer))
-             (next-win (window-buffer (funcall selector))))
-         (set-window-buffer (selected-window) next-win)
-         (set-window-buffer (funcall selector) this-win)
-         (select-window (funcall selector)))
-       (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
-
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
 (defun create-scratch-buffer nil
@@ -2519,7 +2481,7 @@ Version 2015-07-30"
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
 
 (global-unset-key (kbd "M-`"))
-(global-set-key (kbd "M-`") 'avy-goto-line)
+;(global-set-key (kbd "M-`") 'avy-goto-line)
 (global-set-key (kbd "C-<up>") 'windmove-up)
 (global-set-key (kbd "C-<down>") 'windmove-down)
 (global-set-key (kbd "C-<right>") 'windmove-right)
@@ -2568,6 +2530,8 @@ Version 2015-07-30"
 "
 LEADER:【C-A-W】-append to killring
 "
+("\]" z/insert-slsh "insert \\")
+("\\"  avy-goto-word-or-subword-1  "avy jump")
 ("a" nil )
 ("b"  nil  )
 ;("c"  company-complete )
@@ -2575,12 +2539,12 @@ LEADER:【C-A-W】-append to killring
 ("d"  nil )
 ("e"  nil )
 ("f"  nil )
-("g"  nil )
+("g"  hydra-goto/body )
 ("h"  hide-sublevels "collapse tree")
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
 ("k"  nil )
-("l"  nil )
+("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("o"  set-mark-command 4 "mark prev" )
@@ -2594,7 +2558,6 @@ LEADER:【C-A-W】-append to killring
 ("x"  nil )
 ("y"  helm-show-kill-ring "kill ring")
 ("z"  nil )
-("\\"  z/insert-slsh "insert \\")
 (";"  comment-or-uncomment-region )
 ("q"  nil )
 
@@ -3084,6 +3047,8 @@ _q_: quit
    (";" z/org-cblock-comment  "line to checkbox" )
    ("s" hydra-org-time/body "time stamps" )
    ("w" worf-mode "Worf mode" )
+   ("<up>" org-move-subtree-up "header up" :color red )
+   ("<down>" org-move-subtree-down "header down" :color red)
    ("q" nil "cancel")))
 
 (global-set-key
@@ -3288,45 +3253,52 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (global-set-key
  (kbd "<f12>")
- (defhydra hydra-window (:color blue :hint nil :columns 4)
-   "window"
-   ("h" windmove-left "move left")
-   ("j" windmove-down "move down")
-   ("k" windmove-up "move up")
-   ("l" windmove-right "move right")
-   ("a" (lambda ()
-          (interactive)
-          (ace-window 1)
-          (add-hook 'ace-window-end-once-hook
-                    'hydra-window/body)
-          (throw 'hydra-disable t))
-        "ace window")
+ (defhydra hydra-window (:color blue :hint nil :columns 5)
+ "Window and buffer Operations"
+   ("<f12>" switch-to-previous-buffer  "last buffer"  )
+   ("<f11>" ace-delete-window "delete window")
+   ("a" ace-window "ace-window//also M-1" :exit t)   
    ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
-        "vert")
+        "Split Vertical |")
    ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
-        "horz")
-   ("t" transpose-windows  "transpose")
-   ("<f12>" other-window "other-window")
-   ("X" delete-window "delete window")
-   ("x" delete-other-windows "delete all other  windows")
+        "Split horzizontal -")
+   ("<left>" hydra-move-splitter-left "resize left"  :color red)
+   ("<right>" hydra-move-splitter-right "resize right"  :color red)
+   ("<up>" hydra-move-splitter-up "resize up"  :color red)
+   ("<down>" hydra-move-splitter-down "resize down"  :color red)
+   ("t" ace-swap-window  "transpose (ace-swap)")
    ("i" ace-maximize-window "ace-one" )
-   ("r" resize-window "resize" )
+   ("r" resize-window "resize menu" )
+   ;;Note winer mode must be enabled
+   ("u" winner-undo "winner undo")
+   ("s" save-buffer "save buffer"  )
+   ("a" write-file  "save as.."  )
+   ("x" kill-this-buffer "kill buffer"  )
+   ("c" z-save-buffer-close-window "save and close"  )
+   ("n" next-user-buffer  "next buffer" )
+   ("p" previous-user-buffer "prev buffer"  )
+   ("N" next-emacs-buffer "next Emacs  buffer"  )
+   ("P" previous-emacs-buffer "prev emacs buffer"  )
+   ("da" ace-delete-window)
+   ("db" kill-this-buffer)
+   ("df" delete-frame "delete frame")
+   ("kw" delete-window "delete window")
+   ("ka" delete-other-windows "delete all other  windows")
+   ("kh" kill-buffer "helm kill buffer" )
+   ("kb" z-kill-other-buffers "kill all but current" )
    ("q" nil "cancel")))
 
-(defhydra hydra-goto-line (:pre (progn
-                                  (linum-mode 1))
-                           :post (progn
-                                   (linum-mode -1))
-                           :color blue)
+(defhydra hydra-goto  (:color blue :hint nil :columns 5)
   "goto"
   ("g" goto-line "line")
   ("c" goto-char "char")
+  ("o" ace-link-org "goto org link")
   ("2" er/expand-region "expand")
   ("q" nil "quit"))
 
