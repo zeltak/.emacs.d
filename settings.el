@@ -205,7 +205,7 @@
 (use-package avy
  :ensure t
  :config
- (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l)
+ (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l ?q ?w ?e ?r ?t ?y ?u ?i ?o ?p ?z ?x ?c ?v ?b ?n ?m )
  "Keys for jumping.") 
  )
 
@@ -2531,7 +2531,7 @@ Version 2015-07-30"
 LEADER:【C-A-W】-append to killring
 "
 ("\]" z/insert-slsh "insert \\")
-("\\"  avy-goto-word-or-subword-1  "avy jump")
+("\\"  avy-goto-word-1  "avy jump")
 ("a" nil )
 ("b"  nil  )
 ;("c"  company-complete )
