@@ -15,7 +15,7 @@
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
- '(bmkp-last-as-first-bookmark-file "/home/zeltak/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" . t)))
@@ -31,6 +31,7 @@
  '(org-capture-after-finalize-hook nil)
  '(org-download-image-width 300)
  '(org-download-screenshot-method "gm import %s")
+ '(send-mail-function (quote smtpmail-send-it))
  '(sr-avfs-root "~/.avfs")
  '(sr-history-length 30)
  '(sr-popviewer-enabled t)

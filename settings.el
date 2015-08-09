@@ -1,80 +1,3 @@
-
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-
-; Check if system is windows
-(defun system-type-is-win ()
-(interactive)
-"Return true if system is windows"
-(string-equal system-type "windows-nt")
-)
-
-;; Check if system is GNU/Linux
-(defun system-type-is-gnu ()
-(interactive)
-"Return true if system is GNU/Linux-based"
-(string-equal system-type "gnu/linux")
-)
-
-;;;add custom themes to list
-  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
-  ;to load a specifc theme 
-  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
-  ;load the choosen theme at startup 
-  (load-theme 'zprime t)
-
-;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
-
-;; ;; last t is for NO-ENABLE
-  ;;   (load-theme 'zprime t t)
-  ;;   (load-theme 'tango-dark t t)
-  
-  ;;   (defun mb/pick-color-theme (frame)
-  ;;     (select-frame frame)
-  ;;     (if (window-system frame)
-  ;;         (progn  
-  ;;           (disable-theme 'tango-dark) ; in case it was active
-  ;;           (enable-theme 'zprime))
-  ;;       (progn  
-  ;;         (disable-theme 'zprime) ; in case it was active
-  ;;         (enable-theme 'tango-dark))))
-  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
-  
-  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
-  ;;   (if window-system
-  ;;       (enable-theme 'zprime)
-  ;;     (enable-theme 'tango-dark))
-
-; fonts in linux
-(if (system-type-is-gnu)
-;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
-;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
-;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
-;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
-)
-
-;; fontso in Win
-(if (system-type-is-win)
-(add-to-list 'default-frame-alist '(font . "Consolas-14"))
-)
-
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-;; UTF-8 as default encoding
-(set-language-environment "UTF-8")
-
-;; backwards compatibility as default-buffer-file-coding-system
-;; is deprecated in 23.2.
-(if (boundp 'buffer-file-coding-system)
-    (setq-default buffer-file-coding-system 'utf-8)
-  (setq default-buffer-file-coding-system 'utf-8))
- 
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
 (setq dcsh-command-list '("all_registers"
                                "check_design" "check_test" "compile" "current_design"
                                "link" "uniquify"
@@ -203,12 +126,17 @@
 (use-package ace-window
     :config
 ;set keys to only these 
-    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
-    (setq aw-background nil))
+;;    (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+;;    (setq aw-keys '(?1 ?2 ?3 ?4 ?5 ))
+;; set to work in frames not global! so that if only 2 windows in frames frame it would switch between them 
+(setq aw-scope 'frame)
+;; set to true if you want to darken the background during switch
+(setq aw-background nil)
+;; When non-nil, ace-window will issue a read-char even for one window- you want it nil!
+(setq aw-dispatch-always nil)
 
-(custom-set-faces
- '(aw-leading-char-face
-   ((t (:inherit ace-jump-face-foreground :height 3.0)))))
+
+)
 
 (use-package ace-jump-zap
   :ensure ace-jump-zap
@@ -337,6 +265,7 @@
       '(("\\.e?ps$" "gv" "xloadimage" "lpr")
         ("\\.chm$" "xchm")
         ("\\.rar$" "unrar x")
+        ("\\.ods\\'\\|\\.xlsx?\\'\\|\\.docx?\\'\\|\\.csv\\'" "libreoffice")
         ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
         ("\\.pdf$" "okular" "zathura")
         ("\\.flv$" "mplayer")
@@ -536,6 +465,15 @@
 :config
 )
 
+;; (use-package gnus-desktop-notify
+;;  :ensure t
+;;  :config
+;;  (require 'gnus-desktop-notify)
+;; (gnus-desktop-notify-mode)
+;; (gnus-demon-add-scanmail)
+
+;;  )
+
 (use-package golden-ratio
  :ensure t
  :config
@@ -563,7 +501,7 @@
 :config
 (require 'helm-config)
 (helm-mode 1)
-(global-set-key (kbd "M-x") 'helm-M-x)
+;(global-set-key (kbd "M-x") 'helm-M-x)
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
 )
 
@@ -682,6 +620,11 @@
  :config
  )
 
+(setq ivy-re-builders-alist
+      '((t . ivy--regex-fuzzy)))
+
+(setq ivy-count-format "(%d/%d) ")
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/highlights")
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
@@ -788,6 +731,13 @@
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
 (require 'org-link-edit)
+
+;; (use-package org-bullets 
+;;  :ensure t
+;;  :config
+;; (require 'org-bullets)
+;; (add-hook 'org-mode-hook (lambda () (org-bullets-mode 1))) 
+;;  )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/ob-sudo/")
 
@@ -912,6 +862,16 @@
 ;;                 text-mode-hook
 ;;                 ))
 ;;   (add-hook hook 'rainbow-mode))
+
+(use-package rainbow-delimiters
+ :ensure t
+ :config
+ (add-hook 'prog-mode-hook 'rainbow-delimiters-mode)
+(require 'rainbow-delimiters)
+(set-face-attribute 'rainbow-delimiters-unmatched-face nil
+                    :foreground 'unspecified
+                    :inherit 'error)
+ )
 
 ;(use-package ranger
 ; :ensure t
@@ -1150,6 +1110,11 @@ Sunrise:
  :config
   )
 
+(use-package tiny
+  :config
+;  (global-set-key (kbd "C-s-t") 'tiny-expand)
+)
+
 ;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
 ;(setq transmission-host "10.0.0.2")
@@ -1167,6 +1132,18 @@ Sunrise:
 :ensure t
 :config
 )
+
+(use-package  visible-mark 
+ :ensure t
+ :config
+ (defface visible-mark-active ;; put this before (require 'visible-mark)
+  '((((type tty) (class mono)))
+    (t (:background "magenta"))) "")
+(require 'visible-mark)
+(global-visible-mark-mode 1) ;; or add (visible-mark-mode) to specific hooks
+(setq visible-mark-max 2)
+(setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
+ )
 
 (use-package worf
  :ensure t
@@ -1287,6 +1264,82 @@ Sunrise:
 ;;               (nth n choices))
 ;;           (signal 'quit "user quit!"))))
 ;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
+
+; Check if system is windows
+(defun system-type-is-win ()
+(interactive)
+"Return true if system is windows"
+(string-equal system-type "windows-nt")
+)
+
+;; Check if system is GNU/Linux
+(defun system-type-is-gnu ()
+(interactive)
+"Return true if system is GNU/Linux-based"
+(string-equal system-type "gnu/linux")
+)
+
+;;;add custom themes to list
+  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
+  ;to load a specifc theme 
+  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
+  ;load the choosen theme at startup 
+  (load-theme 'zprime t)
+
+;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
+
+;; ;; last t is for NO-ENABLE
+  ;;   (load-theme 'zprime t t)
+  ;;   (load-theme 'tango-dark t t)
+  
+  ;;   (defun mb/pick-color-theme (frame)
+  ;;     (select-frame frame)
+  ;;     (if (window-system frame)
+  ;;         (progn  
+  ;;           (disable-theme 'tango-dark) ; in case it was active
+  ;;           (enable-theme 'zprime))
+  ;;       (progn  
+  ;;         (disable-theme 'zprime) ; in case it was active
+  ;;         (enable-theme 'tango-dark))))
+  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
+  
+  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
+  ;;   (if window-system
+  ;;       (enable-theme 'zprime)
+  ;;     (enable-theme 'tango-dark))
+
+; fonts in linux
+(if (system-type-is-gnu)
+;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
+;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
+(add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
+;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
+;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
+)
+
+;; fontso in Win
+(if (system-type-is-win)
+(add-to-list 'default-frame-alist '(font . "Consolas-14"))
+)
+
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+;; UTF-8 as default encoding
+(set-language-environment "UTF-8")
+
+;; backwards compatibility as default-buffer-file-coding-system
+;; is deprecated in 23.2.
+(if (boundp 'buffer-file-coding-system)
+    (setq-default buffer-file-coding-system 'utf-8)
+  (setq default-buffer-file-coding-system 'utf-8))
+ 
+;; Treat clipboard input as UTF-8 string first; compound text next, etc.
+(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
 (defun z-fix-characters 
 (start end) 
@@ -2143,7 +2196,7 @@ Repeated invocations toggle between the two most recently open buffers."
             (cond
              ((= c ?h) (enlarge-window arg))
              ((= c ?s) (shrink-window arg))
-             ((= c ?w) (enlarge-window-horizontally arg))
+             ((= c ?w ) (enlarge-window-horizontally arg))
              ((= c ?n) (shrink-window-horizontally arg))
              ((= c ?\^G) (keyboard-quit))
              ((= c ?q) (throw 'done t))
@@ -2404,6 +2457,37 @@ Version 2015-07-30"
 (eshell-send-input)
 )
 
+(defun isearch-delete-something ()
+  "Delete non-matching text or the last character."
+  ;; Mostly copied from `isearch-del-char' and Drew's answer on the page above
+  (interactive)
+  (if (= 0 (length isearch-string))
+      (ding)
+    (setq isearch-string
+          (substring isearch-string
+                     0
+                     (or (isearch-fail-pos) (1- (length isearch-string)))))
+    (setq isearch-message
+          (mapconcat #'isearch-text-char-description isearch-string "")))
+  (if isearch-other-end (goto-char isearch-other-end))
+  (isearch-search)
+  (isearch-push-state)
+  (isearch-update))
+
+(define-key isearch-mode-map (kbd "<backspace>") 
+  #'isearch-delete-something)
+
+(defun my-yas-get-first-name-from-to-field ()
+  (let ((rlt "AGENT_NAME") str)
+    (save-excursion
+      (goto-char (point-min))
+      ;; first line in email could be some hidden line containing NO to field
+      (setq str (buffer-substring-no-properties (point-min) (point-max))))
+    (if (string-match "^To: \"\\([^ ,]+\\)" str)
+        (setq rlt (match-string 1 str)))
+    (message "rlt=%s" rlt)
+    rlt))
+
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
 (global-unset-key (kbd "<f3>"))
@@ -2423,30 +2507,26 @@ Version 2015-07-30"
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-t"))
 
+(global-set-key (kbd "M-x") 'counsel-M-x)
+
+(global-set-key "\C-t" #'transpose-lines)
+(define-key ctl-x-map "\C-t" #'transpose-chars)
+
 (key-chord-define-global "yy"     'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 (define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
 
-; (progn
-;    (define-prefix-command 'xah-fly-leader-key-map)
-;    (define-key xah-fly-leader-key-map (kbd "RET") (if (fboundp 'smex) 'smex 'execute-extended-command ))
-;    (define-key xah-fly-leader-key-map (kbd "<backspace>") nil)
-;    (define-key xah-fly-leader-key-map (kbd "<delete>") nil)
-;    (define-key xah-fly-leader-key-map (kbd "SPC") nil )
-;    (define-key xah-fly-leader-key-map (kbd "<menu>") 'exchange-point-and-mark)
-;    (define-key xah-fly-leader-key-map (kbd "TAB") nil)
-;    (define-key xah-fly-leader-key-map (kbd "\\") 'z/insert-slsh)
-;    (define-key xah-fly-leader-key-map (kbd "r") 'query-replace)
-;    (define-key xah-fly-leader-key-map (kbd "h") 'hippie-expand)
-
-;  )
-
-;(global-set-key (kbd "\\") 'xah-fly-leader-key-map)
-
 (global-unset-key (kbd "M-`"))
 (global-set-key (kbd "M-`") 'avy-goto-line)
+(global-set-key (kbd "C-<up>") 'windmove-up)
+(global-set-key (kbd "C-<down>") 'windmove-down)
+(global-set-key (kbd "C-<right>") 'windmove-right)
+(global-set-key (kbd "C-<left>") 'windmove-left)
+
+;;(global-set-key (kbd "M-1") 'other-window)
+(global-set-key (kbd "M-1") 'ace-window)
 
 ;Create an ID for the entry at point if it does not yet have one.
 (global-set-key "\C-ca" 'org-agenda)
@@ -2454,6 +2534,20 @@ Version 2015-07-30"
 (global-set-key "\C-cs" 'org-babel-execute-subtree)
 (global-set-key "\C-cl" 'org-store-link)
 (global-set-key "\C-cb" 'org-iswitchb)
+
+(progn
+  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
+  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
+  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
+  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
+  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
+ )
+
+(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+
+(global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 
 (defface hydra-face-orange
     '((t (:foreground "orange" :bold t)))
@@ -2472,7 +2566,7 @@ Version 2015-07-30"
 (defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
 
 "
-LEADER:
+LEADER:【C-A-W】-append to killring
 "
 ("a" nil )
 ("b"  nil  )
@@ -2714,7 +2808,7 @@ _q_:
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
   "
-【C-SPACE】 recntangle select 
+【C-SPACE】 recntangle select // 【C-;】 ispell cycle
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("a" helm-apropos "Helm-Apropos")
@@ -2730,6 +2824,7 @@ _q_:
   ("j"  highlight-symbol-next  :color red  "HS Next")
   ("k"  highlight-symbol-prev  :color red  "HS Prev")
   ("l"  helm-locate "helm-locate")
+  ("L"  counsel-locate "council-locate")
   ("m"  flyspell-check-next-highlighted-word "check next error")
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
@@ -3191,23 +3286,21 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("<f11>" switch-to-previous-buffer  "last buffer"  )
      ("q" nil "cancel")))
 
-(global-set-key (kbd "M-1") 'other-window)
-
 (global-set-key
  (kbd "<f12>")
- (defhydra hydra-window (:color blue)
+ (defhydra hydra-window (:color blue :hint nil :columns 4)
    "window"
-   ("h" windmove-left)
-   ("j" windmove-down)
-   ("k" windmove-up)
-   ("l" windmove-right)
+   ("h" windmove-left "move left")
+   ("j" windmove-down "move down")
+   ("k" windmove-up "move up")
+   ("l" windmove-right "move right")
    ("a" (lambda ()
           (interactive)
           (ace-window 1)
           (add-hook 'ace-window-end-once-hook
                     'hydra-window/body)
           (throw 'hydra-disable t))
-        "ace")
+        "ace window")
    ("=" (lambda ()
           (interactive)
           (split-window-right)
@@ -3278,20 +3371,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("q"        hydra-vi/post                 "cancel" :color blue))
 (bind-key "<f7>" 'hydra-vi/body ) ;
 
-(progn
-  ;; set arrow keys in isearch. left/right is backward/forward, up/down is history. press Return to exit
-  (define-key isearch-mode-map (kbd "<up>") 'isearch-ring-retreat )
-  (define-key isearch-mode-map (kbd "<down>") 'isearch-ring-advance )
-  (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
-  (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
- )
-
-(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
-
-(global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
-
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -3351,6 +3430,29 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (fset 'underline_net_delete
    [?\M-% ?\  return return ?!])
+
+(defun highlight-email-addresses ()
+  "Add button to email address. Clicking or RET will open a compose email window."
+  (button-lock-set-button
+   "\\w+\\(\\.\\w+\\)?@\\(\\w\\|\\.\\)+"
+   (lambda ()
+     (interactive)
+     (let ((start) (end) (email-address))
+       (while (get-text-property (point) 'email-address)
+         (backward-char))
+       (forward-char)
+       (setq start (point))
+       (while (get-text-property (point) 'email-address)
+         (forward-char))
+       (setq end (point))
+       (setq email-address (buffer-substring start end))
+       (mu4e~compose-mail email-address)))
+     :face '((:background "gray80") (:underline t))
+     :help-echo "click to send mu4e email"
+     :keyboard-binding (kbd "RET")
+     :additional-property 'email-address))
+
+(add-hook 'text-mode-hook 'highlight-email-addresses)
 
 ;;;; Saved macros
 ;; Saved macro - adds latex end-lines to verse passages
@@ -3814,6 +3916,10 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
  "*  %^{Description}" )
+
+("i" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+ "*  %^{Description}" )
+
 
 ("t" "TechTODO" entry (file+headline "~/org/files/agenda/TODO.org" "Home TD's")
  "* TODO  %?\n%T" )
@@ -4470,27 +4576,79 @@ scroll-step 1)
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
-; -*- Lisp -*-
+(add-to-list
+ 'command-switch-alist
+ '("gnus" . (lambda (&rest ignore)
+              ;; Start Gnus when Emacs starts
+              (add-hook 'emacs-startup-hook 'gnus t)
+              ;; Exit Emacs after quitting Gnus
+              (add-hook 'gnus-after-exiting-gnus-hook
+                        'save-buffers-kill-emacs))))
+
 (require 'nnir)
+;nnir is a Gnus interface to a number of tools for searching through mail and news repositories. Different backends (like nnimap and nntp) work with different tools (called engines in nnir lingo), but all use the same basic search interface.
+
 
 ;;@see http://www.emacswiki.org/emacs/GnusGmail#toc1
 (setq gnus-select-method '(nntp "news.gmane.org")) ;; if you read news groups 
 
+
 ;; ask encyption password once
 (setq epa-file-cache-passphrase-for-symmetric-encryption t)
+;better to use/store authentication information in one of these files: ~/.authinfo.gpg. if not use this config (may not work)
+;;(setq smtpmail-auth-credentials "/home/zeltak/.gnupg/.authinfo.gpg")
+;; don't ask confirmations etc on delete and other options 
+(setq gnus-novice-user nil)
 
-(setq smtpmail-auth-credentials "~/.gnupg/ikloogmail.gpg")
+(setq  gnus-always-read-dribble-file 1)  ; always read auto-save file
+(setq 
+gnus-treat-buttonize t           ; Add buttons
+      gnus-treat-buttonize-head 'head  ; Add buttons to the head
+      gnus-treat-emphasize t           ; Emphasize text
+      gnus-treat-display-smileys t     ; Use Smilies
+      gnus-treat-strip-cr 'last        ; Remove carriage returns
+ ;;     gnus-treat-hide-headers 'head    ; Hide headers
+)
 
-;;@see http://gnus.org/manual/gnus_397.html
+(add-hook 'gnus-article-display-hook 'gnus-article-highlight-citation t) ; highlight quotes
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)                        ; use topic separation in the Group overview
+
+(setq gnus-asynchronous t)
+
+;; Inline images?
+   (setq mm-attachment-override-types '("image/.*"))
+   ;; Or, like this:
+   (add-to-list 'mm-attachment-override-types "image/.*")
+
+(define-key gnus-summary-mode-map (kbd "<delete>") 'gnus-summary-delete-article)
+
+; grab new news every 2 minutes
+(gnus-demon-add-handler 'gnus-group-get-new-news 2 nil)
+
+(eval-after-load "gnus"
+  (lambda ()
+;     (gnus-demon-add-handler 'gnus-group-get-new-news 2 nil)
+     ;; subscribed, from Chen Bin
+     (defun my-gnus-group-list-subscribed-groups ()
+       (interactive)
+       (gnus-group-list-all-groups 2))
+     (define-key gnus-group-mode-map (kbd "o") 'my-gnus-group-list-subscribed-groups)
+     (add-hook 'gnus-startup-hook
+           'my-gnus-group-list-subscribed-groups)))
+
+(setq gnus-fetch-old-headers 250 )
+
+;; Personal Information
+(setq user-full-name "Itai Kloog"
+      user-mail-address "ikloog@gmail.com")
+
 (add-to-list 'gnus-secondary-select-methods
              '(nnimap "gmail"
                       (nnimap-address "imap.gmail.com")
                       (nnimap-server-port 993)
                       (nnimap-stream ssl)
                       (nnir-search-engine imap)
-                      (nnimap-authinfo-file "~/.gnupg/ikloogmail.gpg")
-                      ; @see http://www.gnu.org/software/emacs/manual/html_node/gnus/Expiring-Mail.html
-                      ;; press 'E' to expire email
+;;                      (nnimap-authinfo-file "~/.gnupg/ikloogmail.gpg")
                       (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
                       (nnmail-expiry-wait 90)))
 
@@ -4498,8 +4656,62 @@ scroll-step 1)
       '((not gnus-thread-sort-by-date)
         (not gnus-thread-sort-by-number)))
 
-; NO 'passive
+;; Make Gnus NOT ignore [Gmail] mailboxes
+    (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-local-domain "homepc")
+
+(setq gnus-use-correct-string-widths nil)
+
+(setq my-email-addresses '("ikloog@gmail.com"
+                           "zeltak@gmail.com"
+                            "ikloog@bgu.ac.il."
+                           "ekloog@hsoh.harvard.edu"
+                        ))
+
+(setq message-alternative-emails
+      (regexp-opt my-email-addresses))
+
+;; Gnus from manipulation
+(setq gnus-from-selected-index 0)
+(defun gnus-loop-from ()
+  (interactive)
+  (setq gnus-article-current-point (point))
+  (goto-char (point-min))
+  (if (eq gnus-from-selected-index (length my-email-addresses))
+      (setq gnus-from-selected-index 0) nil)
+  (while (re-search-forward "^From:.*$" nil t)
+    (replace-match (concat "From: " user-full-name " <" (nth gnus-from-selected-index my-email-addresses) ">")))
+  (goto-char gnus-article-current-point)
+  (setq gnus-from-selected-index (+ gnus-from-selected-index 1)))
+
+(global-set-key (kbd "C-c f") 'gnus-loop-from)
+
+;; You need install the command line brower 'w3m' and Emacs plugin 'w3m'
+(setq mm-text-html-renderer 'w3m)
+
+;; NO 'passive
 (setq gnus-use-cache t)
+;; Fetch only part of the article if we can.  I saw this in someone ;; else's .gnus
+(setq gnus-read-active-file 'some)
+;; Tree view for groups.  I like the organisational feel this has.
+(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
+;; Threads!  I hate reading un-threaded email -- especially mailing
+;; lists.  This helps a ton!
+(setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
+
+;; Also, I prefer to see only the top level message.  If a message has
+;; several replies or is part of a thread, only show the first
+;; message.  'gnus-thread-ignore-subject' will ignore the subject and
+;; look at 'In-Reply-To:' and 'References:' headers.
+(setq gnus-thread-hide-subtree t)
+(setq gnus-thread-ignore-subject t)
 
 ;; BBDB: Address list
 ;(add-to-list 'load-path "/where/you/place/bbdb/")
@@ -4516,237 +4728,29 @@ scroll-step 1)
              (flyspell-mode t)
              (local-set-key "<TAB>" 'bbdb-complete-name)))
 
-;; Fetch only part of the article if we can.  I saw this in someone
-;; else's .gnus
-(setq gnus-read-active-file 'some)
-
-;; Tree view for groups.  I like the organisational feel this has.
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-
-;; Threads!  I hate reading un-threaded email -- especially mailing
-;; lists.  This helps a ton!
-(setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
-
-;; Also, I prefer to see only the top level message.  If a message has
-;; several replies or is part of a thread, only show the first
-;; message.  'gnus-thread-ignore-subject' will ignore the subject and
-;; look at 'In-Reply-To:' and 'References:' headers.
-(setq gnus-thread-hide-subtree t)
-(setq gnus-thread-ignore-subject t)
-
-;; Personal Information
-(setq user-full-name "Itai Kloog"
-      user-mail-address "ikloog@gmail.com")
-
-;; You need install the command line brower 'w3m' and Emacs plugin 'w3m'
 (setq mm-text-html-renderer 'w3m)
 
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-local-domain "homepc")
-;; http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
-(setq gnus-use-correct-string-widths nil)
+(setq gnus-fetch-old-headers t)
 
-(when (string= system-name "zuni")
-(add-to-list 'load-path "~/mu/mu4e/")
-)
+;; ;; also I'd prefer to have sane default headers
+;; (setq gnus-visible-headers '("^From:\\|^Subject:\\|To:\\|^Cc:\\|^Date:\\|^Newsgroups:\\|^User-Agent:\\|^X-Newsreader:\\|^X-Mailer:")
+;;       gnus-sorted-header-list gnus-visible-headers)
 
-(require 'mu4e)
-(require 'mu4e-contrib) 
-;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
-
-;;;;$Note-this may screw up header updates$ 
-;(mu4e-maildirs-extension)
-;; list of my email addresses.
-(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
-                                    "ikloog@bgu.ac.il"
-                                    "ekloog@hsph.harvard.edu"))
-
-(setq mu4e-update-interval 60)
-(setq mu4e-headers-auto-update t)
-(setq mu4e-index-update-error-warning  t)
-(setq mu4e-index-update-error-continue   t)
-
-;; something about ourselves
-(setq
-   user-mail-address "ikloog@gmail.com"
-   user-full-name  "itai kloog "
-   mu4e-compose-signature
-    (concat
-      "itai kloog\n"
-      "http://www.bgu.ac.il\n"))
-
-(setq mu4e-compose-signature-auto-include 't)
-
-;; default
-;;(setq mu4e-maildir "~/.mail/gmail/")
-(setq mu4e-maildir "/home/zeltak/Maildir")
-
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
-(setq mu4e-attachment-dir  "~/Downloads")
-
-;; setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
-
-(setq mu4e-maildir-shortcuts
-    '( ("INBOX"               . ?i)
-       ("Starred"   . ?r)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
-
-mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
-
-(require 'org-mu4e)
-
-(require 'smtpmail)
-(setq message-send-mail-function 'smtpmail-send-it
-   starttls-use-gnutls t
-   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-   smtpmail-auth-credentials
-     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-   smtpmail-default-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-service 587)
-
-;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; alternatively, for emacs-24 you can use:
-;;(setq message-send-mail-function 'smtpmail-send-it
-;;     smtpmail-stream-type 'starttls
-;;     smtpmail-default-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-service 587)
-
-(setq mu4e-date-format-long "%d/%m/%Y (%H:%M:%S)")
-(setq mu4e-headers-date-format "%d/%m/%Y (%H:%M:%S)")
-;can define a horizontal or vertical split 
-(setq mu4e-split-view 'horizontal)
-
-
-;; use 'fancy' non-ascii characters in various places in mu4e
-(setq mu4e-use-fancy-chars t)
-;; attempt to show images when viewing messages
-(setq mu4e-view-show-images t)
-(when (fboundp 'imagemagick-register-types)
-      (imagemagick-register-types))
-;preffer html  
-(setq mu4e-view-prefer-html t)
-
-;; Silly mu4e only shows names in From: by default. Of course we also  want the addresses.
-(setq mu4e-view-show-addresses t)
-
-;; mu4e-action-view-in-browser is built into mu4e
-;; by adding it to these lists of custom actions
-;; it can be invoked by first pressing a, then selecting
-(add-to-list 'mu4e-headers-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-(add-to-list 'mu4e-view-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-
-;; the headers to show in the headers list -- a pair of a field
-;; and its width, with `nil' meaning 'unlimited'
-;; (better only use that for the last field.
-;; These are the defaults:
-(setq mu4e-headers-fields
-    '( (:date          .  25)
-       (:flags         .   6)
-       (:from          .  22)
-       (:subject       .  nil)))
-
-
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-
-(require 'mu4e-contrib) 
-(setq mu4e-html2text-command 'mu4e-shr2text) 
-;(setq mu4e-html2text-command "w3m -I utf8 -O utf8 -T text/html")
-
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-;; additional non-Gmail addresses and want assign them different
-;; behavior.)
-
-(defgroup mu4e-faces nil 
-  "Type faces (fonts) used in mu4e." 
-  :group 'mu4e 
-  :group 'faces) 
-
-(defface mu4e-basic-face 
-  '((t :inherit font-lock-keyword-face)) 
-  "Basic Face." 
-  :group 'mu4e-faces) 
-
-(defface mu4e-list-default 
-  '((t :inherit mu4e-basic-face)) 
-  "Basic list Face." 
-  :group 'mu4e-faces) 
-
-(defface mu4e-rw-default 
-  '((t :inherit mu4e-basic-face)) 
-  "Basic rw Face." 
-  :group 'mu4e-faces)
-
-;; basic face from where the rest inherits 
- '(mu4e-basic-face ((t :inherit font-lock-keyword-face :weight normal :foreground "Gray10"))) 
-
-;; read-write group 
- '(mu4e-rw-default ((t :inherit mu4e-basic-face))) ;; face from where all the read/write faces inherits 
- '(mu4e-header-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-marks-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-title-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-highlight-face ((t :inherit mu4e-rw-default :foreground "Black" :background "LightGray"))) 
- '(mu4e-compose-header-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-compose-separator-face ((t :inherit mu4e-rw-default :foreground "Gray30" :weight bold))) 
- '(mu4e-footer-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-contact-face ((t :inherit mu4e-rw-default :foreground "Black"))) 
- '(mu4e-cited-1-face ((t :inherit mu4e-rw-default :foreground "Gray10"))) 
- '(mu4e-cited-2-face  ((t :inherit mu4e-cited-1-face :foreground "Gray20"))) 
- '(mu4e-cited-3-face   ((t :inherit mu4e-cited-2-face :foreground "Gray30"))) 
- '(mu4e-cited-4-face    ((t :inherit mu4e-cited-3-face :foreground "Gray40"))) 
- '(mu4e-cited-5-face     ((t :inherit mu4e-cited-4-face :foreground "Gray50"))) 
- '(mu4e-cited-6-face      ((t :inherit mu4e-cited-5-face :foreground "Gray60"))) 
- '(mu4e-cited-7-face       ((t :inherit mu4e-cited-6-face :foreground "Gray70"))) 
- '(mu4e-link-face ((t :inherit mu4e-rw-default :foreground "Blue" :weight bold))) 
- '(mu4e-system-face ((t :inherit mu4e-rw-defaul :foreground "DarkOrchid"))) 
- '(mu4e-url-number-face ((t :inherit mu4e-rw-default :weight bold))) 
- '(mu4e-attach-number-face ((t :inherit mu4e-rw-default :weight bold :foreground "Blue"))) 
-
-;; lists (headers) group 
- '(mu4e-list-default ((t :inherit mu4e-basic-face))) ;; basic list face from where lists inherits 
- '(mu4e-draft-face ((t :inherit mu4e-list-default))) 
- '(mu4e-flagged-face ((t :inherit mu4e-list-default :weight bold :foreground "Black"))) 
- '(mu4e-forwarded-face ((t :inherit mu4e-list-default))) 
- '(mu4e-list-default-face ((t :inherit mu4e-list-default))) 
- '(mu4e-title-face ((t :inherit mu4e-list-default))) 
- '(mu4e-trashed-face ((t :inherit mu4e-list-default))) 
- '(mu4e-warning-face ((t :inherit mu4e-list-default :foreground "OrangeRed1"))) 
- '(mu4e-modeline-face ((t :inherit mu4e-list-default))) 
- '(mu4e-moved-face ((t :inherit mu4e-list-default))) 
- '(mu4e-ok-face ((t :inherit mu4e-list-default :foreground "ForestGreen"))) 
- '(mu4e-read-face ((t :inherit mu4e-list-default :foreground "Gray80"))) 
- '(mu4e-region-code-face ((t :inherit mu4e-list-default :background "Gray25"))) 
- '(mu4e-replied-face ((t :inherit mu4e-list-default :foreground "Black"))) 
- '(mu4e-unread-face ((t :inherit mu4e-list-default :foreground "Blue"))) 
- '(mu4e-highlight-face ((t :inherit mu4e-unread-face))) 
-
- '(mu4e-special-header-value-face ((t :inherit mu4e-contact-face))) 
- '(mu4e-header-key-face ((t :inherit mu4e-contact-face :foreground "Gray50"))) 
- '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
- '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))
+;; reconfigure buffer positions for a wider screen
+(gnus-add-configuration  ; summary view
+ '(summary
+   (horizontal 1.0
+               (vertical 1.0 (group 0.25) (summary 1.0 point)))))
+(gnus-add-configuration  ; article view
+ '(article
+   (horizontal 1.0
+               (vertical 0.45 (group 0.25) (summary 1.0 point) ("*BBDB*" 0.15))
+               (vertical 1.0 (article 1.0)))))
+(gnus-add-configuration  ; post new stuff
+ '(edit-form
+   (horizontal 1.0
+               (vertical 0.45 (group 0.25) (edit-form 1.0 point) ("*BBDB*" 0.15))
+               (vertical 1.0 (article 1.0)))))
 
 (if (string= system-name "zuni") 
 (progn
@@ -4851,6 +4855,3 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
  )
 
 (setq ess-eval-visibly 'nowait)
-
-(autoload 'wl "wl" "Wanderlust" t)
-(autoload 'wl-draft "wl" "Write draft with Wanderlust." t)

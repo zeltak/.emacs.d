@@ -1,0 +1,20 @@
+# -*- mode: snippet -*-
+# name: email example
+# key: emailex
+# --
+Hi ${1:`(my-yas-get-first-name-from-to-field)},
+
+Thank you very much for providing me this great opportunity.
+
+Unfortunately I'm occupied now and will not consider new job for the time being.
+
+Currently I'm working for ${2:COMPANY_NAME} as a contract developer. However, the
+contract will be over ${3:END_OF_CONTRACT} and I will be available then.
+
+So keep in touch.
+
+Attached is my latest CV.
+$0
+
+<#part type="application/msword" filename="~/org/cv/cv.doc" disposition=attachment description=resume>
+<#/part>

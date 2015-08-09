@@ -16,6 +16,7 @@
                   ;; (development versions of packages)
                   ("melpa" . "http://melpa.milkbox.net/packages/")
 		  ("SC"   . "http://joseito.republika.pl/sunrise-commander/")
+		  ("org" . "http://orgmode.org/elpa/")
                   ))
   (add-to-list 'package-archives source t))
 
@@ -31,15 +32,13 @@
 
 
 ;(add-to-list 'load-path "~/.emacs.g/org-mode/lisp")
-(require 'org-install)
 
 (require 'org)
 (org-babel-load-file
- (expand-file-name "settings.org"
+(expand-file-name "settings.org"
                    user-emacs-directory))
 
 ;; init.el ends here
-
 
 
 (put 'narrow-to-region 'disabled nil)

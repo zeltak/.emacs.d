@@ -2395,21 +2395,7 @@ add all todo states to sparse tree
 
 #+END_SRC
 *** TODO link to any header
-#+BEGIN_SRC emacs-lisp :results none
-  ;; (defun z/org-insert-heading-link (dir)
-  ;;   "select a headline from org-files in dir and insert a link to it."
-  ;;   (interactive  (list (read-directory-name "Directory: ")))
-  ;;   (let ((org-agenda-files (f-entries
-  ;;                            dir
-  ;;                            (lambda (f)
-  ;;                              (string=
-  ;;                               "org"
-  ;;                               (file-name-extension f)))
-  ;;                            t)))
-  ;;     (helm-org-agenda-files-headings)))
-
-
-#+END_SRC
+First we define the base function
 
 #+BEGIN_SRC emacs-lisp
 (defun insert-heading-link (dir)
@@ -2425,7 +2411,7 @@ add all todo states to sparse tree
     (helm-org-agenda-files-headings)))
 #+END_SRC
 
-gives  helm buffer to select headlines from org-files in the directory I select and when I press f3 (for the third action), it inserts a link to the selected headline. 
+gives helm buffer to select headlines from org-files in the directory I select and when I press f3 (for the third action), it inserts a link to the selected headline. 
 It does the file finding recursively, so big folders can be slow
 
 to add the org id component to the above script eval this as well
@@ -2455,6 +2441,9 @@ to add the org id component to the above script eval this as well
                helm-org-insert-id-link-to-heading-at-marker))))
 
 #+END_SRC
+
+#+RESULTS:
+: helm-source-org-headings-for-files
 
 *** terminal
 **** org evaluate to term

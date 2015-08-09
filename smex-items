@@ -1,16 +1,39 @@
 
 ;; ----- smex-history -----
 (
- R
- S
- g
- S+
- cd
- eb
- ed
+ org-reload
+ eval-buffer
+ windmove-up
+ gnus
+ toggle-debug-on-error
+ counsel-locate
+ load-theme
 )
 
 ;; ----- smex-data -----
 (
- 
+ (counsel-find-file . 4)
+ (counsel-load-theme . 7)
+ (load-theme . 11)
+ (ivy-resume . 1)
+ (z/org-email-heading-me . 1)
+ (gnus . 7)
+ (z/org-email-heading . 2)
+ (ivy-switch-buffer . 3)
+ (counsel-ag . 2)
+ (transpose-lines . 1)
+ (org-goto . 1)
+ (tiny-expand . 5)
+ (find-file-other-window . 1)
+ (rainbow-delimiters-mode . 1)
+ (isearch-forward . 1)
+ (rgrep . 2)
+ (byte-compile-file . 2)
+ (gnus-mouse-pick-group . 1)
+ (counsel-locate . 2)
+ (acm . 1)
+ (toggle-debug-on-error . 1)
+ (windmove-up . 1)
+ (eval-buffer . 1)
+ (org-reload . 1)
 )
