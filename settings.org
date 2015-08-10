@@ -142,6 +142,9 @@ $note its built into emacs no intsall needed$
 #+END_SRC
 
 ** Ace window
+   :PROPERTIES:
+   :ID:       1429ffca-3d2e-4abc-8c26-851b62c3bd37
+   :END:
 https://github.com/abo-abo/ace-window
 sets to only use homekeys 
 #+BEGIN_SRC emacs-lisp :results none
@@ -2677,9 +2680,9 @@ font-lock-face '(:background "#FFE3E3")))))
 
 #+END_SRC
 **** TODO paste code block
-***** z/org-cblock-paste-emacs-lisp
+***** z/org-cblock-paste-lisp
 #+BEGIN_SRC emacs-lisp  :results none
-(defun  z/org-cblock-paste-sh ()
+(defun  z/org-cblock-paste-lisp ()
    "paste in already quote block"
   (interactive)
   (insert "#+BEGIN_SRC emacs-lisp\n")
@@ -2697,10 +2700,10 @@ font-lock-face '(:background "#FFE3E3")))))
 #+END_SRC
 ***** z/org-cblock-paste-EXAMPLE
 #+BEGIN_SRC emacs-lisp  :results none
-(defun  z/org-cblock-paste-sh ()
+(defun  z/org-cblock-paste-example ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC EXAMPLE\n")
+  (insert "#+BEGIN_EXAMPLE\n")
   (yank)
   (insert "\n#+END_EXAMPLE"))
 #+END_SRC
@@ -2731,8 +2734,7 @@ font-lock-face '(:background "#FFE3E3")))))
   (yank)
   (insert "\n#+END_QUOTE"))
 #+END_SRC
-**** TODO interactive wrap
-ADD EXAMPLE CODE BLOCK
+**** interactive wrap
 ***** z/org-cblock-iwrap-emacs-lisp
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/org-cblock-iwrap-emacs-lisp (&optional lang lines)
@@ -2822,6 +2824,15 @@ and the number of lines to be wrapped."
 (interactive)
 (z/org-cblock-iwrap-emacs-lisp  "sh" ))
 #+end_src
+
+***** z/org-cblock-nowrap-EXAMPLE
+#+BEGIN_SRC emacs-lisp  :results none
+(defun  z/org-cblock-nowrap-example ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_EXAMPLE\n")
+  (insert "\n#+END_EXAMPLE"))
+#+END_SRC
 
 *** food 	
 **** inbox Recipe Template
@@ -3429,9 +3440,6 @@ shnsplit -f {F}  -o flac {oF}
   #'isearch-delete-something)
 #+END_SRC
 
-** 
-** 
-   
 ** mail
 *** yas mail functions
 #+BEGIN_SRC emacs-lisp :results none
@@ -3871,7 +3879,6 @@ _q_:
 #+END_SRC
 
 *** code (f4)
-
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key
     (kbd "<f4>")
@@ -3879,10 +3886,17 @@ _q_:
     "
 "
     ("<f4>" z/org-cblock-iwrap-emacs-lisp "WRAP-Elisp" )
+    ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
     ("r" z/org-cblock-iwrap-emacs-R "WRAP-R" )
     ("a" z/org-cblock-iwrap-ASK  "Ask" )
-    ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
-    ("l"    z/org-cblock-iwrap-ASK-LINE "Ask line" )
+    ("l" z/org-cblock-iwrap-ASK-LINE "Ask line" )
+    ("pl" z/org-cblock-paste-lisp "paste lisp" )
+    ("pb" z/org-cblock-paste-sh "paste bash" )
+    ("pr" z/org-cblock-paste-R "paste R" )
+    ("ps" z/org-cblock-paste-SAS  "paste SAS" )
+    ("pe" z/org-cblock-paste-example  "paste SAS" )
+    ("pq" z/org-cblock-paste-QUOTE "paste QUOTE" )
+    ("e" z/org-cblock-nowrap-example "insert Example block" )
     ("q" nil "cancel")))
 
  #+END_SRC
@@ -4601,33 +4615,6 @@ pop-global-mark this will move you to prev position
 
 #+END_SRC
 
-*** TODO Email
-http://kitchingroup.cheme.cmu.edu/blog/2015/06/21/Clickable-email-addresses-in-emacs/
-
-#+BEGIN_SRC emacs-lisp :results none
-(defun highlight-email-addresses ()
-  "Add button to email address. Clicking or RET will open a compose email window."
-  (button-lock-set-button
-   "\\w+\\(\\.\\w+\\)?@\\(\\w\\|\\.\\)+"
-   (lambda ()
-     (interactive)
-     (let ((start) (end) (email-address))
-       (while (get-text-property (point) 'email-address)
-         (backward-char))
-       (forward-char)
-       (setq start (point))
-       (while (get-text-property (point) 'email-address)
-         (forward-char))
-       (setq end (point))
-       (setq email-address (buffer-substring start end))
-       (mu4e~compose-mail email-address)))
-     :face '((:background "gray80") (:underline t))
-     :help-echo "click to send mu4e email"
-     :keyboard-binding (kbd "RET")
-     :additional-property 'email-address))
-
-(add-hook 'text-mode-hook 'highlight-email-addresses)
-#+END_SRC 
 ** Editing
 *** lines not paragraphs
 #+BEGIN_SRC emacs-lisp :results none

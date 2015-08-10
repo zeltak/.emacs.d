@@ -1838,7 +1838,7 @@ font-lock-face '(:background "#FFE3E3")))))
 (comment-dwim nil)
 (org-edit-src-exit))
 
-(defun  z/org-cblock-paste-sh ()
+(defun  z/org-cblock-paste-lisp ()
    "paste in already quote block"
   (interactive)
   (insert "#+BEGIN_SRC emacs-lisp\n")
@@ -1852,10 +1852,10 @@ font-lock-face '(:background "#FFE3E3")))))
   (yank)
   (insert "\n#+END_SRC"))
 
-(defun  z/org-cblock-paste-sh ()
+(defun  z/org-cblock-paste-example ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC EXAMPLE\n")
+  (insert "#+BEGIN_EXAMPLE\n")
   (yank)
   (insert "\n#+END_EXAMPLE"))
 
@@ -1958,6 +1958,12 @@ and the number of lines to be wrapped."
 (defun z/org-cblock-iwrap-sh ()
 (interactive)
 (z/org-cblock-iwrap-emacs-lisp  "sh" ))
+
+(defun  z/org-cblock-nowrap-example ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_EXAMPLE\n")
+  (insert "\n#+END_EXAMPLE"))
 
 (defun recipe-template ()
         (interactive)
@@ -2812,10 +2818,17 @@ _q_:
     "
 "
     ("<f4>" z/org-cblock-iwrap-emacs-lisp "WRAP-Elisp" )
+    ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
     ("r" z/org-cblock-iwrap-emacs-R "WRAP-R" )
     ("a" z/org-cblock-iwrap-ASK  "Ask" )
-    ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
-    ("l"    z/org-cblock-iwrap-ASK-LINE "Ask line" )
+    ("l" z/org-cblock-iwrap-ASK-LINE "Ask line" )
+    ("pl" z/org-cblock-paste-lisp "paste lisp" )
+    ("pb" z/org-cblock-paste-sh "paste bash" )
+    ("pr" z/org-cblock-paste-R "paste R" )
+    ("ps" z/org-cblock-paste-SAS  "paste SAS" )
+    ("pe" z/org-cblock-paste-example  "paste SAS" )
+    ("pq" z/org-cblock-paste-QUOTE "paste QUOTE" )
+    ("e" z/org-cblock-nowrap-example "insert Example block" )
     ("q" nil "cancel")))
 
 (global-set-key
@@ -3403,28 +3416,28 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (fset 'underline_net_delete
    [?\M-% ?\  return return ?!])
 
-(defun highlight-email-addresses ()
-  "Add button to email address. Clicking or RET will open a compose email window."
-  (button-lock-set-button
-   "\\w+\\(\\.\\w+\\)?@\\(\\w\\|\\.\\)+"
-   (lambda ()
-     (interactive)
-     (let ((start) (end) (email-address))
-       (while (get-text-property (point) 'email-address)
-         (backward-char))
-       (forward-char)
-       (setq start (point))
-       (while (get-text-property (point) 'email-address)
-         (forward-char))
-       (setq end (point))
-       (setq email-address (buffer-substring start end))
-       (mu4e~compose-mail email-address)))
-     :face '((:background "gray80") (:underline t))
-     :help-echo "click to send mu4e email"
-     :keyboard-binding (kbd "RET")
-     :additional-property 'email-address))
+;; (defun highlight-email-addresses ()
+;;   "Add button to email address. Clicking or RET will open a compose email window."
+;;   (button-lock-set-button
+;;    "\\w+\\(\\.\\w+\\)?@\\(\\w\\|\\.\\)+"
+;;    (lambda ()
+;;      (interactive)
+;;      (let ((start) (end) (email-address))
+;;        (while (get-text-property (point) 'email-address)
+;;          (backward-char))
+;;        (forward-char)
+;;        (setq start (point))
+;;        (while (get-text-property (point) 'email-address)
+;;          (forward-char))
+;;        (setq end (point))
+;;        (setq email-address (buffer-substring start end))
+;;        (mu4e~compose-mail email-address)))
+;;      :face '((:background "gray80") (:underline t))
+;;      :help-echo "click to send mu4e email"
+;;      :keyboard-binding (kbd "RET")
+;;      :additional-property 'email-address))
 
-(add-hook 'text-mode-hook 'highlight-email-addresses)
+;; (add-hook 'text-mode-hook 'highlight-email-addresses)
 
 ;;;; Saved macros
 ;; Saved macro - adds latex end-lines to verse passages
