@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ company-org-headings
+ company-complete
+ company-mode
  org-reload
  eval-buffer
  windmove-up
  gnus
- toggle-debug-on-error
- counsel-locate
- load-theme
 )
 
 ;; ----- smex-data -----
@@ -36,4 +36,7 @@
  (windmove-up . 1)
  (eval-buffer . 1)
  (org-reload . 1)
+ (company-mode . 1)
+ (company-complete . 4)
+ (company-org-headings . 2)
 )
