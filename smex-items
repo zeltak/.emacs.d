@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ helm-mt
+ z/org-email-heading-me
  company-org-headings
  company-complete
  company-mode
  org-reload
  eval-buffer
- windmove-up
- gnus
 )
 
 ;; ----- smex-data -----
@@ -16,7 +16,7 @@
  (counsel-load-theme . 7)
  (load-theme . 11)
  (ivy-resume . 1)
- (z/org-email-heading-me . 1)
+ (z/org-email-heading-me . 2)
  (gnus . 7)
  (z/org-email-heading . 2)
  (ivy-switch-buffer . 3)
@@ -39,4 +39,5 @@
  (company-mode . 1)
  (company-complete . 4)
  (company-org-headings . 2)
+ (helm-mt . 2)
 )

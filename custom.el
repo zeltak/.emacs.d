@@ -46,6 +46,6 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
- '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))) t)
+ '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))))
  '(sr-active-path-face ((t (:background "DodgerBlue4" :foreground "deep sky blue" :weight bold))))
  '(sr-symlink-face ((t (:foreground "dim gray" :slant italic)))))
