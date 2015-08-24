@@ -5754,7 +5754,11 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
   '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
 
 #+END_SRC
-
+*** custom export options
+#+BEGIN_SRC emacs-lisp :results none
+;; enable exporters for org-mode
+(setq org-export-backends (quote (beamer html org)))
+#+END_SRC
 *** export locations for publishing 
 #+BEGIN_SRC emacs-lisp :results none
      (setq org-publish-project-alist

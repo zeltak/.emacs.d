@@ -4193,6 +4193,9 @@ With prefix argument, also display headlines without a TODO keyword."
 (eval-after-load 'ox-latex
   '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
 
+;; enable exporters for org-mode
+(setq org-export-backends (quote (beamer html org)))
+
 (setq org-publish-project-alist
            '(
               ("Help_files"
