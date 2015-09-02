@@ -102,6 +102,10 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 #+RESULTS:
 | UTF8_STRING | COMPOUND_TEXT | TEXT | STRING |
  
+** custom org export options (must be on top of settings to work for reason still discovered)
+ #+BEGIN_SRC emacs-lisp :results none
+(setq org-export-backends (quote (ascii html icalendar latex org)))
+ #+END_SRC
 * Packages
 ** hippie expand
 
@@ -379,6 +383,17 @@ https://github.com/cute-jumper/avy-zap
  :ensure t
  :config
   )
+#+END_SRC 
+
+** BBDB
+#+BEGIN_SRC emacs-lisp :results none
+(use-package bbdb
+ :ensure t
+ :config
+ (add-to-list 'load-path "/home/zeltak/.emacs.g/gmail2bbdb/")
+(autoload 'gmail2bbdb-import-file "gmail2bbdb")
+(setq gmail2bbdb-bbdb-file "~/.emacs.d/.bbdb")
+ )
 #+END_SRC 
 
 ** Bookmark+
@@ -1475,6 +1490,13 @@ http://pragmaticemacs.com/emacs/instant-scratch-buffer-for-current-mode/
  (autoload 'scratch "scratch" nil t)
  )
 #+END_SRC
+** shrink-whitespace
+#+BEGIN_SRC emacs-lisp :results none
+(use-package shrink-whitespace
+ :ensure t
+ :config
+ )
+#+END_SRC 
 ** smex
 #+BEGIN_SRC emacs-lisp :results none
 (use-package smex
@@ -2516,6 +2538,24 @@ comment box."
   (interactive "p")
   (kill-line (- 1 arg)))
 #+END_SRC
+*** copy whole buffer
+http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html
+
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/edit-copy-all-or-region ()
+  "Put the whole buffer content to `kill-ring', or text selection if there's one.
+Respects `narrow-to-region'.
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+Version 2015-08-22"
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (kill-new (buffer-substring (region-beginning) (region-end)))
+        (message "Text selection copied."))
+    (progn
+      (kill-new (buffer-string))
+      (message "Buffer content copied."))))
+#+END_SRC
 ** org
 *** convert to same level header
 #+BEGIN_SRC emacs-lisp :results none
@@ -2562,7 +2602,7 @@ comment box."
 (defun z/org-agenda-allan ()
 "open work agenda"
 (interactive)                                
-(org-agenda nil "A")
+(org-agenda nil "l")
 )
 #+END_SRC
 
@@ -2600,12 +2640,20 @@ add all todo states to sparse tree
 #+end_src
 
 
-**** org sparse todo
+**** org agenda search
 #+BEGIN_SRC emacs-lisp :results none
-(defun z/org-agenda-sparse-todo ()
+(defun z/org-agenda-search()
 ""
 (interactive)                                
 (org-agenda nil "s")
+)
+#+END_SRC
+**** org agenda search todo
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-agenda-search-todo ()
+""
+(interactive)                                
+(org-agenda nil "S")
 )
 #+END_SRC
 
@@ -3112,7 +3160,18 @@ execute speed commands."
           (message-goto-to)))))
 
 #+END_SRC
-
+*** org-ispell
+check in org files slipping code blocks etc
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-ispell ()
+  "Configure `ispell-skip-region-alist' for `org-mode'."
+  (make-local-variable 'ispell-skip-region-alist)
+  (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
+  (add-to-list 'ispell-skip-region-alist '("~" "~"))
+  (add-to-list 'ispell-skip-region-alist '("=" "="))
+  (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
+(add-hook 'org-mode-hook #'endless/org-ispell)
+#+END_SRC
 *** Send email to myself
 #+BEGIN_SRC emacs-lisp
 (defun z/org-email-heading-me ()
@@ -3132,7 +3191,18 @@ execute speed commands."
 
 #+RESULTS:
 : z/org-email-heading-me
-
+*** movements q
+**** TODO move to top and collapse
+     :PROPERTIES:
+     :ID:       14d0aa60-975b-4fb1-9065-45650b64afc1
+     :END:
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-move-top-collapse  ()
+     (interactive)            
+     (beginning-of-buffer)                    
+     (hide-sublevels)
+)
+#+END_SRC
 ** hydra related
 *** slash \
 #+BEGIN_SRC emacs-lisp :results none
@@ -3241,6 +3311,37 @@ http://stackoverflow.com/questions/275842/is-there-a-repeat-last-command-in-emac
 (defun describe-last-function() 
   (interactive) 
   (describe-function last-command))
+#+END_SRC
+*** Launch ansi-term
+#+BEGIN_SRC emacs-lisp :results none
+;; taken from here: http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
+(defun z/launch--ansi-term ()
+  "If the current buffer is:
+     1) a running ansi-term named *ansi-term*, rename it.
+     2) a stopped ansi-term, kill it and create a new one.
+     3) a non ansi-term, go to an already running ansi-term
+        or start a new one while killing a defunt one"
+  (interactive)
+  (let ((is-term (string= "term-mode" major-mode))
+        (is-running (term-check-proc (buffer-name)))
+        (term-cmd "/bin/zsh")
+        (anon-term (get-buffer "*ansi-term*")))
+    (if is-term
+        (if is-running
+            (if (string= "*ansi-term*" (buffer-name))
+                ;; (call-interactively 'rename-buffer)
+                (ansi-term term-cmd)
+              (if anon-term
+                  (switch-to-buffer "*ansi-term*")
+                (ansi-term term-cmd)))
+          (kill-buffer (buffer-name))
+          (ansi-term term-cmd))
+      (if anon-term
+          (if (term-check-proc "*ansi-term*")
+              (switch-to-buffer "*ansi-term*")
+            (kill-buffer "*ansi-term*")
+            (ansi-term term-cmd))
+        (ansi-term term-cmd)))))
 #+END_SRC
 ** toggles 
 *** auto narrow/widen
@@ -3719,7 +3820,8 @@ LEADER:【C-A-W】-append to killring
 ("e"  nil )
 ("f"  nil )
 ("g"  hydra-goto/body )
-("h"  hide-sublevels "collapse tree")
+("h"  z/org-move-top-collapse   "collapse tree")
+("H"  hide-sublevels "collapse tree")
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
 ("k"  nil )
@@ -3977,7 +4079,7 @@ _q_:
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
   "
-【C-SPACE】 recntangle select // 【C-;】 ispell cycle
+【C-SPACE】 recntangle select // 【C-;】 ispell cycle // 【C-x z】 repeat last command- keep press 【z】to repeat
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("a" helm-apropos "Helm-Apropos")
@@ -3998,7 +4100,7 @@ _q_:
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
   ("p"  nil )
-  ("r"  anzu-query-replace-at-cursor "Replace@cursor")
+  ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
   ("t"  nil )
@@ -4134,7 +4236,7 @@ BKMK Menu
 ("p"  projectile-find-file "projectile find file")
 ("r"  helm-recentf "Helm Recents" )
 ("s"  bookmark-save "BKMK Save" )
-("t"  nil )
+("t"  z/launch--ansi-term "ansi-term" )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -4223,6 +4325,7 @@ BKMK Menu
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
+     ("w" worf-copy-heading-id  "worf copy id ot killring" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -4304,7 +4407,22 @@ _q_: quit
 #+END_SRC
 
 
-**** TODO org agenda views 
+**** orgmode time functions 
+
+ #+BEGIN_SRC emacs-lisp :results none
+  (defhydra hydra-org-time (:color blue)
+    "time command"
+    ("s"  org-timestamp-select "select time stamp")
+    ("n" org-timestamp-now  "timestamp current" )
+    ("i" z-insert-date "insert current data")  
+    ("d" org-deadline  "set deadline")  
+    ("i" org-schedule  "set schedule")  
+    ("q" nil "cancel")
+ )
+ #+END_SRC
+
+
+
 *** org editing (C-M-o)
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4338,71 +4456,54 @@ _q_: quit
   (global-set-key
      (kbd "<f10>")
   (defhydra hydra-org-agenda (:color blue :hint nil :columns 4)
-  "
-  "
+"AGENDA:
+【SPACE//TAB】open//open-go item in side view 【F】will toggle follow mode for space/tab view
+【A】Append another view 【/】 filter tag 【=】 filter regex 【|】 clean all filters
+【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
+【S-left//right】 change deadline 【k】 launch capture with date/task
+【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
+【m,u,U...】 dired marking 【M-m】 
+"
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
-      ("a" z/org-agenda-allan "allan" )
-      ("j"          "org-agenda-goto-date ")
-      ("F"        "go forward 1w ")
-      ("b"    org-agenda-earlier    "go back 1w ")
-      ("TAB"          "Today ")
+      ("c"  org-agenda-columns  "agenda columns" )
       ("t"    org-agenda-todo      "change todo")
       ("k"    org-agenda-kill      "delete C-k")
+      ("m"    org-agenda-bulk-toggle  "bulk mark"  :color red ) 
+      ("x"    org-agenda-bulk-action  "bulk exe")
       ("x"   org-agenda-archive      "archive ")
-      ("W"   org-agenda-refile      "refile ")
+      ("w"   org-agenda-refile      "refile ")
       (":"   org-agenda-set-tags      "set tags ")
       (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
-      ("S"   org-agenda-schedule      "schedule task ")
-      ("s"   z/org-agenda-sparse-todo     "ALL TODOS")
+      ("s"   org-agenda-schedule      "schedule task ")
       ("d"   org-agenda-deadline      "deadline task ")
-      ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
-      (">"   org-agenda-date-prompt      "prompt date ")
-      ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
+      ("p"   org-agenda-date-prompt      "prompt date ")
        ("q"     nil                          "cancel" )
   ))
 #+END_SRC
 
+*** TODOS  (F11)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "<f11>")
+   (defhydra hydra-buffer  (:color blue :hint nil :columns 4)
+     "TODO commands "
+     ("<f11>" org-agenda "org-agnda" )
+     ("l" z/org-agenda-allan "Allan" )
+     ("j" z/org-agenda-joel  "Joel"  )
+     ("s"   z/org-agenda-search     "regex search")
+     ("t"   z/org-agenda-search-todo     "regex search TODO")
+      ("c"   z/org-agenda-cook      "cook")
+     ("o" "" )
+     ("d" "")
+     ("i" "" )
+     ("c" ""  )
+     ("k"  "" )
+     ("n" "" )
+     ("p" ""  )
+     ("w" z/org-agenda-work  "Work"  )
+     ("q" nil "cancel")))
 
-("b"  nil  )
-("c"  z/org-agenda-cook )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  org-agenda-goto-date )
-("h"  nil )
-("i"  org-agenda )
-("j"  z/org-agenda-joel )
-("k"  nil )
-("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
-("s"  z/org-agenda-search )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  z/org-agenda-work )
-("x"  nil )
-("y"  nil )
-("z"  nil )
-("q"  nil )
-
-
-**** orgmode time functions 
-
- #+BEGIN_SRC emacs-lisp :results none
-  (defhydra hydra-org-time (:color blue)
-    "time command"
-    ("s"  org-timestamp-select "select time stamp")
-    ("n" org-timestamp-now  "timestamp current" )
-    ("i" z-insert-date "insert current data")  
-    ("d" org-deadline  "set deadline")  
-    ("i" org-schedule  "set schedule")  
-    ("q" nil "cancel")
- )
- #+END_SRC
+#+END_SRC
 
 
 *** hydra spliter
@@ -4437,7 +4538,7 @@ _q_: quit
  #+BEGIN_SRC emacs-lisp :results none
    (global-set-key                         
     (kbd "C-M-e")
-    (defhydra hydra-editing (:color blue)
+    (defhydra hydra-editing (:color blue :hint nil :columns 4)
       "editing command"
       ("e" hydra-edit-extra/body  "Extra editing commands")
       ("<up>" drag-stuff-up  "marked up" :color red)
@@ -4453,6 +4554,8 @@ _q_: quit
       ("c" z/comment-box "comment box" )
       ("u" upcase-region  "upcase " )
       ("d" downcase-region  "downcase " )
+      ("y" z/edit-copy-all-or-region  "copy buffer" )
+      ("w" shrink-whitespace  "shrink-whitespace" )
       ("R" revert-buffer  "revert buffer before changes" ) 
       ("q" nil "cancel")))
 
@@ -4538,50 +4641,26 @@ add the org faces macros here (%Tip%, $Note$ etc)
    ("q" nil "cancel")))
 #+END_SRC
 
-*** buffer/window  (F11)
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "<f11>")
-   (defhydra hydra-buffer  (:color blue)
-     "buffer commands "
-     ("s" save-buffer "save buffer"  )
-     ("a" write-file  "save as.."  )
-     ("x" kill-this-buffer "kill buffer"  )
-     ("o" z-kill-other-buffers "kill all but current" )
-     ("d" delete-frame "delete frame")
-     ("i" kill-buffer  "ido-kill" )
-     ("c" z-save-buffer-close-window "save and close"  )
-     ("k" kill-buffer "helm kill buffer" )
-     ("n" next-user-buffer  "next buffer" )
-     ("p" previous-user-buffer "prev buffer"  )
-     ("N" next-emacs-buffer "next Emacs  buffer"  )
-     ("P" previous-emacs-buffer "prev emacs buffer"  )
-     ("<f11>" switch-to-previous-buffer  "last buffer"  )
-     ("q" nil "cancel")))
-
-#+END_SRC
-
-
 *** windows (F12)
 
-#+BEGIN_SRC emacs-lisp :results noneq
+#+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "<f12>")
  (defhydra hydra-window (:color blue :hint nil :columns 5)
  "Window and buffer Operations"
    ("<f12>" switch-to-previous-buffer  "last buffer"  )
    ("<f11>" ace-delete-window "delete window")
-   ("a" ace-window "ace-window//also M-1" :exit t)   
+   ("<home>" ace-window "ace-window//also M-1" :exit t)   
    ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
-        "Split Vertical |")
+        "Split Vertical (|)")
    ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
-        "Split horzizontal -")
+        "Split horzizontal (-)")
    ("<left>" hydra-move-splitter-left "resize left"  :color red)
    ("<right>" hydra-move-splitter-right "resize right"  :color red)
    ("<up>" hydra-move-splitter-up "resize up"  :color red)
@@ -5067,7 +5146,6 @@ this will make org-store-link use id when creating a link.
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-files '("~/org/files/agenda/"))
 #+END_SRC
-
 *** agenda popup behivour
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-window-setup "current-window")
@@ -5138,95 +5216,6 @@ P#+BEGIN_SRC emacs-lisp :results none
 
 #+end_src
 
-*** TODO 'my custom agenda command'
-look here for more info
-http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
-
-and here id:cf2c69b4-3d4c-4f81-a01d-bbbe1d120e62
-
-$Note$ that to get the priorities to appear first you need to use priorities-down.
-
-("w" tags-todo "CATEGORY=\"work\"")
-
-#+BEGIN_SRC emacs-lisp :results none
-(setq org-agenda-custom-commands 
-'(
-
-;work related only tasks (from research|bgu files)
-("w" "work" todo "TODO|BGU|EXP" 
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-))
-         
-;;custom sparse tree
-("s" occur-tree "TODO")
-
-;;custom sparse tree
-("B" occur-tree "allan")
-
-; allan todos
-("A" "allan tasks" tags-todo "allan"
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-))
-
-
-; Joel todos
-("J" "joel tasks" tags-todo "joel"
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-))
-
-
-
-;second
-("f" "food" todo "COOK" 
-         (
-         (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-("t" "tech" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-("h" "home" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/home.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-
-("x" "Agenda and Home-related tasks"
-               (
-               (agenda "")
-               (tags-todo "+PRIORITY=\"A\"")
-               (tags "garden")
-)
-)
-
-
-
-
-;;end brackets for setq
-)
-)
-
-#+END_SRC
 *** export agenda
 #+BEGIN_SRC emacs-lisp :results none
           (setq org-agenda-exporter-settings
@@ -5252,6 +5241,108 @@ You could also add this, so that the appointments refresh and new get added ever
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
+#+END_SRC
+
+** TODO 'my custom agenda command'
+look here for more info
+http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
+
+and here id:cf2c69b4-3d4c-4f81-a01d-bbbe1d120e62
+
+$Note$ that to get the priorities to appear first you need to use priorities-down.
+
+("w" tags-todo "CATEGORY=\"work\"")
+
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-agenda-custom-commands 
+'(
+
+;;TODO sparse tree
+("T" occur-tree "TODO")
+
+;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
+
+;work related only tasks (from research|bgu files)
+("w" "work" todo "TODO|BGU|EXP" 
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+         
+;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
+;;custom sparse tree
+("L" occur-tree "allan")
+
+; allan todos
+("l" "allan tasks" tags-todo "allan"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
+;;;;;;;;;Joel;;;;;;;;;;;;;;;;
+("j" "joel tasks" tags-todo "joel"
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+;;custom sparse tree
+("J" occur-tree "joel")
+
+
+
+;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+("f" "food" todo "COOK" 
+         (
+         (org-agenda-files '("~/org/files/agenda/food.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+
+
+
+;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
+("t" "tech" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+;;;;;;;;;;;;;;;;;HOME;;;;;;;;;;;;;;;;
+
+
+("h" "home" todo "TODO" 
+         (
+         (org-agenda-files '("~/org/files/agenda/home.org")) 
+          (org-agenda-sorting-strategy 
+          '(priority-up effort-down)
+)
+)
+)
+
+
+("x" "Agenda and Home-related tasks"
+               (
+               (agenda "")
+               (tags-todo "+PRIORITY=\"A\"")
+               (tags "garden")
+)
+)
+
+
+
+;;end brackets for setq
+)
+)
+
 #+END_SRC
 
 ** Images
@@ -5391,16 +5482,11 @@ this command below will use helm for completion since in the above helm config w
 ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 #+END_SRC
 *** TODO templates
-**** my templates
-     :PROPERTIES:
-     :ID:       dfffbe27-21bc-4fb9-908e-f492f4afeb60
-     :END:
-
 #+BEGIN_SRC emacs-lisp :results none 
   (setq org-capture-templates
         (quote (           
 ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
- "* Cook %? %^g 
+ "* COOK %? %^g 
    :PROPERTIES:
    :Time:     
    :Rating:   
@@ -5465,27 +5551,6 @@ this command below will use helm for completion since in the above helm config w
 
   )))
 #+END_SRC
-***** tto							     :Indian:
-      :PROPERTIES:
-      :Time:     22
-      :Rating:   2
-      :Source:   
-      :Ammount:  
-      :Fav:      
-      :END:
-****** Ingridients
-       
-****** Preperation
-***** 								     :Indian:
-****** Ingridients
-****** Preperation
-       :PROPERTIES:
-       :Time:     
-       :Rating:   
-       :Source:   
-       :Ammount:  
-       :Fav:      
-       :END:
 ** mobile org
 *** setup
 #+begin_src emacs-lisp :results none
@@ -5753,11 +5818,6 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 (eval-after-load 'ox-latex
   '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
 
-#+END_SRC
-*** custom export options
-#+BEGIN_SRC emacs-lisp :results none
-;; enable exporters for org-mode
-(setq org-export-backends (quote (beamer html org)))
 #+END_SRC
 *** export locations for publishing 
 #+BEGIN_SRC emacs-lisp :results none
@@ -6521,7 +6581,7 @@ so to assign to group 1 press 【S l 1】
 (require 'bbdb)
 (bbdb-initialize 'message 'gnus 'sendmail)
 (setq bbdb-file "~/.bbdb") ;; OPTIONAL, because I'm sharing my ~/.emacs.d
-(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(add-hook 'gnus-stasrtup-hook 'bbdb-insinuate-gnus)
 (setq bbdb/mail-auto-create-p t
       bbdb/news-auto-create-p t)
 
@@ -6899,7 +6959,7 @@ COMMAND2
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
 (edit-server-start)
-#+END_SRC 
+#+END_SRC
 * R/ESS
 ** load ess
 #+BEGIN_SRC emacs-lisp :results none

@@ -9,7 +9,9 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
@@ -31,9 +33,13 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table '())
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -58,6 +64,8 @@
 (define-abbrev-table 'conf-windows-mode-abbrev-table '())
 
 (define-abbrev-table 'conf-xdefaults-mode-abbrev-table '())
+
+(define-abbrev-table 'context-mode-abbrev-table '())
 
 (define-abbrev-table 'css-mode-abbrev-table '())
 
@@ -94,6 +102,10 @@
 (define-abbrev-table 'epa-key-list-mode-abbrev-table '())
 
 (define-abbrev-table 'epa-key-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-results-mode-abbrev-table '())
+
+(define-abbrev-table 'ert-simple-view-mode-abbrev-table '())
 
 (define-abbrev-table 'eshell-mode-abbrev-table '())
 
@@ -482,7 +494,7 @@
     ("dollers" "dollars" nil 0)
     ("donig" "doing" nil 0)
     ("dont" "don't" nil 0)
-    ("dosent" "doesn't" nil 1)
+    ("dosent" "doesn't" nil 2)
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
     ("drnik" "drink" nil 0)
@@ -495,7 +507,7 @@
     ("eforts" "efforts" nil 0)
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
-    ("emacs" "Emacs" nil 0)
+    ("emacs" "Emacs" nil 3)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
@@ -628,12 +640,12 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 0)
+    ("i" "I" nil 2)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 22)
+    ("ie" "₆In example₆" nil 23)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -753,6 +765,7 @@
     ("modelling" "modeling" nil 0)
     ("moeny" "money" nil 0)
     ("morgage" "mortgage" nil 0)
+    ("movments" "movements" nil 0)
     ("mroe" "more" nil 0)
     ("mysefl" "myself" nil 0)
     ("myu" "my" nil 0)
@@ -1228,7 +1241,9 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1278,7 +1293,9 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1294,7 +1311,9 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
@@ -1349,6 +1368,8 @@
 (define-abbrev-table 'tex-mode-abbrev-table '())
 
 (define-abbrev-table 'tex-shell-abbrev-table '())
+
+(define-abbrev-table 'texinfo-mode-abbrev-table '())
 
 (define-abbrev-table 'text-mode-abbrev-table '())
 

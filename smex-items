@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- helm-mt
- z/org-email-heading-me
- company-org-headings
- company-complete
- company-mode
- org-reload
- eval-buffer
+ shrink-whitespace
+ ansi-term
+ eshell
+ worf-copy-heading-id
+ bbdb-menu
+ bbdb
+ customize-variable
 )
 
 ;; ----- smex-data -----
@@ -40,4 +40,13 @@
  (company-complete . 4)
  (company-org-headings . 2)
  (helm-mt . 2)
+ (org-forward-heading-same-level . 1)
+ (z/edit-copy-all-or-region . 1)
+ (customize-variable . 1)
+ (bbdb . 1)
+ (bbdb-menu . 1)
+ (worf-copy-heading-id . 1)
+ (eshell . 1)
+ (ansi-term . 1)
+ (shrink-whitespace . 5)
 )

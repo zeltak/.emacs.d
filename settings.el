@@ -74,6 +74,8 @@
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
 
+(setq org-export-backends (quote (ascii html icalendar latex org)))
+
 (setq dcsh-command-list '("all_registers"
                                "check_design" "check_test" "compile" "current_design"
                                "link" "uniquify"
@@ -289,6 +291,14 @@
  :ensure t
  :config
   )
+
+(use-package bbdb
+ :ensure t
+ :config
+ (add-to-list 'load-path "/home/zeltak/.emacs.g/gmail2bbdb/")
+(autoload 'gmail2bbdb-import-file "gmail2bbdb")
+(setq gmail2bbdb-bbdb-file "~/.emacs.d/.bbdb")
+ )
 
 (use-package bookmark+
 :ensure t
@@ -965,6 +975,11 @@
  :ensure t
  :config
  (autoload 'scratch "scratch" nil t)
+ )
+
+(use-package shrink-whitespace
+ :ensure t
+ :config
  )
 
 (use-package smex
@@ -1740,6 +1755,20 @@ comment box."
   (interactive "p")
   (kill-line (- 1 arg)))
 
+(defun z/edit-copy-all-or-region ()
+  "Put the whole buffer content to `kill-ring', or text selection if there's one.
+Respects `narrow-to-region'.
+URL `http://ergoemacs.org/emacs/emacs_copy_cut_all_or_region.html'
+Version 2015-08-22"
+  (interactive)
+  (if (use-region-p)
+      (progn
+        (kill-new (buffer-substring (region-beginning) (region-end)))
+        (message "Text selection copied."))
+    (progn
+      (kill-new (buffer-string))
+      (message "Buffer content copied."))))
+
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
                      (let ((current-prefix-arg '(4)))             
@@ -1765,7 +1794,7 @@ comment box."
 (defun z/org-agenda-allan ()
 "open work agenda"
 (interactive)                                
-(org-agenda nil "A")
+(org-agenda nil "l")
 )
 
 (defun z/org-agenda-joel ()
@@ -1789,10 +1818,16 @@ comment box."
     (org-match-sparse-tree t )
 )
 
-(defun z/org-agenda-sparse-todo ()
+(defun z/org-agenda-search()
 ""
 (interactive)                                
 (org-agenda nil "s")
+)
+
+(defun z/org-agenda-search-todo ()
+""
+(interactive)                                
+(org-agenda nil "S")
 )
 
 (defun z/org-link-file  ()
@@ -2191,6 +2226,15 @@ subsequent sends."
           (message-goto-body)
         (message-goto-to)))))
 
+(defun z/org-ispell ()
+  "Configure `ispell-skip-region-alist' for `org-mode'."
+  (make-local-variable 'ispell-skip-region-alist)
+  (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
+  (add-to-list 'ispell-skip-region-alist '("~" "~"))
+  (add-to-list 'ispell-skip-region-alist '("=" "="))
+  (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
+(add-hook 'org-mode-hook #'endless/org-ispell)
+
 (defun z/org-email-heading-me ()
   "Send the current org-mode heading as the body of an email, with headline as the subject."
   (interactive)
@@ -2204,6 +2248,12 @@ subsequent sends."
       (insert content)
       (message-send)
       (message-kill-buffer))))
+
+(defun z/org-move-top-collapse  ()
+     (interactive)            
+     (beginning-of-buffer)                    
+     (hide-sublevels)
+)
 
 (defun z/insert-slsh ()
   " insert     "
@@ -2286,6 +2336,35 @@ Repeated invocations toggle between the two most recently open buffers."
 (defun describe-last-function() 
   (interactive) 
   (describe-function last-command))
+
+;; taken from here: http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
+(defun z/launch--ansi-term ()
+  "If the current buffer is:
+     1) a running ansi-term named *ansi-term*, rename it.
+     2) a stopped ansi-term, kill it and create a new one.
+     3) a non ansi-term, go to an already running ansi-term
+        or start a new one while killing a defunt one"
+  (interactive)
+  (let ((is-term (string= "term-mode" major-mode))
+        (is-running (term-check-proc (buffer-name)))
+        (term-cmd "/bin/zsh")
+        (anon-term (get-buffer "*ansi-term*")))
+    (if is-term
+        (if is-running
+            (if (string= "*ansi-term*" (buffer-name))
+                ;; (call-interactively 'rename-buffer)
+                (ansi-term term-cmd)
+              (if anon-term
+                  (switch-to-buffer "*ansi-term*")
+                (ansi-term term-cmd)))
+          (kill-buffer (buffer-name))
+          (ansi-term term-cmd))
+      (if anon-term
+          (if (term-check-proc "*ansi-term*")
+              (switch-to-buffer "*ansi-term*")
+            (kill-buffer "*ansi-term*")
+            (ansi-term term-cmd))
+        (ansi-term term-cmd)))))
 
 (defun z/narrow-or-widen-dwim ()
 "If the buffer is narrowed, it widens. Otherwise, it narrows to region, or Org subtree."
@@ -2645,7 +2724,8 @@ LEADER:【C-A-W】-append to killring
 ("e"  nil )
 ("f"  nil )
 ("g"  hydra-goto/body )
-("h"  hide-sublevels "collapse tree")
+("h"  z/org-move-top-collapse   "collapse tree")
+("H"  hide-sublevels "collapse tree")
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
 ("k"  nil )
@@ -2876,7 +2956,7 @@ _q_:
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
   "
-【C-SPACE】 recntangle select // 【C-;】 ispell cycle
+【C-SPACE】 recntangle select // 【C-;】 ispell cycle // 【C-x z】 repeat last command- keep press 【z】to repeat
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("a" helm-apropos "Helm-Apropos")
@@ -2897,7 +2977,7 @@ _q_:
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
   ("p"  nil )
-  ("r"  anzu-query-replace-at-cursor "Replace@cursor")
+  ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
   ("t"  nil )
@@ -3010,7 +3090,7 @@ BKMK Menu
 ("p"  projectile-find-file "projectile find file")
 ("r"  helm-recentf "Helm Recents" )
 ("s"  bookmark-save "BKMK Save" )
-("t"  nil )
+("t"  z/launch--ansi-term "ansi-term" )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -3087,6 +3167,7 @@ BKMK Menu
     ("c" org-id-copy  "copy(and create) to killring" ) 
     ("s" org-id-store-link  "store org-id" ) 
     ("f" z/org-link-file  "link to file (via helm)" ) 
+    ("w" worf-copy-heading-id  "worf copy id ot killring" ) 
      ("q" nil "cancel" nil)
 )
 
@@ -3152,6 +3233,16 @@ _q_: quit
 
 ))
 
+(defhydra hydra-org-time (:color blue)
+   "time command"
+   ("s"  org-timestamp-select "select time stamp")
+   ("n" org-timestamp-now  "timestamp current" )
+   ("i" z-insert-date "insert current data")  
+   ("d" org-deadline  "set deadline")  
+   ("i" org-schedule  "set schedule")  
+   ("q" nil "cancel")
+)
+
 (global-set-key
  (kbd "C-M-o")
  (defhydra hydra-org-edit (:color blue :hint nil :columns 4)
@@ -3171,40 +3262,51 @@ _q_: quit
    ("q" nil "cancel")))
 
 (global-set-key
-   (kbd "<f10>")
-(defhydra hydra-org-agenda (:color blue :hint nil :columns 4)
+     (kbd "<f10>")
+  (defhydra hydra-org-agenda (:color blue :hint nil :columns 4)
+"AGENDA:
+【SPACE//TAB】open//open-go item in side view 【F】will toggle follow mode for space/tab view
+【A】Append another view 【/】 filter tag 【=】 filter regex 【|】 clean all filters
+【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
+【S-left//right】 change deadline 【k】 launch capture with date/task
+【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
+【m,u,U...】 dired marking 【M-m】 
 "
-"
-    ("<f10>" z/org-agenda-calendar  "org agenda"  )
-    ("a" z/org-agenda-allan "allan" )
-    ("j"          "org-agenda-goto-date ")
-    ("F"        "go forward 1w ")
-    ("b"    org-agenda-earlier    "go back 1w ")
-    ("TAB"          "Today ")
-    ("t"    org-agenda-todo      "change todo")
-    ("k"    org-agenda-kill      "delete C-k")
-    ("x"   org-agenda-archive      "archive ")
-    ("W"   org-agenda-refile      "refile ")
-    (":"   org-agenda-set-tags      "set tags ")
-    (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
-    ("S"   org-agenda-schedule      "schedule task ")
-    ("s"   z/org-agenda-sparse-todo     "ALL TODOS")
-    ("d"   org-agenda-deadline      "deadline task ")
-    ("D"   org-agenda-do-date-later      "+1 delay task (S+right//S-left 1 day early) ")
-    (">"   org-agenda-date-prompt      "prompt date ")
-    ("B"   org-agenda-bulk-action      "Bulk action (marking done in standard Emacs syntax ")
-     ("q"     nil                          "cancel" )
-))
+      ("<f10>" z/org-agenda-calendar  "org agenda"  )
+      ("c"  org-agenda-columns  "agenda columns" )
+      ("t"    org-agenda-todo      "change todo")
+      ("k"    org-agenda-kill      "delete C-k")
+      ("m"    org-agenda-bulk-toggle  "bulk mark"  :color red ) 
+      ("x"    org-agenda-bulk-action  "bulk exe")
+      ("x"   org-agenda-archive      "archive ")
+      ("w"   org-agenda-refile      "refile ")
+      (":"   org-agenda-set-tags      "set tags ")
+      (","   org-agenda-priority      "priority (S-UP/S-Dn to change as well ")
+      ("s"   org-agenda-schedule      "schedule task ")
+      ("d"   org-agenda-deadline      "deadline task ")
+      ("p"   org-agenda-date-prompt      "prompt date ")
+       ("q"     nil                          "cancel" )
+  ))
 
-(defhydra hydra-org-time (:color blue)
-   "time command"
-   ("s"  org-timestamp-select "select time stamp")
-   ("n" org-timestamp-now  "timestamp current" )
-   ("i" z-insert-date "insert current data")  
-   ("d" org-deadline  "set deadline")  
-   ("i" org-schedule  "set schedule")  
-   ("q" nil "cancel")
-)
+(global-set-key
+   (kbd "<f11>")
+   (defhydra hydra-buffer  (:color blue :hint nil :columns 4)
+     "TODO commands "
+     ("<f11>" org-agenda "org-agnda" )
+     ("l" z/org-agenda-allan "Allan" )
+     ("j" z/org-agenda-joel  "Joel"  )
+     ("s"   z/org-agenda-search     "regex search")
+     ("t"   z/org-agenda-search-todo     "regex search TODO")
+      ("c"   z/org-agenda-cook      "cook")
+     ("o" "" )
+     ("d" "")
+     ("i" "" )
+     ("c" ""  )
+     ("k"  "" )
+     ("n" "" )
+     ("p" ""  )
+     ("w" z/org-agenda-work  "Work"  )
+     ("q" nil "cancel")))
 
 ; (require 'hydra-examples)
 ; (hydra-create "C-M-o" hydra-example-move-window-splitter)
@@ -3229,7 +3331,7 @@ _q_: quit
 
 (global-set-key                         
  (kbd "C-M-e")
- (defhydra hydra-editing (:color blue)
+ (defhydra hydra-editing (:color blue :hint nil :columns 4)
    "editing command"
    ("e" hydra-edit-extra/body  "Extra editing commands")
    ("<up>" drag-stuff-up  "marked up" :color red)
@@ -3245,6 +3347,8 @@ _q_: quit
    ("c" z/comment-box "comment box" )
    ("u" upcase-region  "upcase " )
    ("d" downcase-region  "downcase " )
+   ("y" z/edit-copy-all-or-region  "copy buffer" )
+   ("w" shrink-whitespace  "shrink-whitespace" )
    ("R" revert-buffer  "revert buffer before changes" ) 
    ("q" nil "cancel")))
 
@@ -3308,41 +3412,22 @@ comment _e_macs function  // copy-paste-comment-function _r_
    ("q" nil "cancel")))
 
 (global-set-key
-   (kbd "<f11>")
-   (defhydra hydra-buffer  (:color blue)
-     "buffer commands "
-     ("s" save-buffer "save buffer"  )
-     ("a" write-file  "save as.."  )
-     ("x" kill-this-buffer "kill buffer"  )
-     ("o" z-kill-other-buffers "kill all but current" )
-     ("d" delete-frame "delete frame")
-     ("i" kill-buffer  "ido-kill" )
-     ("c" z-save-buffer-close-window "save and close"  )
-     ("k" kill-buffer "helm kill buffer" )
-     ("n" next-user-buffer  "next buffer" )
-     ("p" previous-user-buffer "prev buffer"  )
-     ("N" next-emacs-buffer "next Emacs  buffer"  )
-     ("P" previous-emacs-buffer "prev emacs buffer"  )
-     ("<f11>" switch-to-previous-buffer  "last buffer"  )
-     ("q" nil "cancel")))
-
-(global-set-key
  (kbd "<f12>")
  (defhydra hydra-window (:color blue :hint nil :columns 5)
  "Window and buffer Operations"
    ("<f12>" switch-to-previous-buffer  "last buffer"  )
    ("<f11>" ace-delete-window "delete window")
-   ("a" ace-window "ace-window//also M-1" :exit t)   
+   ("<home>" ace-window "ace-window//also M-1" :exit t)   
    ("=" (lambda ()
           (interactive)
           (split-window-right)
           (windmove-right))
-        "Split Vertical |")
+        "Split Vertical (|)")
    ("-" (lambda ()
           (interactive)
           (split-window-below)
           (windmove-down))
-        "Split horzizontal -")
+        "Split horzizontal (-)")
    ("<left>" hydra-move-splitter-left "resize left"  :color red)
    ("<right>" hydra-move-splitter-right "resize right"  :color red)
    ("<up>" hydra-move-splitter-up "resize up"  :color red)
@@ -3734,8 +3819,27 @@ comment _e_macs function  // copy-paste-comment-function _r_
   (interactive)
   (org-match-sparse-tree t "+Fav=\"y\""))
 
+(setq org-agenda-exporter-settings
+      '((ps-number-of-columns 2)
+        (ps-landscape-mode t)
+        (org-agenda-add-entry-text-maxlines 5)
+        (htmlize-output-type 'css)))
+
+(setq org-habit-graph-column 70)
+(setq org-habit-show-habits-only-for-today nil)
+
+(appt-activate 1)
+(org-agenda-to-appt)
+
+(add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
+
 (setq org-agenda-custom-commands 
 '(
+
+;;TODO sparse tree
+("T" occur-tree "TODO")
+
+;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
 ;work related only tasks (from research|bgu files)
 ("w" "work" todo "TODO|BGU|EXP" 
@@ -3744,30 +3848,31 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
          
+;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
 ;;custom sparse tree
-("s" occur-tree "TODO")
-
-;;custom sparse tree
-("B" occur-tree "allan")
+("L" occur-tree "allan")
 
 ; allan todos
-("A" "allan tasks" tags-todo "allan"
+("l" "allan tasks" tags-todo "allan"
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
 
 
-; Joel todos
-("J" "joel tasks" tags-todo "joel"
+;;;;;;;;;Joel;;;;;;;;;;;;;;;;
+("j" "joel tasks" tags-todo "joel"
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
 
+;;custom sparse tree
+("J" occur-tree "joel")
 
 
-;second
+
+;;;;;;;;;;;;;COOKING;;;;;;;;;;;
 ("f" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
@@ -3777,6 +3882,10 @@ comment _e_macs function  // copy-paste-comment-function _r_
 )
 )
 
+
+
+
+;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
 ("t" "tech" todo "TODO" 
          (
          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
@@ -3785,6 +3894,9 @@ comment _e_macs function  // copy-paste-comment-function _r_
 )
 )
 )
+
+;;;;;;;;;;;;;;;;;HOME;;;;;;;;;;;;;;;;
+
 
 ("h" "home" todo "TODO" 
          (
@@ -3806,24 +3918,9 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 
-
 ;;end brackets for setq
 )
 )
-
-(setq org-agenda-exporter-settings
-      '((ps-number-of-columns 2)
-        (ps-landscape-mode t)
-        (org-agenda-add-entry-text-maxlines 5)
-        (htmlize-output-type 'css)))
-
-(setq org-habit-graph-column 70)
-(setq org-habit-show-habits-only-for-today nil)
-
-(appt-activate 1)
-(org-agenda-to-appt)
-
-(add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
 
 ;;iimage in org (display images in org files)
 (setq org-startup-with-inline-images t)
@@ -3910,7 +4007,7 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-capture-templates
         (quote (           
 ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
- "* Cook %? %^g 
+ "* COOK %? %^g 
    :PROPERTIES:
    :Time:     
    :Rating:   
@@ -4192,9 +4289,6 @@ With prefix argument, also display headlines without a TODO keyword."
 
 (eval-after-load 'ox-latex
   '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
-
-;; enable exporters for org-mode
-(setq org-export-backends (quote (beamer html org)))
 
 (setq org-publish-project-alist
            '(
@@ -4747,7 +4841,7 @@ gnus-treat-buttonize t           ; Add buttons
 (require 'bbdb)
 (bbdb-initialize 'message 'gnus 'sendmail)
 (setq bbdb-file "~/.bbdb") ;; OPTIONAL, because I'm sharing my ~/.emacs.d
-(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(add-hook 'gnus-stasrtup-hook 'bbdb-insinuate-gnus)
 (setq bbdb/mail-auto-create-p t
       bbdb/news-auto-create-p t)
 
