@@ -3200,7 +3200,7 @@ check in org files slipping code blocks etc
 (defun z/org-move-top-collapse  ()
      (interactive)            
      (beginning-of-buffer)                    
-     (hide-sublevels)
+     (hide-sublevels 1)
 )
 #+END_SRC
 ** hydra related

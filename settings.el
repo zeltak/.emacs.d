@@ -2252,7 +2252,7 @@ subsequent sends."
 (defun z/org-move-top-collapse  ()
      (interactive)            
      (beginning-of-buffer)                    
-     (hide-sublevels)
+     (hide-sublevels 1)
 )
 
 (defun z/insert-slsh ()
