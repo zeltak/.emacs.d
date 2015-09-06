@@ -467,6 +467,11 @@
  :config
   )
 
+(use-package  duplicate-thing 
+ :ensure t
+ :config
+ )
+
 (use-package ebib
  :ensure t
  :config
@@ -713,6 +718,18 @@
 
 (setq ivy-re-builders-alist
       '((t . ivy--regex-fuzzy)))
+
+(setq ivy-display-style 'fancy)
+
+(custom-set-faces
+ '(swiper-minibuffer-match-face-1
+   ((t :background "#dddddd")))
+ '(swiper-minibuffer-match-face-2
+   ((t :background "#bbbbbb" :weight bold)))
+ '(swiper-minibuffer-match-face-3
+   ((t :background "#bbbbff" :weight bold)))
+ '(swiper-minibuffer-match-face-4
+   ((t :background "#ffbbff" :weight bold))))
 
 (setq ivy-count-format "(%d/%d) ")
 
@@ -1229,6 +1246,13 @@ Sunrise:
 :ensure t
 :config
 )
+
+(use-package volatile-highlights
+ :ensure t
+ :config
+(require 'volatile-highlights)
+(volatile-highlights-mode t) 
+ )
 
 ;; (use-package  visible-mark 
 
@@ -2325,6 +2349,12 @@ Repeated invocations toggle between the two most recently open buffers."
     (kill-this-buffer)
   )
 
+(defun z/buffer-close-andmove-other   ()
+     (interactive)    
+     (ace-window 1)        
+      (ace-delete-window)
+)
+
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
 (defun create-scratch-buffer nil
@@ -2718,6 +2748,7 @@ LEADER:【C-A-W】-append to killring
 ("\\"  avy-goto-word-1  "avy jump")
 ("a" nil )
 ("b"  nil  )
+("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
 ;("c"  company-complete )
 ("c"  auto-complete )
 ("d"  nil )
@@ -2733,7 +2764,7 @@ LEADER:【C-A-W】-append to killring
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("o"  set-mark-command 4 "mark prev" )
-("p"  duplicate-current-line-or-region "duplicate")
+("p"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
 ("t"  helm-top "top")
@@ -3270,7 +3301,7 @@ _q_: quit
 【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
 【S-left//right】 change deadline 【k】 launch capture with date/task
 【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
-【m,u,U...】 dired marking 【M-m】 
+【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 
 "
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
       ("c"  org-agenda-columns  "agenda columns" )
