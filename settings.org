@@ -3193,18 +3193,6 @@ execute speed commands."
           (message-goto-to)))))
 
 #+END_SRC
-*** org-ispell
-check in org files slipping code blocks etc
-#+BEGIN_SRC emacs-lisp :results none
-(defun z/org-ispell ()
-  "Configure `ispell-skip-region-alist' for `org-mode'."
-  (make-local-variable 'ispell-skip-region-alist)
-  (add-to-list 'ispell-skip-region-alist '(org-property-drawer-re))
-  (add-to-list 'ispell-skip-region-alist '("~" "~"))
-  (add-to-list 'ispell-skip-region-alist '("=" "="))
-  (add-to-list 'ispell-skip-region-alist '("^#\\+BEGIN_SRC" . "^#\\+END_SRC")))
-(add-hook 'org-mode-hook #'endless/org-ispell)
-#+END_SRC
 *** Send email to myself
 #+BEGIN_SRC emacs-lisp
 (defun z/org-email-heading-me ()
