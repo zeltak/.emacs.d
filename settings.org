@@ -390,12 +390,20 @@ https://github.com/cute-jumper/avy-zap
 (use-package bbdb
  :ensure t
  :config
- (add-to-list 'load-path "/home/zeltak/.emacs.g/gmail2bbdb/")
-(autoload 'gmail2bbdb-import-file "gmail2bbdb")
-(setq gmail2bbdb-bbdb-file "~/.emacs.d/.bbdb")
+(setq bbdb-file "~/.emacs.d/bbdb")           ;; keep ~/ clean; set before loading
+(require 'bbdb) 
+(bbdb-initialize)
+
  )
 #+END_SRC 
-
+** bbdb-csv-import
+https://gitlab.com/iankelling/bbdb-csv-import/
+#+BEGIN_SRC emacs-lisp :results none
+(use-package bbdb-csv-import
+ :ensure t
+ :config
+  )
+#+END_SRC 
 ** Bookmark+
 #+BEGIN_SRC emacs-lisp :results none
 (use-package bookmark+
@@ -867,6 +875,11 @@ allows to dynamically resize the non currently edited pane
 :ensure t
 :config
 )
+#+END_SRC
+** gmail 2 bbdb
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
+(autoload 'gmail2bbdb-import-file "gmail2bbdb")
 #+END_SRC
 ** TODO gnorb
 https://github.com/girzel/gnorb
@@ -2589,6 +2602,49 @@ Version 2015-08-22"
       (kill-new (buffer-string))
       (message "Buffer content copied."))))
 #+END_SRC
+*** flyspell jump to last correction
+#+BEGIN_SRC emacs-lisp :results none
+;; move point to previous error
+;; based on code by hatschipuh at
+;; http://emacs.stackexchange.com/a/14912/2017
+(defun z/flyspell-goto-previous-error (arg)
+  "Go to arg previous spelling error."
+  (interactive "p")
+  (while (not (= 0 arg))
+    (let ((pos (point))
+          (min (point-min)))
+      (if (and (eq (current-buffer) flyspell-old-buffer-error)
+               (eq pos flyspell-old-pos-error))
+          (progn
+            (if (= flyspell-old-pos-error min)
+                ;; goto beginning of buffer
+                (progn
+                  (message "Restarting from end of buffer")
+                  (goto-char (point-max)))
+              (backward-word 1))
+            (setq pos (point))))
+      ;; seek the next error
+      (while (and (> pos min)
+                  (let ((ovs (overlays-at pos))
+                        (r '()))
+                    (while (and (not r) (consp ovs))
+                      (if (flyspell-overlay-p (car ovs))
+                          (setq r t)
+                        (setq ovs (cdr ovs))))
+                    (not r)))
+        (backward-word 1)
+        (setq pos (point)))
+      ;; save the current location for next invocation
+      (setq arg (1- arg))
+      (setq flyspell-old-pos-error pos)
+      (setq flyspell-old-buffer-error (current-buffer))
+      (goto-char pos)
+      (if (= pos min)
+          (progn
+            (message "No more miss-spelled word!")
+            (setq arg 0))
+        (forward-word)))))
+#+END_SRC
 ** org
 *** convert to same level header
 #+BEGIN_SRC emacs-lisp :results none
@@ -4112,6 +4168,8 @@ _q_:
 【C-SPACE】 recntangle select // 【C-;】 ispell cycle // 【C-x z】 repeat last command- keep press 【z】to repeat
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
+  ("<f2>" flyspell-auto-correct-previous-word "correct last word" )
+  ("<f4>" z/flyspell-goto-previous-error "correct last word" )
   ("a" helm-apropos "Helm-Apropos")
   ("b"  backward-kill-line  "kill backwards")
   ("c"  cycle-spacing "cycle spacing")
@@ -4361,6 +4419,7 @@ BKMK Menu
  #+END_SRC
 
 **** extra table commands
+【C-c +】 will sum a column and move to clip
 
 #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-table  (:color red )

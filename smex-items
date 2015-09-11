@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ customize-group
+ customize-variable
+ bbdb
+ bbdb-csv-import-file
  shrink-whitespace
  ansi-term
  eshell
- worf-copy-heading-id
- bbdb-menu
- bbdb
- customize-variable
 )
 
 ;; ----- smex-data -----
@@ -42,11 +42,13 @@
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 1)
- (bbdb . 1)
+ (customize-variable . 2)
+ (bbdb . 4)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
  (eshell . 1)
  (ansi-term . 1)
  (shrink-whitespace . 5)
+ (bbdb-csv-import-file . 1)
+ (customize-group . 1)
 )
