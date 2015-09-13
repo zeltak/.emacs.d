@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ wl
  customize-group
  customize-variable
  bbdb
  bbdb-csv-import-file
  shrink-whitespace
  ansi-term
- eshell
 )
 
 ;; ----- smex-data -----
@@ -51,4 +51,5 @@
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
  (customize-group . 1)
+ (wl . 2)
 )

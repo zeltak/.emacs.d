@@ -1,1 +1,0 @@
-("~/org/files/" "~/.password-store/" "~/.emacs.d/" "~/" "~/dotfiles/" "~/BK/emacs/8.8.2015/.emacs.d/" "~/.oh-my-zsh/" "~/.avfs/home/zeltak/" "~/Downloads/monoid/" "~/.emacs.g/org-ref/" "~/.emacs.g/company-org-headings/" "~/.emacs.g/org-mode/" "~/BK/org/org/files/" "~/.emacs.g/tmtxt-dired-async/")

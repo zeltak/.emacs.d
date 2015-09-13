@@ -960,12 +960,12 @@
  :config
   )
 
-(use-package projectile
- :ensure t
- :config
-(projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
- )
+;; (use-package projectile
+;;  :ensure t
+;;  :config
+;; (projectile-global-mode)
+;; (setq projectile-completion-system 'grizzl)
+;;  )
 
 ;; (use-package rainbow-mode
 ;; :ensure t
@@ -3696,7 +3696,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (savehist-mode t)
 
-(setq savehist-file "/home/zeltak/.cache/emacs/hist/hist.txt")
+(setq savehist-file "/home/zeltak/.emacs.t/hist.txt")
 (savehist-mode 1)
 (setq history-length t)
 (setq history-delete-duplicates t)

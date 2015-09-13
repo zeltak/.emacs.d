@@ -494,7 +494,7 @@
     ("dollers" "dollars" nil 0)
     ("donig" "doing" nil 0)
     ("dont" "don't" nil 0)
-    ("dosent" "doesn't" nil 2)
+    ("dosent" "doesn't" nil 3)
     ("dosnt" "doesn't" nil 0)
     ("driveing" "driving" nil 0)
     ("drnik" "drink" nil 0)
@@ -640,7 +640,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 2)
+    ("i" "I" nil 4)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -907,6 +907,7 @@
     ("reccomend" "recommend" nil 0)
     ("reccomendation" "recommendation" nil 0)
     ("reccommend" "recommend" nil 0)
+    ("reccommended" "recommended" nil 0)
     ("receieve" "receive" nil 0)
     ("recieve" "receive" nil 0)
     ("recieved" "received" nil 0)
@@ -975,6 +976,7 @@
     ("scoli" "scowl" nil 0)
     ("seacrh" "search" nil 0)
     ("seance" "seance" nil 0)
+    ("secons" "seconds" nil 0)
     ("secratary" "secretary" nil 0)
     ("sectino" "section" nil 0)
     ("securtiy" "security" nil 0)
@@ -993,7 +995,7 @@
     ("shesaid" "she said" nil 0)
     ("shineing" "shining" nil 0)
     ("shiped" "shipped" nil 0)
-    ("shoudl" "should" nil 0)
+    ("shoudl" "should" nil 1)
     ("shouldent" "shouldn't" nil 0)
     ("shouldnt" "shouldn't" nil 0)
     ("showinf" "showing" nil 0)
@@ -1334,6 +1336,8 @@
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-mode-abbrev-table '())
+
+(define-abbrev-table 'rmail-summary-mode-abbrev-table '())
 
 (define-abbrev-table 'ruby-mode-abbrev-table '())
 

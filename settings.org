@@ -465,8 +465,6 @@ $Note- is different inside screen or tmux$
  )
 #+END_SRC 
 
- 
-
 ** company-org-headings
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -484,6 +482,7 @@ $Note- is different inside screen or tmux$
                     company-files
                     )))))
 #+END_SRC
+
 ** dired plugins
 *** dired-x
 http://www.gnu.org/software/emacs/manual/html_node/dired-x/Shell-Command-Guessing.html
@@ -1464,12 +1463,12 @@ https://github.com/politza/pdf-tools
 ** projectile
 
 #+BEGIN_SRC emacs-lisp :results none
-(use-package projectile
- :ensure t
- :config
-(projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
- )
+  ;; (use-package projectile
+  ;;  :ensure t
+  ;;  :config
+  ;; (projectile-global-mode)
+  ;; (setq projectile-completion-system 'grizzl)
+  ;;  )
 #+END_SRC 
 ** TODO Rainbow mode
 http://julien.danjou.info/projects/emacs-packages#rainbow-mode
@@ -4992,7 +4991,7 @@ here we put these files in the /tmp dir
 ** history
 
 #+BEGIN_SRC emacs-lisp :results none
-(setq savehist-file "/home/zeltak/.cache/emacs/hist/hist.txt")
+(setq savehist-file "/home/zeltak/.emacs.t/hist.txt")
 (savehist-mode 1)
 (setq history-length t)
 (setq history-delete-duplicates t)
