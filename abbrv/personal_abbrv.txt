@@ -9,9 +9,7 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'awk-mode-abbrev-table '())
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
@@ -33,13 +31,9 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c++-mode-abbrev-table '())
 
-(define-abbrev-table 'c-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'c-mode-abbrev-table '())
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -236,6 +230,7 @@
     ("audeince" "audience" nil 0)
     ("audiance" "audience" nil 0)
     ("authetication" "authentication" nil 0)
+    ("automounting" "mounting" nil 0)
     ("availabilty" "availability" nil 0)
     ("availalbe" "available" nil 0)
     ("avilability" "availability" nil 2)
@@ -645,7 +640,7 @@
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 23)
+    ("ie" "₆In example₆" nil 24)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -1074,7 +1069,7 @@
     ("tghe" "the" nil 0)
     ("tghis" "this" nil 0)
     ("thansk" "thanks" nil 0)
-    ("thats" "that's" nil 3)
+    ("thats" "that's" nil 4)
     ("thatthe" "that the" nil 0)
     ("thecompany" "the company" nil 0)
     ("thefirst" "the first" nil 0)
@@ -1243,9 +1238,7 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'java-mode-abbrev-table '())
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1295,9 +1288,7 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'objc-mode-abbrev-table '())
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1313,9 +1304,7 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'pike-mode-abbrev-table '())
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
