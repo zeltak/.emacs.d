@@ -9,7 +9,9 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
@@ -31,9 +33,13 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table '())
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -178,6 +184,7 @@
     ("alraedy" "already" nil 0)
     ("alreayd" "already" nil 0)
     ("alreday" "already" nil 0)
+    ("alterenative" "alternative" nil 0)
     ("alwasy" "always" nil 0)
     ("alwats" "always" nil 0)
     ("alway" "always" nil 0)
@@ -640,7 +647,7 @@
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 24)
+    ("ie" "₆In example₆" nil 25)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -668,6 +675,7 @@
     ("influance" "influence" nil 0)
     ("infomation" "information" nil 0)
     ("informatoin" "information" nil 0)
+    ("ingridients" "ingredients" nil 0)
     ("inhaboted" "inhabited" nil 0)
     ("inital" "initial" nil 0)
     ("initalization" "initialization" nil 0)
@@ -736,7 +744,7 @@
     ("loev" "love" nil 0)
     ("lonly" "lonely" nil 0)
     ("lookign" "looking" nil 0)
-    ("lookup" "look up" nil 0)
+    ("lookup" "look up" nil 1)
     ("maintenence" "maintenance" nil 0)
     ("makeing" "making" nil 0)
     ("managment" "management" nil 0)
@@ -867,7 +875,7 @@
     ("prelease" "release" nil 0)
     ("prelimnary" "preliminary" nil 0)
     ("premissions" "permissions" nil 0)
-    ("preperation" "preparation" nil 2)
+    ("preperation" "preparation" nil 3)
     ("prerelease" "pre-release" nil 0)
     ("presance" "presence" nil 0)
     ("presue" "peruse" nil 0)
@@ -1238,7 +1246,9 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1288,7 +1298,9 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1304,7 +1316,9 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 

@@ -2480,7 +2480,7 @@ there's a region, all lines that region covers will be duplicated."
     (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 #+END_SRC
 *** auto spell correction function
-from:
+From: itai kloog  <zeltak@gmail.com>
 http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
 
 this will store the abbrevs here: 
@@ -3802,6 +3802,7 @@ shnsplit -f {F}  -o flac {oF}
 ** editing 
 #+BEGIN_SRC emacs-lisp :results none
 (key-chord-define-global "yy"     'z/copy-line)
+(global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 #+END_SRC
 
@@ -5570,71 +5571,97 @@ this command below will use helm for completion since in the above helm config w
 ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 #+END_SRC
 *** TODO templates
+    :PROPERTIES:
+    :ID:       2bf19d27-a0af-4e4c-91f1-9723a2dedf18
+    :END:
 #+BEGIN_SRC emacs-lisp :results none 
-  (setq org-capture-templates
-        (quote (           
+(setq org-capture-templates
+        (quote ( 
+
+         
+;;;; food simple template
 ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
- "* COOK %? %^g 
-   :PROPERTIES:
-   :Time:     
-   :Rating:   
-   :Source:   
-   :Ammount:  
-   :Fav: 
-   :Type: 
-   :ID:   
-   :END:
-%(org-meta-return)
+"* COOK %^{Description}   %^g
+%t 
+%^{Time}p
+%^{Rating}p
+%^{Source}p
+%^{Ammount}p
+%^{Fav}p
+%^{prompt|** Ingridients}
+%?
+%^{prompt|** Preperation}
 "
  )
 
-("F" "food" entry   (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-(function  blank-recipe-template))
-
-            
-("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
- "*  %^{Description}" )
-
-("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %^{Description}  " )
-
-("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %x :Pre_Release: " )
-
-("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
- "*  %^{Description}" )
-
-("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
- "*  %^{Description}" )
-
-("i" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
- "*  %^{Description}" )
-
-
-("t" "TechTODO" entry (file+headline "~/org/files/agenda/TODO.org" "Home TD's")
- "* TODO  %?\n%T" )
-
-("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "`TODO`")
- "* TODO  %?\n%T" )
-
-("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+;; add to shopping cart
+("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
  "* SHOP  %^{Description} " )
+
+;;;; travel  simple template
+("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+"*  %^{Description}   %^g 
+%t 
+%^{address}p
+%^{Rating}p
+%^{URL}p
+%^{map}p
+%^{Fav}p
+%?
+"
+ )
+
+;;;; Tech  Todos
+
+("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
+ "*  %^{Description}" )
+
+;;;; Home Todos
+
+("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+ "* TODO  %?\n%T" )
+
+
+;;; Uni todos
+
+("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+ "* TODO  %?\n%T" )
+
+;;;BGU todos 
+("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+ "* TODO  %?\n%T" )
+
 
 ;; for mail 
 ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
  "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
-("n" "Quick Note" entry (file "~/org/quick-note.org")
-  "* %?\n%U")
 
+;;; web capture
 ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
 
-;agenda captures
-("R" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
- "* TODO  %^{Description} " )
 
-("T" "Research TODO" entry (file +headline "~/org/files/agenda/Research.org" "Short term Misc") 
-           "* TODO %?\n %U\n\n%a")
+;;;;; media related 
+
+("M" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*  %^{Description}  " )
+
+("P" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*   %^{Description}   :Pre_Release: " )
+
+("T" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+ "*  %^{Description}" )
+
+("S" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+ "*  %^{Description}" )
+
+("C" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+ "*  %^{Description}" )
+
+
+
+
+
 
 
   )))
@@ -6478,6 +6505,9 @@ file:/home/zeltak/.emacs.d/abbrv/misc_abbrv.txt
     "Generic mode for Vim configuration files.")
 #+END_SRC
 * gnus
+  :PROPERTIES:
+  :ID:       761b644f-25bf-41d8-a19a-163df93c96d2
+  :END:
 ** standalone gnus
 you should start Emacs like this with the below code: 'emacs -gnus'
 
