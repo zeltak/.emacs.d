@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- wl
- customize-group
- customize-variable
- bbdb
- bbdb-csv-import-file
- shrink-whitespace
- ansi-term
+ org-table-copy-region
+ avy-goto-char-timer
+ quick-calc
+ gnus
+ z-year-increment
+ ranger
+ deer
 )
 
 ;; ----- smex-data -----
@@ -17,7 +17,7 @@
  (load-theme . 11)
  (ivy-resume . 1)
  (z/org-email-heading-me . 2)
- (gnus . 7)
+ (gnus . 8)
  (z/org-email-heading . 2)
  (ivy-switch-buffer . 3)
  (counsel-ag . 2)
@@ -52,4 +52,13 @@
  (bbdb-csv-import-file . 1)
  (customize-group . 1)
  (wl . 2)
+ (dired-k . 1)
+ (xah-cycle-hyphen-underscore-space . 6)
+ (xah-insert-black-lenticular-bracket【】 . 1)
+ (ranger . 8)
+ (deer . 2)
+ (z-year-increment . 1)
+ (quick-calc . 1)
+ (avy-goto-char-timer . 4)
+ (org-table-copy-region . 1)
 )

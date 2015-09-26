@@ -991,11 +991,15 @@
                     :inherit 'error)
  )
 
-;(use-package ranger
-; :ensure t
-; :config
-;
-; )
+(use-package ranger
+ :ensure t
+ :config
+(setq ranger-cleanup-eagerly t)
+(setq ranger-show-dotfiles t)
+(setq ranger-parent-depth 1)
+(setq ranger-ignored-extensions '("mkv" "iso" "mp4"))
+
+ )
 
 (use-package scratch
  :ensure t
@@ -1801,6 +1805,95 @@ Version 2015-08-22"
     (progn
       (kill-new (buffer-string))
       (message "Buffer content copied."))))
+
+(defun xah-cycle-hyphen-underscore-space ()
+  "Cycle {underscore, space, hypen} chars of current word or text selection.
+When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
+
+URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
+Version 2015-08-17"
+  (interactive)
+  ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
+  (let (ξp1 ξp2)
+    (if (use-region-p)
+        (progn
+          (setq ξp1 (region-beginning))
+          (setq ξp2 (region-end)))
+      (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
+        (progn
+          (setq ξp1 (car ξbounds))
+          (setq ξp2 (cdr ξbounds)))))
+
+    (let* ((ξinputText (buffer-substring-no-properties ξp1 ξp2))
+           (ξcharArray ["_" "-" " "])
+           (ξlength (length ξcharArray))
+           (ξregionWasActive-p (region-active-p))
+           (ξnowState
+            (if (equal last-command this-command )
+                (get 'xah-cycle-hyphen-underscore-space 'state)
+              0 ))
+           (ξchangeTo (elt ξcharArray ξnowState)))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region ξp1 ξp2)
+          (goto-char (point-min))
+          (while
+              (search-forward-regexp
+               (concat
+                (elt ξcharArray (% (+ ξnowState 1) ξlength))
+                "\\|"
+                (elt ξcharArray (% (+ ξnowState 2) ξlength)))
+               (point-max)
+               'NOERROR)
+            (replace-match ξchangeTo 'FIXEDCASE 'LITERAL))))
+      (when (or (string= ξchangeTo " ") ξregionWasActive-p)
+        (goto-char ξp2)
+        (set-mark ξp1)
+        (setq deactivate-mark nil))
+      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ ξnowState 1) ξlength)))))
+
+(defun xah-insert-bracket-pair (φleft-bracket φright-bracket)
+  "Wrap or Insert a matching bracket and place cursor in between.
+
+If there's a text selection, wrap brackets around it. Else, smartly decide wrap or insert. (basically, if there's no char after cursor, just insert bracket pair.)
+
+φleft-bracket ＆ φright-bracket are strings.
+
+URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
+Version 2015-04-19"
+  (if (use-region-p)
+      (progn
+        (let (
+              (ξp1 (region-beginning))
+              (ξp2 (region-end)))
+          (goto-char ξp2)
+          (insert φright-bracket)
+          (goto-char ξp1)
+          (insert φleft-bracket)
+          (goto-char (+ ξp2 2))))
+    (progn ; no text selection
+      (if
+          (or
+           (looking-at "[^-_[:alnum:]]")
+           (eq (point) (point-max)))
+          (progn
+            (insert φleft-bracket φright-bracket)
+            (search-backward φright-bracket ))
+        (progn
+          (let (ξp1 ξp2)
+            ;; basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese.
+            ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+            (skip-chars-backward "-_[:alnum:]")
+            (setq ξp1 (point))
+            (skip-chars-forward "-_[:alnum:]")
+            (setq ξp2 (point))
+            (goto-char ξp2)
+            (insert φright-bracket)
+            (goto-char ξp1)
+            (insert φleft-bracket)
+            (goto-char (+ ξp2 (length φleft-bracket)))))))))
+
+(defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
 
 ;; move point to previous error
 ;; based on code by hatschipuh at
@@ -2725,6 +2818,7 @@ Version 2015-07-30"
 (define-key ctl-x-map "\C-t" #'transpose-chars)
 
 (key-chord-define-global "yy"     'z/copy-line)
+(global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 
 (global-set-key (kbd "C-<tab>") 'dabbrev-expand)
@@ -2786,7 +2880,7 @@ Version 2015-07-30"
 LEADER:【C-A-W】-append to killring
 "
 ("\]" z/insert-slsh "insert \\")
-("\\"  avy-goto-word-1  "avy jump")
+("\\"  avy-goto-char-timer  "avy jump")
 ("a" nil )
 ("b"  nil  )
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
@@ -3058,7 +3152,7 @@ _q_:
   ("u"  imenu "imenu")
   ("v"  nil)
   ("w"  ispell-word "ispeel word" )
-  ("x"  nil )
+  ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
   ("z"  counsel-recoll "recoll" )
   ("q"  nil )
@@ -3245,17 +3339,6 @@ BKMK Menu
      ("q" nil "cancel" nil)
 )
 
-(defhydra hydra-org-table  (:color red )
-     "
-     "
-    ("i" org-table-insert-row  "insert row" :color blue) 
-    ("y" org-table-copy-region  "copy" :color blue) 
-    ("d" org-table-cut-region  "cut" ) 
-    ("p" org-table-paste-rectangle  "paste" :color red ) 
-    ("c" org-table-create-or-convert-from-region  "convert" ) 
-     ("q" nil "cancel" nil)
-)
-
 (defhydra hydra-org-food ()
    "org-food "
    ("b" cooking-sparse-tree-breakfeast "breakfeast_view" :color blue)
@@ -3403,6 +3486,27 @@ _q_: quit
    ("t" yas-tryout-snippet  "try snipet" :color blue)
    ("q" nil "cancel")))
 
+(global-set-key
+ (kbd "C-M-l")
+
+(defhydra hydra-org-tablr (:color blue  :columns 6)
+"【C-c +】 will sum a column and move to clip  【C-space】 blank field 【M-left/right】move column left/right  【M-S-left/right】kill/add column 
+【M-up/down】 move row up/down 【M-S-down】 insert row  【M-S-up】 kill row
+【|-】 will start a dashed line 【C-c +】 org sum 【C-c ?/}】 find/show out field info 
+【@row$column】>>  @2$3 will mean 2nd row, 3rd column 
+ $1..$3f  firtst three fields in the current row // @2$1..@4$3  6 fields between these two fields
+FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum 
+【:=】insert formula directly >> :=vsum(@2$3..@32$3)
+"
+     ("i" org-table-insert-row  "insert row" :color blue) 
+     ("y" org-table-copy-region  "copy" :color blue) 
+     ("d" org-table-cut-region  "cut" :color blue) 
+     ("p" org-table-paste-rectangle  "paste" :color blue) 
+     ("s" org-table-sort-lines  "sort" :color blue) 
+     ("c" org-table-create-or-convert-from-region  "convert" ) 
+     ("w" quick-calc  "quick calc" ) 
+   ("q" nil "cancel")))
+
 (global-set-key                         
  (kbd "C-M-e")
  (defhydra hydra-editing (:color blue :hint nil :columns 4)
@@ -3456,7 +3560,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
-  ("k"    z/insert-keyboth  "【】") 
+  ("k"    z/insert-black-lenticular-bracket  "【】") 
   ("b"     z/insert-bashscript  "#!") 
   ("‣"     z/insert-play  " ‣") 
   ("q" nil "cancel" nil)
@@ -3911,7 +4015,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 '(
 
 ;;TODO sparse tree
-("T" occur-tree "TODO")
+("O" occur-tree "TODO")
 
 ;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
@@ -3950,9 +4054,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ("f" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
+          (org-agenda-sorting-strategy  '(priority-down))
 )
 )
 
@@ -3960,7 +4062,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 ;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
-("t" "tech" todo "TODO" 
+("c" "tech" todo "TODO" 
          (
          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
           (org-agenda-sorting-strategy 
@@ -4079,69 +4181,88 @@ With prefix argument, also display headlines without a TODO keyword."
 ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 
 (setq org-capture-templates
-        (quote (           
+        (quote ( 
+
+         
+;;;; food simple template
 ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
- "* COOK %? %^g 
-   :PROPERTIES:
-   :Time:     
-   :Rating:   
-   :Source:   
-   :Ammount:  
-   :Fav: 
-   :Type: 
-   :ID:   
-   :END:
-%(org-meta-return)
+"* COOK %^{Description}   %^g
+%t 
+%^{Time}p
+%^{Rating}p
+%^{Source}p
+%^{Ammount}p
+%^{Fav}p
+%^{prompt|** Ingridients}
+%?
+%^{prompt|** Preperation}
 "
  )
 
-("F" "food" entry   (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-(function  blank-recipe-template))
-
-            
-("x" "todo_nix" entry (file+headline "~/org/files/agenda/TODO.org" "Linux")
- "*  %^{Description}" )
-
-("o" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %^{Description}  " )
-
-("O" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %x :Pre_Release: " )
-
-("v" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
- "*  %^{Description}" )
-
-("m" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
- "*  %^{Description}" )
-
-("i" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
- "*  %^{Description}" )
-
-
-("t" "TechTODO" entry (file+headline "~/org/files/agenda/TODO.org" "Home TD's")
- "* TODO  %?\n%T" )
-
-("h" "todo_home" entry (file+headline "~/org/files/agenda/home.org" "`TODO`")
- "* TODO  %?\n%T" )
-
-("b" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+;; add to shopping cart
+("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
  "* SHOP  %^{Description} " )
+
+;;;; travel  simple template
+("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+"*  %^{Description}   %^g 
+%t 
+%^{address}p
+%^{Rating}p
+%^{URL}p
+%^{map}p
+%^{Fav}p
+%?
+"
+ )
+
+;;;; Tech  Todos
+
+("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
+ "*  %^{Description}" )
+
+;;;; Home Todos
+
+("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+ "* TODO  %?\n%T" )
+
+
+;;; Uni todos
+
+("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+ "* TODO  %?\n%T" )
+
+;;;BGU todos 
+("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+ "* TODO  %?\n%T" )
+
 
 ;; for mail 
 ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
  "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
-("n" "Quick Note" entry (file "~/org/quick-note.org")
-  "* %?\n%U")
 
+;;; web capture
 ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
 
-;agenda captures
-("R" "Work_short_term" entry (file+headline "~/org/files/agenda/Research.org" "Short term Misc")
- "* TODO  %^{Description} " )
 
-("T" "Research TODO" entry (file +headline "~/org/files/agenda/Research.org" "Short term Misc") 
-           "* TODO %?\n %U\n\n%a")
+;;;;; media related 
+
+("M" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*  %^{Description}  " )
+
+("P" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+ "*   %^{Description}   :Pre_Release: " )
+
+("T" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+ "*  %^{Description}" )
+
+("S" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+ "*  %^{Description}" )
+
+("C" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+ "*  %^{Description}" )
+
 
 
   )))

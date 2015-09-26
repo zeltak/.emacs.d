@@ -1504,14 +1504,21 @@ https://github.com/Fanael/rainbow-delimiters
  )
 #+END_SRC 
 ** TODO Ranger
+   :PROPERTIES:
+   :ID:       326350a8-94ad-4a3c-bf9f-e9cbe6a68528
+   :END:
 https://github.com/ralesi/ranger/
 
 #+BEGIN_SRC emacs-lisp :results none
-;(use-package ranger
-; :ensure t
-; :config
-;
-; )
+(use-package ranger
+ :ensure t
+ :config
+(setq ranger-cleanup-eagerly t)
+(setq ranger-show-dotfiles t)
+(setq ranger-parent-depth 1)
+(setq ranger-ignored-extensions '("mkv" "iso" "mp4"))
+
+ )
 #+END_SRC 
 ** scratch
 Instant scratch buffer for current mode
@@ -2601,6 +2608,117 @@ Version 2015-08-22"
       (kill-new (buffer-string))
       (message "Buffer content copied."))))
 #+END_SRC
+*** replace underscore
+#+BEGIN_SRC emacs-lisp :results none
+(defun xah-cycle-hyphen-underscore-space ()
+  "Cycle {underscore, space, hypen} chars of current word or text selection.
+When called repeatedly, this command cycles the {“_”, “-”, “ ”} characters, in that order.
+
+URL `http://ergoemacs.org/emacs/elisp_change_space-hyphen_underscore.html'
+Version 2015-08-17"
+  (interactive)
+  ;; this function sets a property 「'state」. Possible values are 0 to length of ξcharArray.
+  (let (ξp1 ξp2)
+    (if (use-region-p)
+        (progn
+          (setq ξp1 (region-beginning))
+          (setq ξp2 (region-end)))
+      (let ((ξbounds (bounds-of-thing-at-point 'symbol)))
+        (progn
+          (setq ξp1 (car ξbounds))
+          (setq ξp2 (cdr ξbounds)))))
+
+    (let* ((ξinputText (buffer-substring-no-properties ξp1 ξp2))
+           (ξcharArray ["_" "-" " "])
+           (ξlength (length ξcharArray))
+           (ξregionWasActive-p (region-active-p))
+           (ξnowState
+            (if (equal last-command this-command )
+                (get 'xah-cycle-hyphen-underscore-space 'state)
+              0 ))
+           (ξchangeTo (elt ξcharArray ξnowState)))
+      (save-excursion
+        (save-restriction
+          (narrow-to-region ξp1 ξp2)
+          (goto-char (point-min))
+          (while
+              (search-forward-regexp
+               (concat
+                (elt ξcharArray (% (+ ξnowState 1) ξlength))
+                "\\|"
+                (elt ξcharArray (% (+ ξnowState 2) ξlength)))
+               (point-max)
+               'NOERROR)
+            (replace-match ξchangeTo 'FIXEDCASE 'LITERAL))))
+      (when (or (string= ξchangeTo " ") ξregionWasActive-p)
+        (goto-char ξp2)
+        (set-mark ξp1)
+        (setq deactivate-mark nil))
+      (put 'xah-cycle-hyphen-underscore-space 'state (% (+ ξnowState 1) ξlength)))))
+#+END_SRC
+*** Bracket Pair Insertion Commands
+#+BEGIN_SRC emacs-lisp :results none
+(defun xah-insert-bracket-pair (φleft-bracket φright-bracket)
+  "Wrap or Insert a matching bracket and place cursor in between.
+
+If there's a text selection, wrap brackets around it. Else, smartly decide wrap or insert. (basically, if there's no char after cursor, just insert bracket pair.)
+
+φleft-bracket ＆ φright-bracket are strings.
+
+URL `http://ergoemacs.org/emacs/elisp_insert_brackets_by_pair.html'
+Version 2015-04-19"
+  (if (use-region-p)
+      (progn
+        (let (
+              (ξp1 (region-beginning))
+              (ξp2 (region-end)))
+          (goto-char ξp2)
+          (insert φright-bracket)
+          (goto-char ξp1)
+          (insert φleft-bracket)
+          (goto-char (+ ξp2 2))))
+    (progn ; no text selection
+      (if
+          (or
+           (looking-at "[^-_[:alnum:]]")
+           (eq (point) (point-max)))
+          (progn
+            (insert φleft-bracket φright-bracket)
+            (search-backward φright-bracket ))
+        (progn
+          (let (ξp1 ξp2)
+            ;; basically, want all alphanumeric, plus hyphen and underscore, but don't want space or punctuations. Also want chinese.
+            ;; 我有一帘幽梦，不知与谁能共。多少秘密在其中，欲诉无人能懂。
+            (skip-chars-backward "-_[:alnum:]")
+            (setq ξp1 (point))
+            (skip-chars-forward "-_[:alnum:]")
+            (setq ξp2 (point))
+            (goto-char ξp2)
+            (insert φright-bracket)
+            (goto-char ξp1)
+            (insert φleft-bracket)
+            (goto-char (+ ξp2 (length φleft-bracket)))))))))
+
+#+END_SRC
+*** specific paren types enter
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
+#+END_SRC
+(defun xah-insert-single-angle-quote‹› () (interactive) (xah-insert-bracket-pair "‹" "›") )
+(defun xah-insert-double-angle-quote«» () (interactive) (xah-insert-bracket-pair "«" "»") )
+(defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
+(defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’") )
+(defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\"") )
+(defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
+(defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
+(defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」") )
+(defun xah-insert-white-corner-bracket『』 () (interactive) (xah-insert-bracket-pair "『" "』") )
+(defun xah-insert-angle-bracket〈〉 () (interactive) (xah-insert-bracket-pair "《" "》") )
+(defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
+(defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
+(defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
+(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕") )
+
 *** flyspell jump to last correction
 #+BEGIN_SRC emacs-lisp :results none
 ;; move point to previous error
@@ -3896,7 +4014,7 @@ quick switch other windw
 LEADER:【C-A-W】-append to killring
 "
 ("\]" z/insert-slsh "insert \\")
-("\\"  avy-goto-word-1  "avy jump")
+("\\"  avy-goto-char-timer  "avy jump")
 ("a" nil )
 ("b"  nil  )
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
@@ -4195,7 +4313,7 @@ _q_:
   ("u"  imenu "imenu")
   ("v"  nil)
   ("w"  ispell-word "ispeel word" )
-  ("x"  nil )
+  ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
   ("z"  counsel-recoll "recoll" )
   ("q"  nil )
@@ -4418,22 +4536,6 @@ BKMK Menu
  )
  #+END_SRC
 
-**** extra table commands
-【C-c +】 will sum a column and move to clip
-
-#+BEGIN_SRC emacs-lisp :results none
- (defhydra hydra-org-table  (:color red )
-      "
-      "
-     ("i" org-table-insert-row  "insert row" :color blue) 
-     ("y" org-table-copy-region  "copy" :color blue) 
-     ("d" org-table-cut-region  "cut" ) 
-     ("p" org-table-paste-rectangle  "paste" :color red ) 
-     ("c" org-table-create-or-convert-from-region  "convert" ) 
-      ("q" nil "cancel" nil)
- )
- #+END_SRC
-
 **** org cooking 
 #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-org-food ()
@@ -4621,6 +4723,29 @@ _q_: quit
    ("t" yas-tryout-snippet  "try snipet" :color blue)
    ("q" nil "cancel")))
 #+END_SRC
+*** org tables (C-M-t)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-M-l")
+
+(defhydra hydra-org-tablr (:color blue  :columns 6)
+"【C-c +】 will sum a column and move to clip  【C-space】 blank field 【M-left/right】move column left/right  【M-S-left/right】kill/add column 
+【M-up/down】 move row up/down 【M-S-down】 insert row  【M-S-up】 kill row
+【|-】 will start a dashed line 【C-c +】 org sum 【C-c ?/}】 find/show out field info 
+【@row$column】>>  @2$3 will mean 2nd row, 3rd column 
+ $1..$3f  firtst three fields in the current row // @2$1..@4$3  6 fields between these two fields
+FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum 
+【:=】insert formula directly >> :=vsum(@2$3..@32$3)
+"
+     ("i" org-table-insert-row  "insert row" :color blue) 
+     ("y" org-table-copy-region  "copy" :color blue) 
+     ("d" org-table-cut-region  "cut" :color blue) 
+     ("p" org-table-paste-rectangle  "paste" :color blue) 
+     ("s" org-table-sort-lines  "sort" :color blue) 
+     ("c" org-table-create-or-convert-from-region  "convert" ) 
+     ("w" quick-calc  "quick calc" ) 
+   ("q" nil "cancel")))
+#+END_SRC
 *** Editing (C-M-e)
 **** main editing command 
 
@@ -4693,7 +4818,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
 #+BEGIN_SRC emacs-lisp :results none
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
-  ("k"    z/insert-keyboth  "【】") 
+  ("k"    z/insert-black-lenticular-bracket  "【】") 
   ("b"     z/insert-bashscript  "#!") 
   ("‣"     z/insert-play  " ‣") 
   ("q" nil "cancel" nil)
@@ -5347,7 +5472,7 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 '(
 
 ;;TODO sparse tree
-("T" occur-tree "TODO")
+("O" occur-tree "TODO")
 
 ;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
@@ -5386,9 +5511,7 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 ("f" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
+          (org-agenda-sorting-strategy  '(priority-down))
 )
 )
 
@@ -5396,7 +5519,7 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 
 
 ;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
-("t" "tech" todo "TODO" 
+("c" "tech" todo "TODO" 
          (
          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
           (org-agenda-sorting-strategy 
@@ -5657,10 +5780,6 @@ this command below will use helm for completion since in the above helm config w
 
 ("C" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
  "*  %^{Description}" )
-
-
-
-
 
 
 
