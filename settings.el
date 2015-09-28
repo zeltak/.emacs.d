@@ -2881,9 +2881,8 @@ LEADER:【C-A-W】-append to killring
 "
 ("\]" z/insert-slsh "insert \\")
 ("\\"  avy-goto-char-timer  "avy jump")
-("a" nil )
-("b"  nil  )
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
+("a" nil )
 ;("c"  company-complete )
 ("c"  auto-complete )
 ("d"  nil )
@@ -2898,7 +2897,8 @@ LEADER:【C-A-W】-append to killring
 ("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
-("o"  set-mark-command 4 "mark prev" )
+("b"  set-mark-command 4 "mark prev" )
+("o"   hydra-org-edit/body "org edit" :face 'hydra-face-green )
 ("p"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
@@ -2917,7 +2917,9 @@ LEADER:【C-A-W】-append to killring
 (global-set-key
    (kbd "<f1>")
 (defhydra hydra-toggles (:color blue  :columns 6)
-"Toggles:   【M-g M-g】 goto line"
+"Toggles:   【M-g M-g】 goto line
+【C-x SPACE】 start mark rectangle 
+"
 ("a" nil  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
@@ -3145,6 +3147,7 @@ _q_:
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
   ("p"  nil )
+  ("r"  hydra-rectangle/body "rectangle menu")
   ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
@@ -3473,6 +3476,11 @@ _q_: quit
 ;     ("j" hydra-move-splitter-down)
 ;     ("k" hydra-move-splitter-up)
 ;     ("l" hydra-move-splitter-right)))
+
+(defhydra hydra-rectangle (:color blue  :columns 6 :hint nil)
+   "rectangle commands "
+   ("1" rectangle-number-lines "rectangle lines" :color blue)
+   ("q" nil "cancel"))
 
 (global-set-key
  (kbd "C-M-y")
@@ -4054,7 +4062,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ("f" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy  '(priority-down))
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+
 )
 )
 
@@ -4150,13 +4159,18 @@ With prefix argument, also display headlines without a TODO keyword."
               ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
-(setq org-highest-priority ?A)
-(setq org-lowest-priority ?A)
-(setq org-default-priority ?A)
+;; (setq org-highest-priority ?A)
+;; (setq org-lowest-priority ?A)
+;; (setq org-default-priority ?A)
 
-(setq org-priority-start-cycle-with-default t)
+;; (setq org-priority-start-cycle-with-default t)
 
 (setq org-outline-path-complete-in-steps nil)
+
+;;list everything instead of stepping through each level gradually
+(setq org-outline-path-complete-in-steps nil)
+;; Refile on top of file max
+(setq org-refile-use-outline-path 'file )
 
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
@@ -4353,7 +4367,10 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;     (not (string= lang "emacs-lisp")))  ; don't ask for lisp
 ;; (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 
-(setq org-confirm-babel-evaluate nil)
+;; enable prompt-free code running
+(setq org-confirm-babel-evaluate nil        ;; for running code blocks
+      org-confirm-elisp-link-function nil   ;; for elisp links
+      org-confirm-shell-link-function nil)  ;; for shell links
 
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)

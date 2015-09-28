@@ -4015,9 +4015,8 @@ LEADER:【C-A-W】-append to killring
 "
 ("\]" z/insert-slsh "insert \\")
 ("\\"  avy-goto-char-timer  "avy jump")
-("a" nil )
-("b"  nil  )
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
+("a" nil )
 ;("c"  company-complete )
 ("c"  auto-complete )
 ("d"  nil )
@@ -4032,7 +4031,8 @@ LEADER:【C-A-W】-append to killring
 ("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
-("o"  set-mark-command 4 "mark prev" )
+("b"  set-mark-command 4 "mark prev" )
+("o"   hydra-org-edit/body "org edit" :face 'hydra-face-green )
 ("p"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
@@ -4054,7 +4054,9 @@ LEADER:【C-A-W】-append to killring
 (global-set-key
    (kbd "<f1>")
 (defhydra hydra-toggles (:color blue  :columns 6)
-"Toggles:   【M-g M-g】 goto line"
+"Toggles:   【M-g M-g】 goto line
+【C-x SPACE】 start mark rectangle 
+"
 ("a" nil  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
@@ -4306,6 +4308,7 @@ _q_:
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
   ("p"  nil )
+  ("r"  hydra-rectangle/body "rectangle menu")
   ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
@@ -4710,6 +4713,13 @@ _q_: quit
  #+END_SRC
 
 *** yas (C-M-y)
+*** rectangle 
+#+BEGIN_SRC emacs-lisp :results none
+(defhydra hydra-rectangle (:color blue  :columns 6 :hint nil)
+   "rectangle commands "
+   ("1" rectangle-number-lines "rectangle lines" :color blue)
+   ("q" nil "cancel"))
+#+END_SRC
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-y")
@@ -5511,7 +5521,8 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 ("f" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
-          (org-agenda-sorting-strategy  '(priority-down))
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+
 )
 )
 
@@ -5641,22 +5652,29 @@ With prefix argument, also display headlines without a TODO keyword."
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 #+END_SRC
 *** priorities
+This can mess up the sort order in org-agenda-sorting-strategy and thus its commented out 
 #+BEGIN_SRC emacs-lisp :results none
-(setq org-highest-priority ?A)
-(setq org-lowest-priority ?A)
-(setq org-default-priority ?A)
+  ;; (setq org-highest-priority ?A)
+  ;; (setq org-lowest-priority ?A)
+  ;; (setq org-default-priority ?A)
 
-(setq org-priority-start-cycle-with-default t)
+  ;; (setq org-priority-start-cycle-with-default t)
 #+END_SRC 
 ** Refile
 *** set which refile method to us (currently helm)
 this command below will use helm for completion since in the above helm config we sepcify these two commands: (require 'helm-config) and (helm-mode 1)
-
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-outline-path-complete-in-steps nil)
 #+END_SRC
-
+*** settings for paths and headers shown
+#+BEGIN_SRC emacs-lisp :results none
+;;list everything instead of stepping through each level gradually
+(setq org-outline-path-complete-in-steps nil)
+;; Refile on top of file max
+(setq org-refile-use-outline-path 'file )
+#+END_SRC
 *** set heading depth
+set how many levels of headers to show while refiling 
 #+begin_src emacs-lisp results none
 ; Targets include this file and any file contributing to the agenda - up to 9 levels deep
 (setq org-refile-targets (quote ((nil :maxlevel . 9)
@@ -5892,9 +5910,12 @@ this command below will use helm for completion since in the above helm config w
   ;;     (not (string= lang "emacs-lisp")))  ; don't ask for lisp
   ;; (setq org-confirm-babel-evaluate 'my-org-confirm-babel-evaluate)
 #+END_SRC
-*** global disable confirm
+*** enable prompt-free code running
 #+BEGIN_SRC emacs-lisp :results none
-(setq org-confirm-babel-evaluate nil) 
+;; enable prompt-free code running
+(setq org-confirm-babel-evaluate nil        ;; for running code blocks
+      org-confirm-elisp-link-function nil   ;; for elisp links
+      org-confirm-shell-link-function nil)  ;; for shell links 
 #+END_SRC
 *** Fonts
 #+BEGIN_SRC emacs-lisp :results none

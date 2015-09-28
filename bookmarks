@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("hydra.settings" 0 14
+(#1=(#("n6.org" 0 6
+      (bmkp-full-record #1#))
+    (filename . "~/Dropbox/orgzly/n6.org")
+    (buffer-name . "n6.org")
+    (front-context-string)
+    (rear-context-string . "tle/tt3230454/\n\n")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(22023 64299 602894 377000))
+    (created . #2#)
+    (position . 422))
+#1=(#("hydra.settings" 0 14
       (bmkp-full-record #1#))
     (end-position . 30295)
     (filename . "~/.emacs.d/settings.org")
@@ -222,8 +234,8 @@
     (rear-context-string . "e and documents\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 13)
-    (time 22020 16101 673610 521000)
+    (visits . 15)
+    (time 22023 62862 817556 279000)
     (created 21882 43775 338546 974000)
     (position . 4917))
 #1=(#("orgfiles" 0 8
@@ -657,8 +669,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 9)
-    (time 22009 2071 789762 963000)
+    (visits . 10)
+    (time 22023 5185 161404 454000)
     (created 21605 59744 306853 251000)
     (position . 1))
 #1=(#("dl.org" 0 6
@@ -681,8 +693,8 @@
     (rear-context-string)
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 18)
-    (time 22016 6811 871417 578000)
+    (visits . 19)
+    (time 22023 6870 831698 868000)
     (created 21605 59722 768903 961000)
     (position . 1))
 #1=(#("code" 0 4
@@ -853,6 +865,7 @@
     (position . 28))
 #1=(#("autostart.sh" 0 12
       (bmkp-full-record #1#))
+    (end-position . 2514)
     (annotation)
     (tags)
     (filename . "~/dotfiles/LAPTOP/bin/autostart.sh")
@@ -861,10 +874,10 @@
     (rear-context-string . "#11 (Utils)\n#exe")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 0)
-    (time . #2=(21844 19222 170981 757000))
-    (created . #2#)
-    (position . 2400))
+    (visits . 1)
+    (time 22023 5108 354685 245000)
+    (created 21844 19222 170981 757000)
+    (position . 2514))
 #1=(#(".mpdconf" 0 8
       (bmkp-full-record #1#))
     (filename . "~/.mpdconf")
@@ -980,8 +993,8 @@
     (rear-context-string . "\n** Corriander\n*")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 20)
-    (time 22020 4934 328639 722000)
+    (visits . 21)
+    (time 22023 60181 618049 497000)
     (created 21329 12421 81695 297000)
     (position . 96508))
 #1=(#("food/shopping" 0 13
@@ -1184,8 +1197,8 @@
     (rear-context-string . "n't work right.\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 6)
-    (time 20865 36325 203396 62000)
+    (visits . 7)
+    (time 22023 62979 97379 479000)
     (created 20811 17421 31658 18000)
     (position . 246)
     (end-position . 246))

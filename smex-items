@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ string-rectangle
+ yank-rectangle
+ kill-rectangle
  org-table-copy-region
  avy-goto-char-timer
  quick-calc
  gnus
- z-year-increment
- ranger
- deer
 )
 
 ;; ----- smex-data -----
@@ -61,4 +61,7 @@
  (quick-calc . 1)
  (avy-goto-char-timer . 4)
  (org-table-copy-region . 1)
+ (kill-rectangle . 1)
+ (yank-rectangle . 1)
+ (string-rectangle . 1)
 )
