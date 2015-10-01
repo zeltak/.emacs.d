@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ org-gcal-sync
  string-rectangle
  yank-rectangle
  kill-rectangle
  org-table-copy-region
  avy-goto-char-timer
  quick-calc
- gnus
 )
 
 ;; ----- smex-data -----
@@ -64,4 +64,5 @@
  (kill-rectangle . 1)
  (yank-rectangle . 1)
  (string-rectangle . 1)
+ (org-gcal-sync . 1)
 )

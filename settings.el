@@ -285,6 +285,7 @@
  :config
  (defcustom avy-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l ?q ?w ?e ?r ?t ?y ?u ?i ?o ?p ?z ?x ?c ?v ?b ?n ?m )
  "Keys for jumping.") 
+(setq avy-timeout-seconds 0.6)
  )
 
 (use-package avy-zap
@@ -932,8 +933,8 @@
  :ensure t
  :config
 (require 'org-gcal)
-(setq org-gcal-client-id "915933520493-ppckdh9b038tb5u039c0b8s06bdkio98.apps.googleusercontent.com"
-      org-gcal-client-secret "1hy--1nQE-xUjVyR8MLYt5W"
+(setq org-gcal-client-id "882257512275-kgh7942bb0pach0aq88n7kru5d351lcv.apps.googleusercontent.com"
+      org-gcal-client-secret "J2sBmUIreacPE_LaAO_3CNnR"
       org-gcal-file-alist '(
 ("ikloog@gmail.com" .  "~/org/files/agenda/gcal.org")
 
@@ -3318,6 +3319,7 @@ BKMK Menu
 ("x"  org-archive-subtree "Archive" )
 ("-"  org-toggle-heading "Header lower" )
 ("="  z/org-convert-header-samelevel "Header same")
+("0"  org-ctrl-c-star "convert lines to headers")
 ("\\"  hydra-org-table/body "table menu"  :face 'hydra-face-orange )
 (";"  z/comment-org-in-src-block "comment block" )
 ("y"  nil )
@@ -4261,20 +4263,21 @@ With prefix argument, also display headlines without a TODO keyword."
 
 
 ;;;;; media related 
+("m" "Media")
 
-("M" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
  "*  %^{Description}  " )
 
-("P" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
  "*   %^{Description}   :Pre_Release: " )
 
-("T" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
  "*  %^{Description}" )
 
-("S" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
  "*  %^{Description}" )
 
-("C" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
  "*  %^{Description}" )
 
 
