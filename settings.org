@@ -3389,8 +3389,6 @@ execute speed commands."
       (message-kill-buffer))))
 #+END_SRC
 
-#+RESULTS:
-: z/org-email-heading-me
 *** movements 
 **** TODO move to top and collapse
      :PROPERTIES:
@@ -4475,7 +4473,9 @@ BKMK Menu
    (kbd "<f9>")
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
-"ORG editing"
+"ORG editing
+【C-c -】 convert to dashed lines
+"
 
 ("<f9>" helm-org-headlines "helm org headers")
 ("<f10> w" worf-goto "worf org headers")
@@ -4635,6 +4635,8 @@ _q_: quit
    ("d" org-cut-subtree  "org cut" )
    ("y" org-copy-subtree "org copy" )
    ("p" org-paste-subtree  "org paste" )
+   ("e" z/org-email-heading  "email header" )
+   ("z" z/org-email-heading-me  "email header ikloog" )
    ("r" org-copy  "copy via refile" )
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )
@@ -5723,94 +5725,330 @@ set how many levels of headers to show while refiling
     :ID:       2bf19d27-a0af-4e4c-91f1-9723a2dedf18
     :END:
 #+BEGIN_SRC emacs-lisp :results none 
-(setq org-capture-templates
-        (quote ( 
+  (setq org-capture-templates
+          (quote ( 
 
          
-;;;; food simple template
-("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* COOK %^{Description}   %^g
-%t 
-%^{Time}p
-%^{Rating}p
-%^{Source}p
-%^{Ammount}p
-%^{Fav}p
-%^{prompt|** Ingridients}
-%?
-%^{prompt|** Preperation}
-"
- )
+  ;;;; food simple template
+  ;; ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+  ;; "* COOK %^{Description}   %^g
+  ;; %t 
+  ;; %^{Time}p
+  ;; %^{Rating}p
+  ;; %^{Source}p
+  ;; %^{Ammount}p
+  ;; %^{Fav}p
+  ;; %^{prompt|** Ingridients}
+  ;; %?
+  ;; %^{prompt|** Preperation}
+  ;; "
+  ;;  )
 
-;; add to shopping cart
-("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
- "* SHOP  %^{Description} " )
+  ;; add to shopping cart
+  ("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+   "* SHOP  %^{Description} " )
 
-;;;; travel  simple template
-("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
-"*  %^{Description}   %^g 
-%t 
-%^{address}p
-%^{Rating}p
-%^{URL}p
-%^{map}p
-%^{Fav}p
-%?
-"
- )
+  ;;;; travel  simple template
+  ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+  "*  %^{Description}   %^g 
+  %t 
+  %^{address}p
+  %^{Rating}p
+  %^{URL}p
+  %^{map}p
+  %^{Fav}p
+  %?
+  "
+   )
 
-;;;; Tech  Todos
+  ;;;; Tech  Todos
 
-("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
- "*  %^{Description}" )
+  ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
+   "*  %^{Description}" )
 
-;;;; Home Todos
+  ;;;; Home Todos
 
-("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
- "* TODO  %?\n%T" )
-
-
-;;; Uni todos
-
-("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
- "* TODO  %?\n%T" )
-
-;;;BGU todos 
-("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
- "* TODO  %?\n%T" )
+  ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+   "* TODO  %?\n%T" )
 
 
-;; for mail 
-("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
- "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
+  ;;; Uni todos
+
+  ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+   "* TODO  %?\n%T" )
+
+  ;;;BGU todos 
+  ("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+   "* TODO  %?\n%T" )
 
 
-;;; web capture
-("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
+  ;; for mail 
+  ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
+   "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
 
-;;;;; media related 
-("m" "Media")
-
-("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %^{Description}  " )
-
-("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*   %^{Description}   :Pre_Release: " )
-
-("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
- "*  %^{Description}" )
-
-("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
- "*  %^{Description}" )
-
-("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
- "*  %^{Description}" )
+  ;;; web capture
+  ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
 
 
+  ;;;;; media related 
+  ("m" "Media")
 
-  )))
+  ("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+   "*  %^{Description}  " )
+
+  ("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+   "*   %^{Description}   :Pre_Release: " )
+
+  ("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+   "*  %^{Description}" )
+
+  ("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+   "*  %^{Description}" )
+
+  ("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+   "*  %^{Description}" )
+
+
+
+    )))
 #+END_SRC
+*** Extra Templates
+
+(defvar org-capture-template-food
+"* %^{TYPE|COOK|SHOP|LIBRARY} %?
+:PROPERTIES:
+:ID: %(org-id-uuid)
+:Time: %^{minutes}
+:Rating: %^{rating?|1|2|3|4|5}
+:Source: %^{Source?}
+:Amount: %^{ammount?|1|2|3|4|5|6|7|8}
+:Amount: %^{Favorite?|y|n}
+:END:
+** %^{prompt|Ingredients}
+
+** %^{prompt|Preperation}
+"
+"Project Template for org-project")
+
+
+
+(setq org-capture-templates
+       (append org-capture-templates
+       `(
+("J" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+	   ,org-capture-template-food ))))
+
+
+**** Capture
+***** Project Capture
+  #+BEGIN_SRC emacs-lisp :results none  
+    (defvar org-project-project-template
+    "* %^{Project Stage|ONGOING|IDEA|GLIMMER|CAPTURE|LIVE|KICKOFF|STARTUP|ACTIVE|CLOSEOUT|DONE|CANCELED} %?
+    :PROPERTIES:
+    :BILLABLE: %^{Billable?|y|n}
+    :PERCENT: %^{Percent of Time}
+    :CATEGORY: %^{Project Category}
+    :START_DATE:
+    :PERSONAL: %^{Personal?|y|n}
+    :END_DATE:
+    :GLOSSARY:
+    :ID: %(org-id-uuid)
+    :TYPE: project
+    :INIT: false
+    :ORG_FILE:
+    :END:
+    :CONTACTS:\n:END:
+    :LOGBOOK:
+    - State \"CREATED\"       from \"NONE\"       %U
+    :END:"
+    "Project Template for org-project")
+  #+END_SRC
+
+now add to org templates 
+
+  #+BEGIN_SRC emacs-lisp :results none 
+  (setq org-capture-templates (append org-capture-templates
+          `(("P" "Projects")
+            ("Pc" "Create Project" entry (file org-project-project-file)
+              ,org-project-project-template :clock-in t :clock-resume t))))
+  #+END_SRC
+
+***** Task capture templates
+  #+BEGIN_SRC emacs-lisp :results none 
+    (defvar org-project-task-template-todo
+    "* TODO %?
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :ID: %(org-id-uuid)
+    :ASSIGNED:
+    :IMPORTANCE:
+    :URGENCY:
+    :WITH:
+    :AT:
+    :STATE: todo
+    :TYPE: task
+    :END:
+    :LOGBOOK:
+    - State \"CREATED\"       from \"NONE\"       %U
+    :END:"
+    "TODO Template for org-project")
+
+    (defvar org-project-task-template-active
+    "* ACTIVE %?
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :ID: %(org-id-uuid)
+    :ASSIGNED:
+    :IMPORTANCE:
+    :URGENCY:
+    :WITH:
+    :AT:
+    :STATE: active
+    :TYPE:
+    :END:
+    :LOGBOOK:
+    - State \"CREATED\"       from \"NONE\"       %U
+    :END:"
+    "ACTIVE Template for org-project")
+
+    (defvar org-project-task-template-contact
+    "* CONTACT RE: %?
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :ID: %(org-id-uuid)
+    :IMPORTANCE:
+    :URGENCY:
+    :WHO:
+    :STATE: todo
+    :TYPE: task
+    :END:"
+    "CONTACT Template for org-project")
+
+    (defvar org-project-task-template-reply
+    "* CONTACT [[notmuch:id:%:message-id][%? - %:subject]]
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :ID: %(org-id-uuid)
+    :IMPORTANCE:
+    :URGENCY:
+    :WHO: %:from
+    :STATE: todo
+    :TYPE: task
+    :END:
+    :LOGBOOK:
+    - State \"CREATED\"       from \"NONE\"       %U
+    :END:"
+    "CONTACT Template for org-project")
+
+    (defvar org-project-task-template-wait
+    "* WAIT RE: %?
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :ID: %(org-id-uuid)
+    :IMPORTANCE:
+    :URGENCY:
+    :FROM:
+    :STATUS: active
+    :TYPE: task
+    :END:
+    :LOGBOOK:
+    - State \"CREATED\"       from \"NONE\"       %U
+    :END:"
+    "WAIT Template for org-project")
+
+    (defvar org-project-task-template-closed
+    "* %^{STATUS|DONE|SOMEDAY|CANCELED|FAILED} %?
+    :PROPERTIES:
+    :CATEGORY: %(prompt-for-current-projects-category)
+    :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+    :ID: %(org-id-uuid)
+    :ASSIGNED:
+    :IMPORTANCE:
+    :URGENCY:
+    :AT:
+    :STATUS: closed
+    :TYPE: task
+    :END:"
+    "CLOSED Template for org-project")
+  #+END_SRC
+
+add to templates
+
+  #+BEGIN_SRC emacs-lisp :results none 
+  (setq org-capture-templates (append org-capture-templates
+          `(("t" "Tasks")
+            ("tt" "Create TODO" entry (file org-project-tasks-file)
+              ,org-project-task-template-todo :clock-in t :clock-resume t)
+            ("ta" "Create ACTIVE" entry (file org-project-tasks-file)
+              ,org-project-task-template-active :clock-in t :clock-resume t)
+            ("tc" "Create CONTACT" entry (file org-project-tasks-file)
+              ,org-project-task-template-contact :clock-in t :clock-resume t)
+            ("tw" "Create WAIT" entry (file org-project-tasks-file)
+              ,org-project-task-template-wait :clock-in t :clock-resume t)
+            ("tC" "Create Closed" entry (file org-project-tasks-file)
+              ,org-project-task-template-closed :clock-in t :clock-resume t)
+            ("tr" "REPLY TO EMAIL" entry (file org-project-tasks-file)
+              ,org-project-task-template-reply :clock-in t :clock-resume t))))
+  #+END_SRC
+
+***** Event capture templates
+  #+BEGIN_SRC emacs-lisp :results none 
+	(defvar org-project-task-template-meet
+	"* MEET about %?
+	:PROPERTIES:
+	:CATEGORY: %(prompt-for-current-projects-category)
+	:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+	:ID: %(org-id-uuid)
+	:ASSIGNED:
+	:IMPORTANCE:
+	:URGENCY:
+	:WITH:
+	:STATUS: active
+	:TYPE: event
+	:END:
+	:LOGBOOK:
+	- State \"CREATED\"       from \"NONE\"       %U
+	:END:
+      %^t"
+	"Task Template for org-project")
+
+	(defvar org-project-task-template-event
+	"* EVENT
+	:PROPERTIES:
+	:CATEGORY: %(prompt-for-current-projects-category)
+	:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+	:ID: %(org-id-uuid)
+	:ASSIGNED:
+	:IMPORTANCE:
+	:URGENCY:
+	:WITH:
+	:STATUS: todo
+	:TYPE: event
+	:END:
+	:LOGBOOK:
+	- State \"CREATED\"       from \"NONE\"       %U
+	:END:
+      %^t"
+	"Task Template for org-project")
+  #+END_SRC
+
+add to templates 
+
+  #+BEGIN_SRC emacs-lisp :results none 
+  (setq org-capture-templates (append org-capture-templates
+          `(("e" "Events")
+            ("ee" "Create EVENT" entry (file org-project-events-file)
+              ,org-project-task-template-event :clock-in t :clock-resume t)
+            ("em" "Create MEETING" entry (file org-project-events-file)
+              ,org-project-task-template-meet :clock-in t :clock-resume t))))
+  #+END_SRC
+
+
 ** mobile org
 *** setup
 #+begin_src emacs-lisp :results none

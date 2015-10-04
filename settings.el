@@ -3277,7 +3277,9 @@ BKMK Menu
    (kbd "<f9>")
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
-"ORG editing"
+"ORG editing
+【C-c -】 convert to dashed lines
+"
 
 ("<f9>" helm-org-headlines "helm org headers")
 ("<f10> w" worf-goto "worf org headers")
@@ -4199,21 +4201,21 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-capture-templates
         (quote ( 
 
-         
+       
 ;;;; food simple template
-("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* COOK %^{Description}   %^g
-%t 
-%^{Time}p
-%^{Rating}p
-%^{Source}p
-%^{Ammount}p
-%^{Fav}p
-%^{prompt|** Ingridients}
-%?
-%^{prompt|** Preperation}
-"
- )
+;; ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+;; "* COOK %^{Description}   %^g
+;; %t 
+;; %^{Time}p
+;; %^{Rating}p
+;; %^{Source}p
+;; %^{Ammount}p
+;; %^{Fav}p
+;; %^{prompt|** Ingridients}
+;; %?
+;; %^{prompt|** Preperation}
+;; "
+;;  )
 
 ;; add to shopping cart
 ("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
@@ -4283,6 +4285,192 @@ With prefix argument, also display headlines without a TODO keyword."
 
 
   )))
+
+(defvar org-project-project-template
+"* %^{Project Stage|ONGOING|IDEA|GLIMMER|CAPTURE|LIVE|KICKOFF|STARTUP|ACTIVE|CLOSEOUT|DONE|CANCELED} %?
+:PROPERTIES:
+:BILLABLE: %^{Billable?|y|n}
+:PERCENT: %^{Percent of Time}
+:CATEGORY: %^{Project Category}
+:START_DATE:
+:PERSONAL: %^{Personal?|y|n}
+:END_DATE:
+:GLOSSARY:
+:ID: %(org-id-uuid)
+:TYPE: project
+:INIT: false
+:ORG_FILE:
+:END:
+:CONTACTS:\n:END:
+:LOGBOOK:
+- State \"CREATED\"       from \"NONE\"       %U
+:END:"
+"Project Template for org-project")
+
+(setq org-capture-templates (append org-capture-templates
+        `(("P" "Projects")
+          ("Pc" "Create Project" entry (file org-project-project-file)
+            ,org-project-project-template :clock-in t :clock-resume t))))
+
+(defvar org-project-task-template-todo
+"* TODO %?
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:ID: %(org-id-uuid)
+:ASSIGNED:
+:IMPORTANCE:
+:URGENCY:
+:WITH:
+:AT:
+:STATE: todo
+:TYPE: task
+:END:
+:LOGBOOK:
+- State \"CREATED\"       from \"NONE\"       %U
+:END:"
+"TODO Template for org-project")
+
+(defvar org-project-task-template-active
+"* ACTIVE %?
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:ID: %(org-id-uuid)
+:ASSIGNED:
+:IMPORTANCE:
+:URGENCY:
+:WITH:
+:AT:
+:STATE: active
+:TYPE:
+:END:
+:LOGBOOK:
+- State \"CREATED\"       from \"NONE\"       %U
+:END:"
+"ACTIVE Template for org-project")
+
+(defvar org-project-task-template-contact
+"* CONTACT RE: %?
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:ID: %(org-id-uuid)
+:IMPORTANCE:
+:URGENCY:
+:WHO:
+:STATE: todo
+:TYPE: task
+:END:"
+"CONTACT Template for org-project")
+
+(defvar org-project-task-template-reply
+"* CONTACT [[notmuch:id:%:message-id][%? - %:subject]]
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:ID: %(org-id-uuid)
+:IMPORTANCE:
+:URGENCY:
+:WHO: %:from
+:STATE: todo
+:TYPE: task
+:END:
+:LOGBOOK:
+- State \"CREATED\"       from \"NONE\"       %U
+:END:"
+"CONTACT Template for org-project")
+
+(defvar org-project-task-template-wait
+"* WAIT RE: %?
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:ID: %(org-id-uuid)
+:IMPORTANCE:
+:URGENCY:
+:FROM:
+:STATUS: active
+:TYPE: task
+:END:
+:LOGBOOK:
+- State \"CREATED\"       from \"NONE\"       %U
+:END:"
+"WAIT Template for org-project")
+
+(defvar org-project-task-template-closed
+"* %^{STATUS|DONE|SOMEDAY|CANCELED|FAILED} %?
+:PROPERTIES:
+:CATEGORY: %(prompt-for-current-projects-category)
+:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+:ID: %(org-id-uuid)
+:ASSIGNED:
+:IMPORTANCE:
+:URGENCY:
+:AT:
+:STATUS: closed
+:TYPE: task
+:END:"
+"CLOSED Template for org-project")
+
+(setq org-capture-templates (append org-capture-templates
+        `(("t" "Tasks")
+          ("tt" "Create TODO" entry (file org-project-tasks-file)
+            ,org-project-task-template-todo :clock-in t :clock-resume t)
+          ("ta" "Create ACTIVE" entry (file org-project-tasks-file)
+            ,org-project-task-template-active :clock-in t :clock-resume t)
+          ("tc" "Create CONTACT" entry (file org-project-tasks-file)
+            ,org-project-task-template-contact :clock-in t :clock-resume t)
+          ("tw" "Create WAIT" entry (file org-project-tasks-file)
+            ,org-project-task-template-wait :clock-in t :clock-resume t)
+          ("tC" "Create Closed" entry (file org-project-tasks-file)
+            ,org-project-task-template-closed :clock-in t :clock-resume t)
+          ("tr" "REPLY TO EMAIL" entry (file org-project-tasks-file)
+            ,org-project-task-template-reply :clock-in t :clock-resume t))))
+
+(defvar org-project-task-template-meet
+  "* MEET about %?
+  :PROPERTIES:
+  :CATEGORY: %(prompt-for-current-projects-category)
+  :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+  :ID: %(org-id-uuid)
+  :ASSIGNED:
+  :IMPORTANCE:
+  :URGENCY:
+  :WITH:
+  :STATUS: active
+  :TYPE: event
+  :END:
+  :LOGBOOK:
+  - State \"CREATED\"       from \"NONE\"       %U
+  :END:
+%^t"
+  "Task Template for org-project")
+
+  (defvar org-project-task-template-event
+  "* EVENT
+  :PROPERTIES:
+  :CATEGORY: %(prompt-for-current-projects-category)
+  :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
+  :ID: %(org-id-uuid)
+  :ASSIGNED:
+  :IMPORTANCE:
+  :URGENCY:
+  :WITH:
+  :STATUS: todo
+  :TYPE: event
+  :END:
+  :LOGBOOK:
+  - State \"CREATED\"       from \"NONE\"       %U
+  :END:
+%^t"
+  "Task Template for org-project")
+
+(setq org-capture-templates (append org-capture-templates
+        `(("e" "Events")
+          ("ee" "Create EVENT" entry (file org-project-events-file)
+            ,org-project-task-template-event :clock-in t :clock-resume t)
+          ("em" "Create MEETING" entry (file org-project-events-file)
+            ,org-project-task-template-meet :clock-in t :clock-resume t))))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
