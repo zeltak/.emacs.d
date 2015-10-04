@@ -1256,6 +1256,14 @@ Sunrise:
 (setq undo-tree-mode-lighter "")         
 )
 
+(use-package vimish-fold
+ :ensure t
+ :config
+ (require 'vimish-fold)
+;(global-set-key (kbd "<menu> v f") #'vimish-fold)
+;(global-set-key (kbd "<menu> v v") #'vimish-fold-delete)
+ )
+
 (use-package unfill
 :ensure t
 :config
@@ -2258,6 +2266,50 @@ and the number of lines to be wrapped."
   (insert "#+BEGIN_EXAMPLE\n")
   (insert "\n#+END_EXAMPLE"))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; function to wrap blocks of text in org templates                       ;;
+;; e.g. latex or src etc                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun z/org-cblock-iwrap-menu ()
+  "Make a template at point."
+  (interactive)
+  (if (org-at-table-p)
+      (call-interactively 'org-table-rotate-recalc-marks)
+    (let* ((choices '(("s" . "SRC")
+                      ("e" . "EXAMPLE")
+                      ("q" . "QUOTE")
+                      ("v" . "VERSE")
+                      ("c" . "CENTER")
+                      ("l" . "LaTeX")
+                      ("h" . "HTML")
+                      ("r" . "R")
+                      ("a" . "ASCII")))
+           (key
+            (key-description
+             (vector
+              (read-key
+               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                       (mapconcat (lambda (choice)
+                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                            ": "
+                                            (cdr choice)))
+                                  choices
+                                  ", ")))))))
+      (let ((result (assoc key choices)))
+        (when result
+          (let ((choice (cdr result)))
+            (cond
+             ((region-active-p)
+              (let ((start (region-beginning))
+                    (end (region-end)))
+                (goto-char end)
+                (insert "#+END_" choice "\n")
+                (goto-char start)
+                (insert "#+BEGIN_" choice "\n")))
+             (t
+              (insert "#+BEGIN_" choice "\n")
+              (save-excursion (insert "#+END_" choice))))))))))
+
 (defun recipe-template ()
         (interactive)
         (goto-line 0)
@@ -3173,6 +3225,7 @@ _q_:
     ("r" z/org-cblock-iwrap-emacs-R "WRAP-R" )
     ("a" z/org-cblock-iwrap-ASK  "Ask" )
     ("l" z/org-cblock-iwrap-ASK-LINE "Ask line" )
+    ("m" z/org-cblock-iwrap-menu "Ask line" )
     ("pl" z/org-cblock-paste-lisp "paste lisp" )
     ("pb" z/org-cblock-paste-sh "paste bash" )
     ("pr" z/org-cblock-paste-R "paste R" )
@@ -3415,6 +3468,8 @@ _q_: quit
    ("d" org-cut-subtree  "org cut" )
    ("y" org-copy-subtree "org copy" )
    ("p" org-paste-subtree  "org paste" )
+   ("e" z/org-email-heading  "email header" )
+   ("z" z/org-email-heading-me  "email header ikloog" )
    ("r" org-copy  "copy via refile" )
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )

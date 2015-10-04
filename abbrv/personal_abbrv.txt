@@ -9,7 +9,9 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
@@ -31,9 +33,13 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table '())
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -544,7 +550,6 @@
     ("familar" "familiar" nil 0)
     ("familliar" "familiar" nil 0)
     ("fammiliar" "familiar" nil 0)
-    ("favouriste" "favorite" nil 0)
     ("feild" "field" nil 0)
     ("feilds" "fields" nil 0)
     ("fianlly" "finally" nil 0)
@@ -675,7 +680,7 @@
     ("influance" "influence" nil 0)
     ("infomation" "information" nil 0)
     ("informatoin" "information" nil 0)
-    ("ingridients" "ingredients" nil 1)
+    ("ingridients" "ingredients" nil 0)
     ("inhaboted" "inhabited" nil 0)
     ("inital" "initial" nil 0)
     ("initalization" "initialization" nil 0)
@@ -1196,6 +1201,7 @@
     ("wouldbe" "would be" nil 0)
     ("wouldnt" "wouldn't" nil 0)
     ("wquite" "quite" nil 0)
+    ("wraping" "wrapping" nil 0)
     ("wriet" "write" nil 0)
     ("writting" "writing" nil 0)
     ("wrod" "word" nil 0)
@@ -1252,7 +1258,9 @@
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1302,7 +1310,9 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1318,7 +1328,9 @@
 
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 

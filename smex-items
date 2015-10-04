@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ z/org-email-heading-me
  eval-region
  org-gcal-sync
  string-rectangle
  yank-rectangle
  kill-rectangle
  org-table-copy-region
- avy-goto-char-timer
 )
 
 ;; ----- smex-data -----
@@ -16,7 +16,7 @@
  (counsel-load-theme . 7)
  (load-theme . 11)
  (ivy-resume . 1)
- (z/org-email-heading-me . 2)
+ (z/org-email-heading-me . 3)
  (gnus . 8)
  (z/org-email-heading . 2)
  (ivy-switch-buffer . 3)
