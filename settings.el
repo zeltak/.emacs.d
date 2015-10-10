@@ -743,6 +743,17 @@
 
 (setq ivy-count-format "(%d/%d) ")
 
+(use-package  org-caldav
+ :ensure t
+ :config
+ (require 'org-caldav)
+
+(setq org-caldav-url "https://www.google.com/calendar/dav")
+(setq org-caldav-calendar-id "ikloog@gmail.com")
+(setq org-caldav-inbox (expand-file-name "/home/zeltak/org/files/PIM/org-caldev.org"))
+(setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
+ )
+
 ;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
@@ -3331,7 +3342,7 @@ BKMK Menu
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
 "ORG editing
-【C-c -】 convert to dashed lines
+【C-c -】 convert to dashed lines  【C-M-l】 org table menu
 "
 
 ("<f9>" helm-org-headlines "helm org headers")
@@ -4024,6 +4035,19 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq org-agenda-window-setup "current-window")
 (setq org-agenda-restore-windows-after-quit t)
 
+;change agenda colors
+;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
+;max days to show in agenda view
+(setq org-agenda-ndays 7)
+;start agenda from today!
+(setq org-agenda-start-on-weekday nil)
+;Items that have deadlines are displayed 10 days in advance
+(setq org-deadline-warning-days 10)
+;don’t display items that are done in my agenda.
+(setq org-agenda-skip-deadline-if-done t)
+(setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-span 14)
+
 ;; Do not dim blocked tasks
 (setq org-agenda-dim-blocked-tasks nil)
 ;; Compact the block agenda view
@@ -4084,12 +4108,23 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;;TODO sparse tree
 ("O" occur-tree "TODO")
 
+;;;;;ALL
+
+;all common tasks (from research|bgu|home files)
+("p" "all" todo "TODO|BGU|EXP" 
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
+
 ;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
 ;work related only tasks (from research|bgu files)
 ("w" "work" todo "TODO|BGU|EXP" 
 (
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
          

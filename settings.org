@@ -1129,6 +1129,21 @@ C-j will try to continue the completion, i.e. if the current candidate is a dire
 / will switch to completing the sub-directories of /, but if the candidate is a perfect match, it will act like C-j.
 ~ will switch to completing the sub-directories of ~/.
 C-n and C-p naturally select the next and the previous candidate.
+**  org-caldav-sync
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package  org-caldav
+ :ensure t
+ :config
+ (require 'org-caldav)
+
+(setq org-caldav-url "https://www.google.com/calendar/dav")
+(setq org-caldav-calendar-id "ikloog@gmail.com")
+(setq org-caldav-inbox (expand-file-name "/home/zeltak/org/files/PIM/org-caldev.org"))
+(setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
+ )
+#+END_SRC 
+
 
 ** org highlight
 #+BEGIN_SRC emacs-lisp :results none
@@ -4533,7 +4548,7 @@ BKMK Menu
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
 "ORG editing
-【C-c -】 convert to dashed lines
+【C-c -】 convert to dashed lines  【C-M-l】 org table menu
 "
 
 ("<f9>" helm-org-headlines "helm org headers")
@@ -4761,7 +4776,7 @@ _q_: quit
      ("c" ""  )
      ("k"  "" )
      ("n" "" )
-     ("p" ""  )
+     ("p" (org-agenda nil "w") "work+home"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -5445,7 +5460,7 @@ this will make org-store-link use id when creating a link.
 #+END_SRC
 
 *** agenda view
-P#+BEGIN_SRC emacs-lisp :results none
+#+BEGIN_SRC emacs-lisp :results none
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
@@ -5457,6 +5472,7 @@ P#+BEGIN_SRC emacs-lisp :results none
 ;don’t display items that are done in my agenda.
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
+(setq org-agenda-span 14)
 #+END_SRC
 
 *** look and feel
@@ -5552,12 +5568,23 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 ;;TODO sparse tree
 ("O" occur-tree "TODO")
 
+;;;;;ALL
+
+;all common tasks (from research|bgu|home files)
+("p" "all" todo "TODO|BGU|EXP" 
+(
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
+(org-agenda-sorting-strategy '(priority-down effort-down))
+))
+
+
+
 ;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
 ;work related only tasks (from research|bgu files)
 ("w" "work" todo "TODO|BGU|EXP" 
 (
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down))
 ))
          
@@ -5751,7 +5778,7 @@ set how many levels of headers to show while refiling
 
 #+RESULTS:
 
-** capture
+** Capture
 *** load org-protocl
 #+BEGIN_SRC emacs-lisp :results none
 (require 'org-protocol)
@@ -5874,21 +5901,7 @@ set how many levels of headers to show while refiling
 #+END_SRC
 *** Extra Templates
 
-(defvar org-capture-template-food
-"* %^{TYPE|COOK|SHOP|LIBRARY} %?
-:PROPERTIES:
-:ID: %(org-id-uuid)
-:Time: %^{minutes}
-:Rating: %^{rating?|1|2|3|4|5}
-:Source: %^{Source?}
-:Amount: %^{ammount?|1|2|3|4|5|6|7|8}
-:Amount: %^{Favorite?|y|n}
-:END:
-** %^{prompt|Ingredients}
-
-** %^{prompt|Preperation}
-"
-"Project Template for org-project")
+#+BEGIN_EXAMPLE
 
 
 
@@ -5899,10 +5912,36 @@ set how many levels of headers to show while refiling
 	   ,org-capture-template-food ))))
 
 
+#+END_EXAMPLE
+
 **** Capture
 ***** Project Capture
+      :PROPERTIES:
+      :ID:       5cfd0783-0c54-4436-bdba-7898403b4c84
+      :END:
   #+BEGIN_SRC emacs-lisp :results none  
-    (defvar org-project-project-template
+    
+(defvar org-capture-template-food
+"* %^{TYPE|COOK|SHOP|LIBRARY} %?
+:PROPERTIES:
+:ID: %(org-id-uuid)
+:Time: %^{minutes}
+:Rating: %^{rating?|1|2|3|4|5}
+:Source: %^{Source?}
+:Amount: %^{ammount?|1|2|3|4|5|6|7|8}
+:Amount: %^{Favorite?|y|n}
+:END:
+X** %^{prompt|Ingredients}
+
+X** %^{prompt|Preperation}
+"
+"Capture Template for food recipe")
+
+
+
+  #+END_SRC
+
+(defvar org-project-project-template
     "* %^{Project Stage|ONGOING|IDEA|GLIMMER|CAPTURE|LIVE|KICKOFF|STARTUP|ACTIVE|CLOSEOUT|DONE|CANCELED} %?
     :PROPERTIES:
     :BILLABLE: %^{Billable?|y|n}
@@ -5922,15 +5961,15 @@ set how many levels of headers to show while refiling
     - State \"CREATED\"       from \"NONE\"       %U
     :END:"
     "Project Template for org-project")
-  #+END_SRC
+
 
 now add to org templates 
 
   #+BEGIN_SRC emacs-lisp :results none 
   (setq org-capture-templates (append org-capture-templates
-          `(("P" "Projects")
-            ("Pc" "Create Project" entry (file org-project-project-file)
-              ,org-project-project-template :clock-in t :clock-resume t))))
+          `(("f" "Food")
+            ("fr" "add recipe" entry (file org-project-project-file)
+              ,org-capture-template-food )))) ))))
   #+END_SRC
 
 ***** Task capture templates

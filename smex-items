@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ isearch-forward
+ bbdb
+ org-caldav-sync
  z/org-email-heading-me
  eval-region
  org-gcal-sync
  string-rectangle
- yank-rectangle
- kill-rectangle
- org-table-copy-region
 )
 
 ;; ----- smex-data -----
@@ -26,7 +26,7 @@
  (tiny-expand . 5)
  (find-file-other-window . 1)
  (rainbow-delimiters-mode . 1)
- (isearch-forward . 1)
+ (isearch-forward . 5)
  (rgrep . 2)
  (byte-compile-file . 2)
  (gnus-mouse-pick-group . 1)
@@ -43,7 +43,7 @@
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
  (customize-variable . 2)
- (bbdb . 4)
+ (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
  (eshell . 1)
@@ -66,4 +66,5 @@
  (string-rectangle . 1)
  (org-gcal-sync . 1)
  (eval-region . 1)
+ (org-caldav-sync . 2)
 )
