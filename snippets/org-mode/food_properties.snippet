@@ -1,8 +1,21 @@
-# -*- mode: snippet -*-
-# name:food_base_properties
-# key: fbp
+# -*- mode: snippet; require-final-newline: nil -*-
+# name: fprop
+# key: fprop
+# binding: direct-keybinding
 # --
-:PROPERTIES:
-:type: $1
-:END:
 
+    :PROPERTIES:
+    :ID: 
+    :Time:  ${1:$$(yas-choose-value '("10" "15" "30" "60"))}
+    :Rating:  ${2:$$(yas-choose-value '("1" "2" "3" "4" "5"))} 
+    :Source: $3
+    :Cuisine:  ${4:$$(yas-choose-value '("Indian" "Thai" "Asian" "Vietnamese" "Chinese" "Israeli" "Italian" "American" "EastEuro" "Mexican" "French" "Persian" "Austria" ))}
+    :Type:   ${5:$$(yas-choose-value '("main" "side" "starter" "sweets" "drinks" "sauce" "breakfast"))}   
+    :Serves:  ${6:$$(yas-choose-value '("1" "2" "4" "6" "8"))} 
+    :Fav: $7
+    :END:
+
+** Ingredients
+$8
+** Preparation
+$9

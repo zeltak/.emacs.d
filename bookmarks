@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("n6.org" 0 6
+(#1=(#("org.manual" 0 10
+      (bmkp-full-record #1#))
+    (filename . "~/org/files/export/org.org")
+    (buffer-name . "org.org")
+    (front-context-string . "#+TITLE: The Org")
+    (rear-context-string)
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(22041 2534 381881 703000))
+    (created . #2#)
+    (position . 1))
+#1=(#("n6.org" 0 6
       (bmkp-full-record #1#))
     (filename . "~/Dropbox/orgzly/n6.org")
     (buffer-name . "n6.org")
@@ -33,14 +45,14 @@
     (tags)
     (filename . "~/org/files/agenda/food.org")
     (buffer-name . "food.org")
-    (front-context-string . "** COOK jamica		")
-    (rear-context-string . "Wing Bean Salad\n")
+    (front-context-string . "** SHOP  sticky ")
+    (rear-context-string . "P greek oregano\n")
     (front-context-region-string)
     (rear-context-region-string)
     (visits . 0)
-    (time . #2=(22020 5155 139943 213000))
+    (time . #2=(22040 56094 456576 234000))
     (created . #2#)
-    (position . 96529))
+    (position . 91675))
 #1=(#("zuni.nas" 0 8
       (bmkp-full-record #1#))
     (buffer-name . "Uni (Sunrise)")
@@ -234,8 +246,8 @@
     (rear-context-string . "e and documents\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 15)
-    (time 22023 62862 817556 279000)
+    (visits . 16)
+    (time 22039 63666 275677 76000)
     (created 21882 43775 338546 974000)
     (position . 4917))
 #1=(#("orgfiles" 0 8
@@ -498,17 +510,17 @@
     (tags
      ("bmkp-jump" lambda nil
       (org-narrow-to-subtree)))
-    (end-position . 909032)
+    (end-position . 909036)
     (filename . "~/org/files/Tech/linux.org")
     (buffer-name . "linux.org")
     (front-context-string . "*** 'Emacs'\n    ")
     (rear-context-string . " GUI\n** Editors\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 22)
-    (time 22009 603 389975 294000)
+    (visits . 23)
+    (time 22040 57444 430782 36000)
     (created 21790 12102 406935 267000)
-    (position . 909032))
+    (position . 909036))
 #1=(#("arch_installs" 0 13
       (bmkp-full-record #1#))
     (filename . "~/org/files/Tech/linux.org")
@@ -902,8 +914,8 @@
     (rear-context-string . "ARTUP: overview\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 7)
-    (time 21934 22151 229132 564000)
+    (visits . 8)
+    (time 22040 54088 335583 24000)
     (created 21886 45092 280208 844000)
     (position . 73))
 #1=(#("grpahics.org" 0 12
@@ -993,8 +1005,8 @@
     (rear-context-string . "\n** Corriander\n*")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 21)
-    (time 22023 60181 618049 497000)
+    (visits . 23)
+    (time 22040 57123 536370 888000)
     (created 21329 12421 81695 297000)
     (position . 96508))
 #1=(#("food/shopping" 0 13

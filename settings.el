@@ -1366,7 +1366,6 @@ Sunrise:
 (require 'yasnippet)
 (yas-global-mode 1)
 ;; Use custom snippets.
-;(setq yas-snippet-dirs '("~/.emacs.d/snippets"))
 (yas-reload-all)
 (setq yas-snippet-dirs '("~/.emacs.d/snippets/"))
 ;for orgmode properties fix 
@@ -1395,30 +1394,6 @@ Sunrise:
             (signal 'quit "user quit!")
           (cdr (assoc result rmap))))
     nil))
-
-;; (use-package yasnippet
-;; :diminish yas-minor-mode
-;; :commands yas-global-mode
-;; :ensure t
-;;   :bind ("M-=" . yas-insert-snippet)
-;;   :config
-;;   (progn
-;;     (defun my-yas/prompt (prompt choices &optional display-fn)
-;;       (let* ((names (loop for choice in choices
-;;                           collect (or (and display-fn
-;;                                            (funcall display-fn choice))
-;;                                       choice)))
-;;              (selected (helm-other-buffer
-;;                         `(((name . ,(format "%s" prompt))
-;;                            (candidates . names)
-;;                            (action . (("Insert snippet" . (lambda (arg)
-;;                                                             arg))))))
-;;                         "*helm yas/prompt*")))
-;;         (if selected
-;;             (let ((n (position selected names :test 'equal)))
-;;               (nth n choices))
-;;           (signal 'quit "user quit!"))))
-;;     (custom-set-variables '(yas/prompt-functions '(my-yas/prompt))))))
 
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
@@ -2949,21 +2924,21 @@ LEADER:【C-A-W】-append to killring
 ("a" nil )
 ;("c"  company-complete )
 ("c"  auto-complete )
-("d"  nil )
-("e"  nil )
+("d"  org-cut-subtree "org-cut"   )
 ("f"  nil )
 ("g"  hydra-goto/body )
 ("h"  z/org-move-top-collapse   "collapse tree")
 ("H"  hide-sublevels "collapse tree")
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("j"  nil )
-("k"  nil )
+("y"  org-copy-subtree  "org-copy" )
 ("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("b"  set-mark-command 4 "mark prev" )
 ("o"   hydra-org-edit/body "org edit" :face 'hydra-face-green )
-("p"  duplicate-thing  "duplicate")
+("p"  org-paste-subtree  "org-paste")
+("e"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
 ("t"  helm-top "top")
@@ -2971,7 +2946,7 @@ LEADER:【C-A-W】-append to killring
 ("v"  nil)
 ("w"  nil )
 ("x"  nil )
-("y"  helm-show-kill-ring "kill ring")
+("k"  helm-show-kill-ring "kill ring")
 ("z"  nil )
 (";"  comment-or-uncomment-region )
 ("q"  nil )
@@ -3534,7 +3509,7 @@ _q_: quit
      ("c" ""  )
      ("k"  "" )
      ("n" "" )
-     ("p" ""  )
+     ("p" (org-agenda nil "w") "work+home"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -4289,278 +4264,123 @@ With prefix argument, also display headlines without a TODO keyword."
 ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 
 (setq org-capture-templates
-        (quote ( 
-
-       
-;;;; food simple template
-;; ("f" "food" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-;; "* COOK %^{Description}   %^g
-;; %t 
-;; %^{Time}p
-;; %^{Rating}p
-;; %^{Source}p
-;; %^{Ammount}p
-;; %^{Fav}p
-;; %^{prompt|** Ingridients}
-;; %?
-;; %^{prompt|** Preperation}
-;; "
-;;  )
-
-;; add to shopping cart
-("F" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
- "* SHOP  %^{Description} " )
-
-;;;; travel  simple template
-("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
-"*  %^{Description}   %^g 
-%t 
-%^{address}p
-%^{Rating}p
-%^{URL}p
-%^{map}p
-%^{Fav}p
-%?
-"
- )
-
-;;;; Tech  Todos
-
-("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
- "*  %^{Description}" )
-
-;;;; Home Todos
-
-("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
- "* TODO  %?\n%T" )
-
-
-;;; Uni todos
-
-("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
- "* TODO  %?\n%T" )
-
-;;;BGU todos 
-("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
- "* TODO  %?\n%T" )
-
-
-;; for mail 
-("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
- "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
-
-
-;;; web capture
-("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
+          (quote ( 
 
 
 ;;;;; media related 
-("m" "Media")
-
-("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*  %^{Description}  " )
-
-("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
- "*   %^{Description}   :Pre_Release: " )
-
-("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
- "*  %^{Description}" )
-
-("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
- "*  %^{Description}" )
-
-("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
- "*  %^{Description}" )
+("f" "Food")
 
 
+;;;; new recipe Inbox
+("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+"* %^{TYPE|COOK} %^{prompt} 
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Time: %^{minutes|10|15|30|60}
+    :Rating: %^{rating?|1|2|3|4|5}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|1|2|4|6|8}
+    :Fav: %^{}
+    :END:
+%^{prompt|** Ingredients}
+%?
+%^{prompt|** Preperation}
+"
+"Capture Template for food recipe")
 
-  )))
 
-(defvar org-project-project-template
-"* %^{Project Stage|ONGOING|IDEA|GLIMMER|CAPTURE|LIVE|KICKOFF|STARTUP|ACTIVE|CLOSEOUT|DONE|CANCELED} %?
-:PROPERTIES:
-:BILLABLE: %^{Billable?|y|n}
-:PERCENT: %^{Percent of Time}
-:CATEGORY: %^{Project Category}
-:START_DATE:
-:PERSONAL: %^{Personal?|y|n}
-:END_DATE:
-:GLOSSARY:
-:ID: %(org-id-uuid)
-:TYPE: project
-:INIT: false
-:ORG_FILE:
-:END:
-:CONTACTS:\n:END:
-:LOGBOOK:
-- State \"CREATED\"       from \"NONE\"       %U
-:END:"
-"Project Template for org-project")
+;;;; food to refile
+("fr" "refile recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "")
+"* %^{TYPE|COOK} %^{prompt} 
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Time: %^{minutes|10|15|30|60}
+    :Rating: %^{rating?|1|2|3|4|5}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|1|2|4|6|8}
+    :Fav: %^{}
+    :END:
+%^{prompt|** Ingredients}
+%?
+%^{prompt|** Preperation}
+"
+"Capture Template for food recipe")
 
-(setq org-capture-templates (append org-capture-templates
-        `(("P" "Projects")
-          ("Pc" "Create Project" entry (file org-project-project-file)
-            ,org-project-project-template :clock-in t :clock-resume t))))
+;; add to shopping cart
+("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+"* SHOP %^{Description} " )
 
-(defvar org-project-task-template-todo
-"* TODO %?
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:ID: %(org-id-uuid)
-:ASSIGNED:
-:IMPORTANCE:
-:URGENCY:
-:WITH:
-:AT:
-:STATE: todo
-:TYPE: task
-:END:
-:LOGBOOK:
-- State \"CREATED\"       from \"NONE\"       %U
-:END:"
-"TODO Template for org-project")
 
-(defvar org-project-task-template-active
-"* ACTIVE %?
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:ID: %(org-id-uuid)
-:ASSIGNED:
-:IMPORTANCE:
-:URGENCY:
-:WITH:
-:AT:
-:STATE: active
-:TYPE:
-:END:
-:LOGBOOK:
-- State \"CREATED\"       from \"NONE\"       %U
-:END:"
-"ACTIVE Template for org-project")
 
-(defvar org-project-task-template-contact
-"* CONTACT RE: %?
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:ID: %(org-id-uuid)
-:IMPORTANCE:
-:URGENCY:
-:WHO:
-:STATE: todo
-:TYPE: task
-:END:"
-"CONTACT Template for org-project")
 
-(defvar org-project-task-template-reply
-"* CONTACT [[notmuch:id:%:message-id][%? - %:subject]]
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:ID: %(org-id-uuid)
-:IMPORTANCE:
-:URGENCY:
-:WHO: %:from
-:STATE: todo
-:TYPE: task
-:END:
-:LOGBOOK:
-- State \"CREATED\"       from \"NONE\"       %U
-:END:"
-"CONTACT Template for org-project")
+;;;; travel  simple template
+  ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+  "*  %^{Description}   %^g 
+  %t 
+  %^{address}p
+  %^{Rating}p
+  %^{URL}p
+  %^{map}p
+  %^{Fav}p
+  %?
+  "
+   )
 
-(defvar org-project-task-template-wait
-"* WAIT RE: %?
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:ID: %(org-id-uuid)
-:IMPORTANCE:
-:URGENCY:
-:FROM:
-:STATUS: active
-:TYPE: task
-:END:
-:LOGBOOK:
-- State \"CREATED\"       from \"NONE\"       %U
-:END:"
-"WAIT Template for org-project")
+  ;;;; Tech  Todos
 
-(defvar org-project-task-template-closed
-"* %^{STATUS|DONE|SOMEDAY|CANCELED|FAILED} %?
-:PROPERTIES:
-:CATEGORY: %(prompt-for-current-projects-category)
-:EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-:ID: %(org-id-uuid)
-:ASSIGNED:
-:IMPORTANCE:
-:URGENCY:
-:AT:
-:STATUS: closed
-:TYPE: task
-:END:"
-"CLOSED Template for org-project")
+  ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
+   "*  %^{Description}" )
 
-(setq org-capture-templates (append org-capture-templates
-        `(("t" "Tasks")
-          ("tt" "Create TODO" entry (file org-project-tasks-file)
-            ,org-project-task-template-todo :clock-in t :clock-resume t)
-          ("ta" "Create ACTIVE" entry (file org-project-tasks-file)
-            ,org-project-task-template-active :clock-in t :clock-resume t)
-          ("tc" "Create CONTACT" entry (file org-project-tasks-file)
-            ,org-project-task-template-contact :clock-in t :clock-resume t)
-          ("tw" "Create WAIT" entry (file org-project-tasks-file)
-            ,org-project-task-template-wait :clock-in t :clock-resume t)
-          ("tC" "Create Closed" entry (file org-project-tasks-file)
-            ,org-project-task-template-closed :clock-in t :clock-resume t)
-          ("tr" "REPLY TO EMAIL" entry (file org-project-tasks-file)
-            ,org-project-task-template-reply :clock-in t :clock-resume t))))
+  ;;;; Home Todos
 
-(defvar org-project-task-template-meet
-  "* MEET about %?
-  :PROPERTIES:
-  :CATEGORY: %(prompt-for-current-projects-category)
-  :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-  :ID: %(org-id-uuid)
-  :ASSIGNED:
-  :IMPORTANCE:
-  :URGENCY:
-  :WITH:
-  :STATUS: active
-  :TYPE: event
-  :END:
-  :LOGBOOK:
-  - State \"CREATED\"       from \"NONE\"       %U
-  :END:
-%^t"
-  "Task Template for org-project")
+  ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+   "* TODO  %?\n%T" )
 
-  (defvar org-project-task-template-event
-  "* EVENT
-  :PROPERTIES:
-  :CATEGORY: %(prompt-for-current-projects-category)
-  :EFFORT: %^{effort|1:00|0:05|0:15|0:30|2:00|4:00}
-  :ID: %(org-id-uuid)
-  :ASSIGNED:
-  :IMPORTANCE:
-  :URGENCY:
-  :WITH:
-  :STATUS: todo
-  :TYPE: event
-  :END:
-  :LOGBOOK:
-  - State \"CREATED\"       from \"NONE\"       %U
-  :END:
-%^t"
-  "Task Template for org-project")
 
-(setq org-capture-templates (append org-capture-templates
-        `(("e" "Events")
-          ("ee" "Create EVENT" entry (file org-project-events-file)
-            ,org-project-task-template-event :clock-in t :clock-resume t)
-          ("em" "Create MEETING" entry (file org-project-events-file)
-            ,org-project-task-template-meet :clock-in t :clock-resume t))))
+  ;;; Uni todos
+
+  ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+   "* TODO  %?\n%T" )
+
+  ;;;BGU todos 
+  ("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+   "* TODO  %?\n%T" )
+
+
+  ;; for mail 
+  ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
+   "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
+
+
+  ;;; web capture
+  ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
+
+
+  ;;;;; media related 
+  ("m" "Media")
+
+  ("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+   "*  %^{Description}  " )
+
+  ("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+   "*   %^{Description}   :Pre_Release: " )
+
+  ("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+   "*  %^{Description}" )
+
+  ("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+   "*  %^{Description}" )
+
+  ("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+   "*  %^{Description}" )
+
+
+
+    )))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
