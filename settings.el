@@ -3377,6 +3377,7 @@ BKMK Menu
      "
     ("l" org-store-link  "create and copy link//also 【C-c l】")
     ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
+    ("e" org-insert-link   "edit link" ) 
     ("d" org-id-create "just create Id")
     ("c" org-id-copy  "copy(and create) to killring" ) 
     ("s" org-id-store-link  "store org-id" ) 
@@ -3510,6 +3511,7 @@ _q_: quit
      ("k"  "" )
      ("n" "" )
      ("p" (org-agenda nil "w") "work+home"  )
+     ("fa" (org-agenda nil "m" Cuisine="American" ) "american"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -3993,9 +3995,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
       (org-add-link-props :link link :description desc)
       link)))
 
-(push (cons "\\.pdf\\'" 'emacs) org-file-apps)
-(push (cons "\\.html\\'" 'emacs) org-file-apps)
-(push (cons "\\.mp4\\'" 'vlc) org-file-apps)
+(eval-after-load "org"
+  (lambda ()
+    (if (assoc "\\.avi\\'" org-file-apps)
+        (setcdr (assoc "\\.avi\\'" org-file-apps) "vlc %s")
+      (add-to-list 'org-file-apps '("\\.avi\\'" . "vlc %s") t))
+    (if (assoc "\\.mp4\\'" org-file-apps)
+        (setcdr (assoc "\\.mp4\\'" org-file-apps) "vlc %s")
+      (add-to-list 'org-file-apps '("\\.mp4\\'" . "vlc %s") t))))
 
 (require 'org-id)
 (setq org-id-link-to-org-use-id t)
@@ -4136,6 +4143,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
 )
 )
 
+;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+("F" "to cook"     Cuisine="American"
+          (
+         (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+
+)
+)
 
 
 

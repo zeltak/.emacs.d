@@ -4583,6 +4583,7 @@ BKMK Menu
       "
      ("l" org-store-link  "create and copy link//also 【C-c l】")
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
+     ("e" org-insert-link   "edit link" ) 
      ("d" org-id-create "just create Id")
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
@@ -4749,6 +4750,7 @@ _q_: quit
      ("k"  "" )
      ("n" "" )
      ("p" (org-agenda nil "w") "work+home"  )
+     ("fa" (org-agenda nil "m" Cuisine="American" ) "american"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -5398,9 +5400,15 @@ use setq org-support-shift-select:
 
 *** org link open with
 #+BEGIN_SRC emacs-lisp :results none
-(push (cons "\\.pdf\\'" 'emacs) org-file-apps)
-(push (cons "\\.html\\'" 'emacs) org-file-apps)
-(push (cons "\\.mp4\\'" 'vlc) org-file-apps)
+(eval-after-load "org"
+  (lambda ()
+    (if (assoc "\\.avi\\'" org-file-apps)
+	(setcdr (assoc "\\.avi\\'" org-file-apps) "vlc %s")
+      (add-to-list 'org-file-apps '("\\.avi\\'" . "vlc %s") t))
+    (if (assoc "\\.mp4\\'" org-file-apps)
+	(setcdr (assoc "\\.mp4\\'" org-file-apps) "vlc %s")
+      (add-to-list 'org-file-apps '("\\.mp4\\'" . "vlc %s") t))))
+
 #+END_SRC
 
 *** insert id based links
@@ -5523,7 +5531,10 @@ You could also add this, so that the appointments refresh and new get added ever
 (add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
 #+END_SRC
 
-** TODO 'my custom agenda command'
+** 'my custom agenda command'
+   :PROPERTIES:
+   :ID:       4b396dfc-0c1c-407c-9d2d-6cca29c8879c
+   :END:
 look here for more info
 http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.html
 
@@ -5593,6 +5604,14 @@ $Note$ that to get the priorities to appear first you need to use priorities-dow
 )
 )
 
+;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+("F" "to cook"  tags "Cuisine=\"American\""
+          (
+         (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+
+)
+)
 
 
 

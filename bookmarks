@@ -997,7 +997,7 @@
     (position . 11))
 #1=(#("food/Library" 0 12
       (bmkp-full-record #1#))
-    (end-position . 96508)
+    (end-position . 156225)
     (tags "org")
     (filename . "~/org/files/agenda/food.org")
     (buffer-name . "food.org")
@@ -1005,10 +1005,10 @@
     (rear-context-string . "\n** Corriander\n*")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 23)
-    (time 22040 57123 536370 888000)
+    (visits . 24)
+    (time 22041 13197 729846 450000)
     (created 21329 12421 81695 297000)
-    (position . 96508))
+    (position . 156225))
 #1=(#("food/shopping" 0 13
       (bmkp-full-record #1#))
     (tags "org")
