@@ -3504,14 +3504,14 @@ _q_: quit
      ("s"   z/org-agenda-search     "regex search")
      ("t"   z/org-agenda-search-todo     "regex search TODO")
       ("c"   z/org-agenda-cook      "cook")
-     ("o" "" )
+     ("fa" (org-tags-view nil "Cuisine=\"American\"") "food-american" )
+     ("fa" (org-tags-view nil "Cuisine=\"American\"") "food-american" )
      ("d" "")
      ("i" "" )
      ("c" ""  )
      ("k"  "" )
      ("n" "" )
      ("p" (org-agenda nil "w") "work+home"  )
-     ("fa" (org-agenda nil "m" Cuisine="American" ) "american"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -4084,6 +4084,77 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (add-hook 'org-agenda-finalize-hook (lambda ()  (org-agenda-to-appt t)))
 
+(setq org-agenda-sorting-strategy
+      '((agenda time-up priority-down tag-up effort-up category-keep)
+        (todo user-defined-up todo-state-up priority-down effort-up)
+        (tags user-defined-up)
+        (search category-keep)))
+(setq org-agenda-cmp-user-defined 'my/org-sort-agenda-items-user-defined)
+(require 'cl)
+(defun my/org-get-context (txt)
+  "Find the context."
+  (car (member-if
+        (lambda (item) (string-match "@" item))
+        (get-text-property 1 'tags txt))))
+
+(defun my/org-compare-dates (a b)
+  "Return 1 if A should go after B, -1 if B should go after A, or 0 if a = b."
+  (cond
+   ((and (= a 0) (= b 0)) nil)
+   ((= a 0) 1)
+   ((= b 0) -1)
+   ((> a b) 1)
+   ((< a b) -1)
+   (t nil)))
+
+(defun my/org-complete-cmp (a b)
+  (let* ((state-a (or (get-text-property 1 'todo-state a) ""))
+         (state-b (or (get-text-property 1 'todo-state b) "")))
+    (or
+     (if (member state-a org-done-keywords-for-agenda) 1)
+     (if (member state-b org-done-keywords-for-agenda) -1))))
+
+(defun my/org-date-cmp (a b)
+  (let* ((sched-a (or (get-text-property 1 'org-scheduled a) 0))
+         (sched-b (or (get-text-property 1 'org-scheduled b) 0))
+         (deadline-a (or (get-text-property 1 'org-deadline a) 0))
+         (deadline-b (or (get-text-property 1 'org-deadline b) 0)))
+    (or
+     (my/org-compare-dates
+      (my/org-min-date sched-a deadline-a)
+      (my/org-min-date sched-b deadline-b)))))
+
+(defun my/org-min-date (a b)
+  "Return the smaller of A or B, except for 0."
+  (funcall (if (and (> a 0) (> b 0)) 'min 'max) a b))
+
+(defun my/org-sort-agenda-items-user-defined (a b)
+  ;; compare by deadline, then scheduled date; done tasks are listed at the very bottom
+  (or
+   (my/org-complete-cmp a b)
+   (my/org-date-cmp a b)))
+
+(defun my/org-context-cmp (a b)
+  "Compare CONTEXT-A and CONTEXT-B."
+  (let ((context-a (my/org-get-context a))
+        (context-b (my/org-get-context b)))
+    (cond
+     ((null context-a) +1)
+     ((null context-b) -1)
+     ((string< context-a context-b) -1)
+     ((string< context-b context-a) +1)
+     (t nil))))
+
+(defun my/org-sort-agenda-items-todo (a b)
+  (or
+   (org-cmp-time a b)
+   (my/org-complete-cmp a b)
+   (my/org-context-cmp a b)
+   (my/org-date-cmp a b)
+   (org-cmp-todo-state a b)
+   (org-cmp-priority a b)
+   (org-cmp-effort a b)))
+
 (setq org-agenda-custom-commands 
 '(
 
@@ -4097,6 +4168,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down))
+ (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
 ))
 
 
@@ -4108,6 +4180,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down))
+;;  (org-agenda-view-columns-initially t)
 ))
          
 ;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
@@ -4135,7 +4208,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
-("f" "food" todo "COOK" 
+("fb" "food" todo "COOK" 
          (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
@@ -4144,13 +4217,17 @@ comment _e_macs function  // copy-paste-comment-function _r_
 )
 
 ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
-("F" "to cook"     Cuisine="American"
+("fc" "to cook"  tags "Cuisine=\"American\""
           (
          (org-agenda-files '("~/org/files/agenda/food.org")) 
     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
 
 )
 )
+
+
+
+
 
 
 
