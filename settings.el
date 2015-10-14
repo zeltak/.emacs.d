@@ -3512,6 +3512,7 @@ _q_: quit
      ("k"  "" )
      ("n" "" )
      ("p" (org-agenda nil "w") "work+home"  )
+     ("fa" (org-agenda nil "m" Cuisine="American" ) "american"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 

@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ org-mode
  isearch-forward
  bbdb
  org-caldav-sync
  z/org-email-heading-me
  eval-region
  org-gcal-sync
- string-rectangle
 )
 
 ;; ----- smex-data -----
@@ -67,4 +67,5 @@
  (org-gcal-sync . 1)
  (eval-region . 1)
  (org-caldav-sync . 2)
+ (org-mode . 1)
 )
