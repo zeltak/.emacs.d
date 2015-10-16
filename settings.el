@@ -1346,6 +1346,26 @@ Sunrise:
 
 (winner-mode 1)
 
+(use-package wrap-region
+  :ensure t
+  :config
+  (wrap-region-add-wrappers
+   '(("*" "*" nil org-mode)
+     ("~" "~" nil org-mode)
+     ("/" "/" nil org-mode)
+     ("=" "=" nil org-mode)
+     ("_" "_" nil org-mode)
+     ("%" "%" nil org-mode)
+     ("!" "!" nil org-mode)
+     ("`" "`" nil org-mode)
+     ("'" "'" nil org-mode)
+     ("@" "@" nil org-mode)
+     ("$" "$" nil (org-mode latex-mode))
+))
+  (add-hook 'org-mode-hook 'wrap-region-mode)
+  (add-hook 'latex-mode-hook 'wrap-region-mode)
+)
+
 ;(use-package workgroups2
 ; :ensure t
 ; :config
@@ -3439,8 +3459,8 @@ _q_: quit
 
 (defhydra hydra-org-time (:color blue)
    "time command"
-   ("s"  org-timestamp-select "select time stamp")
-   ("n" org-timestamp-now  "timestamp current" )
+   ("a"  org-timestamp-select "select time stamp")
+   ("s" org-timestamp-now  "timestamp current" )
    ("i" z-insert-date "insert current data")  
    ("d" org-deadline  "set deadline")  
    ("i" org-schedule  "set schedule")  
@@ -3512,7 +3532,6 @@ _q_: quit
      ("k"  "" )
      ("n" "" )
      ("p" (org-agenda nil "w") "work+home"  )
-     ("fa" (org-agenda nil "m" Cuisine="American" ) "american"  )
      ("w" z/org-agenda-work  "Work"  )
      ("q" nil "cancel")))
 
@@ -4162,14 +4181,27 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;;TODO sparse tree
 ("O" occur-tree "TODO")
 
+
+ ("D" "Timeline for today" ((agenda "" ))
+           ((org-agenda-ndays 1)
+            ;;(org-agenda-show-log t)
+           ;; (org-agenda-log-mode-items '(clock closed))
+            (org-agenda-entry-types '())))
+
+
+
+
+
 ;;;;;ALL
 
 ;all common tasks (from research|bgu|home files)
 ("p" "all" todo "TODO|BGU|EXP" 
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
-(org-agenda-sorting-strategy '(priority-down effort-down))
+(org-agenda-sorting-strategy '(priority-down effort-down deadline-up))
  (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
+(org-agenda-view-columns-initially t)
+(org-columns-default-format "%50ITEM %TODO %10PRIORITY %20DEADLINE %TAGS")
 ))
 
 
@@ -4180,8 +4212,10 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ("w" "work" todo "TODO|BGU|EXP" 
 (
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-;;  (org-agenda-view-columns-initially t)
+;(org-agenda-sorting-strategy '(priority-down effort-down))
+(org-agenda-view-columns-initially t)
+;;(org-agenda-sorting-strategy '(priority-down  tag-up ))
+
 ))
          
 ;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
@@ -4209,13 +4243,65 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+
+("f" . "Food commands")
+
+
 ("fb" "food" todo "COOK" 
          (
-         (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
 
-)
-)
+
+("fd" "cook dessert" tags-todo "dessert" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+
+("fp" "protein" tags-todo "protein" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+("fo" "soup" tags-todo "soup" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+
+("fs" "side" tags-todo "side" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+
+("fb" "breakfest" tags-todo "breakfest" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+
+("fk" "drink" tags-todo "drink" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+("fl" "salad" tags-todo "salad" 
+         (
+    (org-agenda-files '("~/org/files/agenda/food.org")) 
+    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+))
+
+
+
 
 ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
 ("fc" "to cook"  tags "Cuisine=\"American\""
@@ -4223,8 +4309,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
          (org-agenda-files '("~/org/files/agenda/food.org")) 
     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
 
-)
-)
+))
 
 
 
@@ -4360,13 +4445,14 @@ With prefix argument, also display headlines without a TODO keyword."
           (quote ( 
 
 
-;;;;; media related 
+;;;;; food
+;; define food group
+ 
 ("f" "Food")
-
 
 ;;;; new recipe Inbox
 ("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* %^{TYPE|COOK} %^{prompt} 
+"* %^{TYPE|COOK} %^{prompt} %^g     
     :PROPERTIES:
     :ID: %(org-id-uuid)
     :Time: %^{minutes|10|15|30|60}
