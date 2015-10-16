@@ -6003,11 +6003,11 @@ set how many levels of headers to show while refiling
 
 ;;;; new recipe Inbox
 ("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* %^{TYPE|COOK} %^{prompt} %^g     
+"* COOK %^{Recipe Name} %^g     
     :PROPERTIES:
     :ID: %(org-id-uuid)
     :Time: %^{minutes|10|15|30|60}
-    :Rating: %^{rating?|1|2|3|4|5}
+    :Rating: %^{rating?|-|1|2|3|4|5}
     :Source: %^{Source?}
     :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
     :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
@@ -6016,29 +6016,11 @@ set how many levels of headers to show while refiling
     :END:
 %^{prompt|** Ingredients}
 %?
-%^{prompt|** Preperation}
+%^{prompt|** Preparation}
 "
 "Capture Template for food recipe")
 
 
-;;;; food to refile
-("fr" "refile recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "")
-"* %^{TYPE|COOK} %^{prompt} 
-    :PROPERTIES:
-    :ID: %(org-id-uuid)
-    :Time: %^{minutes|10|15|30|60}
-    :Rating: %^{rating?|1|2|3|4|5}
-    :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|1|2|4|6|8}
-    :Fav: %^{}
-    :END:
-%^{prompt|** Ingredients}
-%?
-%^{prompt|** Preperation}
-"
-"Capture Template for food recipe")
 
 ;; add to shopping cart
 ("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
