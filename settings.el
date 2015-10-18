@@ -754,6 +754,11 @@
 (setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
  )
 
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
+(require 'ox-reveal)
+;;where the root reveal folder is
+(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+
 ;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
@@ -5268,6 +5273,8 @@ scroll-step 1)
 
 (setq
   wl-forward-subject-prefix "Fwd: " )    ;; use "Fwd: " not "Forward: "
+
+(setq wl-summary-line-format "%T%P%t| %D.%M(%W) %h:%m  %15(%f%)      %s   ")
 
 (require 'org-wl)
 

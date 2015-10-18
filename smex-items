@@ -2,12 +2,12 @@
 ;; ----- smex-history -----
 (
  wl
+ eval-region
  org-mode
  isearch-forward
  bbdb
  org-caldav-sync
  z/org-email-heading-me
- eval-region
 )
 
 ;; ----- smex-data -----
@@ -51,7 +51,7 @@
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
  (customize-group . 1)
- (wl . 9)
+ (wl . 11)
  (dired-k . 1)
  (xah-cycle-hyphen-underscore-space . 6)
  (xah-insert-black-lenticular-bracket【】 . 1)
@@ -65,7 +65,7 @@
  (yank-rectangle . 1)
  (string-rectangle . 1)
  (org-gcal-sync . 1)
- (eval-region . 1)
+ (eval-region . 17)
  (org-caldav-sync . 2)
  (org-mode . 1)
 )

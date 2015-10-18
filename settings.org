@@ -7082,6 +7082,10 @@ I wonder why this is not the default.
 (setq
   wl-forward-subject-prefix "Fwd: " )    ;; use "Fwd: " not "Forward: "
 #+end_src
+*** Summary view headers
+#+BEGIN_SRC emacs-lisp :results none
+(setq wl-summary-line-format "%T%P%t| %D.%M(%W) %h:%m  %15(%f%)      %s   ")
+#+END_SRC
 ** org integration
    :PROPERTIES:
    :ID:       a8c344b2-632e-4760-8bfc-ca411b22c5ad
