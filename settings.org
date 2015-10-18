@@ -1129,7 +1129,7 @@ C-j will try to continue the completion, i.e. if the current candidate is a dire
 / will switch to completing the sub-directories of /, but if the candidate is a perfect match, it will act like C-j.
 ~ will switch to completing the sub-directories of ~/.
 C-n and C-p naturally select the next and the previous candidate.
-**  org-caldav-sync
+** org-caldav-sync
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package  org-caldav
@@ -1142,8 +1142,14 @@ C-n and C-p naturally select the next and the previous candidate.
 (setq org-caldav-inbox (expand-file-name "/home/zeltak/org/files/PIM/org-caldev.org"))
 (setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
  )
-#+END_SRC 
-
+#+END_SRC
+** org-revelal
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
+(require 'ox-reveal)
+;;where the root reveal folder is
+(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+#+END_SRC
 
 ** org highlight
 #+BEGIN_SRC emacs-lisp :results none
