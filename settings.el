@@ -1300,6 +1300,12 @@ Sunrise:
 ;; (setq visible-mark-faces `(visible-mark-face1 visible-mark-face2))
 ;;  )
 
+(use-package wanderlust
+ :ensure t
+ :config
+ 
+ )
+
 (use-package worf
  :ensure t
  :config
@@ -3245,7 +3251,7 @@ _q_:
    (kbd "<f5>")
 (defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
   "
-Mail:
+WL:【s】 update 【w】write(reply)
 "
   ("<f5>"     mu4e            "start mu4e")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
@@ -4445,18 +4451,24 @@ With prefix argument, also display headlines without a TODO keyword."
           (quote ( 
 
 
+;;; email
+
+("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+                              "* TODO EMAIL: %^{Brief Description}\n%a\n%?Added: %U\n" :prepend t)
+ 
+
 ;;;;; food
 ;; define food group
- 
+
 ("f" "Food")
 
 ;;;; new recipe Inbox
 ("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* %^{TYPE|COOK} %^{prompt} %^g     
+"* COOK %^{Recipe Name} %^g     
     :PROPERTIES:
     :ID: %(org-id-uuid)
     :Time: %^{minutes|10|15|30|60}
-    :Rating: %^{rating?|1|2|3|4|5}
+    :Rating: %^{rating?|-|1|2|3|4|5}
     :Source: %^{Source?}
     :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
     :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
@@ -4465,29 +4477,11 @@ With prefix argument, also display headlines without a TODO keyword."
     :END:
 %^{prompt|** Ingredients}
 %?
-%^{prompt|** Preperation}
+%^{prompt|** Preparation}
 "
 "Capture Template for food recipe")
 
 
-;;;; food to refile
-("fr" "refile recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "")
-"* %^{TYPE|COOK} %^{prompt} 
-    :PROPERTIES:
-    :ID: %(org-id-uuid)
-    :Time: %^{minutes|10|15|30|60}
-    :Rating: %^{rating?|1|2|3|4|5}
-    :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|1|2|4|6|8}
-    :Fav: %^{}
-    :END:
-%^{prompt|** Ingredients}
-%?
-%^{prompt|** Preperation}
-"
-"Capture Template for food recipe")
 
 ;; add to shopping cart
 ("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
@@ -5191,378 +5185,91 @@ scroll-step 1)
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
-(add-to-list
- 'command-switch-alist
- '("gnus" . (lambda (&rest ignore)
-              ;; Start Gnus when Emacs starts
-              (add-hook 'emacs-startup-hook 'gnus t)
-              ;; Exit Emacs after quitting Gnus
-              (add-hook 'gnus-after-exiting-gnus-hook
-                        'save-buffers-kill-emacs))))
+;; Tell Emacs my E-Mail address
+;; Without this Emacs thinks my E-Mail is something like <myname>@ubuntu-asus
+(setq user-mail-address "<user>@gmail.com")
 
-(require 'nnir)
-;nnir is a Gnus interface to a number of tools for searching through mail and news repositories. Different backends (like nnimap and nntp) work with different tools (called engines in nnir lingo), but all use the same basic search interface.
-
-
-;;@see http://www.emacswiki.org/emacs/GnusGmail#toc1
-(setq gnus-select-method '(nntp "news.gmane.org")) ;; if you read news groups 
-
-
-;; ask encyption password once
-(setq epa-file-cache-passphrase-for-symmetric-encryption t)
-;better to use/store authentication information in one of these files: ~/.authinfo.gpg. if not use this config (may not work)
-;;(setq smtpmail-auth-credentials "/home/zeltak/.gnupg/.authinfo.gpg")
-;; don't ask confirmations etc on delete and other options 
-(setq gnus-novice-user nil)
-
-(setq  gnus-always-read-dribble-file 1)  ; always read auto-save file
-(setq 
-gnus-treat-buttonize t           ; Add buttons
-      gnus-treat-buttonize-head 'head  ; Add buttons to the head
-      gnus-treat-emphasize t           ; Emphasize text
-      gnus-treat-display-smileys t     ; Use Smilies
-      gnus-treat-strip-cr 'last        ; Remove carriage returns
- ;;     gnus-treat-hide-headers 'head    ; Hide headers
-)
-
-(add-hook 'gnus-article-display-hook 'gnus-article-highlight-citation t) ; highlight quotes
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)                        ; use topic separation in the Group overview
-
-(setq gnus-asynchronous t)
-
-;; Inline images?
-   (setq mm-attachment-override-types '("image/.*"))
-   ;; Or, like this:
-   (add-to-list 'mm-attachment-override-types "image/.*")
-
-(define-key gnus-summary-mode-map (kbd "<delete>") 'gnus-summary-delete-article)
-
-; grab new news every 2 minutes
-(gnus-demon-add-handler 'gnus-group-get-new-news 2 nil)
-
-(eval-after-load "gnus"
-  (lambda ()
-;     (gnus-demon-add-handler 'gnus-group-get-new-news 2 nil)
-     ;; subscribed, from Chen Bin
-     (defun my-gnus-group-list-subscribed-groups ()
-       (interactive)
-       (gnus-group-list-all-groups 2))
-     (define-key gnus-group-mode-map (kbd "o") 'my-gnus-group-list-subscribed-groups)
-     (add-hook 'gnus-startup-hook
-           'my-gnus-group-list-subscribed-groups)))
-
-(setq gnus-fetch-old-headers 250 )
-
-;; Personal Information
-(setq user-full-name "Itai Kloog"
-      user-mail-address "ikloog@gmail.com")
-
-(add-to-list 'gnus-secondary-select-methods
-             '(nnimap "gmail"
-                      (nnimap-address "imap.gmail.com")
-                      (nnimap-server-port 993)
-                      (nnimap-stream ssl)
-                      (nnir-search-engine imap)
-;;                      (nnimap-authinfo-file "~/.gnupg/ikloogmail.gpg")
-                      (nnmail-expiry-target "nnimap+gmail:[Gmail]/Trash")
-                      (nnmail-expiry-wait 90)))
-
-(setq gnus-thread-sort-functions
-      '((not gnus-thread-sort-by-date)
-        (not gnus-thread-sort-by-number)))
-
-;; Make Gnus NOT ignore [Gmail] mailboxes
-    (setq gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
-
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-local-domain "homepc")
-
-(setq gnus-use-correct-string-widths nil)
-
-(setq my-email-addresses '("ikloog@gmail.com"
-                           "zeltak@gmail.com"
-                            "ikloog@bgu.ac.il."
-                           "ekloog@hsoh.harvard.edu"
-                        ))
-
-(setq message-alternative-emails
-      (regexp-opt my-email-addresses))
-
-;; Gnus from manipulation
-(setq gnus-from-selected-index 0)
-(defun gnus-loop-from ()
-  (interactive)
-  (setq gnus-article-current-point (point))
-  (goto-char (point-min))
-  (if (eq gnus-from-selected-index (length my-email-addresses))
-      (setq gnus-from-selected-index 0) nil)
-  (while (re-search-forward "^From:.*$" nil t)
-    (replace-match (concat "From: " user-full-name " <" (nth gnus-from-selected-index my-email-addresses) ">")))
-  (goto-char gnus-article-current-point)
-  (setq gnus-from-selected-index (+ gnus-from-selected-index 1)))
-
-(global-set-key (kbd "C-c f") 'gnus-loop-from)
-
-;; You need install the command line brower 'w3m' and Emacs plugin 'w3m'
-(setq mm-text-html-renderer 'w3m)
-
-;; NO 'passive
-(setq gnus-use-cache t)
-;; Fetch only part of the article if we can.  I saw this in someone ;; else's .gnus
-(setq gnus-read-active-file 'some)
-;; Tree view for groups.  I like the organisational feel this has.
-(add-hook 'gnus-group-mode-hook 'gnus-topic-mode)
-;; Threads!  I hate reading un-threaded email -- especially mailing
-;; lists.  This helps a ton!
-(setq gnus-summary-thread-gathering-function 'gnus-gather-threads-by-subject)
-
-;; Also, I prefer to see only the top level message.  If a message has
-;; several replies or is part of a thread, only show the first
-;; message.  'gnus-thread-ignore-subject' will ignore the subject and
-;; look at 'In-Reply-To:' and 'References:' headers.
-(setq gnus-thread-hide-subtree t)
-(setq gnus-thread-ignore-subject t)
-
-;; BBDB: Address list
-;(add-to-list 'load-path "/where/you/place/bbdb/")
-(require 'bbdb)
-(bbdb-initialize 'message 'gnus 'sendmail)
-(setq bbdb-file "~/.bbdb") ;; OPTIONAL, because I'm sharing my ~/.emacs.d
-(add-hook 'gnus-stasrtup-hook 'bbdb-insinuate-gnus)
-(setq bbdb/mail-auto-create-p t
-      bbdb/news-auto-create-p t)
-
-;; auto-complete emacs address using bbdb's own UI
-(add-hook 'message-mode-hook
-          '(lambda ()
-             (flyspell-mode t)
-             (local-set-key "<TAB>" 'bbdb-complete-name)))
-
-(setq mm-text-html-renderer 'w3m)
-
-(setq gnus-fetch-old-headers t)
-
-;; ;; also I'd prefer to have sane default headers
-;; (setq gnus-visible-headers '("^From:\\|^Subject:\\|To:\\|^Cc:\\|^Date:\\|^Newsgroups:\\|^User-Agent:\\|^X-Newsreader:\\|^X-Mailer:")
-;;       gnus-sorted-header-list gnus-visible-headers)
-
-;; reconfigure buffer positions for a wider screen
-(gnus-add-configuration  ; summary view
- '(summary
-   (horizontal 1.0
-               (vertical 1.0 (group 0.25) (summary 1.0 point)))))
-(gnus-add-configuration  ; article view
- '(article
-   (horizontal 1.0
-               (vertical 0.45 (group 0.25) (summary 1.0 point) ("*BBDB*" 0.15))
-               (vertical 1.0 (article 1.0)))))
-(gnus-add-configuration  ; post new stuff
- '(edit-form
-   (horizontal 1.0
-               (vertical 0.45 (group 0.25) (edit-form 1.0 point) ("*BBDB*" 0.15))
-               (vertical 1.0 (article 1.0)))))
-
-(when (string= system-name "zuni")
-(add-to-list 'load-path "~/mu/mu4e/")
-)
-
-(require 'mu4e)
-(require 'mu4e-contrib) 
-;for below make sure the (mu4e-maildirs-extension) is installed from melpa/git
-
-;;;;$Note-this may screw up header updates$ 
-;(mu4e-maildirs-extension)
-;; list of my email addresses.
-(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
-                                    "ikloog@bgu.ac.il"
-                                    "ekloog@hsph.harvard.edu"))
-
-(setq mu4e-update-interval 60)
-(setq mu4e-headers-auto-update t)
-(setq mu4e-index-update-error-warning  t)
-(setq mu4e-index-update-error-continue   t)
-
-;; something about ourselves
 (setq
-   user-mail-address "ikloog@gmail.com"
-   user-full-name  "itai kloog "
-   mu4e-compose-signature
-    (concat
-      "itai kloog\n"
-      "http://www.bgu.ac.il\n"))
+ wl-biff-check-interval 30 ;; check every 30 seconds
+  wl-biff-check-folder-list '(".INBOX") ;;
+  wl-biff-use-idle-timer nil ;; in the background
+)
 
-(setq mu4e-compose-signature-auto-include 't)
+(setq mime-view-buttons-visible nil)
 
-;; default
-;;(setq mu4e-maildir "~/.mail/gmail/")
-(setq mu4e-maildir "/home/zeltak/Maildir")
+;; ignore  all fields
+(setq wl-message-ignored-field-list '("^.*:"))
 
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
-(setq mu4e-attachment-dir  "~/Downloads")
+;; ..but these five
+(setq wl-message-visible-field-list
+'("^To:"
+  "^Cc:"
+  "^From:"
+  "^Subject:"
+  "^Date:"
+  "^Content-Disposition:"
+))
 
-;; setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
+(setq
+; don't cache messages too long (I use maildir anyways)
+ elmo-cache-expire-by-age  14
+ elmo-cache-expire-by-size 1024
+)
 
-(setq mu4e-maildir-shortcuts
-    '( ("/INBOX"               . ?i)
-       ("Starred"   . ?r)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
+;;Only save draft when I tell it to (C-x C-s or C-c C-s):
+(setq wl-auto-save-drafts-interval nil)
 
-mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
+;;Cobbled together from posts by Erik Hetzner & Harald Judt to
+;; wl-en@lists.airs.net by Jonathan Groll (msg 4128)
 
-(require 'org-mu4e)
+(defun mime-edit-insert-multiple-files ()
+  "Insert MIME parts from multiple files."
+  (interactive)
+  (let ((dir default-directory))
+    (let ((next-file (expand-file-name
+                      (read-file-name "Insert file as MIME message: "
+                      dir))))
+      (setq file-list (file-expand-wildcards next-file))
+      (while (car file-list)
+        (mime-edit-insert-file (car file-list))
+        (setq file-list (cdr file-list))))))
 
-(require 'smtpmail)
-(setq message-send-mail-function 'smtpmail-send-it
-   starttls-use-gnutls t
-   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-   smtpmail-auth-credentials
-     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-   smtpmail-default-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-server "smtp.gmail.com"
-   smtpmail-smtp-service 587)
+;;(global-set-key "\C-c\C-x\C-a" 'mime-edit-insert-multiple-files)
 
-;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
+(require 'w3m)
+(require 'mime-w3m)
+(setq mime-view-text/html-previewer 'shr)
 
-;; alternatively, for emacs-24 you can use:
-;;(setq message-send-mail-function 'smtpmail-send-it
-;;     smtpmail-stream-type 'starttls
-;;     smtpmail-default-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-service 587)
+(setq mime-edit-split-message nil)
 
-(setq mu4e-date-format-long "%d/%m/%Y (%H:%M:%S)")
-(setq mu4e-headers-date-format "%d/%m/%Y (%H:%M:%S)")
-;can define a horizontal or vertical split 
-(setq mu4e-split-view 'horizontal)
+;; note, this check could cause some false positives; anyway, better
+;; safe than sorry...
+(defun djcb-wl-draft-attachment-check ()
+  "if attachment is mention but none included, warn the the user"
+  (save-excursion
+    (goto-char 0)
+    (unless ;; don't we have an attachment?
 
+      (re-search-forward "^Content-Disposition: attachment" nil t) 
+     (when ;; no attachment; did we mention an attachment?
+        (re-search-forward "attach" nil t)
+        (unless (y-or-n-p "Possibly missing an attachment. Send current draft?")
+          (error "Abort."))))))
+(add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-subject-check)
+(add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-attachment-check)
 
-;; use 'fancy' non-ascii characters in various places in mu4e
-(setq mu4e-use-fancy-chars t)
-;; attempt to show images when viewing messages
-(setq mu4e-view-show-images t)
-(when (fboundp 'imagemagick-register-types)
-      (imagemagick-register-types))
-;preffer html  
-(setq mu4e-view-prefer-html t)
-
-;; Silly mu4e only shows names in From: by default. Of course we also  want the addresses.
-(setq mu4e-view-show-addresses t)
-
-;; mu4e-action-view-in-browser is built into mu4e
-;; by adding it to these lists of custom actions
-;; it can be invoked by first pressing a, then selecting
-(add-to-list 'mu4e-headers-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-(add-to-list 'mu4e-view-actions
-             '("in browser" . mu4e-action-view-in-browser) t)
-
-;; the headers to show in the headers list -- a pair of a field
-;; and its width, with `nil' meaning 'unlimited'
-;; (better only use that for the last field.
-;; These are the defaults:
-(setq mu4e-headers-fields
-    '( (:date          .  25)
-       (:flags         .   6)
-       (:from          .  22)
-       (:subject       .  nil)))
+(setq 
+ 
+; wl-stay-folder-window t                       ;; show the folder pane (left)
+;; wl-folder-window-width 20                     ;; toggle on/off with 'i'
+)
 
 
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
 
-(require 'mu4e-contrib) 
-(setq mu4e-html2text-command 'mu4e-shr2text) 
-;(setq mu4e-html2text-command "w3m -I utf8 -O utf8 -T text/html")
+(setq
+  wl-forward-subject-prefix "Fwd: " )    ;; use "Fwd: " not "Forward: "
 
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
-
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-;; additional non-Gmail addresses and want assign them different
-;; behavior.)
-
-(defgroup mu4e-faces nil 
-  "Type faces (fonts) used in mu4e." 
-  :group 'mu4e 
-  :group 'faces) 
-
-(defface mu4e-basic-face 
-  '((t :inherit font-lock-keyword-face)) 
-  "Basic Face." 
-  :group 'mu4e-faces) 
-
-(defface mu4e-list-default 
-  '((t :inherit mu4e-basic-face)) 
-  "Basic list Face." 
-  :group 'mu4e-faces) 
-
-(defface mu4e-rw-default 
-  '((t :inherit mu4e-basic-face)) 
-  "Basic rw Face." 
-  :group 'mu4e-faces)
-
-;; basic face from where the rest inherits 
- '(mu4e-basic-face ((t :inherit font-lock-keyword-face :weight normal :foreground "Gray10"))) 
-
-;; read-write group 
- '(mu4e-rw-default ((t :inherit mu4e-basic-face))) ;; face from where all the read/write faces inherits 
- '(mu4e-header-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-marks-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-title-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-header-highlight-face ((t :inherit mu4e-rw-default :foreground "Black" :background "LightGray"))) 
- '(mu4e-compose-header-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-compose-separator-face ((t :inherit mu4e-rw-default :foreground "Gray30" :weight bold))) 
- '(mu4e-footer-face ((t :inherit mu4e-rw-default))) 
- '(mu4e-contact-face ((t :inherit mu4e-rw-default :foreground "Black"))) 
- '(mu4e-cited-1-face ((t :inherit mu4e-rw-default :foreground "Gray10"))) 
- '(mu4e-cited-2-face  ((t :inherit mu4e-cited-1-face :foreground "Gray20"))) 
- '(mu4e-cited-3-face   ((t :inherit mu4e-cited-2-face :foreground "Gray30"))) 
- '(mu4e-cited-4-face    ((t :inherit mu4e-cited-3-face :foreground "Gray40"))) 
- '(mu4e-cited-5-face     ((t :inherit mu4e-cited-4-face :foreground "Gray50"))) 
- '(mu4e-cited-6-face      ((t :inherit mu4e-cited-5-face :foreground "Gray60"))) 
- '(mu4e-cited-7-face       ((t :inherit mu4e-cited-6-face :foreground "Gray70"))) 
- '(mu4e-link-face ((t :inherit mu4e-rw-default :foreground "Blue" :weight bold))) 
- '(mu4e-system-face ((t :inherit mu4e-rw-defaul :foreground "DarkOrchid"))) 
- '(mu4e-url-number-face ((t :inherit mu4e-rw-default :weight bold))) 
- '(mu4e-attach-number-face ((t :inherit mu4e-rw-default :weight bold :foreground "Blue"))) 
-
-;; lists (headers) group 
- '(mu4e-list-default ((t :inherit mu4e-basic-face))) ;; basic list face from where lists inherits 
- '(mu4e-draft-face ((t :inherit mu4e-list-default))) 
- '(mu4e-flagged-face ((t :inherit mu4e-list-default :weight bold :foreground "Black"))) 
- '(mu4e-forwarded-face ((t :inherit mu4e-list-default))) 
- '(mu4e-list-default-face ((t :inherit mu4e-list-default))) 
- '(mu4e-title-face ((t :inherit mu4e-list-default))) 
- '(mu4e-trashed-face ((t :inherit mu4e-list-default))) 
- '(mu4e-warning-face ((t :inherit mu4e-list-default :foreground "OrangeRed1"))) 
- '(mu4e-modeline-face ((t :inherit mu4e-list-default))) 
- '(mu4e-moved-face ((t :inherit mu4e-list-default))) 
- '(mu4e-ok-face ((t :inherit mu4e-list-default :foreground "ForestGreen"))) 
- '(mu4e-read-face ((t :inherit mu4e-list-default :foreground "Gray80"))) 
- '(mu4e-region-code-face ((t :inherit mu4e-list-default :background "Gray25"))) 
- '(mu4e-replied-face ((t :inherit mu4e-list-default :foreground "Black"))) 
- '(mu4e-unread-face ((t :inherit mu4e-list-default :foreground "Blue"))) 
- '(mu4e-highlight-face ((t :inherit mu4e-unread-face))) 
-
- '(mu4e-special-header-value-face ((t :inherit mu4e-contact-face))) 
- '(mu4e-header-key-face ((t :inherit mu4e-contact-face :foreground "Gray50"))) 
- '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
- '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))
+(require 'org-wl)
 
 (if (string= system-name "zuni") 
 (progn
