@@ -1149,6 +1149,7 @@ C-n and C-p naturally select the next and the previous candidate.
 (require 'ox-reveal)
 ;;where the root reveal folder is
 (setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+(load-library "ox-reveal")
 #+END_SRC
 
 ** org highlight
@@ -3130,7 +3131,7 @@ font-lock-face '(:background "#FFE3E3")))))
 (defun  z/org-cblock-paste-R ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC R\n")
+  (insert "#+BEGIN_SRC R :session Rorg  :results none\n")
   (yank)
   (insert "\n#+END_SRC"))
 #+END_SRC
@@ -4131,7 +4132,7 @@ LEADER:【C-A-W】-append to killring
 ("t"  helm-top "top")
 ("u"  nil )
 ("v"  nil)
-("w"  nil )
+("w"  wrap-region "wrap symbol" )
 ("x"  nil )
 ("k"  helm-show-kill-ring "kill ring")
 ("z"  nil )
@@ -4422,6 +4423,7 @@ _q_:
     (kbd "<f4>")
     (defhydra hydra-org-blocks (:color blue :hint nil :columns 4)
     "
+to wrap by symbol mark region and then issue symbol, like: 【*】
 "
     ("<f4>" z/org-cblock-iwrap-emacs-lisp "WRAP-Elisp" )
     ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
