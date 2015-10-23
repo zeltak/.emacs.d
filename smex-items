@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ customize-group
+ wl-summary-sort
  wl
- eval-region
- org-mode
- isearch-forward
- bbdb
- org-caldav-sync
- z/org-email-heading-me
+ load-library
+ eval-buffer
+ customize-variable
+ pandoc-mode
 )
 
 ;; ----- smex-data -----
@@ -34,7 +34,7 @@
  (acm . 1)
  (toggle-debug-on-error . 1)
  (windmove-up . 1)
- (eval-buffer . 1)
+ (eval-buffer . 4)
  (org-reload . 1)
  (company-mode . 1)
  (company-complete . 4)
@@ -42,7 +42,7 @@
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 2)
+ (customize-variable . 3)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
@@ -50,8 +50,8 @@
  (ansi-term . 1)
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
- (customize-group . 1)
- (wl . 11)
+ (customize-group . 2)
+ (wl . 25)
  (dired-k . 1)
  (xah-cycle-hyphen-underscore-space . 6)
  (xah-insert-black-lenticular-bracket【】 . 1)
@@ -67,5 +67,10 @@
  (org-gcal-sync . 1)
  (eval-region . 17)
  (org-caldav-sync . 2)
- (org-mode . 1)
+ (org-mode . 2)
+ (load-library . 4)
+ (org-indent-mode . 4)
+ (pandoc-mode . 3)
+ (zc-hebrew . 7)
+ (wl-summary-sort . 1)
 )

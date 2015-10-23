@@ -1,0 +1,5 @@
+
+.INBOX     "Inbox"
+.Drafts    "Drafts"
+.Starred   "Star"
+.Sent      "Sent Mail"

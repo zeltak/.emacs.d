@@ -44,6 +44,8 @@
   ;;       (enable-theme 'zprime)
   ;;     (enable-theme 'tango-dark))
 
+(setq org-export-backends (quote (ascii html icalendar latex org)))
+
 ; fonts in linux
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
@@ -73,8 +75,6 @@
  
 ;; Treat clipboard input as UTF-8 string first; compound text next, etc.
 (setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
-
-(setq org-export-backends (quote (ascii html icalendar latex org)))
 
 (setq dcsh-command-list '("all_registers"
                                "check_design" "check_test" "compile" "current_design"
@@ -754,11 +754,6 @@
 (setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
  )
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
-(require 'ox-reveal)
-;;where the root reveal folder is
-(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
-
 ;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
@@ -880,16 +875,14 @@
  :ensure t
  :config
  (setq-default org-download-heading-lvl nil)
+ ;;; to get rid of the #+DOWNLOADED part
  (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
+ (setq org-download-annotate-function (lambda (_) ""))
 )
 
 ;; (setq org-download-method 'attach
 ;;        org-download-screenshot-method "scrot -s %s"
 ;;        org-download-backend (if (executable-find "curl") "curl \"%s\" -o \"%s\"" t)))
-
-; (load-file "~/.emacs.g/extra/org-download/org-download.el")
-; (setq-default org-download-heading-lvl nil)
-; (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2015")
 
 ;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
@@ -971,6 +964,11 @@
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
+
+(use-package pandoc-mode
+ :ensure t
+ :config
+  )
 
 (use-package pdf-tools
  :ensure t
@@ -1426,81 +1424,10 @@ Sunrise:
           (cdr (assoc result rmap))))
     nil))
 
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-
-; Check if system is windows
-(defun system-type-is-win ()
-(interactive)
-"Return true if system is windows"
-(string-equal system-type "windows-nt")
-)
-
-;; Check if system is GNU/Linux
-(defun system-type-is-gnu ()
-(interactive)
-"Return true if system is GNU/Linux-based"
-(string-equal system-type "gnu/linux")
-)
-
-;;;add custom themes to list
-  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
-  ;to load a specifc theme 
-  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
-  ;load the choosen theme at startup 
-  (load-theme 'zprime t)
-
-;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
-
-;; ;; last t is for NO-ENABLE
-  ;;   (load-theme 'zprime t t)
-  ;;   (load-theme 'tango-dark t t)
-  
-  ;;   (defun mb/pick-color-theme (frame)
-  ;;     (select-frame frame)
-  ;;     (if (window-system frame)
-  ;;         (progn  
-  ;;           (disable-theme 'tango-dark) ; in case it was active
-  ;;           (enable-theme 'zprime))
-  ;;       (progn  
-  ;;         (disable-theme 'zprime) ; in case it was active
-  ;;         (enable-theme 'tango-dark))))
-  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
-  
-  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
-  ;;   (if window-system
-  ;;       (enable-theme 'zprime)
-  ;;     (enable-theme 'tango-dark))
-
-; fonts in linux
-(if (system-type-is-gnu)
-;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
-;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
-;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
-;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
-)
-
-;; fontso in Win
-(if (system-type-is-win)
-(add-to-list 'default-frame-alist '(font . "Consolas-14"))
-)
-
-(prefer-coding-system 'utf-8)
-(set-default-coding-systems 'utf-8)
-(set-terminal-coding-system 'utf-8)
-(set-keyboard-coding-system 'utf-8)
-;; UTF-8 as default encoding
-(set-language-environment "UTF-8")
-
-;; backwards compatibility as default-buffer-file-coding-system
-;; is deprecated in 23.2.
-(if (boundp 'buffer-file-coding-system)
-    (setq-default buffer-file-coding-system 'utf-8)
-  (setq default-buffer-file-coding-system 'utf-8))
- 
-;; Treat clipboard input as UTF-8 string first; compound text next, etc.
-(setq x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
+(load  "/home/zeltak/.emacs.g/org-reveal/ox-reveal.el")
+;;where the root reveal folder is
+(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
 
 (defun z-fix-characters 
 (start end) 
@@ -1793,10 +1720,10 @@ comment box."
   )
 
 
-(defun z/insert-keyboth ()
-  " insert 【】  "
+(defun z/insert-EOL ()
+  " insert EOL"
   (interactive)
-  (insert "【】")
+  (insert "\\\\")
 (backward-char 2)  
 )
 
@@ -1810,6 +1737,7 @@ comment box."
   (interactive)
   (insert "‣")
 )
+
 
 )
 
@@ -2180,7 +2108,7 @@ font-lock-face '(:background "#FFE3E3")))))
 (defun  z/org-cblock-paste-R ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC R\n")
+  (insert "#+BEGIN_SRC R :session Rorg  :results none\n")
   (yank)
   (insert "\n#+END_SRC"))
 
@@ -2975,7 +2903,7 @@ LEADER:【C-A-W】-append to killring
 ("t"  helm-top "top")
 ("u"  nil )
 ("v"  nil)
-("w"  nil )
+("w"  wrap-region "wrap symbol" )
 ("x"  nil )
 ("k"  helm-show-kill-ring "kill ring")
 ("z"  nil )
@@ -2990,7 +2918,7 @@ LEADER:【C-A-W】-append to killring
 "Toggles:   【M-g M-g】 goto line
 【C-x SPACE】 start mark rectangle 
 "
-("a" nil  )
+("a" pandoc-mode "pandoc"  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
 ("d" tool-bar-mode "toggle toolbar"   )
@@ -3236,6 +3164,7 @@ _q_:
     (kbd "<f4>")
     (defhydra hydra-org-blocks (:color blue :hint nil :columns 4)
     "
+to wrap by symbol mark region and then issue symbol, like: 【*】
 "
     ("<f4>" z/org-cblock-iwrap-emacs-lisp "WRAP-Elisp" )
     ("<f3>" z/org-cblock-iwrap-sh  "Bash" )
@@ -3247,7 +3176,7 @@ _q_:
     ("pb" z/org-cblock-paste-sh "paste bash" )
     ("pr" z/org-cblock-paste-R "paste R" )
     ("ps" z/org-cblock-paste-SAS  "paste SAS" )
-    ("pe" z/org-cblock-paste-example  "paste SAS" )
+    ("pe" z/org-cblock-paste-example  "paste Example" )
     ("pq" z/org-cblock-paste-QUOTE "paste QUOTE" )
     ("e" z/org-cblock-nowrap-example "insert Example block" )
     ("q" nil "cancel")))
@@ -3256,9 +3185,10 @@ _q_:
    (kbd "<f5>")
 (defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
   "
-WL:【s】 update 【w】write(reply)
+WL:【s】 update 【w】write(reply) 【c】Mark all read 【$】star 【S】sort email by
 "
-  ("<f5>"     mu4e            "start mu4e")
+;  ("<f5>"     mu4e            "start mu4e")
+  ("<f5>"     wl            "start mail")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
   ("o"     mu4e-headers-change-sorting            "sort")
   ("z"   z/org-email-heading              "email header")
@@ -3369,7 +3299,9 @@ BKMK Menu
 ("d"  org-download-screenshot "screenshot")
 ("D"  org-download-delete "del screenshot")
 ("E"  org-export-dispatch "export")
-("ep"  org-latex-export-to-pdf "export latex")
+("ep" org-latex-export-to-pdf "export latex")
+("ez" z/org-email-heading-me "email myslef the tree")
+("ex" z/org-email-heading "email other the tree")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
 ("h"  org-insert-heading "insert header")
@@ -3646,9 +3578,10 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
-  ("k"    z/insert-black-lenticular-bracket  "【】") 
+  ("k"     z/insert-black-lenticular-bracket  "【】") 
   ("b"     z/insert-bashscript  "#!") 
-  ("‣"     z/insert-play  " ‣") 
+  ("p"     z/insert-play  " ‣") 
+  ("o"     z/insert-EOL  " \\") 
   ("q" nil "cancel" nil)
 )
 
@@ -4458,9 +4391,12 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ;;; email
 
-("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-                              "* TODO EMAIL: %^{Brief Description}\n%a\n%?Added: %U\n" :prepend t)
+;; ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+;;                                "* TODO EMAIL: %^{Brief Description}\n%a\n%?Added: %U\n" :prepend t)
  
+
+("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+                              "* TODO %a\n%?Added: %U\nDEADLINE: %^t\n" :prepend t)
 
 ;;;;; food
 ;; define food group
@@ -4651,6 +4587,8 @@ With prefix argument, also display headlines without a TODO keyword."
       org-confirm-elisp-link-function nil   ;; for elisp links
       org-confirm-shell-link-function nil)  ;; for shell links
 
+(setq org-export-babel-evaluate nil)
+
 ;; fontify code in code blocks
 (setq org-src-fontify-natively t)
 
@@ -4768,6 +4706,8 @@ With prefix argument, also display headlines without a TODO keyword."
 ;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
+
+;(setq org-export-in-background t)
 
 (require 'ox-odt)
 (require 'ox-beamer)
@@ -5190,9 +5130,31 @@ scroll-step 1)
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
+(setq wl-folders-file "~/.emacs.d/.folders")
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+      smtpmail-default-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-server "smtp.gmail.com"
+      smtpmail-smtp-service 587
+      smtpmail-local-domain "homepc")
+
+;; IMAP, gmail:
+(setq elmo-imap4-default-server "imap.gmail.com"
+      elmo-imap4-default-user "ikloog@gmail.com"
+      elmo-imap4-default-authenticate-type 'clear
+      elmo-imap4-default-port '993
+      elmo-imap4-default-stream-type 'ssl
+     ;;for non ascii-characters in folder-names
+      elmo-imap4-use-modified-utf7 t)
+
 ;; Tell Emacs my E-Mail address
 ;; Without this Emacs thinks my E-Mail is something like <myname>@ubuntu-asus
 (setq user-mail-address "<user>@gmail.com")
+
+(setq wl-default-folder ".INBOX")
+(setq wl-auto-check-folder-name wl-default-folder)
 
 (setq
  wl-biff-check-interval 30 ;; check every 30 seconds
@@ -5200,7 +5162,33 @@ scroll-step 1)
   wl-biff-use-idle-timer nil ;; in the background
 )
 
-(setq mime-view-buttons-visible nil)
+(setq elmo-folder-update-threshold nil)
+(setq elmo-folder-update-confirm   nil)
+
+;; Jump to default folder on startup
+
+(defun wl-folder-jump-to-folder (folder &optional no-extra)
+  (let ((wl-inhibit-extra-check no-extra))
+    (wl-folder-jump-folder folder)
+    (wl-folder-jump-to-current-entity)))
+
+(defun wl-folder-jump-to-default-folder (&optional no-extra)
+  (interactive "P")
+  (wl-folder-jump-to-folder wl-default-folder no-extra))
+
+(add-hook 'wl-auto-check-folder-hook 'wl-folder-jump-to-default-folder)
+
+
+
+(setq wl-summary-always-sticky-folder-list '("INBOX"))
+
+;(setq mime-view-buttons-visible nil)
+
+;; sort the summary
+(defun my-wl-summary-sort-hook ()
+  (wl-summary-rescan "date"))
+
+(add-hook 'wl-summary-prepared-hook 'my-wl-summary-sort-hook)
 
 ;; ignore  all fields
 (setq wl-message-ignored-field-list '("^.*:"))
@@ -5215,6 +5203,17 @@ scroll-step 1)
   "^Content-Disposition:"
 ))
 
+;;In addition you can control the order of these headers using the variable ‘wl-message-sort-field-list’:
+
+(setq wl-message-sort-field-list
+ '("^From:"
+   "^Subject:"
+   "^Date:"
+   "^To:"
+   "^Cc:"
+   "^Content-Disposition:"
+))
+
 (setq
 ; don't cache messages too long (I use maildir anyways)
  elmo-cache-expire-by-age  14
@@ -5223,6 +5222,14 @@ scroll-step 1)
 
 ;;Only save draft when I tell it to (C-x C-s or C-c C-s):
 (setq wl-auto-save-drafts-interval nil)
+
+(setq mime-view-mailcap-files '("~/.mailcap"))
+
+(setq mime-play-find-every-situations nil
+  mime-play-delete-file-immediately nil
+  process-connection-type nil)
+
+(setq mime-edit-split-message nil)
 
 ;;Cobbled together from posts by Erik Hetzner & Harald Judt to
 ;; wl-en@lists.airs.net by Jonathan Groll (msg 4128)
@@ -5245,23 +5252,21 @@ scroll-step 1)
 (require 'mime-w3m)
 (setq mime-view-text/html-previewer 'shr)
 
-(setq mime-edit-split-message nil)
+;; ;; note, this check could cause some false positives; anyway, better
+;; ;; safe than sorry...
+;; (defun djcb-wl-draft-attachment-check ()
+;;   "if attachment is mention but none included, warn the the user"
+;;   (save-excursion
+;;     (goto-char 0)
+;;     (unless ;; don't we have an attachment?
 
-;; note, this check could cause some false positives; anyway, better
-;; safe than sorry...
-(defun djcb-wl-draft-attachment-check ()
-  "if attachment is mention but none included, warn the the user"
-  (save-excursion
-    (goto-char 0)
-    (unless ;; don't we have an attachment?
-
-      (re-search-forward "^Content-Disposition: attachment" nil t) 
-     (when ;; no attachment; did we mention an attachment?
-        (re-search-forward "attach" nil t)
-        (unless (y-or-n-p "Possibly missing an attachment. Send current draft?")
-          (error "Abort."))))))
-(add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-subject-check)
-(add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-attachment-check)
+;;       (re-search-forward "^Content-Disposition: attachment" nil t) 
+;;      (when ;; no attachment; did we mention an attachment?
+;;         (re-search-forward "attach" nil t)
+;;         (unless (y-or-n-p "Possibly missing an attachment. Send current draft?")
+;;           (error "Abort."))))))
+;; (add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-subject-check)
+;; (add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-attachment-check)
 
 (setq 
  
@@ -5269,12 +5274,12 @@ scroll-step 1)
 ;; wl-folder-window-width 20                     ;; toggle on/off with 'i'
 )
 
-
-
 (setq
   wl-forward-subject-prefix "Fwd: " )    ;; use "Fwd: " not "Forward: "
 
 (setq wl-summary-line-format "%T%P%t| %D.%M(%W) %h:%m  %15(%f%)      %s   ")
+
+(setq wl-folder-desktop-name "Gmail")
 
 (require 'org-wl)
 

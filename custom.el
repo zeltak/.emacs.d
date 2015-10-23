@@ -32,6 +32,10 @@
  '(org-download-image-width 300)
  '(org-download-screenshot-method "gm import %s")
  '(org-export-backends (quote (ascii html icalendar latex org)))
+ '(safe-local-variable-values
+   (quote
+    ((org-download-heading-lvl)
+     (org-download-image-dir . "~/ZH_tmp/"))))
  '(send-mail-function (quote smtpmail-send-it))
  '(sr-avfs-root "~/.avfs")
  '(sr-history-length 30)
