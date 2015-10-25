@@ -1275,22 +1275,24 @@ First mark the word, then add more cursors.
 
 ** open with
 
+this kills sending email from mu4e so for now its off..need to seek alternatives?
+
 #+BEGIN_SRC emacs-lisp :results none
-(use-package openwith 
-:ensure t
-:config
-(require 'openwith)
-(setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
-(setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
-(setq openwith-associations '(("\\.html\\'" "chromium" (file))))
-(setq openwith-associations '(("\\.html\\'" "eww" (file))))
-(setq openwith-associations '(("\\.mp4\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.ogm\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
-(openwith-mode t)
-)
+  ;; (use-package openwith 
+  ;; :ensure t
+  ;; :config
+  ;; (require 'openwith)
+  ;; (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
+  ;; (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
+  ;; (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
+  ;; (setq openwith-associations '(("\\.html\\'" "eww" (file))))
+  ;; (setq openwith-associations '(("\\.mp4\\'" "vlc" (file))))
+  ;; (setq openwith-associations '(("\\.ogm\\'" "vlc" (file))))
+  ;; (setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
+  ;; (setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
+  ;; (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
+  ;; (openwith-mode t)
+  ;; )
 #+END_SRC
 ** org ref
 *** load 

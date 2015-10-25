@@ -827,21 +827,21 @@
 
  )
 
-(use-package openwith 
-:ensure t
-:config
-(require 'openwith)
-(setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
-(setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
-(setq openwith-associations '(("\\.html\\'" "chromium" (file))))
-(setq openwith-associations '(("\\.html\\'" "eww" (file))))
-(setq openwith-associations '(("\\.mp4\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.ogm\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
-(setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
-(openwith-mode t)
-)
+;; (use-package openwith 
+;; :ensure t
+;; :config
+;; (require 'openwith)
+;; (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
+;; (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
+;; (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
+;; (setq openwith-associations '(("\\.html\\'" "eww" (file))))
+;; (setq openwith-associations '(("\\.mp4\\'" "vlc" (file))))
+;; (setq openwith-associations '(("\\.ogm\\'" "vlc" (file))))
+;; (setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
+;; (setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
+;; (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
+;; (openwith-mode t)
+;; )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-ref/")
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord

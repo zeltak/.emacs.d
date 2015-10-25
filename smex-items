@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ helm-mu
  mu4e-alert-enable-mode-line-display
  mu4e-alert-enable-notifications
  mu4e
  customize-group
  wl
  load-library
- eval-buffer
 )
 
 ;; ----- smex-data -----
@@ -76,4 +76,5 @@
  (mu4e . 1)
  (mu4e-alert-enable-notifications . 1)
  (mu4e-alert-enable-mode-line-display . 1)
+ (helm-mu . 1)
 )
