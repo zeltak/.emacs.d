@@ -710,6 +710,15 @@
         :input "kloog prep !unpublished"
         :candidate-number-limit 500))
 
+(use-package mu4e-alert
+ :ensure t
+ :config
+;; Choose the style you prefer for desktop notifications
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
+(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+ )
+
 (use-package helm-mu
  :ensure t
  :config
@@ -3187,8 +3196,8 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
   "
 WL:【s】 update 【w】write(reply) 【c】Mark all read 【$】star 【S】sort email by
 "
-;  ("<f5>"     mu4e            "start mu4e")
-  ("<f5>"     wl            "start mail")
+  ("<f5>"     mu4e            "start mu4e")
+;  ("<f5>"     wl            "start mail")
   ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
   ("o"     mu4e-headers-change-sorting            "sort")
   ("z"   z/org-email-heading              "email header")
@@ -4391,12 +4400,18 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ;;; email
 
-;; ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-;;                                "* TODO EMAIL: %^{Brief Description}\n%a\n%?Added: %U\n" :prepend t)
- 
+;;;; wanderlust
+
+;("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+;                              "* TODO %a\n%?Added: %U\nDEADLINE: %^t\n" :prepend t)
+
+
 
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-                              "* TODO %a\n%?Added: %U\nDEADLINE: %^t\n" :prepend t)
+                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
+
+
+
 
 ;;;;; food
 ;; define food group
@@ -5130,159 +5145,6 @@ scroll-step 1)
         (modify-syntax-entry ?\" ".")))
     "Generic mode for Vim configuration files.")
 
-(setq wl-folders-file "~/.emacs.d/.folders")
-
-(setq message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-      smtpmail-auth-credentials '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
-      smtpmail-default-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-server "smtp.gmail.com"
-      smtpmail-smtp-service 587
-      smtpmail-local-domain "homepc")
-
-;; IMAP, gmail:
-(setq elmo-imap4-default-server "imap.gmail.com"
-      elmo-imap4-default-user "ikloog@gmail.com"
-      elmo-imap4-default-authenticate-type 'clear
-      elmo-imap4-default-port '993
-      elmo-imap4-default-stream-type 'ssl
-     ;;for non ascii-characters in folder-names
-      elmo-imap4-use-modified-utf7 t)
-
-;; Tell Emacs my E-Mail address
-;; Without this Emacs thinks my E-Mail is something like <myname>@ubuntu-asus
-(setq user-mail-address "<user>@gmail.com")
-
-(setq wl-default-folder ".INBOX")
-(setq wl-auto-check-folder-name wl-default-folder)
-
-(setq
- wl-biff-check-interval 30 ;; check every 30 seconds
-  wl-biff-check-folder-list '(".INBOX") ;;
-  wl-biff-use-idle-timer nil ;; in the background
-)
-
-(setq elmo-folder-update-threshold nil)
-(setq elmo-folder-update-confirm   nil)
-
-;; Jump to default folder on startup
-
-(defun wl-folder-jump-to-folder (folder &optional no-extra)
-  (let ((wl-inhibit-extra-check no-extra))
-    (wl-folder-jump-folder folder)
-    (wl-folder-jump-to-current-entity)))
-
-(defun wl-folder-jump-to-default-folder (&optional no-extra)
-  (interactive "P")
-  (wl-folder-jump-to-folder wl-default-folder no-extra))
-
-(add-hook 'wl-auto-check-folder-hook 'wl-folder-jump-to-default-folder)
-
-
-
-(setq wl-summary-always-sticky-folder-list '("INBOX"))
-
-;(setq mime-view-buttons-visible nil)
-
-;; sort the summary
-(defun my-wl-summary-sort-hook ()
-  (wl-summary-rescan "date"))
-
-(add-hook 'wl-summary-prepared-hook 'my-wl-summary-sort-hook)
-
-;; ignore  all fields
-(setq wl-message-ignored-field-list '("^.*:"))
-
-;; ..but these five
-(setq wl-message-visible-field-list
-'("^To:"
-  "^Cc:"
-  "^From:"
-  "^Subject:"
-  "^Date:"
-  "^Content-Disposition:"
-))
-
-;;In addition you can control the order of these headers using the variable ‘wl-message-sort-field-list’:
-
-(setq wl-message-sort-field-list
- '("^From:"
-   "^Subject:"
-   "^Date:"
-   "^To:"
-   "^Cc:"
-   "^Content-Disposition:"
-))
-
-(setq
-; don't cache messages too long (I use maildir anyways)
- elmo-cache-expire-by-age  14
- elmo-cache-expire-by-size 1024
-)
-
-;;Only save draft when I tell it to (C-x C-s or C-c C-s):
-(setq wl-auto-save-drafts-interval nil)
-
-(setq mime-view-mailcap-files '("~/.mailcap"))
-
-(setq mime-play-find-every-situations nil
-  mime-play-delete-file-immediately nil
-  process-connection-type nil)
-
-(setq mime-edit-split-message nil)
-
-;;Cobbled together from posts by Erik Hetzner & Harald Judt to
-;; wl-en@lists.airs.net by Jonathan Groll (msg 4128)
-
-(defun mime-edit-insert-multiple-files ()
-  "Insert MIME parts from multiple files."
-  (interactive)
-  (let ((dir default-directory))
-    (let ((next-file (expand-file-name
-                      (read-file-name "Insert file as MIME message: "
-                      dir))))
-      (setq file-list (file-expand-wildcards next-file))
-      (while (car file-list)
-        (mime-edit-insert-file (car file-list))
-        (setq file-list (cdr file-list))))))
-
-;;(global-set-key "\C-c\C-x\C-a" 'mime-edit-insert-multiple-files)
-
-(require 'w3m)
-(require 'mime-w3m)
-(setq mime-view-text/html-previewer 'shr)
-
-;; ;; note, this check could cause some false positives; anyway, better
-;; ;; safe than sorry...
-;; (defun djcb-wl-draft-attachment-check ()
-;;   "if attachment is mention but none included, warn the the user"
-;;   (save-excursion
-;;     (goto-char 0)
-;;     (unless ;; don't we have an attachment?
-
-;;       (re-search-forward "^Content-Disposition: attachment" nil t) 
-;;      (when ;; no attachment; did we mention an attachment?
-;;         (re-search-forward "attach" nil t)
-;;         (unless (y-or-n-p "Possibly missing an attachment. Send current draft?")
-;;           (error "Abort."))))))
-;; (add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-subject-check)
-;; (add-hook 'wl-mail-send-pre-hook 'djcb-wl-draft-attachment-check)
-
-(setq 
- 
-; wl-stay-folder-window t                       ;; show the folder pane (left)
-;; wl-folder-window-width 20                     ;; toggle on/off with 'i'
-)
-
-(setq
-  wl-forward-subject-prefix "Fwd: " )    ;; use "Fwd: " not "Forward: "
-
-(setq wl-summary-line-format "%T%P%t| %D.%M(%W) %h:%m  %15(%f%)      %s   ")
-
-(setq wl-folder-desktop-name "Gmail")
-
-(require 'org-wl)
-
 (if (string= system-name "zuni") 
 (progn
 
@@ -5407,3 +5269,227 @@ scroll-step 1)
 
 (winner-mode)
 (add-hook 'ediff-after-quit-hook-internal 'winner-undo)
+
+(when (string= system-name "zuni")
+(add-to-list 'load-path "~/mu/mu4e/")
+)
+
+(require 'mu4e)
+(require 'mu4e-contrib) 
+;;;;$Note-this may screw up header updates$ 
+;(mu4e-maildirs-extension)
+;; list of my email addresses.
+(setq mu4e-user-mail-address-list '("ikloog@gmail.com"
+                                    "ikloog@bgu.ac.il"
+                                    "ekloog@hsph.harvard.edu"))
+
+(setq mu4e-update-interval 60)
+(setq mu4e-headers-auto-update t)
+(setq mu4e-index-update-error-warning  t)
+(setq mu4e-index-update-error-continue   t)
+
+;; something about ourselves
+(setq
+   user-mail-address "ikloog@gmail.com"
+   user-full-name  "itai kloog "
+   mu4e-compose-signature
+    (concat
+      "itai kloog\n"
+      "http://www.bgu.ac.il\n"))
+
+(setq mu4e-compose-signature-auto-include 't)
+
+(require 'mu4e)
+
+;; default
+;; (setq mu4e-maildir "~/Maildir")
+
+(setq mu4e-drafts-folder "/[Gmail].Drafts")
+(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+(setq mu4e-trash-folder  "/[Gmail].Trash")
+
+;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+;; additional non-Gmail addresses and want assign them different
+;; behavior.)
+
+;; setup some handy shortcuts
+;; you can quickly switch to your Inbox -- press ``ji''
+;; then, when you want archive some messages, move them to
+;; the 'All Mail' folder by pressing ``ma''.
+
+(setq mu4e-maildir-shortcuts
+    '( ("/INBOX"               . ?i)
+       ("/[Gmail].Sent Mail"   . ?s)
+       ("/[Gmail].Trash"       . ?t)
+       ("/[Gmail].All Mail"    . ?a)))
+
+;; allow for updating mail using 'U' in the main view:
+;(setq mu4e-get-mail-command "offlineimap")
+
+;; sending mail -- replace USERNAME with your gmail username
+;; also, make sure the gnutls command line utils are installed
+;; package 'gnutls-bin' in Debian/Ubuntu
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+(require 'smtpmail)
+(setq message-send-mail-function 'smtpmail-send-it
+   starttls-use-gnutls t
+   smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+   smtpmail-auth-credentials
+     '(("smtp.gmail.com" 587 "ikloog@gmail.com" nil))
+   smtpmail-default-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-server "smtp.gmail.com"
+   smtpmail-smtp-service 587)
+
+;; setup some handy shortcuts
+;; you can quickly switch to your Inbox -- press ``ji''
+;; then, when you want archive some messages, move them to
+;; the 'All Mail' folder by pressing ``ma''.
+
+(setq mu4e-maildir-shortcuts
+    '( ("INBOX"               . ?i)
+       ("Starred"   . ?r)
+       ("/[Gmail].Sent Mail"   . ?s)
+       ("/[Gmail].Trash"       . ?t)
+       ("/[Gmail].All Mail"    . ?a)))
+
+mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
+
+(require 'org-mu4e)
+
+;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
+;; alternatively, for emacs-24 you can use:
+;;(setq message-send-mail-function 'smtpmail-send-it
+;;     smtpmail-stream-type 'starttls
+;;     smtpmail-default-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-server "smtp.gmail.com"
+;;     smtpmail-smtp-service 587)
+
+(setq mu4e-date-format-long "%d/%m/%Y (%H:%M:%S)")
+(setq mu4e-headers-date-format "%d/%m/%Y (%H:%M:%S)")
+
+;can define a horizontal or vertical split 
+(setq mu4e-split-view 'horizontal)
+
+;; use 'fancy' non-ascii characters in various places in mu4e
+(setq mu4e-use-fancy-chars t)
+;; attempt to show images when viewing messages
+(setq mu4e-view-show-images t)
+
+(when (fboundp 'imagemagick-register-types)
+      (imagemagick-register-types))
+;preffer html  
+(setq mu4e-view-prefer-html t)
+
+;; Silly mu4e only shows names in From: by default. Of course we also  want the addresses.
+(setq mu4e-view-show-addresses t)
+
+;; mu4e-action-view-in-browser is built into mu4e
+;; by adding it to these lists of custom actions
+;; it can be invoked by first pressing a, then selecting
+(add-to-list 'mu4e-headers-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+(add-to-list 'mu4e-view-actions
+             '("in browser" . mu4e-action-view-in-browser) t)
+
+;; the headers to show in the headers list -- a pair of a field
+;; and its width, with `nil' meaning 'unlimited'
+;; (better only use that for the last field.
+;; These are the defaults:
+(setq mu4e-headers-fields
+    '( (:date          .  25)
+       (:flags         .   6)
+       (:from          .  22)
+       (:subject       .  nil)))
+
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+(require 'mu4e-contrib) 
+(setq mu4e-html2text-command 'mu4e-shr2text) 
+;(setq mu4e-html2text-command "w3m -I utf8 -O utf8 -T text/html")
+
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
+
+;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+;; additional non-Gmail addresses and want assign them different
+;; behavior.)
+
+(defgroup mu4e-faces nil 
+  "Type faces (fonts) used in mu4e." 
+  :group 'mu4e 
+  :group 'faces) 
+
+(defface mu4e-basic-face 
+  '((t :inherit font-lock-keyword-face)) 
+  "Basic Face." 
+  :group 'mu4e-faces) 
+
+(defface mu4e-list-default 
+  '((t :inherit mu4e-basic-face)) 
+  "Basic list Face." 
+  :group 'mu4e-faces) 
+
+(defface mu4e-rw-default 
+  '((t :inherit mu4e-basic-face)) 
+  "Basic rw Face." 
+  :group 'mu4e-faces)
+
+;; basic face from where the rest inherits 
+ '(mu4e-basic-face ((t :inherit font-lock-keyword-face :weight normal :foreground "Gray10"))) 
+
+;; read-write group 
+ '(mu4e-rw-default ((t :inherit mu4e-basic-face))) ;; face from where all the read/write faces inherits 
+ '(mu4e-header-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-marks-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-title-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-header-highlight-face ((t :inherit mu4e-rw-default :foreground "Black" :background "LightGray"))) 
+ '(mu4e-compose-header-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-compose-separator-face ((t :inherit mu4e-rw-default :foreground "Gray30" :weight bold))) 
+ '(mu4e-footer-face ((t :inherit mu4e-rw-default))) 
+ '(mu4e-contact-face ((t :inherit mu4e-rw-default :foreground "Black"))) 
+ '(mu4e-cited-1-face ((t :inherit mu4e-rw-default :foreground "Gray10"))) 
+ '(mu4e-cited-2-face  ((t :inherit mu4e-cited-1-face :foreground "Gray20"))) 
+ '(mu4e-cited-3-face   ((t :inherit mu4e-cited-2-face :foreground "Gray30"))) 
+ '(mu4e-cited-4-face    ((t :inherit mu4e-cited-3-face :foreground "Gray40"))) 
+ '(mu4e-cited-5-face     ((t :inherit mu4e-cited-4-face :foreground "Gray50"))) 
+ '(mu4e-cited-6-face      ((t :inherit mu4e-cited-5-face :foreground "Gray60"))) 
+ '(mu4e-cited-7-face       ((t :inherit mu4e-cited-6-face :foreground "Gray70"))) 
+ '(mu4e-link-face ((t :inherit mu4e-rw-default :foreground "Blue" :weight bold))) 
+ '(mu4e-system-face ((t :inherit mu4e-rw-defaul :foreground "DarkOrchid"))) 
+ '(mu4e-url-number-face ((t :inherit mu4e-rw-default :weight bold))) 
+ '(mu4e-attach-number-face ((t :inherit mu4e-rw-default :weight bold :foreground "Blue"))) 
+
+;; lists (headers) group 
+ '(mu4e-list-default ((t :inherit mu4e-basic-face))) ;; basic list face from where lists inherits 
+ '(mu4e-draft-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-flagged-face ((t :inherit mu4e-list-default :weight bold :foreground "Black"))) 
+ '(mu4e-forwarded-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-list-default-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-title-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-trashed-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-warning-face ((t :inherit mu4e-list-default :foreground "OrangeRed1"))) 
+ '(mu4e-modeline-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-moved-face ((t :inherit mu4e-list-default))) 
+ '(mu4e-ok-face ((t :inherit mu4e-list-default :foreground "ForestGreen"))) 
+ '(mu4e-read-face ((t :inherit mu4e-list-default :foreground "Gray80"))) 
+ '(mu4e-region-code-face ((t :inherit mu4e-list-default :background "Gray25"))) 
+ '(mu4e-replied-face ((t :inherit mu4e-list-default :foreground "Black"))) 
+ '(mu4e-unread-face ((t :inherit mu4e-list-default :foreground "Blue"))) 
+ '(mu4e-highlight-face ((t :inherit mu4e-unread-face))) 
+
+ '(mu4e-special-header-value-face ((t :inherit mu4e-contact-face))) 
+ '(mu4e-header-key-face ((t :inherit mu4e-contact-face :foreground "Gray50"))) 
+ '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
+ '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))

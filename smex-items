@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ mu4e-alert-enable-mode-line-display
+ mu4e-alert-enable-notifications
+ mu4e
  customize-group
- wl-summary-sort
  wl
  load-library
  eval-buffer
- customize-variable
- pandoc-mode
 )
 
 ;; ----- smex-data -----
@@ -73,4 +73,7 @@
  (pandoc-mode . 3)
  (zc-hebrew . 7)
  (wl-summary-sort . 1)
+ (mu4e . 1)
+ (mu4e-alert-enable-notifications . 1)
+ (mu4e-alert-enable-mode-line-display . 1)
 )
