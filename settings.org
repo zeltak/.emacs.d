@@ -7091,9 +7091,6 @@ This recalls the R statement from your R statement history, but it tries to matc
 #+END_SRC
 * mu4e
   :PROPERTIES:
-  :ARCHIVE_TIME: 2015-10-24 Sat 12:26
-  :ARCHIVE_FILE: ~/.emacs.d/settings.org
-  :ARCHIVE_CATEGORY: settings
   :END:
 *** base setup 
 for ubuntu

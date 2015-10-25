@@ -1,10 +1,10 @@
 
 ;; ----- smex-history -----
 (
+ mu4e
  helm-mu
  mu4e-alert-enable-mode-line-display
  mu4e-alert-enable-notifications
- mu4e
  customize-group
  wl
  load-library
@@ -73,7 +73,7 @@
  (pandoc-mode . 3)
  (zc-hebrew . 7)
  (wl-summary-sort . 1)
- (mu4e . 1)
+ (mu4e . 4)
  (mu4e-alert-enable-notifications . 1)
  (mu4e-alert-enable-mode-line-display . 1)
  (helm-mu . 1)
