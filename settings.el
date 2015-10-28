@@ -3516,7 +3516,7 @@ _q_: quit
 (global-set-key
  (kbd "C-M-l")
 
-(defhydra hydra-org-tablr (:color blue  :columns 6)
+(defhydra hydra-org-table (:color blue  :columns 6)
 "【C-c +】 will sum a column and move to clip  【C-space】 blank field 【M-left/right】move column left/right  【M-S-left/right】kill/add column 
 【M-up/down】 move row up/down 【M-S-down】 insert row  【M-S-up】 kill row
 【|-】 will start a dashed line 【C-c +】 org sum 【C-c ?/}】 find/show out field info 
@@ -3588,7 +3588,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
   ("k"     z/insert-black-lenticular-bracket  "【】") 
-  ("b"     z/insert-bashscript  "#!") 
+  ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
   ("o"     z/insert-EOL  " \\") 
   ("q" nil "cancel" nil)

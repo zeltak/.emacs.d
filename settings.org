@@ -4860,7 +4860,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
 (defhydra hydra-editing-insert (:color blue)
   "unicode"
   ("k"     z/insert-black-lenticular-bracket  "【】") 
-  ("b"     z/insert-bashscript  "#!") 
+  ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
   ("o"     z/insert-EOL  " \\") 
   ("q" nil "cancel" nil)
