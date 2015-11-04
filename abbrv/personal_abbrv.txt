@@ -958,6 +958,7 @@
     ("regardsless" "regardless" nil 0)
     ("regession" "regression" nil 0)
     ("regresion" "regression" nil 0)
+    ("reimerssmen" "reimbursement" nil 0)
     ("releated" "related" nil 0)
     ("religous" "religious" nil 0)
     ("relize" "realize" nil 0)

@@ -717,6 +717,9 @@
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
+(mu4e-alert-enable-notifications)
+
  )
 
 (use-package helm-mu
@@ -4721,6 +4724,8 @@ With prefix argument, also display headlines without a TODO keyword."
 ;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
+
+(setq org-ellipsis "⤵")
 
 ;(setq org-export-in-background t)
 

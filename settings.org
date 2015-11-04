@@ -1076,6 +1076,9 @@ https://github.com/iqbalansari/mu4e-alert
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
+(mu4e-alert-enable-notifications)
+
  )
 #+END_SRC 
 
@@ -6310,7 +6313,13 @@ http://en.wikipedia.org/wiki/List_of_Unicode_characters
 ;           (0 (progn (compose-region (match-beginning 1) (match-end 1) ?¦)
 ;                     nil))))))
 ;    (add-hook 'org-mode-hook 'prettier-org-code-blocks)
-#+END_SRC 
+#+END_SRC
+*** TODO Changing the org-mode ellipsis
+#+BEGIN_SRC emacs-lisp :results none
+(setq org-ellipsis "⤵")
+#+END_SRC
+Other interesting characters are ↴, ⬎, ⤷, and ⋱.
+
 ** Export/publishing
 *** export in background
 @this casues org-reveal to spit an error@
