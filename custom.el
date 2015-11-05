@@ -52,10 +52,14 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(aw-leading-char-face ((t (:inherit ace-jump-face-foreground :height 3.0))))
+ '(ivy-minibuffer-match-face-1 ((t :background "#dddddd")))
+ '(ivy-minibuffer-match-face-2 ((t :background "#bbbbbb" :weight bold)))
+ '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :weight bold)))
+ '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :weight bold)))
  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))))
  '(sr-active-path-face ((t (:background "DodgerBlue4" :foreground "deep sky blue" :weight bold))))
  '(sr-symlink-face ((t (:foreground "dim gray" :slant italic))))
- '(swiper-minibuffer-match-face-1 ((t :background "#dddddd")))
- '(swiper-minibuffer-match-face-2 ((t :background "#bbbbbb" :weight bold)))
- '(swiper-minibuffer-match-face-3 ((t :background "#bbbbff" :weight bold)))
- '(swiper-minibuffer-match-face-4 ((t :background "#ffbbff" :weight bold))))
+ '(swiper-minibuffer-match-face-1 ((t :background "#dddddd")) t)
+ '(swiper-minibuffer-match-face-2 ((t :background "#bbbbbb" :weight bold)) t)
+ '(swiper-minibuffer-match-face-3 ((t :background "#bbbbff" :weight bold)) t)
+ '(swiper-minibuffer-match-face-4 ((t :background "#ffbbff" :weight bold)) t))

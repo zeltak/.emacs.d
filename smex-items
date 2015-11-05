@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- mu4e
- helm-mu
- mu4e-alert-enable-mode-line-display
- mu4e-alert-enable-notifications
- customize-group
- wl
- load-library
+ helm-multi-swoop
+ helm-multi-swoop-org
+ helm-swoop
+ swiper-mc
+ helm-grepint-grep-root
+ sunrise
+ sunrise-cd
 )
 
 ;; ----- smex-data -----
@@ -77,4 +77,11 @@
  (mu4e-alert-enable-notifications . 1)
  (mu4e-alert-enable-mode-line-display . 1)
  (helm-mu . 1)
+ (sunrise-cd . 1)
+ (sunrise . 1)
+ (helm-grepint-grep-root . 1)
+ (swiper-mc . 1)
+ (helm-swoop . 4)
+ (helm-multi-swoop . 2)
+ (helm-multi-swoop-org . 1)
 )

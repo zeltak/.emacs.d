@@ -263,22 +263,22 @@
 ;(require 'tex)
 ;(setq preview-scale-function 1.1)
 
-(use-package auto-complete
- :ensure t
- :config
-(ac-config-default)
+;; (use-package auto-complete
+;;  :ensure t
+;;  :config
+;; (ac-config-default)
 
-;start after 4 characters
-(setq ac-auto-start 4)
-;fix linium issues
-(ac-linum-workaround)
+;; ;start after 4 characters
+;; (setq ac-auto-start 4)
+;; ;fix linium issues
+;; (ac-linum-workaround)
 
-;; Examples
-(set-face-background 'ac-candidate-face "lightgray")
-(set-face-underline 'ac-candidate-face "darkgray")
-(set-face-background 'ac-selection-face "steelblue")
+;; ;; Examples
+;; (set-face-background 'ac-candidate-face "lightgray")
+;; (set-face-underline 'ac-candidate-face "darkgray")
+;; (set-face-background 'ac-selection-face "steelblue")
 
-)
+;; )
 
 (use-package avy
  :ensure t
@@ -340,7 +340,31 @@
 (use-package company
  :ensure t
  :config
+;;(add-hook 'after-init-hook 'global-company-mode)
+
+;; companymode
+(require 'company)
 (add-hook 'after-init-hook 'global-company-mode)
+(global-company-mode)
+
+;; company delay until suggestions are shown
+(setq company-idle-delay 0.2)
+
+;; weight by frequency
+(setq company-transformers '(company-sort-by-occurrence))
+
+;; Add yasnippet support for all company backends
+;; https://github.com/syl20bnr/spacemacs/pull/179
+(defvar company-mode/enable-yas t "Enable yasnippet for all backends.")
+
+(defun company-mode/backend-with-yas (backend)
+  (if (or (not company-mode/enable-yas) (and (listp backend)    (member 'company-yasnippet backend)))
+  backend
+(append (if (consp backend) backend (list backend))
+        '(:with company-yasnippet))))
+
+(setq company-backends (mapcar #'company-mode/backend-with-yas company-backends))
+
  )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -726,6 +750,43 @@
  :ensure t
  :config
   )
+
+(use-package helm-fuzzier
+ :ensure t
+ :config
+ (require 'helm-fuzzier)
+  (helm-fuzzier-mode 1)
+ )
+
+(use-package helm-grepint
+ :ensure t
+ :config
+     (require 'helm-grepint)
+    (helm-grepint-set-default-config)
+    (global-set-key (kbd "C-c g") #'helm-grepint-grep)
+    (global-set-key (kbd "C-c G") #'helm-grepint-grep-root)
+ )
+
+(use-package helm-swoop
+ :ensure t
+ :config
+;; Move up and down like isearch
+(define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+(define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+(define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+(define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
+
+;; From helm-swoop to helm-multi-swoop-all
+(define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+
+;; Save buffer when helm-multi-swoop-edit complete
+(setq helm-multi-swoop-edit-save t)
+
+;; If nil, you can slightly boost invoke speed in exchange for text color
+(setq helm-swoop-speed-or-color nil)
+
+
+ )
 
 (use-package helm-projectile
  :ensure t
@@ -3139,6 +3200,9 @@ _q_:
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("<f2>" flyspell-auto-correct-previous-word "correct last word" )
   ("<f4>" z/flyspell-goto-previous-error "correct last word" )
+  ("1" helm-swoop "Helm-swoop")
+  ("2" helm-multi-swoop "Helm-multi-swoop")
+  ("3" helm-multi-swoop-org "Helm-multi-swoop-org")
   ("a" helm-apropos "Helm-Apropos")
   ("b"  backward-kill-line  "kill backwards")
   ("c"  cycle-spacing "cycle spacing")
