@@ -5495,6 +5495,15 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 ;; additional non-Gmail addresses and want assign them different
 ;; behavior.)
 
+(setq mu4e-attachment-dir
+  (lambda (fname mtype)
+    (cond
+      ;; docfiles go to ~/Desktop
+      ((and fname (string-match "\\.pdf$" fname))  "~/Downloads/")
+      ((and fname (string-match "\\.doc$" fname))  "~/Uni/")
+      ;; ... other cases  ...
+      (t "~/Downloads")))) ;; everything else
+
 (defgroup mu4e-faces nil 
   "Type faces (fonts) used in mu4e." 
   :group 'mu4e 

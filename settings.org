@@ -1090,7 +1090,7 @@ https://github.com/tmalsburg/helm-bibtex
          :candidate-number-limit 500))
 
  #+END_SRC
-** mu4e-alert
+** mu4e-alert							
 https://github.com/iqbalansari/mu4e-alert
 #+BEGIN_SRC emacs-lisp :results none
 (use-package mu4e-alert
@@ -2766,8 +2766,6 @@ Version 2015-04-19"
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
 #+END_SRC
-
-
 (defun xah-insert-single-angle-quote‹› () (interactive) (xah-insert-bracket-pair "‹" "›") )
 (defun xah-insert-double-angle-quote«» () (interactive) (xah-insert-bracket-pair "«" "»") )
 (defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
@@ -7390,6 +7388,17 @@ http://www.djcbsoftware.nl/code/mu/mu4e/Creating-org_002dmode-links.html
 ;; additional non-Gmail addresses and want assign them different
 ;; behavior.)
 
+#+END_SRC
+*** attachments
+#+BEGIN_SRC emacs-lisp :results none
+(setq mu4e-attachment-dir
+  (lambda (fname mtype)
+    (cond
+      ;; docfiles go to ~/Desktop
+      ((and fname (string-match "\\.pdf$" fname))  "~/Downloads/")
+      ((and fname (string-match "\\.doc$" fname))  "~/Uni/")
+      ;; ... other cases  ...
+      (t "~/Downloads")))) ;; everything else
 #+END_SRC
 *** Faces
 #+BEGIN_SRC emacs-lisp :results none
