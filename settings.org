@@ -1100,12 +1100,18 @@ https://github.com/iqbalansari/mu4e-alert
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
+;;below will color the fringe (left side of an Emacs window)..worked but couldn't see how to disable it
+;;;(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
 (mu4e-alert-enable-notifications)
 
  )
 #+END_SRC 
 
+*** to restore the fringe to to a bug
+#+BEGIN_SRC emacs-lisp :results none
+(defun alert-fringe-restore (info)
+  (copy-face 'alert-saved-fringe-face 'fringe))
+#+END_SRC
 
 ** helm mu
 https://github.com/emacs-helm/helm-mu
