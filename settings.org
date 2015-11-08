@@ -407,7 +407,22 @@ https://gitlab.com/iankelling/bbdb-csv-import/
  :ensure t
  :config
   )
+#+END_SRC
+** beacon mode 
+
+https://github.com/Malabarba/beacon
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package beacon
+ :ensure t
+ :config
+(beacon-mode 1)
+(setq beacon-push-mark 35)
+(setq beacon-color "#21D6F4")
+ )
 #+END_SRC 
+
+
 ** Bookmark+
 #+BEGIN_SRC emacs-lisp :results none
 (use-package bookmark+
@@ -1292,6 +1307,7 @@ C-n and C-p naturally select the next and the previous candidate.
 (use-package key-chord 
   :ensure t
   :config
+(key-chord-mode 1)
 (setq key-chord-two-keys-delay 0.16)
 (setq key-chord-one-key-delay 0.20)
 )
@@ -4093,7 +4109,12 @@ quick switch other windw
 (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
 #+END_SRC
+** key-chord
 
+#+BEGIN_SRC emacs-lisp :results none
+(key-chord-define-global "3e" 'hydra-editing/body)
+(key-chord-define-global "9o" 'hydra-org-edit/body)
+#+END_SRC
 ** Ess/org tangle
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
@@ -6066,12 +6087,12 @@ set how many levels of headers to show while refiling
 "* COOK %^{Recipe Name} %^g     
     :PROPERTIES:
     :ID: %(org-id-uuid)
-    :Time: %^{minutes|10|15|30|60}
+    :Time: %^{minutes|-|10|15|30|60}
     :Rating: %^{rating?|-|1|2|3|4|5}
     :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|1|2|4|6|8}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|-|1|2|4|6|8}
     :Fav: %^{}
     :END:
 %^{prompt|** Ingredients}
@@ -6850,6 +6871,28 @@ functions to get tab etc to work
 #+END_SRC
 
 *** archives
+**** TODO compress to tar in dired
+this will only work on Emacs 25..keep track!
+http://oremacs.com/2015/10/23/dired-compress/
+
+This new command dired-do-compress-to, bound to c, will prompt me for a file name of the output archive. So now it's easier to type in that file name, if you use ido-mode / ivy-mode / helm-mode. What's more, the command will be automatically determined from the archive extension and executed. Here's the corresponding customization variable:
+
+#+BEGIN_SRC emacs-lisp :results none
+  ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
+
+  ;; (defvar dired-compress-files-alist
+  ;;   '(("\\.tar\\.gz\\'" . "tar -c %i | gzip -c9 > %o")
+  ;;     ("\\.zip\\'" . "zip %o -r --filesync %i"))
+  ;;   "Control the compression shell command for `dired-do-compress-to'.
+
+  ;; Each element is (REGEXP . CMD), where REGEXP is the name of the
+  ;; archive to which you want to compress, and CMD the the
+  ;; corresponding command.
+
+  ;; Within CMD, %i denotes the input file(s), and %o denotes the
+  ;; output file. %i path(s) are relative, while %o is absolute.")
+
+#+END_SRC
 **** zip
 http://stackoverflow.com/questions/1431351/how-do-i-uncompress-unzip-within-emacs
 #+BEGIN_SRC emacs-lisp :results none

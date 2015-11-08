@@ -307,6 +307,14 @@
  :config
   )
 
+(use-package beacon
+ :ensure t
+ :config
+(beacon-mode 1)
+(setq beacon-push-mark 35)
+(setq beacon-color "#21D6F4")
+ )
+
 (use-package bookmark+
 :ensure t
 :config
@@ -741,10 +749,14 @@
 (mu4e-alert-set-default-style 'libnotify)
 (add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
 (add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
+;;below will color the fringe (left side of an Emacs window)..worked but couldn't see how to disable it
+;;;(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
 (mu4e-alert-enable-notifications)
 
  )
+
+(defun alert-fringe-restore (info)
+  (copy-face 'alert-saved-fringe-face 'fringe))
 
 (use-package helm-mu
  :ensure t
@@ -850,6 +862,7 @@
 (use-package key-chord 
   :ensure t
   :config
+(key-chord-mode 1)
 (setq key-chord-two-keys-delay 0.16)
 (setq key-chord-one-key-delay 0.20)
 )
@@ -2929,6 +2942,9 @@ Version 2015-07-30"
 (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
 
+(key-chord-define-global "3e" 'hydra-editing/body)
+(key-chord-define-global "9o" 'hydra-org-edit/body)
+
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 
 (defface hydra-face-orange
@@ -4490,12 +4506,12 @@ With prefix argument, also display headlines without a TODO keyword."
 "* COOK %^{Recipe Name} %^g     
     :PROPERTIES:
     :ID: %(org-id-uuid)
-    :Time: %^{minutes|10|15|30|60}
+    :Time: %^{minutes|-|10|15|30|60}
     :Rating: %^{rating?|-|1|2|3|4|5}
     :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|main|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|1|2|4|6|8}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|-|1|2|4|6|8}
     :Fav: %^{}
     :END:
 %^{prompt|** Ingredients}
@@ -5099,6 +5115,20 @@ scroll-step 1)
     (when (and (eq major-mode 'sunrise-mode)
            (not isearch-mode-end-hook-quit))
       (dired-find-file))))
+
+;; (define-key dired-mode-map "c" 'dired-do-compress-to)
+
+;; (defvar dired-compress-files-alist
+;;   '(("\\.tar\\.gz\\'" . "tar -c %i | gzip -c9 > %o")
+;;     ("\\.zip\\'" . "zip %o -r --filesync %i"))
+;;   "Control the compression shell command for `dired-do-compress-to'.
+
+;; Each element is (REGEXP . CMD), where REGEXP is the name of the
+;; archive to which you want to compress, and CMD the the
+;; corresponding command.
+
+;; Within CMD, %i denotes the input file(s), and %o denotes the
+;; output file. %i path(s) are relative, while %o is absolute.")
 
 (eval-after-load "dired-aux"
    '(add-to-list 'dired-compress-file-suffixes 
