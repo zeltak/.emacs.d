@@ -76,7 +76,7 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-16"))
+(add-to-list 'default-frame-alist '(font . "Pragmata Pro-17"))
 ;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
 ;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
 )
@@ -4495,11 +4495,13 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
    (kbd "<f5>")
 (defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
   "
-WL:【s】 update 【w】write(reply) 【c】Mark all read 【$】star 【S】sort email by
+【M-Enter】 open link 【R】 Reply to sender 
+【+】flag (star)
 "
   ("<f5>"     mu4e            "start mu4e")
-;  ("<f5>"     wl            "start mail")
-  ("u"     mu4e-maildirs-extension-force-update           "Send/Recive")
+  ("<f56>"     helm-mu            "helm mu4e")
+  ("ez" z/org-email-heading-me "email myslef the tree")
+  ("ex" z/org-email-heading "email other the tree")
   ("o"     mu4e-headers-change-sorting            "sort")
   ("z"   z/org-email-heading              "email header")
     ("q"     nil                          "cancel" )
@@ -4635,8 +4637,6 @@ BKMK Menu
 ("D"  org-download-delete "del screenshot")
 ("E"  org-export-dispatch "export")
 ("ep" org-latex-export-to-pdf "export latex")
-("ez" z/org-email-heading-me "email myslef the tree")
-("ex" z/org-email-heading "email other the tree")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
 ("h"  org-insert-heading "insert header")
@@ -4930,7 +4930,7 @@ FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum
       ("c" z/comment-box "comment box" )
       ("u" upcase-region  "upcase " )
       ("d" downcase-region  "downcase " )
-      ("y" z/edit-copy-all-or-region  "copy buffer" )
+      ("h" z/edit-copy-all-or-region  "copy buffer" )
       ("w" shrink-whitespace  "shrink-whitespace" )
       ("R" revert-buffer  "revert buffer before changes" ) 
       ("q" nil "cancel")))
