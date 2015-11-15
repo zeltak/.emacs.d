@@ -9,5 +9,6 @@
 
 (setq mc/cmds-to-run-once
       '(
+	ivy-done
 	org-self-insert-command
 	))

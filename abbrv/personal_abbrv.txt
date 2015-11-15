@@ -91,6 +91,8 @@
 
 (define-abbrev-table 'edit-abbrevs-mode-abbrev-table '())
 
+(define-abbrev-table 'eieio-custom-mode-abbrev-table '())
+
 (define-abbrev-table 'emacs-lisp-byte-code-mode-abbrev-table '())
 
 (define-abbrev-table 'emacs-lisp-mode-abbrev-table '())
@@ -372,6 +374,7 @@
     ("complteted" "completed" nil 0)
     ("componenents" "components" nil 0)
     ("composate" "composite" nil 0)
+    ("composter" "compost" nil 0)
     ("compteted" "completed" nil 0)
     ("comtain" "contain" nil 0)
     ("comtains" "contains" nil 0)

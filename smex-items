@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- isearch-forward
- beacon-blink
- beacon-mode
- key-chord-mode
- mu4e-alert-disable-mode-line-display
- mu4e-alert-view-unread-mails
- mu4e-alert-enable-notifications
+ ranger
+ debug
+ worf-mode
+ org-vcard-import
+ company-yasnippet
+ company-complete-common
+ wl
 )
 
 ;; ----- smex-data -----
@@ -37,12 +37,12 @@
  (eval-buffer . 4)
  (org-reload . 1)
  (company-mode . 1)
- (company-complete . 4)
+ (company-complete . 5)
  (company-org-headings . 2)
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 3)
+ (customize-variable . 4)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
@@ -55,7 +55,7 @@
  (dired-k . 1)
  (xah-cycle-hyphen-underscore-space . 6)
  (xah-insert-black-lenticular-bracket【】 . 1)
- (ranger . 8)
+ (ranger . 11)
  (deer . 2)
  (z-year-increment . 1)
  (quick-calc . 1)
@@ -90,4 +90,11 @@
  (key-chord-mode . 3)
  (beacon-mode . 2)
  (beacon-blink . 2)
+ (org-hide-block-toggle . 1)
+ (company-complete-common . 2)
+ (company-yasnippet . 2)
+ (org-vcard-import . 2)
+ (worf-mode . 1)
+ (debug . 1)
+ (debugger-mode . 1)
 )

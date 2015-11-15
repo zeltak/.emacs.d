@@ -664,6 +664,17 @@ more...")
    `(magit-log-tag-label ((,class (:box (:line-width 1 :color "#00CC00" :style nil)))))
    `(magit-section-title ((,class (:family "Sans Serif" :height 1.8 :weight bold :foreground "cornflower blue" :inherit nil))))
 
+;;;company
+
+ `(company-tooltip ((t :background "lightgray" :foreground "black")))
+ `(company-tooltip-selection ((t :background "steelblue" :foreground "white")))
+ `(company-tooltip-mouse ((t :background "blue" :foreground "white")))
+ `(company-tooltip-common ((t :background "lightgray" :foreground "black")))
+ `(company-tooltip-common-selection ((t t :background "lightgray" :foreground "black")))
+ `(company-scrollbar-fg ((t :background "black")))
+ `(company-scrollbar-bg ((t :background "gray")))
+ `(company-preview ((t :background nil :foreround "darkgray")))
+ `(company-preview-common ((t :background nil :foreground "darkgray")))
 
 
    `(makefile-space-face ((,class (:background "hot pink"))))
@@ -795,6 +806,9 @@ more...")
    ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
                                         ; colors used in Shell mode
  )
+
+
+
 
 ;;;###autoload
 (when (and (boundp 'custom-theme-load-path)
