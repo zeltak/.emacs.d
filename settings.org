@@ -878,7 +878,7 @@ https://github.com/technomancy/find-file-in-project
 (use-package find-file-in-project
  :ensure t
  :config
- 
+
  )
 #+END_SRC 
 
@@ -1637,14 +1637,13 @@ https://github.com/politza/pdf-tools
 #+END_SRC 
 
 ** projectile
-
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (use-package projectile
-  ;;  :ensure t
-  ;;  :config
-  ;; (projectile-global-mode)
-  ;; (setq projectile-completion-system 'grizzl)
-  ;;  )
+  (use-package projectile
+   :ensure t
+   :config
+  (projectile-global-mode)
+  (setq projectile-completion-system 'grizzl)
+   )
 #+END_SRC
 ** polymode
 https://github.com/vspinu/polymode
@@ -4658,7 +4657,8 @@ BKMK Menu
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
-("<f9>" org-iswitchb "org buffers")
+("<f9>" projectile-find-file  "projectile ff")
+("7" org-iswitchb "org buffers")
 ("a" nil )
 ("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
 ("c"  helm-chrome-bookmarks "Chorme BKMK")
