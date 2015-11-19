@@ -1,20 +1,20 @@
 
 ;; ----- smex-history -----
 (
- ranger
- debug
+ buffer-flip
+ key-chord-mode
+ z/org-export-revel-browse
  worf-mode
- org-vcard-import
- company-yasnippet
- company-complete-common
- wl
+ goto-last-change
+ projectile-find-file
+ projectile-mode
 )
 
 ;; ----- smex-data -----
 (
  (counsel-find-file . 4)
  (counsel-load-theme . 7)
- (load-theme . 11)
+ (load-theme . 12)
  (ivy-resume . 1)
  (z/org-email-heading-me . 3)
  (gnus . 8)
@@ -37,12 +37,12 @@
  (eval-buffer . 4)
  (org-reload . 1)
  (company-mode . 1)
- (company-complete . 5)
+ (company-complete . 4)
  (company-org-headings . 2)
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 4)
+ (customize-variable . 5)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
@@ -52,11 +52,11 @@
  (bbdb-csv-import-file . 1)
  (customize-group . 2)
  (wl . 25)
- (dired-k . 1)
+ (dired-k . 3)
  (xah-cycle-hyphen-underscore-space . 6)
  (xah-insert-black-lenticular-bracket【】 . 1)
- (ranger . 11)
- (deer . 2)
+ (ranger . 19)
+ (deer . 10)
  (z-year-increment . 1)
  (quick-calc . 1)
  (avy-goto-char-timer . 4)
@@ -76,7 +76,7 @@
  (mu4e . 4)
  (mu4e-alert-enable-notifications . 2)
  (mu4e-alert-enable-mode-line-display . 1)
- (helm-mu . 1)
+ (helm-mu . 2)
  (sunrise-cd . 1)
  (sunrise . 1)
  (helm-grepint-grep-root . 1)
@@ -87,14 +87,34 @@
  (mu4e-alert-disable-notifications . 1)
  (mu4e-alert-view-unread-mails . 1)
  (mu4e-alert-disable-mode-line-display . 1)
- (key-chord-mode . 3)
+ (key-chord-mode . 5)
  (beacon-mode . 2)
  (beacon-blink . 2)
- (org-hide-block-toggle . 1)
- (company-complete-common . 2)
- (company-yasnippet . 2)
- (org-vcard-import . 2)
- (worf-mode . 1)
- (debug . 1)
- (debugger-mode . 1)
+ (helm-colors . 1)
+ (company-diag . 1)
+ (company-dabbrev . 1)
+ (company-yasnippet . 3)
+ (eww . 1)
+ (avy-zap-to-char . 1)
+ (dired-filter-mode . 1)
+ (dired-narrow . 1)
+ (dired-narrow-fuzzy . 1)
+ (dired-narrow-regexp . 2)
+ (dired-filter-by-name . 1)
+ (dired-filter-by-extension . 2)
+ (dired-filter-by-omit . 1)
+ (easy-mark . 2)
+ (org-link-edit-forward-slurp . 1)
+ (mc/edit-lines . 4)
+ (mc/mark-pop . 1)
+ (org-vcard-import . 1)
+ (ranger-show-bookmarks . 1)
+ (speedbar-mode . 2)
+ (worf-mode . 3)
+ (find-file-in-project . 1)
+ (projectile-mode . 2)
+ (projectile-find-file . 2)
+ (goto-last-change . 5)
+ (z/org-export-revel-browse . 1)
+ (buffer-flip . 1)
 )

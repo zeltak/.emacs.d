@@ -412,6 +412,37 @@ https://gitlab.com/iankelling/bbdb-csv-import/
  :config
   )
 #+END_SRC
+** TODO bind map
+https://github.com/justbur/emacs-bind-map/tree/e3fa3cc383bd7d331caa89bc914a2a296abb98f1
+#+BEGIN_SRC emacs-lisp :results none
+  ;; (use-package bind-map
+  ;;  :ensure t
+  ;;  :config
+
+  ;; (bind-map z/base-leader-map
+  ;;   :keys ("\\")
+  ;; )
+
+  ;; (bind-map-set-keys z/base-leader-map
+  ;;   "c" 'z/org-export-revel-browse
+  ;;   ;; ...
+  ;;   )
+
+  ;;  )
+#+END_SRC
+
+allows for an arbitrary number of “leader keys”. This is probably best explained with an example.
+
+(bind-map my-base-leader-map
+  :keys ("M-m")
+  :evil-keys ("SPC")
+  :evil-states (normal motion visual))
+(bind-map my-elisp-map
+  :keys ("M-m m" "M-RET")
+  :evil-keys ("SPC m" ",")
+  :major-modes (emacs-lisp-mode
+                lisp-interaction-mode))
+
 ** beacon mode 
 
 https://github.com/Malabarba/beacon
@@ -915,6 +946,17 @@ http://www.thregr.org/~wavexx/software/gnus-desktop-notify.el/
 :config
 )
 #+END_SRC
+** goto-chg
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package goto-chg
+ :ensure t
+ :config
+ (require 'goto-chg)
+ )
+#+END_SRC 
+
+
 ** gmail 2 bbdb
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
@@ -3569,6 +3611,31 @@ execute speed commands."
       (message-send)
       (message-kill-buffer))))
 #+END_SRC
+*** exporting
+**** export to reveal and browse
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/org-export-revel-browse ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-to-html-and-browse)
+)
+#+END_SRC
+**** export to reveal html  file
+ #+BEGIN_SRC emacs-lisp :results none
+ (defun z/org-export-revel-html ()
+ "export to org reveal"
+ (interactive)                                
+ (org-reveal-export-to-html)
+ )
+ #+END_SRC
+**** export subtree to file
+ #+BEGIN_SRC emacs-lisp :results none
+ (defun z/org-export-revel-subtree ()
+ "export to org reveal"
+ (interactive)                                
+ (org-reveal-export-current-subtree)
+ )
+ #+END_SRC
 
 *** movements 
 **** TODO move to top and collapse
@@ -4529,6 +4596,8 @@ _q_:
   ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
   ("z"  counsel-recoll "recoll" )
+  ("9"  goto-last-change "goto last change" )
+  ("0"  goto-last-change-revrese "goto prev change" )
   ("q"  nil )
 
   ))
@@ -4724,6 +4793,9 @@ BKMK Menu
 ("D"  org-download-delete "del screenshot")
 ("E"  org-export-dispatch "export")
 ("ep" org-latex-export-to-pdf "export latex")
+("er" z/org-export-revel-browse "export reveal browse")
+("et" z/org-export-revel-subtree "export reveal subtree")
+("ey" z/org-export-revel-html  "export reveal html ")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
 ("h"  org-insert-heading "insert header")
@@ -6090,14 +6162,21 @@ With prefix argument, also display headlines without a TODO keyword."
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 #+END_SRC
 *** priorities
-This can mess up the sort order in org-agenda-sorting-strategy and thus its commented out 
-#+BEGIN_SRC emacs-lisp :results none
-  ;; (setq org-highest-priority ?A)
-  ;; (setq org-lowest-priority ?A)
-  ;; (setq org-default-priority ?A)
+**** TODO This can mess up the sort order in org-agenda-sorting-strategy and thus its commented out
+ #+BEGIN_SRC emacs-lisp :results none
+   ;; ;;set priority range from A to C with default A
+   ;; (setq org-highest-priority ?A)
+   ;; (setq org-lowest-priority ?C)
+   ;; (setq org-default-priority ?A)
 
-  ;; (setq org-priority-start-cycle-with-default t)
-#+END_SRC 
+ #+END_SRC
+**** colours for priorities
+#+BEGIN_SRC emacs-lisp
+(setq org-priority-faces '((?A . (:foreground "#F0DFAF" :weight bold))
+                           (?B . (:foreground "LightSteelBlue"))
+                           (?C . (:foreground "OliveDrab"))))
+#+END_SRC
+
 ** Refile
 *** set which refile method to us (currently helm)
 this command below will use helm for completion since in the above helm config we sepcify these two commands: (require 'helm-config) and (helm-mode 1)

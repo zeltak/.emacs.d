@@ -75,6 +75,8 @@
 
 (define-abbrev-table 'diff-mode-abbrev-table '())
 
+(define-abbrev-table 'dig-mode-abbrev-table '())
+
 (define-abbrev-table 'display-time-world-mode-abbrev-table '())
 
 (define-abbrev-table 'doctex-mode-abbrev-table '())
@@ -130,7 +132,7 @@
     ("8fl" "file:~/" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)
-    ("Note" "$Note$" nil 1)
+    ("Note" "$Note$" nil 2)
     ("Tip" "%Tip%" nil 0)
     ("Warning" "@Warning@" nil 1)
     ("abbout" "about" nil 0)
@@ -140,7 +142,7 @@
     ("aboutthe" "about the" nil 0)
     ("abscence" "absence" nil 0)
     ("academiclly" "academically" nil 0)
-    ("acadmeic" "academic" nil 0)
+    ("acadmeic" "academic" nil 1)
     ("accesories" "accessories" nil 0)
     ("accidant" "accident" nil 0)
     ("accomedate" "accommodate" nil 1)
@@ -403,7 +405,7 @@
     ("controlable" "controllable" nil 0)
     ("convertable" "convertible" nil 0)
     ("cooparate" "cooperate" nil 0)
-    ("cooperations" "cooperation's" nil 0)
+    ("cooperations" "cooperation's" nil 2)
     ("cooporate" "cooperate" nil 0)
     ("coordinante" "coordinate" nil 0)
     ("corproation" "corporation" nil 0)
@@ -444,7 +446,7 @@
     ("definintions" "definitions" nil 0)
     ("degredation" "degradation" nil 0)
     ("deinisty" "density" nil 0)
-    ("departmens" "departments" nil 0)
+    ("departmens" "departments" nil 4)
     ("dependances" "dependencies" nil 0)
     ("depositis" "deposits" nil 0)
     ("deptartment" "department" nil 0)
@@ -452,6 +454,7 @@
     ("desicions" "decisions" nil 0)
     ("desision" "decision" nil 0)
     ("desisions" "decisions" nil 0)
+    ("dessimination" "dissemination" nil 0)
     ("detente" "detente" nil 0)
     ("determin" "determine" nil 0)
     ("determins" "determine" nil 0)
@@ -580,7 +583,7 @@
     ("fixit" "fix it" nil 0)
     ("flaged" "flagged" nil 0)
     ("follwo" "follow" nil 0)
-    ("follwoing" "following" nil 1)
+    ("follwoing" "following" nil 2)
     ("foloowing" "following" nil 0)
     ("fora" "for a" nil 0)
     ("foriegn" "foreign" nil 0)
@@ -605,6 +608,7 @@
     ("garantee" "guarantee" nil 0)
     ("gaurd" "guard" nil 0)
     ("gemeral" "general" nil 0)
+    ("geograohy" "geography" nil 1)
     ("geogtaphy" "geography" nil 0)
     ("gerat" "great" nil 0)
     ("gerneral" "general" nil 0)
@@ -665,7 +669,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 12)
+    ("i" "I" nil 18)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -712,6 +716,7 @@
     ("internationaly" "internationally" nil 0)
     ("interum" "interim" nil 0)
     ("inthe" "in the" nil 0)
+    ("intrest" "interest" nil 0)
     ("inturn" "in turn" nil 0)
     ("invarient" "invariant" nil 1)
     ("invitaion" "invitation" nil 0)
@@ -840,7 +845,7 @@
     ("operaror" "operator" nil 0)
     ("oppasite" "opposite" nil 0)
     ("opperation" "operation" nil 0)
-    ("oppertunity" "opportunity" nil 2)
+    ("oppertunity" "opportunity" nil 3)
     ("opposate" "opposite" nil 0)
     ("opposible" "opposable" nil 0)
     ("opposit" "opposite" nil 0)
@@ -883,6 +888,7 @@
     ("perminent" "permanent" nil 0)
     ("perscriptions" "prescriptions" nil 0)
     ("personalyl" "personally" nil 0)
+    ("persuing" "pursuing" nil 0)
     ("phillipines" "philippines" nil 0)
     ("pleasent" "pleasant" nil 0)
     ("plugin" "plug-in" nil 1)
@@ -910,6 +916,7 @@
     ("probelm" "problem" nil 0)
     ("probelms" "problems" nil 0)
     ("problesm" "problems" nil 0)
+    ("procced" "proceed" nil 0)
     ("proccesed" "processed" nil 0)
     ("proccess" "process" nil 0)
     ("proceding" "proceeding" nil 0)
@@ -969,6 +976,7 @@
     ("reltaed" "related" nil 0)
     ("reluctent" "reluctant" nil 0)
     ("remeber" "remember" nil 0)
+    ("renoned" "renowned" nil 0)
     ("reommend" "recommend" nil 0)
     ("representativs" "representatives" nil 0)
     ("representives" "representatives" nil 0)
@@ -1101,7 +1109,7 @@
     ("swiming" "swimming" nil 0)
     ("tahn" "than" nil 0)
     ("taht" "that" nil 0)
-    ("talekd" "talked" nil 0)
+    ("talekd" "talked" nil 1)
     ("talior" "tailor" nil 0)
     ("talkign" "talking" nil 0)
     ("tath" "that" nil 0)
@@ -1193,7 +1201,7 @@
     ("verison" "version" nil 0)
     ("veyr" "very" nil 0)
     ("virtualyl" "virtually" nil 0)
-    ("vrey" "very" nil 0)
+    ("vrey" "very" nil 1)
     ("vulnerible" "vulnerable" nil 0)
     ("waht" "what" nil 0)
     ("warning" "@Warning@" nil 2)
@@ -1289,6 +1297,10 @@
 (define-abbrev-table 'image-dired-thumbnail-mode-abbrev-table '())
 
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
+
+(define-abbrev-table 'ivy-occur-grep-mode-abbrev-table '())
+
+(define-abbrev-table 'ivy-occur-mode-abbrev-table '())
 
 (define-abbrev-table 'java-mode-abbrev-table '())
 
@@ -1393,6 +1405,8 @@
 (define-abbrev-table 'shell-mode-abbrev-table '())
 
 (define-abbrev-table 'slitex-mode-abbrev-table '())
+
+(define-abbrev-table 'smime-mode-abbrev-table '())
 
 (define-abbrev-table 'snippet-mode-abbrev-table '())
 

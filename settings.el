@@ -309,6 +309,21 @@
  :config
   )
 
+;; (use-package bind-map
+;;  :ensure t
+;;  :config
+
+;; (bind-map z/base-leader-map
+;;   :keys ("\\")
+;; )
+
+;; (bind-map-set-keys z/base-leader-map
+;;   "c" 'z/org-export-revel-browse
+;;   ;; ...
+;;   )
+
+;;  )
+
 (use-package beacon
  :ensure t
  :config
@@ -650,7 +665,7 @@
 (use-package find-file-in-project
  :ensure t
  :config
- 
+
  )
 
 (use-package fill-column-indicator
@@ -671,6 +686,12 @@
 :ensure t
 :config
 )
+
+(use-package goto-chg
+ :ensure t
+ :config
+ (require 'goto-chg)
+ )
 
 (add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
 (autoload 'gmail2bbdb-import-file "gmail2bbdb")
@@ -1134,12 +1155,12 @@
  :config
   )
 
-;; (use-package projectile
-;;  :ensure t
-;;  :config
-;; (projectile-global-mode)
-;; (setq projectile-completion-system 'grizzl)
-;;  )
+(use-package projectile
+ :ensure t
+ :config
+(projectile-global-mode)
+(setq projectile-completion-system 'grizzl)
+ )
 
 (use-package polymode
  :ensure t
@@ -2561,6 +2582,24 @@ subsequent sends."
       (message-send)
       (message-kill-buffer))))
 
+(defun z/org-export-revel-browse ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-to-html-and-browse)
+)
+
+(defun z/org-export-revel-html ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-to-html)
+)
+
+(defun z/org-export-revel-subtree ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-current-subtree)
+)
+
 (defun z/org-move-top-collapse  ()
      (interactive)            
      (beginning-of-buffer)                    
@@ -3327,6 +3366,8 @@ _q_:
   ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
   ("z"  counsel-recoll "recoll" )
+  ("9"  goto-last-change "goto last change" )
+  ("0"  goto-last-change-revrese "goto prev change" )
   ("q"  nil )
 
   ))
@@ -3430,7 +3471,8 @@ BKMK Menu
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
-("<f9>" org-iswitchb "org buffers")
+("<f9>" projectile-find-file  "projectile ff")
+("7" org-iswitchb "org buffers")
 ("a" nil )
 ("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
 ("c"  helm-chrome-bookmarks "Chorme BKMK")
@@ -3487,6 +3529,9 @@ BKMK Menu
 ("D"  org-download-delete "del screenshot")
 ("E"  org-export-dispatch "export")
 ("ep" org-latex-export-to-pdf "export latex")
+("er" z/org-export-revel-browse "export reveal browse")
+("et" z/org-export-revel-subtree "export reveal subtree")
+("ey" z/org-export-revel-html  "export reveal html ")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
 ("h"  org-insert-heading "insert header")
@@ -4540,11 +4585,14 @@ With prefix argument, also display headlines without a TODO keyword."
               ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
               ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
 
+;; ;;set priority range from A to C with default A
 ;; (setq org-highest-priority ?A)
-;; (setq org-lowest-priority ?A)
+;; (setq org-lowest-priority ?C)
 ;; (setq org-default-priority ?A)
 
-;; (setq org-priority-start-cycle-with-default t)
+(setq org-priority-faces '((?A . (:foreground "#F0DFAF" :weight bold))
+                           (?B . (:foreground "LightSteelBlue"))
+                           (?C . (:foreground "OliveDrab"))))
 
 (setq org-outline-path-complete-in-steps nil)
 
