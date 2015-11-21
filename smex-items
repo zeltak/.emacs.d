@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- buffer-flip
+ pdf-tools-help
+ company-mode
  key-chord-mode
  z/org-export-revel-browse
  worf-mode
  goto-last-change
  projectile-find-file
- projectile-mode
 )
 
 ;; ----- smex-data -----
@@ -36,7 +36,7 @@
  (windmove-up . 1)
  (eval-buffer . 4)
  (org-reload . 1)
- (company-mode . 1)
+ (company-mode . 3)
  (company-complete . 4)
  (company-org-headings . 2)
  (helm-mt . 2)
@@ -117,4 +117,5 @@
  (goto-last-change . 5)
  (z/org-export-revel-browse . 1)
  (buffer-flip . 1)
+ (pdf-tools-help . 1)
 )

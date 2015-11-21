@@ -1,17 +1,44 @@
-*.elc
-auto-save-list
 ac-comphist.dat
 tmp
-contrib
 compile-el-files.tmp
-elpa
 init.el
 /url/cookies
 /saved-desktops/.emacs.desktop
 /image-dired/*
 *log
-eshell
 undo
 url
 oauth2.plstore
 var
+
+### Emacs ###
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Org-mode
+.org-id-locations
+*_archive
+
+# flymake-mode
+*_flymake.*
+
+# eshell files
+/eshell/history
+/eshell/lastdir
+
+# elpa packages
+
+# reftex files
+*.rel
+
+# AUCTeX auto folder
+/auto/
+
+# cask packages
+.cask/

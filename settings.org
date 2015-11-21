@@ -1532,9 +1532,9 @@ $Note$ this requires package async to be installed, @async must be loaded before
    :ensure t
    :config
    (setq-default org-download-heading-lvl nil)
-   ;;; to get rid of the #+DOWNLOADED part
    (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
-   (setq org-download-annotate-function (lambda (_) ""))
+   ;;; to get rid of the #+DOWNLOADED part
+;;(setq org-download-annotate-function (lambda (_) ""))
   )
  #+END_SRC
 
@@ -1653,6 +1653,16 @@ https://github.com/kawabata/ox-pandoc
  :config
  )
 #+END_SRC
+** org-pdfview
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package org-pdfview
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
 
 ** password-store
 #+BEGIN_SRC emacs-lisp :results none
@@ -1668,13 +1678,19 @@ http://joostkremers.github.io/pandoc-mode/
   )
 #+END_SRC 
 
-** pdf tools
+** pdf-tools
 https://github.com/politza/pdf-tools
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package pdf-tools
  :ensure t
  :config
+(pdf-tools-install)
+(eval-after-load 'org '(require 'org-pdfview))
+(add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+(add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+
+
   )
 #+END_SRC 
 
@@ -6201,32 +6217,49 @@ set how many levels of headers to show while refiling
 #+RESULTS:
 
 ** Capture
-*** load org-protocl
+*** load org-protocl and org-capture
 #+BEGIN_SRC emacs-lisp :results none
 (require 'org-protocol)
+(require 'org-capture)
 #+END_SRC
 *** make org take up 1 frame
     :PROPERTIES:
     :ID:       14e63bf0-0966-4074-98af-bdce51a5f2d4
     :END:
 #+BEGIN_SRC emacs-lisp :results none
-(defadvice org-capture (around bp/org-capture--around)
-  (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
-    ad-do-it))
-(ad-activate 'org-capture)
+  ;; (defadvice org-capture (around bp/org-capture--around)
+  ;;   (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+  ;;     ad-do-it))
+  ;; (ad-activate 'org-capture)
+
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp :results none
+
+(defadvice org-capture
+    (after make-full-window-frame activate)
+  "Advise capture to be the only window when used as a popup"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-other-windows)))
+
+(defadvice org-capture-finalize
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-frame)))
+#+END_SRC
+
 *** make C-c x close and save frame
 #+BEGIN_SRC emacs-lisp :results none
-(require 'org-capture)
-(defun my-capture-finalize ()
-  (interactive)
-  (org-capture-finalize)
-  (delete-frame))
+  ;; (defun my-capture-finalize ()
+  ;;   (interactive)
+  ;;   (org-capture-finalize)
+  ;;   (delete-frame))
 
-(add-hook 'org-capture-mode-hook
-          (lambda ()
-            (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
-((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
+  ;; (add-hook 'org-capture-mode-hook
+  ;;           (lambda ()
+  ;;             (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
+  ;; ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 #+END_SRC
 ** TODO Capture templates
     :PROPERTIES:
@@ -6352,6 +6385,9 @@ set how many levels of headers to show while refiling
 :EMAIL: %(org-contacts-template-email)
 :END:")
 
+("l" "Temp Links from the interwebs" item
+         (file+headline "links.org" "Temporary Links")
+         "%?\nEntered on %U\n \%i\n %a")
 
     )))
 #+END_SRC

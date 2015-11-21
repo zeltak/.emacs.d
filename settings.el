@@ -1050,13 +1050,13 @@
  )
 
 (use-package org-download 
- :ensure t
- :config
- (setq-default org-download-heading-lvl nil)
- ;;; to get rid of the #+DOWNLOADED part
- (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
- (setq org-download-annotate-function (lambda (_) ""))
-)
+   :ensure t
+   :config
+   (setq-default org-download-heading-lvl nil)
+   (setq-default org-download-image-dir "/home/zeltak/Sync/attach/images_2015")
+   ;;; to get rid of the #+DOWNLOADED part
+;;(setq org-download-annotate-function (lambda (_) ""))
+  )
 
 ;; (setq org-download-method 'attach
 ;;        org-download-screenshot-method "scrot -s %s"
@@ -1142,6 +1142,12 @@
  :config
  )
 
+(use-package org-pdfview
+ :ensure t
+ :config
+ 
+ )
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
 
@@ -1153,6 +1159,12 @@
 (use-package pdf-tools
  :ensure t
  :config
+(pdf-tools-install)
+(eval-after-load 'org '(require 'org-pdfview))
+(add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+(add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+
+
   )
 
 (use-package projectile
@@ -4606,22 +4618,34 @@ With prefix argument, also display headlines without a TODO keyword."
                                  (org-agenda-files :maxlevel . 9))))
 
 (require 'org-protocol)
-
-(defadvice org-capture (around bp/org-capture--around)
-  (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
-    ad-do-it))
-(ad-activate 'org-capture)
-
 (require 'org-capture)
-(defun my-capture-finalize ()
-  (interactive)
-  (org-capture-finalize)
-  (delete-frame))
 
-(add-hook 'org-capture-mode-hook
-          (lambda ()
-            (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
-((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
+;; (defadvice org-capture (around bp/org-capture--around)
+;;   (flet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+;;     ad-do-it))
+;; (ad-activate 'org-capture)
+
+(defadvice org-capture
+    (after make-full-window-frame activate)
+  "Advise capture to be the only window when used as a popup"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-other-windows)))
+
+(defadvice org-capture-finalize
+    (after delete-capture-frame activate)
+  "Advise capture-finalize to close the frame"
+  (if (equal "emacs-capture" (frame-parameter nil 'name))
+      (delete-frame)))
+
+;; (defun my-capture-finalize ()
+;;   (interactive)
+;;   (org-capture-finalize)
+;;   (delete-frame))
+
+;; (add-hook 'org-capture-mode-hook
+;;           (lambda ()
+;;             (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
+;; ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 
 (setq org-capture-templates
           (quote ( 
@@ -4742,6 +4766,9 @@ With prefix argument, also display headlines without a TODO keyword."
 :EMAIL: %(org-contacts-template-email)
 :END:")
 
+("l" "Temp Links from the interwebs" item
+         (file+headline "links.org" "Temporary Links")
+         "%?\nEntered on %U\n \%i\n %a")
 
     )))
 
