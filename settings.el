@@ -1927,6 +1927,11 @@ comment box."
   (insert "‣")
 )
 
+(defun z/insert-reveal-split ()
+  "insert REVEAL split  "
+  (interactive)
+  (insert "#+REVEAL: split")
+)
 
 )
 
@@ -3827,6 +3832,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
   ("o"     z/insert-EOL  " \\") 
+  ("r"    z/insert-reveal-split  "reveal-split") 
   ("q" nil "cancel" nil)
 )
 

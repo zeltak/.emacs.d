@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ tetris
  pdf-tools-help
  company-mode
  key-chord-mode
  z/org-export-revel-browse
  worf-mode
  goto-last-change
- projectile-find-file
 )
 
 ;; ----- smex-data -----
@@ -118,4 +118,5 @@
  (z/org-export-revel-browse . 1)
  (buffer-flip . 1)
  (pdf-tools-help . 1)
+ (tetris . 1)
 )

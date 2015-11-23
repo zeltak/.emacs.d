@@ -2775,11 +2775,17 @@ comment box."
   (insert "‣")
 )
 
+(defun z/insert-reveal-split ()
+  "insert REVEAL split  "
+  (interactive)
+  (insert "#+REVEAL: split")
+)
 
 )
 
 
 #+END_SRC
+
 
 *** kill line backwars 
 #+BEGIN_SRC emacs-lisp :results none
@@ -5165,10 +5171,10 @@ add the org faces macros here (%Tip%, $Note$ etc)
   ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
   ("o"     z/insert-EOL  " \\") 
+  ("r"    z/insert-reveal-split  "reveal-split") 
   ("q" nil "cancel" nil)
 )
 #+END_SRC
-
 *** password-store (C-M-p)
 **** main editing command 
  #+BEGIN_SRC emacs-lisp :results none
@@ -5413,6 +5419,9 @@ pop-global-mark this will move you to prev position
 #+END_SRC
 
 * Settings
+  :PROPERTIES:
+  :ID:       0991546e-92b4-42d3-9b99-d3c639d2d5f8
+  :END:
 ** XDG/open with 
 *** set emacs browser
 #+BEGIN_SRC emacs-lisp :results none
