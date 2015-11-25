@@ -757,6 +757,16 @@ https://github.com/Fuco1/dired-hacks
 
  )
 #+END_SRC 
+*** diredful
+https://github.com/thamer/diredful
+#+BEGIN_SRC emacs-lisp :results none
+(use-package diredful
+ :ensure t
+ :config
+ (diredful-mode 1)
+ )
+#+END_SRC 
+
 
 *** dired tmtxt-async-tasks and 
 #+BEGIN_SRC emacs-lisp :results none
@@ -5944,7 +5954,6 @@ also the headers can be customized
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down deadline-up))
  (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
-(org-agenda-view-columns-initially t)
 (org-columns-default-format "%50ITEM %TODO %10PRIORITY %20DEADLINE %TAGS")
 ))
 
