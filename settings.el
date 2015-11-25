@@ -563,6 +563,12 @@
 
  )
 
+(use-package diredful
+ :ensure t
+ :config
+ (diredful-mode 1)
+ )
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-async-tasks")
  (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-dired-async")
 (require 'tmtxt-async-tasks)
@@ -4395,7 +4401,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
 (org-agenda-sorting-strategy '(priority-down effort-down deadline-up))
  (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
-(org-agenda-view-columns-initially t)
 (org-columns-default-format "%50ITEM %TODO %10PRIORITY %20DEADLINE %TAGS")
 ))
 
