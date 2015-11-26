@@ -4988,6 +4988,29 @@ _q_: quit
 
 #+END_SRC
 
+(define-key evil-normal-state-map (kbd "]h") 'org-metaright)
+(define-key evil-normal-state-map (kbd "[h") 'org-metaleft)
+(define-key evil-normal-state-map (kbd "]j") 'org-metadown)
+(define-key evil-normal-state-map (kbd "[j") 'org-metaup)
+(define-key evil-normal-state-map (kbd "]k") 'outline-demote)
+(define-key evil-normal-state-map (kbd "[k") 'outline-promote)
+(define-key evil-normal-state-map (kbd "]o") 'outline-next-visible-heading)
+(define-key evil-normal-state-map (kbd "[o") 'outline-previous-visible-heading)
+(define-key evil-normal-state-map (kbd "]t") 'outline-forward-same-level)
+(define-key evil-normal-state-map (kbd "[t") 'outline-backward-same-level)
+(define-key evil-normal-state-map (kbd "]b") 'org-next-block)
+(define-key evil-normal-state-map (kbd "[b") 'org-previous-block)
+(define-key evil-normal-state-map (kbd "]r") 'org-table-move-row-down)
+(define-key evil-normal-state-map (kbd "[r") 'org-table-move-row-up)
+(define-key evil-normal-state-map (kbd "]c") 'org-table-move-column-right)
+(define-key evil-normal-state-map (kbd "[c") 'org-table-move-column-left)
+(define-key evil-normal-state-map (kbd "]f") 'org-table-next-field)
+(define-key evil-normal-state-map (kbd "[f") 'org-table-previous-field)
+(define-key evil-normal-state-map (kbd "]l") 'org-next-link)
+(define-key evil-normal-state-map (kbd "[l") 'org-previous-link)
+(define-key evil-normal-state-map (kbd "]u") 'org-down-element)
+(define-key evil-normal-state-map (kbd "[u") 'org-up-element)
+
 
 *** agenda (F10)
 **** org agenda main
@@ -7230,7 +7253,7 @@ http://stackoverflow.com/questions/1431351/how-do-i-uncompress-unzip-within-emac
 (defalias '\" 'replace-straight-quotes)
 #+END_SRC
 +
-* Abbriviations
+* Abbreviations
 ** global 
 #+BEGIN_SRC emacs-lisp :results none
 ;; stop asking whether to save newly added abbrev when quitting emacs

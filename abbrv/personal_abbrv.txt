@@ -9,7 +9,9 @@
 
 (define-abbrev-table 'TeX-output-mode-abbrev-table '())
 
-(define-abbrev-table 'awk-mode-abbrev-table '())
+(define-abbrev-table 'awk-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
@@ -31,9 +33,13 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
-(define-abbrev-table 'c++-mode-abbrev-table '())
+(define-abbrev-table 'c++-mode-abbrev-table
+  '(
+   ))
 
-(define-abbrev-table 'c-mode-abbrev-table '())
+(define-abbrev-table 'c-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'calc-trail-mode-abbrev-table '())
 
@@ -139,6 +145,7 @@
     ("Tip" "%Tip%" nil 0)
     ("Warning" "@Warning@" nil 0)
     ("abbout" "about" nil 0)
+    ("abbriviations" "abbreviations" nil 0)
     ("abotu" "about" nil 0)
     ("abouta" "about a" nil 0)
     ("aboutit" "about it" nil 0)
@@ -408,7 +415,7 @@
     ("controlable" "controllable" nil 0)
     ("convertable" "convertible" nil 0)
     ("cooparate" "cooperate" nil 0)
-    ("cooperations" "cooperation's" nil 2)
+    ("cooperations" "cooperation's" nil 3)
     ("cooporate" "cooperate" nil 0)
     ("coordinante" "coordinate" nil 0)
     ("corproation" "corporation" nil 0)
@@ -449,7 +456,7 @@
     ("definintions" "definitions" nil 0)
     ("degredation" "degradation" nil 0)
     ("deinisty" "density" nil 0)
-    ("departmens" "departments" nil 4)
+    ("departmens" "departments" nil 5)
     ("dependances" "dependencies" nil 0)
     ("depositis" "deposits" nil 0)
     ("deptartment" "department" nil 0)
@@ -490,7 +497,7 @@
     ("differances" "differences" nil 0)
     ("differant" "different" nil 0)
     ("differemt" "different" nil 0)
-    ("differnt" "different" nil 0)
+    ("differnt" "different" nil 2)
     ("diffrantiate" "differentiate" nil 0)
     ("diffrent" "different" nil 0)
     ("dillema" "dilemma" nil 0)
@@ -710,7 +717,7 @@
     ("inital" "initial" nil 0)
     ("initalization" "initialization" nil 0)
     ("insanitiy" "insanity" nil 0)
-    ("instaleld" "installed" nil 0)
+    ("instaleld" "installed" nil 1)
     ("insted" "instead" nil 0)
     ("insturctions" "instructions" nil 0)
     ("insurence" "insurance" nil 0)
@@ -925,6 +932,7 @@
     ("proceding" "proceeding" nil 0)
     ("proctetion" "protection" nil 0)
     ("proffesor" "professor" nil 0)
+    ("proffesors" "professor's" nil 1)
     ("prominant" "prominent" nil 0)
     ("promted" "prompted" nil 0)
     ("propertiers" "properties" nil 0)
@@ -948,7 +956,7 @@
     ("realted" "related" nil 1)
     ("realyl" "really" nil 0)
     ("reccomend" "recommend" nil 0)
-    ("reccomendation" "recommendation" nil 0)
+    ("reccomendation" "recommendation" nil 1)
     ("reccommend" "recommend" nil 0)
     ("reccommended" "recommended" nil 0)
     ("receieve" "receive" nil 0)
@@ -1305,7 +1313,9 @@
 
 (define-abbrev-table 'ivy-occur-mode-abbrev-table '())
 
-(define-abbrev-table 'java-mode-abbrev-table '())
+(define-abbrev-table 'java-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1355,7 +1365,9 @@
 
 (define-abbrev-table 'nxml-mode-abbrev-table '())
 
-(define-abbrev-table 'objc-mode-abbrev-table '())
+(define-abbrev-table 'objc-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'occur-edit-mode-abbrev-table '())
 
@@ -1375,7 +1387,9 @@
 
 (define-abbrev-table 'pdf-occur-buffer-mode-abbrev-table '())
 
-(define-abbrev-table 'pike-mode-abbrev-table '())
+(define-abbrev-table 'pike-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 

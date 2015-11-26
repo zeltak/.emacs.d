@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- tetris
- pdf-tools-help
- company-mode
- key-chord-mode
- z/org-export-revel-browse
- worf-mode
- goto-last-change
+ jumplist-previous
+ jumplist-next
+ org-metaleft
+ org-metadown
+ org-metaup
+ diredful-add
+ ranger
 )
 
 ;; ----- smex-data -----
@@ -55,7 +55,7 @@
  (dired-k . 3)
  (xah-cycle-hyphen-underscore-space . 6)
  (xah-insert-black-lenticular-bracket【】 . 1)
- (ranger . 19)
+ (ranger . 20)
  (deer . 10)
  (z-year-increment . 1)
  (quick-calc . 1)
@@ -119,4 +119,10 @@
  (buffer-flip . 1)
  (pdf-tools-help . 1)
  (tetris . 1)
+ (diredful-add . 1)
+ (org-metaup . 2)
+ (org-metadown . 1)
+ (org-metaleft . 2)
+ (jumplist-previous . 6)
+ (jumplist-next . 1)
 )
