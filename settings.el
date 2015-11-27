@@ -945,6 +945,25 @@
 (setq key-chord-one-key-delay 0.20)
 )
 
+(use-package link-hint
+ :ensure t
+ :config
+ ;; Use chromium to open urls
+(setq browse-url-browser-function 'browse-url-chromium)
+;; You can alternatively change this setting in the config
+;;(setq browse-url-generic-args '("--target" "tab"))
+(setq browse-url-browser-function 'browse-url-generic)
+
+;;; mu4e
+(defun my/mu4e-open-all-attachments ()
+  "Open all visible mu4e attachments."
+  (interactive)
+  (let ((link-hint-ignore-types
+         (remove 'mu4e-attachment link-hint-all-types-list))
+        link-hint-act-on-all-ignore-types)
+    (link-hint-open-all-links)))
+ )
+
 (use-package lentic
  :ensure t
  :config
