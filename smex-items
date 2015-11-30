@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ ssh
+ elfeed
+ forward-whitespace
+ elfeed-load-opml
  link-hint-open-link
  org-metaleft
  org-metadown
- org-metaup
- diredful-add
- ranger
- wl
 )
 
 ;; ----- smex-data -----
@@ -125,5 +125,9 @@
  (org-metaleft . 2)
  (jumplist-previous . 6)
  (jumplist-next . 1)
- (link-hint-open-link . 6)
+ (link-hint-open-link . 12)
+ (elfeed . 8)
+ (elfeed-load-opml . 1)
+ (forward-whitespace . 3)
+ (ssh . 2)
 )

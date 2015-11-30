@@ -844,6 +844,157 @@ https://github.com/leoliu/easy-kill
    ;; (add-hook 'edit-server-start-hook 'edit-server-maybe-dehtmlize-buffer)
    ;; (add-hook 'edit-server-done-hook  'edit-server-maybe-htmlize-buffer)
  #+END_SRC
+** elfeed
+*** base 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package elfeed
+ :ensure t
+ :config
+
+;; add time to the dates
+(defun elfeed-search-format-date (date)
+  (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
+
+;;;default search 
+(setq-default elfeed-search-filter "@1-week-ago +unread ")
+
+
+;;; add a star tag http://matt.hackinghistory.ca/2015/11/22/elfeed/
+
+ (eval-after-load 'elfeed-search 
+;;  '(define-key elfeed-search-mode-map (kbd "<tab>") 'mwp/elfeed-star))
+  '(define-key elfeed-search-mode-map (kbd "t") 'mwp/elfeed-star))
+
+(defun mwp/elfeed-star ()
+  "add a star tag to marked"
+
+  (interactive)
+  (elfeed-search-tag-all (list starred))
+  )
+
+(defun mwp/elfeed-star ()
+  "Apply TAG to all selected entries."
+  (interactive )
+  (let* ((entries (elfeed-search-selected))
+         (tag (intern "starred")))
+
+    (cl-loop for entry in entries do (elfeed-tag entry tag))
+    (mapc #'elfeed-search-update-entry entries)
+    (unless (use-region-p) (forward-line))))
+
+;;; add visual cue
+(defface elfeed-search-starred-title-face
+ '((t :foreground "#f77"))
+ "Marks a starred Elfeed entry.")
+
+(push '(starred elfeed-search-starred-title-face) 
+       elfeed-search-face-alist)
+
+
+;;Avoiding tagging old entries as unread:
+
+;; Entries older than 2 weeks are marked as read
+(add-hook 'elfeed-new-entry-hook
+          (elfeed-make-tagger :before "2 weeks ago"
+                              :remove 'unread))
+
+;;for "Queue timeout exceeded" errors
+(setf url-queue-timeout 30)
+
+ )
+#+END_SRC 
+
+Faces and Colors
+All of the faces used in the display are declared for customization, so these can be changed to whatever you like.
+
+elfeed-search-date-face
+elfeed-search-title-face
+elfeed-search-feed-face
+elfeed-search-tag-face
+
+
+
+*** feeds 
+ #+BEGIN_SRC emacs-lisp :results none
+(setq elfeed-feeds
+   '(
+("http://phdcomics.com/gradfeed.php" comics)
+("http://theoatmeal.com/feed/rss" comics)
+("http://xkcd.com/rss.xml" comics)
+("http://researchinprogress.tumblr.com/rss" comics)
+"http://feeds.feedburner.com/seriouseatsfeaturesvideos"
+"http://feeds.feedburner.com/seriouseatsfeaturesvideos?format=xml" 
+"http://feeds.feedburner.com/bazekalim" 
+"http://feeds2.feedburner.com/thai-food-blog/main" 
+"http://www.tapuz.co.il/blog/rssBlog.asp?FolderName=TickTack" 
+"http://feeds2.feedburner.com/humus101rss" 
+"http://feeds.feedburner.com/ptitim" 
+"http://what-efrat.blogspot.com/feeds/posts/default" 
+"http://lifehacker.com/index.xml" 
+"http://feeds.feedburner.com/Makeuseof" 
+"http://www.tuxradar.com/rss" 
+"http://xbmc.org/feed/" 
+"http://omnifeed.com/feed/www.engadget.com/rss-full.xml" 
+"http://oremacs.com/atom.xml" 
+"http://emacshorrors.com/feed.atom" 
+"http://emacsninja.com/feed.atom" 
+"http://ericjmritz.name/feed/" 
+"http://matt.hackinghistory.ca/feed/" 
+"http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-and-content.xml" 
+"http://alinuxblog.wordpress.com/feed/" 
+"http://emacsmovies.org/atom.xml" 
+"http://endlessparentheses.com/atom.xml" 
+"http://thelinuxrain.com/feed" 
+"http://planet.emacsen.org/atom.xml" 
+"http://sachachua.com/blog/feed/" 
+"http://kitchingroup.cheme.cmu.edu/blog/feed" 
+"http://whattheemacsd.com/atom.xml" 
+"http://adventuresinopensource.blogspot.com/feeds/posts/default" 
+"http://adventuresinubuntu.blogspot.com/feeds/posts/default" 
+"http://feeds.feedburner.com/AllAboutLinux" 
+"http://amarok.kde.org/blog/feeds/index.rss2" 
+"http://ampache.org/blog/index.php?/feeds/index.rss2" 
+"http://www.archlinux.org/feeds/news/" 
+"http://www.debuntu.org/feed" 
+"http://www.freesoftwaremagazine.com/rss.xml" 
+"http://www.fsdaily.com/feed/published/All" 
+"http://www.kde.org/dotkdeorg.rdf" 
+"http://www.linuxjournal.com/node/feed" 
+"http://linuxondesktop.blogspot.com/feeds/posts/default" 
+"http://www.go2linux.org/rss.xml" 
+"http://www.lunduke.com/?feed=rss2" 
+"http://mostlycli.blogspot.com/feeds/posts/default" 
+"http://kmandla.wordpress.com/feed/" 
+"http://mylinuxramblings.wordpress.com/feed/" 
+"http://pentablg.blogspot.com/feeds/posts/default" 
+"http://www.phoronix.com/rss.php" 
+"http://planet.linux.org.il/atom.xml" 
+"http://planetkde.org/rss20.xml" 
+"http://ubuntuweblogs.org/atom.xml" 
+"http://blog.sarine.nl/feed/" 
+"http://rss.slashdot.org/Slashdot/slashdotLinux" 
+"http://subforge.org/projects/subtle/news.atom" 
+"http://thedailyubuntu.blogspot.com/feeds/posts/default" 
+"http://whatsup.org.il/backend.php" 
+"https://bbs.archlinux.org/extern.php?action=feed&fid=27&type=atom" 
+"http://e17releasemanager.wordpress.com/feed/" 
+"http://www.masteringemacs.org/feed/" 
+"http://www.geekologie.com/index.xml" 
+"http://feeds.feedburner.com/xda-developers/ShsH" 
+"http://debuzzer.com/feed/" 
+"http://emacsredux.com/atom.xml" 
+"http://rforpublichealth.blogspot.com/feeds/posts/default" 
+"http://renkun.me/atom.xml" 
+"http://feeds.feedburner.com/matkonation/BRUQ" 
+"http://www.lunaryorn.com/feed.atom" 
+"http://debuzzer.com/" 
+"http://googlecode.blogspot.com/atom.xml" 
+"http://igurublog.wordpress.com/feed/" 
+"http://inconsolation.wordpress.com/feed/" 
+"https://muspy.com/feed?id=f9qypqwxc658e6dbzwk8n9mqthsgv4" 
+"http://feeds.feedburner.com/yuval"))
+ #+END_SRC
+
 ** engine-mode
    
 #+BEGIN_SRC emacs-lisp :results none
@@ -1372,8 +1523,6 @@ https://github.com/noctuid/link-hint.el
  ;; Use chromium to open urls
 (setq browse-url-browser-function 'browse-url-chromium)
 ;; You can alternatively change this setting in the config
-;;(setq browse-url-generic-args '("--target" "tab"))
-(setq browse-url-browser-function 'browse-url-generic)
 
 ;;; mu4e
 (defun my/mu4e-open-all-attachments ()
@@ -4335,7 +4484,7 @@ LEADER:【C-A-W】-append to killring
 ;("c"  company-complete )
 ("c"  auto-complete )
 ("d"  org-cut-subtree "org-cut"   )
-("f"  nil )
+("f"  link-hint-open-link "open link" )
 ("g"  hydra-goto/body )
 ("h"  z/org-move-top-collapse   "collapse tree")
 ("H"  hide-sublevels "collapse tree")
@@ -4638,7 +4787,7 @@ _q_:
   ("m"  flyspell-check-next-highlighted-word "check next error")
   ("n"  flyspell-goto-next-error "check next error" )
   ("o"  helm-occur "helm Occur")
-  ("p"  nil )
+  ("p"  forward-whitespace "next whitespace"  )
   ("r"  hydra-rectangle/body "rectangle menu")
   ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
@@ -4697,10 +4846,17 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
   ("o"     mu4e-headers-change-sorting            "sort")
-  ("z"   z/org-email-heading              "email header")
+  ("f"    elfeed            "elfeed")
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
+
+link-hint-open-link-at-point - Open the link at point.
+link-hint-copy-link-at-point - Copy link at point to kill ring (and optionally to the clipboard/primary).
+link-hint-open-link - Use avy to select and open a single visible link. If only one link is currently visible, it will be automatically opened without the need for selection.
+link-hint-open-multiple-links - Use avy to select multiple visible links and open them as soon as a key that does not correspond to a link (a key not in the avy overlay) is pressed (like pentadactyl’s g;).
+link-hint-open-all-links - Opens all links visible in the buffer.
+link-hint-copy-link - Use avy to select and copy a single visible link to the kill ring. select-enable-clipboard and select-enable-clipboard can each be set to a non-nil value to also use the clipboard and/or primary.
 *** latex/bib (F6)
 
 #+BEGIN_SRC emacs-lisp :results none
