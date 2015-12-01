@@ -572,7 +572,7 @@ $Note- is different inside screen or tmux$
 
 ;;dabbrev options 
 (setq company-dabbrev-downcase nil)
-(setq  company-dabbrev-ignore-case nil)
+(setq company-dabbrev-ignore-case nil)
 (setq company-dabbrev-other-buffers t)
   
 ;; show numbers in popup?
@@ -587,6 +587,10 @@ $Note- is different inside screen or tmux$
 (defun my-pcomplete-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 (add-hook 'org-mode-hook #'my-pcomplete-capf)
+
+;; Don't enable company-mode in below major modes, OPTIONAL
+(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+
 
 ;;;keybinds
 (global-set-key (kbd "M-.") 'company-complete)
