@@ -509,14 +509,22 @@ $Note- is different inside screen or tmux$
  )
 #+END_SRC 
 
+** company-statistics
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package company-statistics
+ :ensure t
+ :config
+ )
+#+END_SRC 
+
+
 ** company
 #+BEGIN_SRC emacs-lisp :results none
   (use-package company
    :ensure t
    :config
-  ;;(add-hook 'after-init-hook 'global-company-mode)
-
-  ;; companymode
+;; companymode
   (require 'company)
 
 ; Company-mode backends
@@ -526,6 +534,11 @@ $Note- is different inside screen or tmux$
      (add-to-list 'company-backends 'company-ispell)
      (add-to-list 'company-backends 'company-abbrev)
      (add-to-list 'company-backends 'company-files)
+
+;; @see https://github.com/company-mode/company-mode/issues/348
+     (require 'company-statistics)
+     (company-statistics-mode)
+
 ;; yasnippet backend shadows other completions, see https://github.com/company-mode/company-mode/blob/master/company-yasnippet.el for solutions
 ;;better to leave disabled and use the ido mode for yasnippets
 ;;     (add-to-list 'company-backends 'company-yasnippet)
@@ -554,42 +567,43 @@ $Note- is different inside screen or tmux$
      ))
 
 ;;make it global
-
 (add-hook 'after-init-hook 'global-company-mode)
 
 
 ;; company delay until suggestions are shown
-(setq company-idle-delay 0.1)
-
-
+(setq company-idle-delay 0.2)
 ;; whats the minimum to start completion 
 (setq company-minimum-prefix-length 2)
-
 (setq company-dabbrev-minimum-length 2)
-
 ;; weight by frequency
 (setq company-transformers '(company-sort-by-occurrence))
-
 ;;dabbrev options 
 (setq company-dabbrev-downcase nil)
 (setq company-dabbrev-ignore-case nil)
 (setq company-dabbrev-other-buffers t)
-  
-;; show numbers in popup?
+  ;; show numbers in popup?
 (setq company-show-numbers t)
-
 (setq company-require-match nil)
 ;; company dabbrev config
 ;; search all buffers 
 (setq company-dabbrev-other-buffers t)
 
-;; org-mode completions
-(defun my-pcomplete-capf ()
-  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-(add-hook 'org-mode-hook #'my-pcomplete-capf)
 
 ;; Don't enable company-mode in below major modes, OPTIONAL
 (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+
+
+
+(defun org-mode-hook-setup ()
+  ;; make `company-backends' local is critcal
+  ;; or else, you will have completion in every major mode, that's very annoying!
+  (make-local-variable 'company-backends)
+
+  ;; OPTIONAL, if `company-ispell-dictionary' is nil, `ispell-complete-word-dict' is used
+  ;;  but I prefer hard code the dictionary path. That's more portable.
+  (setq company-ispell-dictionary (file-truename "~/.emacs.d/abbrv/english-words.txt")))
+
+(add-hook 'org-mode-hook 'org-mode-hook-setup)
 
 
 ;;;keybinds
@@ -599,7 +613,10 @@ $Note- is different inside screen or tmux$
    )
 #+END_SRC 
 
-
+;; org-mode completions
+(defun my-pcomplete-capf ()
+  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
+(add-hook 'org-mode-hook #'my-pcomplete-capf)
 ** company-org-headings
 #+BEGIN_SRC emacs-lisp :results none
   ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -869,6 +886,7 @@ https://github.com/leoliu/easy-kill
 ;;  '(define-key elfeed-search-mode-map (kbd "<tab>") 'mwp/elfeed-star))
   '(define-key elfeed-search-mode-map (kbd "t") 'mwp/elfeed-star))
 
+
 (defun mwp/elfeed-star ()
   "add a star tag to marked"
 
@@ -905,8 +923,15 @@ https://github.com/leoliu/easy-kill
 ;;for "Queue timeout exceeded" errors
 (setf url-queue-timeout 30)
 
+(define-key elfeed-search-mode-map (kbd "j") 'next-line)
+(define-key elfeed-show-mode-map    (kbd "j") 'elfeed-show-next)
+(define-key elfeed-search-mode-map (kbd "k") 'previous-line)
+(define-key elfeed-show-mode-map    (kbd "k") 'elfeed-show-prev)
+
  )
 #+END_SRC 
+
+next-line
 
 Faces and Colors
 All of the faces used in the display are declared for customization, so these can be changed to whatever you like.
@@ -4327,7 +4352,15 @@ shnsplit -f {F}  -o flac {oF}
 (define-key isearch-mode-map (kbd "<backspace>") 
   #'isearch-delete-something)
 #+END_SRC
-
+** mu4e
+*** open mu4e inbox
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/mu4e-inbox ()
+"Display the inbox."
+(interactive)
+(mu4e)
+(mu4e-headers-search "maildir:/INBOX"))
+#+END_SRC
 ** mail
 *** yas mail functions
 #+BEGIN_SRC emacs-lisp :results none
@@ -4845,12 +4878,16 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
 【M-Enter】 open link 【R】 Reply to sender 
 【+】flag (star)
 "
-  ("<f5>"     mu4e            "start mu4e")
+  ("<f5>"     z/mu4e-inbox            "mu4e inbox")
+;;  ("<f5>"     mu4e            "start mu4e")
   ("<f6>"     helm-mu            "helm mu4e")
+  ("<f4>"    elfeed            "elfeed")
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
+  ("d"    z/del_exe_mu4e            "delete")
+  ("f"    z/flag_exe_mu4e            "flag")
+  ("F"    z/unflag_exe_mu4e            "unflag")
   ("o"     mu4e-headers-change-sorting            "sort")
-  ("f"    elfeed            "elfeed")
     ("q"     nil                          "cancel" )
 ))
 #+END_SRC
@@ -5627,12 +5664,20 @@ pop-global-mark this will move you to prev position
 #+END_SRC
 ** mu4e
 *** delete and exe
-#+BEGIN_SRC emacs-lisp :results none
-(fset 'del_exe_mu4e
-   [?d ?x ?y ])
-
-#+END_SRC
-
+ #+BEGIN_SRC emacs-lisp :results none
+ (fset 'z/del_exe_mu4e
+    [?d ?x ?y ])
+ #+END_SRC
+*** flag and exe
+ #+BEGIN_SRC emacs-lisp :results none
+ (fset 'z/flag_exe_mu4e
+    [?+ ?x ?y ])
+ #+END_SRC
+*** unflag and exe
+ #+BEGIN_SRC emacs-lisp :results none
+ (fset 'z/unflag_exe_mu4e
+    [?- ?x ?y ])
+ #+END_SRC
 * Settings
   :PROPERTIES:
   :ID:       0991546e-92b4-42d3-9b99-d3c639d2d5f8
@@ -7789,6 +7834,10 @@ OLD:
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
 #+END_SRC
+*** extra keybinds
+#+BEGIN_SRC emacs-lisp :results none
+
+#+END_SRC
 *** composing
 #+BEGIN_SRC emacs-lisp :results none
 mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
@@ -7884,6 +7933,12 @@ http://www.djcbsoftware.nl/code/mu/mu4e/Creating-org_002dmode-links.html
       ((and fname (string-match "\\.doc$" fname))  "~/Uni/")
       ;; ... other cases  ...
       (t "~/Downloads")))) ;; everything else
+#+END_SRC
+*** Bookmarks
+#+BEGIN_SRC emacs-lisp :results none
+(add-to-list 'mu4e-bookmarks
+  '("flag:flagged"       "flagged"     ?b))
+
 #+END_SRC
 *** Faces
 #+BEGIN_SRC emacs-lisp :results none

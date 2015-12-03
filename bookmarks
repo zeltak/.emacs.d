@@ -2,7 +2,25 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("ranger-o" 0 8
+(#1=(#("BGU.R" 0 5
+      (bmkp-full-record #1#))
+    (buffer-name . "BGU.R")
+    (front-context-string . "stat.l1.org\n  -r")
+    (rear-context-string . "8K Nov  7 14:51 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(22110 34225 741037 705000))
+    (created . #2#)
+    (position . 475)
+    (filename . "/home/zeltak/org/files/Uni/Courses/BGU.R/")
+    (dired-directory . "~/org/files/Uni/Courses/BGU.R/")
+    (dired-marked)
+    (dired-switches . "-alhv --group-directories-first ")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("ranger-o" 0 8
       (bmkp-full-record #1#))
     (buffer-name . "files")
     (front-context-string . "agenda\n  drwxr-x")
@@ -263,8 +281,8 @@
     (rear-context-string . "e and documents\n")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 32)
-    (time 22106 47387 798766 556000)
+    (visits . 33)
+    (time 22109 25950 592633 437000)
     (created 21882 43775 338546 974000)
     (position . 4917))
 #1=(#("orgfiles" 0 8
@@ -763,8 +781,8 @@
     (rear-context-string . " me\n  NIS 377\n**")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 29)
-    (time 22106 54975 334861 713000)
+    (visits . 30)
+    (time 22109 64306 923435 671000)
     (created 21605 34254 655548 463000)
     (position . 32252))
 #1=(#("settings.org" 0 12

@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ z/unflag_exe_mu4e
+ z/flag_exe_mu4e
+ esup
+ del_exe_mu4e
+ elfeed-show-next
+ elfeed-web-start
  ssh
- elfeed
- forward-whitespace
- elfeed-load-opml
- link-hint-open-link
- org-metaleft
- org-metadown
 )
 
 ;; ----- smex-data -----
@@ -130,4 +130,11 @@
  (elfeed-load-opml . 1)
  (forward-whitespace . 3)
  (ssh . 2)
+ (elfeed-web-start . 1)
+ (elfeed-show-next . 2)
+ (del_exe_mu4e . 2)
+ (my-mu4e-inbox . 1)
+ (esup . 2)
+ (z/flag_exe_mu4e . 1)
+ (z/unflag_exe_mu4e . 1)
 )

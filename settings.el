@@ -362,12 +362,15 @@
 (color-theme-approximate-on)
  )
 
+(use-package company-statistics
+ :ensure t
+ :config
+ )
+
 (use-package company
    :ensure t
    :config
-  ;;(add-hook 'after-init-hook 'global-company-mode)
-
-  ;; companymode
+;; companymode
   (require 'company)
 
 ; Company-mode backends
@@ -377,6 +380,11 @@
      (add-to-list 'company-backends 'company-ispell)
      (add-to-list 'company-backends 'company-abbrev)
      (add-to-list 'company-backends 'company-files)
+
+;; @see https://github.com/company-mode/company-mode/issues/348
+     (require 'company-statistics)
+     (company-statistics-mode)
+
 ;; yasnippet backend shadows other completions, see https://github.com/company-mode/company-mode/blob/master/company-yasnippet.el for solutions
 ;;better to leave disabled and use the ido mode for yasnippets
 ;;     (add-to-list 'company-backends 'company-yasnippet)
@@ -405,39 +413,44 @@
      ))
 
 ;;make it global
-
 (add-hook 'after-init-hook 'global-company-mode)
 
 
 ;; company delay until suggestions are shown
-(setq company-idle-delay 0.1)
-
-
+(setq company-idle-delay 0.2)
 ;; whats the minimum to start completion 
 (setq company-minimum-prefix-length 2)
-
 (setq company-dabbrev-minimum-length 2)
-
 ;; weight by frequency
 (setq company-transformers '(company-sort-by-occurrence))
-
 ;;dabbrev options 
 (setq company-dabbrev-downcase nil)
-(setq  company-dabbrev-ignore-case nil)
+(setq company-dabbrev-ignore-case nil)
 (setq company-dabbrev-other-buffers t)
-  
-;; show numbers in popup?
+  ;; show numbers in popup?
 (setq company-show-numbers t)
-
 (setq company-require-match nil)
 ;; company dabbrev config
 ;; search all buffers 
 (setq company-dabbrev-other-buffers t)
 
-;; org-mode completions
-(defun my-pcomplete-capf ()
-  (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
-(add-hook 'org-mode-hook #'my-pcomplete-capf)
+
+;; Don't enable company-mode in below major modes, OPTIONAL
+(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+
+
+
+(defun org-mode-hook-setup ()
+  ;; make `company-backends' local is critcal
+  ;; or else, you will have completion in every major mode, that's very annoying!
+  (make-local-variable 'company-backends)
+
+  ;; OPTIONAL, if `company-ispell-dictionary' is nil, `ispell-complete-word-dict' is used
+  ;;  but I prefer hard code the dictionary path. That's more portable.
+  (setq company-ispell-dictionary (file-truename "~/.emacs.d/abbrv/english-words.txt")))
+
+(add-hook 'org-mode-hook 'org-mode-hook-setup)
+
 
 ;;;keybinds
 (global-set-key (kbd "M-.") 'company-complete)
@@ -642,6 +655,7 @@
 ;;  '(define-key elfeed-search-mode-map (kbd "<tab>") 'mwp/elfeed-star))
   '(define-key elfeed-search-mode-map (kbd "t") 'mwp/elfeed-star))
 
+
 (defun mwp/elfeed-star ()
   "add a star tag to marked"
 
@@ -677,6 +691,11 @@
 
 ;;for "Queue timeout exceeded" errors
 (setf url-queue-timeout 30)
+
+(define-key elfeed-search-mode-map (kbd "j") 'next-line)
+(define-key elfeed-show-mode-map    (kbd "j") 'elfeed-show-next)
+(define-key elfeed-search-mode-map (kbd "k") 'previous-line)
+(define-key elfeed-show-mode-map    (kbd "k") 'elfeed-show-prev)
 
  )
 
@@ -3149,6 +3168,12 @@ Version 2015-07-30"
 (define-key isearch-mode-map (kbd "<backspace>") 
   #'isearch-delete-something)
 
+(defun z/mu4e-inbox ()
+"Display the inbox."
+(interactive)
+(mu4e)
+(mu4e-headers-search "maildir:/INBOX"))
+
 (defun my-yas-get-first-name-from-to-field ()
   (let ((rlt "AGENT_NAME") str)
     (save-excursion
@@ -3574,12 +3599,16 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
 【M-Enter】 open link 【R】 Reply to sender 
 【+】flag (star)
 "
-  ("<f5>"     mu4e            "start mu4e")
+  ("<f5>"     z/mu4e-inbox            "mu4e inbox")
+;;  ("<f5>"     mu4e            "start mu4e")
   ("<f6>"     helm-mu            "helm mu4e")
+  ("<f4>"    elfeed            "elfeed")
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
+  ("d"    z/del_exe_mu4e            "delete")
+  ("f"    z/flag_exe_mu4e            "flag")
+  ("F"    z/unflag_exe_mu4e            "unflag")
   ("o"     mu4e-headers-change-sorting            "sort")
-  ("f"    elfeed            "elfeed")
     ("q"     nil                          "cancel" )
 ))
 
@@ -4193,8 +4222,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
 
-(fset 'del_exe_mu4e
+(fset 'z/del_exe_mu4e
    [?d ?x ?y ])
+
+(fset 'z/flag_exe_mu4e
+   [?+ ?x ?y ])
+
+(fset 'z/unflag_exe_mu4e
+   [?- ?x ?y ])
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "chromium")
@@ -5794,6 +5829,8 @@ scroll-step 1)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
 
+
+
 mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 
 (require 'org-mu4e)
@@ -5870,6 +5907,9 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
       ((and fname (string-match "\\.doc$" fname))  "~/Uni/")
       ;; ... other cases  ...
       (t "~/Downloads")))) ;; everything else
+
+(add-to-list 'mu4e-bookmarks
+  '("flag:flagged"       "flagged"     ?b))
 
 (defgroup mu4e-faces nil 
   "Type faces (fonts) used in mu4e." 
