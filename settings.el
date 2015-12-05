@@ -641,13 +641,14 @@
  :ensure t
  :config
 
-;; add time to the dates
-(defun elfeed-search-format-date (date)
-  (format-time-string "%Y-%m-%d %H:%M" (seconds-to-time date)))
-
 ;;;default search 
-(setq-default elfeed-search-filter "@1-week-ago +unread ")
+(setq-default elfeed-search-filter "@2-week-ago +unread ")
 
+;;change date formay 
+(setq elfeed-search-date-format '("%d %b %H:%M" 12 :left))
+
+;;set sort order
+(setq elfeed-sort-order 'ascending)
 
 ;;; add a star tag http://matt.hackinghistory.ca/2015/11/22/elfeed/
 
@@ -701,81 +702,88 @@
 
 (setq elfeed-feeds
    '(
+;;comics
 ("http://phdcomics.com/gradfeed.php" comics)
 ("http://theoatmeal.com/feed/rss" comics)
 ("http://xkcd.com/rss.xml" comics)
 ("http://researchinprogress.tumblr.com/rss" comics)
+;;food 
 "http://feeds.feedburner.com/seriouseatsfeaturesvideos"
-"http://feeds.feedburner.com/seriouseatsfeaturesvideos?format=xml" 
 "http://feeds.feedburner.com/bazekalim" 
 "http://feeds2.feedburner.com/thai-food-blog/main" 
-"http://www.tapuz.co.il/blog/rssBlog.asp?FolderName=TickTack" 
 "http://feeds2.feedburner.com/humus101rss" 
 "http://feeds.feedburner.com/ptitim" 
 "http://what-efrat.blogspot.com/feeds/posts/default" 
+"http://feeds.feedburner.com/matkonation/BRUQ" 
+
+;;Tech
 "http://lifehacker.com/index.xml" 
 "http://feeds.feedburner.com/Makeuseof" 
-"http://www.tuxradar.com/rss" 
 "http://xbmc.org/feed/" 
-"http://omnifeed.com/feed/www.engadget.com/rss-full.xml" 
+"http://googlecode.blogspot.com/atom.xml" 
+"http://fulltextrssfeed.com/www.engadget.com/rss.xml"
+
+;;geek stuff 
+"http://www.geekologie.com/index.xml" 
+;;personal blogs
+"http://feeds.feedburner.com/AdventuresInOpenSource?format=xml"
+"http://feeds.feedburner.com/yuval"
+
+;;emacs
 "http://oremacs.com/atom.xml" 
 "http://emacshorrors.com/feed.atom" 
 "http://emacsninja.com/feed.atom" 
 "http://ericjmritz.name/feed/" 
 "http://matt.hackinghistory.ca/feed/" 
-"http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-and-content.xml" 
-"http://alinuxblog.wordpress.com/feed/" 
+"http://karl-voit.at/feeds/lazyblorg-all.atom_1.0.links-only.xml" 
 "http://emacsmovies.org/atom.xml" 
 "http://endlessparentheses.com/atom.xml" 
-"http://thelinuxrain.com/feed" 
 "http://planet.emacsen.org/atom.xml" 
 "http://sachachua.com/blog/feed/" 
 "http://kitchingroup.cheme.cmu.edu/blog/feed" 
 "http://whattheemacsd.com/atom.xml" 
-"http://adventuresinopensource.blogspot.com/feeds/posts/default" 
-"http://adventuresinubuntu.blogspot.com/feeds/posts/default" 
-"http://feeds.feedburner.com/AllAboutLinux" 
-"http://amarok.kde.org/blog/feeds/index.rss2" 
-"http://ampache.org/blog/index.php?/feeds/index.rss2" 
+"http://www.masteringemacs.org/feed/" 
+"http://emacsredux.com/atom.xml" 
+"http://www.lunaryorn.com/feed.atom" 
+
+;;linux
+"http://thelinuxrain.com/feed" 
 "http://www.archlinux.org/feeds/news/" 
-"http://www.debuntu.org/feed" 
 "http://www.freesoftwaremagazine.com/rss.xml" 
-"http://www.fsdaily.com/feed/published/All" 
 "http://www.kde.org/dotkdeorg.rdf" 
 "http://www.linuxjournal.com/node/feed" 
-"http://linuxondesktop.blogspot.com/feeds/posts/default" 
-"http://www.go2linux.org/rss.xml" 
 "http://www.lunduke.com/?feed=rss2" 
-"http://mostlycli.blogspot.com/feeds/posts/default" 
 "http://kmandla.wordpress.com/feed/" 
-"http://mylinuxramblings.wordpress.com/feed/" 
-"http://pentablg.blogspot.com/feeds/posts/default" 
 "http://www.phoronix.com/rss.php" 
 "http://planet.linux.org.il/atom.xml" 
 "http://planetkde.org/rss20.xml" 
-"http://ubuntuweblogs.org/atom.xml" 
 "http://blog.sarine.nl/feed/" 
 "http://rss.slashdot.org/Slashdot/slashdotLinux" 
-"http://subforge.org/projects/subtle/news.atom" 
-"http://thedailyubuntu.blogspot.com/feeds/posts/default" 
 "http://whatsup.org.il/backend.php" 
-"https://bbs.archlinux.org/extern.php?action=feed&fid=27&type=atom" 
-"http://e17releasemanager.wordpress.com/feed/" 
-"http://www.masteringemacs.org/feed/" 
-"http://www.geekologie.com/index.xml" 
-"http://feeds.feedburner.com/xda-developers/ShsH" 
-"http://debuzzer.com/feed/" 
-"http://emacsredux.com/atom.xml" 
-"http://rforpublichealth.blogspot.com/feeds/posts/default" 
-"http://renkun.me/atom.xml" 
-"http://feeds.feedburner.com/matkonation/BRUQ" 
-"http://www.lunaryorn.com/feed.atom" 
-"http://debuzzer.com/" 
-"http://googlecode.blogspot.com/atom.xml" 
 "http://igurublog.wordpress.com/feed/" 
-"http://inconsolation.wordpress.com/feed/" 
+
+;;mobile
+"http://feeds.feedburner.com/xda-developers/ShsH" 
+;;sports
+"http://debuzzer.com/feed/" 
+;;uni 
+"http://rforpublichealth.blogspot.com/feeds/posts/default" 
+;;music
 "https://muspy.com/feed?id=f9qypqwxc658e6dbzwk8n9mqthsgv4" 
-"http://feeds.feedburner.com/yuval"))
+
+))
+
+(defun elfeed-entry-as-html-link ()
+  "Store an http link to an elfeed entry"
+  (when (equal major-mode 'elfeed-show-mode)
+    (let ((description (elfeed-entry-title elfeed-show-entry))
+      (link (elfeed-entry-link elfeed-show-entry)))
+     (org-store-link-props
+      :type "http"
+      :link link
+      :description description))))
+
+(add-hook 'org-store-link-functions 'elfeed-entry-as-html-link)
 
 (use-package engine-mode
  :ensure t
@@ -3174,6 +3182,12 @@ Version 2015-07-30"
 (mu4e)
 (mu4e-headers-search "maildir:/INBOX"))
 
+(defun z/mu4e-flagged ()
+"Display the inbox."
+(interactive)
+(mu4e)
+(mu4e-headers-search "maildir:/INBOX AND flag:flagged "))
+
 (defun my-yas-get-first-name-from-to-field ()
   (let ((rlt "AGENT_NAME") str)
     (save-excursion
@@ -3600,6 +3614,7 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
 【+】flag (star)
 "
   ("<f5>"     z/mu4e-inbox            "mu4e inbox")
+  ("7"     z/mu4e-flagged            "mu4e flagged")
 ;;  ("<f5>"     mu4e            "start mu4e")
   ("<f6>"     helm-mu            "helm mu4e")
   ("<f4>"    elfeed            "elfeed")
@@ -4966,6 +4981,12 @@ With prefix argument, also display headlines without a TODO keyword."
 ("l" "Temp Links from the interwebs" item
          (file+headline "links.org" "Temporary Links")
          "%?\nEntered on %U\n \%i\n %a")
+
+("s" "Elfeed" entry (file+headline "TODO.org" "Web")
+   "*  %:description
+    %t
+ \nLink: %a\n\n"  :immediate-finish t)
+
 
     )))
 
