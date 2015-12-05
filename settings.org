@@ -1283,7 +1283,7 @@ Helm-bibtex assumes that the name of a PDF consists of the BibTeX key followed b
 ;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
 
 ;;; telling helm-bibtex where your bibliographies can be found:
-(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib"))
+(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.2015.misc.bib" ))
 
 ;;Specify where PDFs can be found:
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
