@@ -52,7 +52,7 @@
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-17"))
+(add-to-list 'default-frame-alist '(font . "Pragmata Pro-19"))
 ;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
 ;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
 )
@@ -745,6 +745,7 @@
 "http://www.masteringemacs.org/feed/" 
 "http://emacsredux.com/atom.xml" 
 "http://www.lunaryorn.com/feed.atom" 
+"http://www.clarkdonley.com/atom.xml"
 
 ;;linux
 "http://thelinuxrain.com/feed" 
@@ -922,11 +923,20 @@
  :ensure t
  :config
 
-(autoload 'helm-bibtex "helm-bibtex" "" t)
+;;;if not installing through MELPA
+;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
 
-(setq helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
-;(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes/")
+;;; telling helm-bibtex where your bibliographies can be found:
+(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib"))
+
+;;Specify where PDFs can be found:
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
+
+;;;If the BibTeX entries have a field that specifies the full path to the PDFs, that field can also be used
+(setq helm-bibtex-pdf-field "File")
+
+;;;; Note files
+(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes")
 (setq helm-bibtex-notes-extension ".org")
 
 (setq helm-bibtex-format-citation-functions
@@ -935,17 +945,20 @@
     (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
     (default       . helm-bibtex-format-citation-default)))
 
-;(setq helm-bibtex-additional-search-fields '(tags))
+;;Fields used for searching
 (setq helm-bibtex-additional-search-fields '(tags))
+
+;;;Symbols used for indicating the availability of notes and PDF files
+(setq helm-bibtex-pdf-symbol "𝍌")
+(setq helm-bibtex-notes-symbol "✎")
+
 
 
 
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
-;(setq helm-bibtex-pdf-open-function
-; (lambda (fpath)
- ;  (start-process "evince" "*helm-bibtex-evince*" "/usr/bin/evince" fpath)))
+
  )
 
 ;; Define helm-search with predefined search expression:
@@ -3636,6 +3649,7 @@ Bib:
 "
 
 ("<f6>" helm-bibtex "helm-bibtex")
+("<f7>" helm-resume "resume last search")
 ("a" nil )
 ("b"  nil  )
 ("c"  org-ref-clean-bibtex-entry "clean bib" )
@@ -3760,7 +3774,7 @@ BKMK Menu
 ("m"  org-mark-subtree "mark subtree" )
 ("n"  helm-swish-e "swish")
 ("o"  org-occur "org-occur" )
-("p"  nil )
+("p"  org-insert-drawer "insert drawer" )
 ("r"  org-refile "refile")
 ("R"  z/prefix-org-refile "jump to header using refile")
 ("s"  hydra-org-time/body "time menu" :face 'hydra-face-orange )
@@ -4357,6 +4371,19 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (add-hook 'org-mode-hook  
           (lambda ()      
             (flyspell-mode)))
+
+;; 2. ignore message flags which can slow org 
+(setq flyspell-issue-message-flag nil)
+
+;; ignore tex commands in org 
+(add-hook 'org-mode-hook (lambda () (setq ispell-parser 'tex)))
+(defun flyspell-ignore-tex ()
+  (interactive)
+  (set (make-variable-buffer-local 'ispell-parser) 'tex))
+(add-hook 'org-mode-hook 'flyspell-ignore-tex)
+
+;; enable cdlatex 
+(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
 ;;disable linemode on org
 (defun my-org-mode-hook () 
@@ -5213,6 +5240,14 @@ With prefix argument, also display headlines without a TODO keyword."
 
 (eval-after-load 'ox-latex
   '(add-to-list 'org-latex-packages-alist '("AUTO" "babel" t) t))
+
+(add-to-list 'org-latex-classes
+             '("my-letter"
+               "\\documentclass\{scrlttr2\}
+\\usepackage[english]{babel}
+\[NO-DEFAULT-PACKAGES]
+\[NO-PACKAGES]
+\[EXTRA]"))
 
 (setq org-publish-project-alist
            '(
