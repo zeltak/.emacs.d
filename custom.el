@@ -34,7 +34,8 @@
  '(org-export-backends (quote (ascii html icalendar latex org)))
  '(safe-local-variable-values
    (quote
-    ((org-download-image-dir . "/home/zeltak/org/attach/bgu/courses/BGU.R/images")
+    ((org-export-allow-bind-keywords . t)
+     (org-download-image-dir . "/home/zeltak/org/attach/bgu/courses/BGU.R/images")
      (org-download-heading-lvl)
      (org-download-image-dir . "~/ZH_tmp/"))))
  '(send-mail-function (quote smtpmail-send-it))

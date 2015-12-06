@@ -5052,7 +5052,7 @@ BKMK Menu
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
 "ORG editing
-【C-c -】 convert to dashed lines  【C-M-l】 org table menu
+【C-c -】 convert to dashed lines  【C-M-l  org table menu
 "
 
 ("<f9>" helm-org-headlines "helm org headers")

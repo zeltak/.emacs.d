@@ -927,7 +927,7 @@
 ;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
 
 ;;; telling helm-bibtex where your bibliographies can be found:
-(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib"))
+(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.2015.misc.bib" ))
 
 ;;Specify where PDFs can be found:
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
@@ -952,26 +952,21 @@
 (setq helm-bibtex-pdf-symbol "𝍌")
 (setq helm-bibtex-notes-symbol "✎")
 
-
-
-
+;;set default browser
 (setq helm-bibtex-browser-function
   (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
 
  )
 
-;; Define helm-search with predefined search expression:
 (defun helm-bibtex-ikloog-publications ()
-  "Search BibTeX entries authored by me"
-  (interactive)
-  (helm :sources '(helm-source-bibtex)
-        :full-frame t
-        :input "kloog !unpublished !prep "
-        :candidate-number-limit 500))
-
-;; Bind this search function to Ctrl-x p:
-;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
+   "Search BibTeX entries authored by me"
+   (interactive)
+(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "kloog !kprep !ktalk !kconf !unpublished"
+         :candidate-number-limit 500)))
 
 ;; Define helm-search with predefined search expression:
 (defun helm-bibtex-ikloog-publications-all ()
@@ -982,16 +977,13 @@
         :input "kloog !unpublished"
         :candidate-number-limit 500))
 
-;; Bind this search function to Ctrl-x p:
-;(global-set-key (kbd "C-x p") 'helm-bibtex-my-publications)
-
 ;; Define helm-search with predefined search expression:
 (defun helm-bibtex-ikloog-prep         ()
   "Search BibTeX entries in preperation with me"
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog prep !unpublished"
+        :input "kloog kprep !unpublished"
         :candidate-number-limit 500))
 
 (use-package mu4e-alert
@@ -3649,7 +3641,6 @@ Bib:
 "
 
 ("<f6>" helm-bibtex "helm-bibtex")
-("<f7>" helm-resume "resume last search")
 ("a" nil )
 ("b"  nil  )
 ("c"  org-ref-clean-bibtex-entry "clean bib" )
