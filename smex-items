@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ open-line-above
  ebib
  z/unflag_exe_mu4e
  z/flag_exe_mu4e
  elfeed-show-next
  elfeed-web-start
  ssh
- wl
 )
 
 ;; ----- smex-data -----
@@ -138,4 +138,5 @@
  (z/flag_exe_mu4e . 1)
  (z/unflag_exe_mu4e . 1)
  (ebib . 1)
+ (open-line-above . 1)
 )

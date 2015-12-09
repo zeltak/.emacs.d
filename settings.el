@@ -786,6 +786,13 @@
 
 (add-hook 'org-store-link-functions 'elfeed-entry-as-html-link)
 
+(use-package elfeed-goodies
+ :ensure t
+ :config
+(require 'elfeed-goodies)
+(elfeed-goodies/setup) 
+ )
+
 (use-package engine-mode
  :ensure t
  :config 
@@ -849,6 +856,14 @@
 ;; (gnus-demon-add-scanmail)
 
 ;;  )
+
+(use-package gscholar-bibtex
+ :ensure t
+ :config
+(setq gscholar-bibtex-default-source "Google Scholar")
+(setq gscholar-bibtex-database-file "/home/zeltak/org/files/Uni/papers/library.2015.bib")
+
+ )
 
 (use-package google-contacts
 :ensure t
@@ -3730,7 +3745,7 @@ BKMK Menu
 (defhydra hydra-org (:color blue :hint nil :columns 4)
 
 "ORG editing
-【C-c -】 convert to dashed lines  【C-M-l】 org table menu
+【C-c -】 convert to dashed lines  【C-M-l  org table menu
 "
 
 ("<f9>" helm-org-headlines "helm org headers")

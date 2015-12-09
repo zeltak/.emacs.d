@@ -1038,6 +1038,20 @@ when I org-capture in elfeed-show-mode using a template that includes a link, I 
 (add-hook 'org-store-link-functions 'elfeed-entry-as-html-link)
 #+END_SRC
 
+** elfeed-goodies
+https://github.com/algernon/elfeed-goodies
+
+customise some aspects of the package with M-x customize-group elfeed-goodies
+this is saved in file:/home/zeltak/.emacs.d/custom.el
+#+BEGIN_SRC emacs-lisp :results none
+(use-package elfeed-goodies
+ :ensure t
+ :config
+(require 'elfeed-goodies)
+(elfeed-goodies/setup) 
+ )
+#+END_SRC 
+
 ** engine-mode
    
 #+BEGIN_SRC emacs-lisp :results none
@@ -1139,7 +1153,18 @@ http://www.thregr.org/~wavexx/software/gnus-desktop-notify.el/
 
   ;;  )
 #+END_SRC 
+** gscholar-bibtex
+https://github.com/cute-jumper/gscholar-bibtex
 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package gscholar-bibtex
+ :ensure t
+ :config
+(setq gscholar-bibtex-default-source "Google Scholar")
+(setq gscholar-bibtex-database-file "/home/zeltak/org/files/Uni/papers/library.2015.bib")
+
+ )
+#+END_SRC 
 
 
 ** google contacts
@@ -3153,6 +3178,27 @@ Version 2015-04-19"
 (defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
 (defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
 (defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕") )
+*** open line above and below
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/open-line-above ()
+  "Open a newline above the current point."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (newline)
+    (forward-line -1)))
+
+
+(defun z/open-line-below ()
+  "Open a newline below the current point."
+  (interactive)
+  (save-excursion
+    (end-of-line)
+    (newline)))
+
+(global-set-key (kbd "C-S-o")     'z/open-line-above)
+(global-set-key (kbd "C-o")       'z/open-line-below)
+#+END_SRC
 
 
 *** flyspell jump to last correction
