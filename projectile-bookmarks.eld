@@ -1,1 +1,1 @@
-("~/" "~/.emacs.d/" "~/org/files/" "~/dotfiles/" "~/.password-store/")
+("~/" "~/dotfiles/" "~/org/files/" "~/.emacs.d/" "~/.password-store/")

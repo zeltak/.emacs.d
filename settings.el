@@ -2247,6 +2247,25 @@ Version 2015-04-19"
 
 (defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
 
+(defun z/open-line-above ()
+  "Open a newline above the current point."
+  (interactive)
+  (save-excursion
+    (beginning-of-line)
+    (newline)
+    (forward-line -1)))
+
+
+(defun z/open-line-below ()
+  "Open a newline below the current point."
+  (interactive)
+  (save-excursion
+    (end-of-line)
+    (newline)))
+
+(global-set-key (kbd "C-S-o")     'z/open-line-above)
+(global-set-key (kbd "C-o")       'z/open-line-below)
+
 ;; move point to previous error
 ;; based on code by hatschipuh at
 ;; http://emacs.stackexchange.com/a/14912/2017
