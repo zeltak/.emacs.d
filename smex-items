@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- open-line-above
+ ivy-bookmark-goto
+ org-insert-drawer
+ z/del_exe_mu4e
  ebib
  z/unflag_exe_mu4e
  z/flag_exe_mu4e
  elfeed-show-next
- elfeed-web-start
- ssh
 )
 
 ;; ----- smex-data -----
@@ -139,4 +139,7 @@
  (z/unflag_exe_mu4e . 1)
  (ebib . 1)
  (open-line-above . 1)
+ (org-insert-drawer . 3)
+ (z/del_exe_mu4e . 1)
+ (ivy-bookmark-goto . 2)
 )

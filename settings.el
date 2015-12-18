@@ -1199,17 +1199,10 @@
 ;; (openwith-mode t)
 ;; )
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/org-ref/")
-;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
-;; in your load-path
+(use-package org-ref 
+ :ensure t
+ :config
 (require 'org-ref)
-;; optional but very useful libraries in org-ref
-(require 'doi-utils)
-(require 'jmax-bibtex)
-(require 'pubmed)
-(require 'arxiv)
-(require 'sci-id)
-
 ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
 (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
 
@@ -1225,6 +1218,8 @@
       bibtex-autokey-titlewords 2
       bibtex-autokey-titlewords-stretch 1
       bibtex-autokey-titleword-length 5)
+
+ )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
 (require 'org-link-edit)
@@ -1659,6 +1654,21 @@ Sunrise:
  :config
   )
 
+(use-package twittering-mode
+ :ensure t
+ :config
+;; save encrypted password 
+(setq twittering-use-master-password t)
+;;To display icons
+(setq twittering-icon-mode t)
+;;save local icons
+(setq twittering-use-icon-storage t)
+;;start with older first
+(setq twittering-reverse-mode t)
+
+
+ )
+
 (use-package tiny
   :config
 ;  (global-set-key (kbd "C-s-t") 'tiny-expand)
@@ -1821,6 +1831,8 @@ Sunrise:
 (load  "/home/zeltak/.emacs.g/org-reveal/ox-reveal.el")
 ;;where the root reveal folder is
 (setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+
+(require 'org-velocity)
 
 (defun z-fix-characters 
 (start end) 
@@ -2306,6 +2318,39 @@ Version 2015-04-19"
             (message "No more miss-spelled word!")
             (setq arg 0))
         (forward-word)))))
+
+(defun z/activate-word-column-region ()
+  "Look at the symbol at point, search backward and place the point before a
+symbol, and search forward and place the mark after a symbol such that all
+lines have identical symbols at identical goal columns as the symbol at point."
+  (interactive)
+  (let (upper-pt lower-pt (next-line-add-newlines t))
+    (save-excursion
+      (let ((target (format "%s" (symbol-at-point))))
+        (while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+          (backward-char 1))
+        (with-no-warnings
+            (save-excursion
+              (next-line 1)
+              (while (looking-at target)
+                (setf lower-pt (point))
+                (next-line 1)))
+            (save-excursion
+              (next-line -1)
+              (while (looking-at target)
+                (setf upper-pt (point))
+                (next-line -1))))))
+    (when (or upper-pt lower-pt)
+      (let ((upper-pt (or upper-pt (point)))
+            (lower-pt (or lower-pt (point))))    
+        (goto-char lower-pt)
+        (while (looking-at "\\(\\sw\\|\\s_\\)")
+          (forward-char 1))
+        (push-mark nil nil t)
+        (goto-char upper-pt)
+        (while (looking-back "\\(\\sw\\|\\s_\\)" 1)
+          (backward-char 1)))))
+  (rectangle-mark-mode))
 
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
@@ -3461,16 +3506,9 @@ _q_:
 
 (global-set-key
    (kbd "<f2>")
-(defhydra hydra-dired-main (:color blue :hint nil)
+(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
 
 "
-
-_a_:         _b_:         _c_: configs        _d_:mark/unmark        _e_:           _ff_//_fd_//_fd_ (find/find lisp/dirs)         _g_:  
-_h_:         _i_:         _j_:dired-jump       _k_:       _l_:          _m_:        _n_:      
-_o_: dired operations       _p_:peep dired        _r_:       _s_:       _t_: toggles          _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
-_q_: 
-
 【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
 【C/R/D/S】 copy/move(rename)/delete/symlink
 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
@@ -3478,29 +3516,29 @@ _q_:
 【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
 
 "
-("<f2>" dired )
-("<f1>" sunrise )
+("<f2>" dired "dired")
+("<f1>" sunrise "sunrise")
 ("a" nil )
 ("b"  nil  )
-("c"  hydra-dired-configs/body )
+("c"  hydra-dired-configs/body "dir configs")
 ("d"  nil )
 ("e"  nil )
-("ff"  find-dired )
-("fl"  find-lisp-find-dired )
-("fd"  find-lisp-find-dired-subdirectories )
+("ff"  find-dired "find")
+("fl"  find-lisp-find-dired "lisp find")
+("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
 ("g"  nil )
 ("h"  nil )
 ("i"  nil )
-("j"  dired-jump )
+("j"  dired-jump "jump")
 ("k"  nil )
 ("l"  nil )
-("m"  diredp-mark/unmark-extension )
-("n"  dired-narrow-regexp )
-("o"  hydra-dired-operation/body )
-("p"  peep-dired )
-("r"  nil )
+("m"  diredp-mark/unmark-extension "unmark extension")
+("n"  dired-narrow-regexp "narrow")
+("o"  hydra-dired-operation/body "dired operations")
+("p"  peep-dired "peep-dired")
+("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
 ("s"  nil )
-("t"  hydra-dired-configs/body )
+("t"  nil )
 ("u"  nil )
 ("v"  nil)
 ("w"  nil )
@@ -3611,7 +3649,7 @@ _q_:
   ("R"  anzu-query-replace-at-cursor "Replace@cursor")
   ("s"  isearch-forward "isearch" )
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
-  ("t"  nil )
+  ("t"  z/activate-word-column-region "mark current char" )
   ("u"  imenu "imenu")
   ("v"  nil)
   ("w"  ispell-word "ispeel word" )
@@ -3769,6 +3807,7 @@ BKMK Menu
 
 ("<f9>" helm-org-headlines "helm org headers")
 ("<f10> w" worf-goto "worf org headers")
+("<f10> v" org-velocity-read  "org valocity")
 ("<f8>" z/org-insert-heading-link "link/refile")
 ("RET"  org-insert-todo-heading "org todo header//check list")
 ("<f10> RET"  org-insert-subheading "org sub header")
@@ -4408,7 +4447,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (add-hook 'org-mode-hook 'flyspell-ignore-tex)
 
 ;; enable cdlatex 
-(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
+;;(add-hook 'org-mode-hook 'turn-on-org-cdlatex)
 
 ;;disable linemode on org
 (defun my-org-mode-hook () 
@@ -5038,6 +5077,23 @@ With prefix argument, also display headlines without a TODO keyword."
    "*  %:description
     %t
  \nLink: %a\n\n"  :immediate-finish t)
+
+
+
+("p" "papers")
+
+;;;; new recipe Inbox
+("pp" "new working paper" entry (file+headline "/home/zeltak/org/files/Uni/papers/paper.meta.org" "Kloog working papers")
+"* working %^{title}     
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :lead: %^{lead?}
+    :END:
+"
+"Capture Template for papers")
+
+
+
 
 
     )))
