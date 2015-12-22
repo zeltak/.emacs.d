@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- ivy-bookmark-goto
+ package-install-file
+ package-install
+ eww-open-file
+ browse-url
+ eww
  org-insert-drawer
  z/del_exe_mu4e
- ebib
- z/unflag_exe_mu4e
- z/flag_exe_mu4e
- elfeed-show-next
 )
 
 ;; ----- smex-data -----
@@ -94,7 +94,7 @@
  (company-diag . 1)
  (company-dabbrev . 1)
  (company-yasnippet . 3)
- (eww . 1)
+ (eww . 4)
  (avy-zap-to-char . 1)
  (dired-filter-mode . 1)
  (dired-narrow . 1)
@@ -142,4 +142,11 @@
  (org-insert-drawer . 3)
  (z/del_exe_mu4e . 1)
  (ivy-bookmark-goto . 2)
+ (browse-url . 2)
+ (eww-open-file . 3)
+ (my/firefox-bookmark-eww-to-org-list . 3)
+ (my/firefox-bookmark-eww-to-org-list+next-line . 1)
+ (org-export-html-bookmarks . 1)
+ (package-install . 1)
+ (package-install-file . 1)
 )

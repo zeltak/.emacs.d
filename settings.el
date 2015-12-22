@@ -1248,6 +1248,12 @@
     ))
  )
 
+(use-package org-cliplink
+ :ensure t
+ :config
+ 
+ )
+
 (use-package org-download 
    :ensure t
    :config
@@ -2890,6 +2896,39 @@ subsequent sends."
      (beginning-of-buffer)                    
      (hide-sublevels 1)
 )
+
+(defun z/org-export-html-bookmarks ()
+  "Extract bookmarks from the current org file and create an html file that
+can be imported into a web browser."
+  (interactive)
+  (unless (eq major-mode 'org-mode) 
+    (error "Not in an org buffer"))
+  (let ((file (file-name-nondirectory (buffer-file-name)))
+        bookmarks)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward org-bracket-link-analytic-regexp nil t)
+      (when (equal (match-string 2) "http")
+        (let ((url (concat (match-string 1)
+                           (match-string 3)))
+              (desc (match-string 5)))
+          (push (concat "<DT><A HREF=\"" url "\">" desc "</A>\n") bookmarks))))
+    (with-temp-buffer 
+      (insert
+       "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n"
+       "<HTML>\n"
+       "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; 
+charset=UTF-8\">\n"
+       "<Title>Bookmarks</Title>\n"
+       "<H1>Bookmarks</H1>\n"
+       "<DT><H3 FOLDED>" file " (" (format-time-string "%Y-%m-%d") ")</H3>\n"
+       "<DL><p>\n")
+      (apply 'insert (nreverse bookmarks))
+      (insert
+       "</DL><p>\n"
+       "</HTML>")
+      (write-file (concat (file-name-sans-extension file) 
+"-bookmarks.html"))))))
 
 (defun z/insert-slsh ()
   " insert     "
@@ -5078,6 +5117,9 @@ With prefix argument, also display headlines without a TODO keyword."
     %t
  \nLink: %a\n\n"  :immediate-finish t)
 
+
+("k" "Bookmarks" entry (file+headline "/home/zeltak/org/files/web/bookmarks.org" "bookmarks")
+           "* %? \n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
 
 
 ("p" "papers")

@@ -131,7 +131,8 @@
     ("8emu" "ikloog@bgu.ac.il" nil 0)
     ("8emz" "zeltak@gmail.com" nil 0)
     ("8fl" "file:~/" nil 0)
-    ("8rs" "#+REVEAL: split" nil 2)
+    ("8rs" "#+REVEAL: split" nil 15)
+    ("8rt" "*lets try it on your computer!*" nil 17)
     ("8tp" "*lets try it on your computer!*" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)
@@ -361,6 +362,7 @@
     ("comitee" "committee" nil 0)
     ("comittee" "committee" nil 0)
     ("commadn" "command" nil 0)
+    ("commercisal" "commercial" nil 0)
     ("comming" "coming" nil 0)
     ("commitee" "committee" nil 0)
     ("committe" "committee" nil 0)
@@ -1286,6 +1288,8 @@
 
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
+(define-abbrev-table 'gscholar-bibtex-mode-abbrev-table '())
+
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-moccur-mode-abbrev-table '())
@@ -1394,7 +1398,9 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
@@ -1422,7 +1428,9 @@
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
-(define-abbrev-table 'sql-mode-abbrev-table '())
+(define-abbrev-table 'sql-mode-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'sr-mode-abbrev-table '())
 
@@ -1449,6 +1457,8 @@
 (define-abbrev-table 'transmission-info-mode-abbrev-table '())
 
 (define-abbrev-table 'transmission-mode-abbrev-table '())
+
+(define-abbrev-table 'twittering-edit-mode-abbrev-table '())
 
 (define-abbrev-table 'url-cookie-mode-abbrev-table '())
 

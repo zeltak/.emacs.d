@@ -7,7 +7,7 @@
     ("8fl" "file:~/" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8rs" "#+REVEAL: split" nil 0)
-    ("8tp" "*lets try it on your computer!*" nil 0)
+    ("8rt" "*lets try it on your computer!*" nil 0)
     ("8wr" "@Warning@" nil 0)
     ("8c" "#-------------->" nil 0)
     ("Note" "$Note$" nil 0)
