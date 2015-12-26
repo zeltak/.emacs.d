@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- package-install-file
- package-install
- eww-open-file
- browse-url
- eww
- org-insert-drawer
- z/del_exe_mu4e
+ which-key-mode
+ org-ref
+ message-tab
+ crossref-add-bibtex-entry
+ persp-mode
+ wl
+ ranger
 )
 
 ;; ----- smex-data -----
@@ -149,4 +149,12 @@
  (org-export-html-bookmarks . 1)
  (package-install . 1)
  (package-install-file . 1)
+ (wg-save-session . 2)
+ (wg-switch-to-workgroup . 1)
+ (wg-reload-session . 1)
+ (persp-mode . 1)
+ (crossref-add-bibtex-entry . 1)
+ (message-tab . 1)
+ (org-ref . 1)
+ (which-key-mode . 1)
 )

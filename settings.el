@@ -1200,26 +1200,29 @@
 ;; )
 
 (use-package org-ref 
- :ensure t
- :config
-(require 'org-ref)
-;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+   :ensure t
+   :config
+  (require 'org-ref)
+  ;; for pdf support  
+ (require 'org-ref-pdf)
+(require 'org-ref-url-utils)
+  ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
+  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
 
-;; see org-ref for use of these variables
-(setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
-      org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
-      org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
+  ;; see org-ref for use of these variables
+  (setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
+        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+        org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
-(setq bibtex-autokey-year-length 4
-      bibtex-autokey-name-year-separator "-"
-      bibtex-autokey-year-title-separator "-"
-      bibtex-autokey-titleword-separator "-"
-      bibtex-autokey-titlewords 2
-      bibtex-autokey-titlewords-stretch 1
-      bibtex-autokey-titleword-length 5)
+  (setq bibtex-autokey-year-length 4
+        bibtex-autokey-name-year-separator "-"
+        bibtex-autokey-year-title-separator "-"
+        bibtex-autokey-titleword-separator "-"
+        bibtex-autokey-titlewords 2
+        bibtex-autokey-titlewords-stretch 1
+        bibtex-autokey-titleword-length 5)
 
- )
+   )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
 (require 'org-link-edit)
@@ -1347,11 +1350,10 @@
  :config
  )
 
-(use-package org-pdfview
- :ensure t
- :config
- 
- )
+;; (use-package org-pdfview
+;;  :ensure t
+;;  :config
+;;  )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
 (require 'password-store)
@@ -1361,22 +1363,28 @@
  :config
   )
 
-(use-package pdf-tools
- :ensure t
- :config
-(pdf-tools-install)
-(eval-after-load 'org '(require 'org-pdfview))
-(add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
-(add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
+;; (use-package pdf-tools
+;;  :ensure t
+;;  :config
+;; (pdf-tools-install)
+;; (eval-after-load 'org '(require 'org-pdfview))
+;; (add-to-list 'org-file-apps '("\\.pdf\\'" . org-pdfview-open))
+;; (add-to-list 'org-file-apps '("\\.pdf::\\([[:digit:]]+\\)\\'" . org-pdfview-open))
 
 
-  )
+;;   )
 
 (use-package projectile
  :ensure t
  :config
 (projectile-global-mode)
 (setq projectile-completion-system 'grizzl)
+ )
+
+(use-package perspective
+ :ensure t
+ :config
+
  )
 
 (use-package polymode
@@ -1764,6 +1772,16 @@ Sunrise:
 
 (winner-mode 1)
 
+(use-package which-key
+ :ensure t
+ :config
+(which-key-mode)
+
+;;Popup side window on right. For defaults use
+;;(which-key-setup-side-window-right)
+
+ )
+
 (use-package wrap-region
   :ensure t
   :config
@@ -1784,14 +1802,14 @@ Sunrise:
   (add-hook 'latex-mode-hook 'wrap-region-mode)
 )
 
-;(use-package workgroups2
-; :ensure t
-; :config
-;(workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
-;(require 'workgroups2)
+;; (use-package workgroups2
+;; :ensure t
+;; :config
+;; (workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
+;; (require 'workgroups2)
 ;; Change workgroups session file
-;(setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
-;)
+;; (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+;; )
 
 (use-package xah-find
  :ensure t
@@ -3557,6 +3575,7 @@ _q_:
 "
 ("<f2>" dired "dired")
 ("<f1>" sunrise "sunrise")
+("<f3>" dired-jump "dired jump")
 ("a" nil )
 ("b"  nil  )
 ("c"  hydra-dired-configs/body "dir configs")
@@ -3776,7 +3795,7 @@ Bib:
 ("v"  bibtex-validate "validtae" )
 ("V"  bibtex-validate-globally "validate-check for dups") ; check for dup keys
 ("w"  nil )
-("x"  nil )
+("x"  crossref-add-bibtex-entry "free search" )
 ("y"  org-bibtex-yank "yank bibtex")
 ("z"  nil )
 ("q"  nil )
