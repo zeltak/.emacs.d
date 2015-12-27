@@ -571,8 +571,8 @@
   "Dired compressed files extensions")
 (dired-rainbow-define compressed "#B56A00" dired-compressed-files-extensions)
 
-
-
+; highlight executable files, but not directories
+(dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
 
  )
 
@@ -1553,96 +1553,6 @@
 ;move back/forward im history
 (define-key sr-mode-map (kbd "M-<left>") 'sr-history-prev ) 
 (define-key sr-mode-map (kbd "M-<right>") 'sr-history-next )
-
-(global-set-key
-   (kbd "")
-(defhydra hydra-sr-chd  (:color blue :hint nil :columns 4)
-
-"
-"
-("a" (find-file "~/AUR/") "AUR" )
-("b"  (find-file "~/bin/") "bin" )
-("c"  nil )
-("d" (find-file "~/Downloads/")    "Downloads" )
-("e"  (find-file "~/.emacs.d/") "Emacs.d")
-("E"  (find-file "~/.emacs.g/") "Emacs.g")
-("f"  nil )
-("g"  nil )
-("h"  (find-file "~/") "HOME" )
-("i"  nil )
-("j"  nil )
-("k"  (find-file "~/BK/") "BK" )
-("l"  nil )
-("m"  (find-file "~/music/") "music" )
-("n"  nil )
-("o"  (find-file "~/org/files/") "Org" )
-("p"  (find-file "~/mtp") "mtp" )
-("r"  (find-file "~/mreview/") "mreview" )
-("s"  (find-file "~/Sync/") "Sync" )
-("S"  (find-file "~/scripts/" "scripts") )
-("t"  (find-file "~/mounts/" "mounts") )
-("u"  (find-file "~/Uni//") "Uni" )
-("v"  nil)
-("w"  (find-file "~/dotfiles/") "dotfiles" )
-("x"  nil )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("."  (find-file "~/.config/") "config")
-("/"  (find-file "/") "Root")
-("q" nil  )
-
-))
-
-(defhydra hydra-sunrise-leader  (:color blue :hint nil)
-
-"
-
-_a_:         _b_:         _c_:        _d_:        _e_:           _f_:         _g_:  
-_h_: collapse org tree        _i_: insert text         _j_:       _k_:       _l_:          _m_: helm-mark        _n_: mark position       
-_o_: mark prev   _p_ _q_ _r_ wdired   du_p_licate  _s_:       _t_: term           _u_:       
-_v_:        _w_:        _x_:       _y_: kill ring       _z_: 
-_q_: 
-
-Sunrise:
-【C-c C-d】recent dirs 【C-c C-q】wdired 【M-o】equal panes 【C-enter】open in next pane 
-【N】copy/rename same dir 【s/r】sort/reverse 【X】exe file 【K】clone (cp tree) 【y】calc size
-
-
-"
-
-("a" find-file  )
-("b"  nil  )
-;("c"  company-complete )
-("c"  auto-complete )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  hide-sublevels )
-("i"  hydra-editing-insert/body )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  helm-mark-ring )
-("n"  set-mark-command )
-("o"  set-mark-command 4 )
-("p"  duplicate-current-line-or-region )
-("r"  sr-editable-pane )
-("s"  nil )
-("t"  sr-term-cd )
-("T"  sr-term )
-("<f9>"  sr-term-cd-newterm )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  helm-show-kill-ring )
-("z"  nil )
-("\\"  z/insert-slsh )
-(";"  comment-or-uncomment-region )
-("q"  nil )
-
-)
 
 (use-package sr-speedbar
  :ensure t
@@ -3194,16 +3104,24 @@ The app is chosen from your OS's preference."
                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
 
-(defun z/dired-beet-import ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "beet import %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
+(defun  z/dired-beet-import ()
+    "Uses beets to import folder"
+    (interactive)
+    (shell-command (concat "beet import" (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-beet-import ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "beet import %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input))))
 
 (defun z/dired-beet-import-single ()
   (interactive)
@@ -3227,18 +3145,49 @@ The app is chosen from your OS's preference."
       (insert command)
       (eshell-send-input))))
 
-(defun z/dired-fb-upload ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "fb %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input)
-      (shell-command "notify-send fb uploaded")
-)))
+(defun  z/dired-shell-fb ()
+    "Uses fb to upload file at point."
+    (interactive)
+    (shell-command (concat "fb " (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-fb-upload ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "fb %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input)
+;;       (shell-command "notify-send fb uploaded")
+;; )))
+
+(defun  z/dired-shell-chmodx ()
+    "chmod"
+    (interactive)
+    (shell-command (concat "chmod +x " (dired-file-name-at-point)))
+    (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
+)
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-fb-upload ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "fb %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input)
+;;       (shell-command "notify-send fb uploaded")
+;; )))
 
 (defun z/dired-mpd-add ()
   (interactive)
@@ -3288,6 +3237,63 @@ Version 2015-07-30"
      ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
      (t (error "logic error 09535" )))
     (dired-sort-other ξarg )))
+
+;; ;; Use ido
+;; (require 'ido)
+;; (ido-mode t)
+
+;; ;; Make a hash table to hold the paths
+;; (setq my-target-dirs (make-hash-table :test 'equal))
+
+;; ;; Put some paths in the hash (sorry for Unix pathnames)
+;; (puthash "z" "/home/zeltak/ZH_tmp/" my-target-dirs)
+;; (puthash "target" "/home/zeltak/Downloads/" my-target-dirs)
+
+;; ;; A function to return all the keys from a hash.
+;; (defun get-keys-from-hash (hash)
+;;   (let ((keys ()))
+;;     (maphash (lambda (k v) (push k keys)) hash)
+;;     keys))
+
+;; ;; And the function to prompt for a directory by keyword that is looked
+;; ;; up in the hash-table and used to build the target path from the
+;; ;; value of the lookup.
+;; (defun my-dired-expand-copy ()
+;;   (interactive)
+;;   (let* ((my-hash my-target-dirs)
+;;          (files (dired-get-marked-files))
+;;          (keys (get-keys-from-hash my-hash)))
+;;     (mapc (lambda (file)
+;;             (copy-file file
+;;                        (concat
+;;                         (gethash
+;;                          (ido-completing-read
+;;                           (concat "copy " file " to: ") keys) my-hash)
+;;                         (file-name-nondirectory file))))
+;;           files)))
+
+
+
+
+;; (defun my-dired-expand-copy-2 ()
+;;   (interactive)
+;;   (let* ((my-hash my-target-dirs)
+;;          (files (dired-get-marked-files))
+;;          (keys (get-keys-from-hash my-hash)))
+;;     (mapc (lambda (file)
+;;             (let ((target (gethash
+;;                            (ido-completing-read
+;;                             (concat "copy " file " to: ") keys) my-hash)))
+;;               (if (y-or-n-p "Descend?")
+;;                   ;; Descend into subdirectories relative to target dir
+;;                   (let ((new-target (ido-read-directory-name "new dir: " target))) 
+;;                     (copy-file file (concat new-target
+;;                                             (file-name-nondirectory file)))
+;;                     (message (concat "File: " file " was copied to " new-target)))
+;;                 ;; Else copy to root of originally selected directory
+;;                 (copy-file file (concat target (file-name-nondirectory file)))
+;;                 (message (concat "File: " file " was copied to " target)))))
+;;           files)))
 
 (defun z/dired-backup-lgs ()
 "run laptop git script"
@@ -3404,6 +3410,9 @@ Version 2015-07-30"
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+(define-key dired-mode-map (kbd "`") 'dired-narrow )
+(define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
+(define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
 
 (key-chord-define-global "3e" 'hydra-editing/body)
 (key-chord-define-global "9o" 'hydra-org-edit/body)
@@ -3435,7 +3444,7 @@ LEADER:【C-A-W】-append to killring
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
 ("a" nil )
 ;("c"  company-complete )
-("c"  auto-complete )
+("c"  nil )
 ("d"  org-cut-subtree "org-cut"   )
 ("f"  link-hint-open-link "open link" )
 ("g"  hydra-goto/body )
@@ -3595,7 +3604,7 @@ _q_:
 ("o"  hydra-dired-operation/body "dired operations")
 ("p"  peep-dired "peep-dired")
 ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
-("s"  nil )
+("s"  z/dired-get-size "size" )
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
@@ -3607,7 +3616,7 @@ _q_:
 
 ))
 
-(defhydra hydra-dired-filter (:color blue )
+(defhydra hydra-dired-filter  (:color blue :hint nil :columns 5)
       "
 Filter by:
       "
@@ -3626,6 +3635,53 @@ Filter by:
     ("w" wdired-change-to-wdired-mode  "wdired" ) 
      ("q" nil "cancel" nil)
 )
+
+(defhydra hydra-dired-operations  (:color blue :hint nil :columns 5)
+      "
+Filter by:
+      "
+     ("o" z/del-nonorg-files  "delete non org" ) 
+      ("q" nil "cancel" nil)
+ )
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" (find-file "~/AUR/") "AUR" )
+("b"  (find-file "~/bin/") "bin" )
+("c"  nil )
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  nil )
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "~/mtp") "mtp" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  nil )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("."  (find-file "~/.config/") "config")
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
 
 (global-set-key
    (kbd "")
@@ -3668,6 +3724,26 @@ _q_:
 ("x"  nil )
 ("y"  nil )
 ("z"  nil )
+("q"  nil )
+
+))
+
+(global-set-key
+   (kbd "\\")
+(defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
+
+"
+"
+("a" nil )
+("c"  nil )
+("d" nil)
+("j"  nil )
+("s"  z/dired-get-size "get size" )
+("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
+("u"  nil )
+("v"  nil)
+("x"  nil )
+(";"  nil )
 ("q"  nil )
 
 ))
@@ -4986,17 +5062,17 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;     ad-do-it))
 ;; (ad-activate 'org-capture)
 
-(defadvice org-capture
-    (after make-full-window-frame activate)
-  "Advise capture to be the only window when used as a popup"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))
-      (delete-other-windows)))
+;; (defadvice org-capture
+;;     (after make-full-window-frame activate)
+;;   "Advise capture to be the only window when used as a popup"
+;;   (if (equal "emacs-capture" (frame-parameter nil 'name))
+;;       (delete-other-windows)))
 
-(defadvice org-capture-finalize
-    (after delete-capture-frame activate)
-  "Advise capture-finalize to close the frame"
-  (if (equal "emacs-capture" (frame-parameter nil 'name))
-      (delete-frame)))
+;; (defadvice org-capture-finalize
+;;     (after delete-capture-frame activate)
+;;   "Advise capture-finalize to close the frame"
+;;   (if (equal "emacs-capture" (frame-parameter nil 'name))
+;;       (delete-frame)))
 
 ;; (defun my-capture-finalize ()
 ;;   (interactive)
@@ -5008,9 +5084,29 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;             (define-key org-capture-mode-map "\C-c\C-x" (function my-capture-finalize))))
 ;; ((lambda nil (define-key org-capture-mode-map "" (function my-capture-finalize))))
 
+(defadvice org-capture-finalize 
+  (after delete-capture-frame activate)  
+   "Advise capture-finalize to close the frame"  
+   (if (equal "capture" (frame-parameter nil 'name))  
+       (delete-frame)))
+
+(defadvice org-capture-destroy 
+  (after delete-capture-frame activate)  
+   "Advise capture-destroy to close the frame"  
+   (if (equal "capture" (frame-parameter nil 'name))  
+       (delete-frame)))  
+
+(defun make-capture-frame ()
+         "Create a new frame and run org-capture."
+         (interactive)
+         (make-frame '((name . "capture")))
+         (select-frame-by-name "capture")
+         (delete-other-windows)
+         (noflet ((switch-to-buffer-other-window (buf) (switch-to-buffer buf)))
+           (org-capture)))
+
 (setq org-capture-templates
           (quote ( 
-
 
 ;;; email
 
@@ -5137,8 +5233,8 @@ With prefix argument, also display headlines without a TODO keyword."
  \nLink: %a\n\n"  :immediate-finish t)
 
 
-("k" "Bookmarks" entry (file+headline "/home/zeltak/org/files/web/bookmarks.org" "bookmarks")
-           "* %? \n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+("k" "Bookmarks" entry (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
+           "* %? \n:PROPERTIES:\n:CREATED: %U\n:END:\n %x" :empty-lines 1)
 
 
 ("p" "papers")

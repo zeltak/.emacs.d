@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ my-dired-expand-copy-2
+ my-dired-expand-copy
+ hydra-f7/body
  which-key-mode
  org-ref
  message-tab
  crossref-add-bibtex-entry
- persp-mode
- wl
- ranger
 )
 
 ;; ----- smex-data -----
@@ -157,4 +157,7 @@
  (message-tab . 1)
  (org-ref . 1)
  (which-key-mode . 1)
+ (hydra-f7/body . 1)
+ (my-dired-expand-copy . 1)
+ (my-dired-expand-copy-2 . 2)
 )

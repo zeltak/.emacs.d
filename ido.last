@@ -1,0 +1,28 @@
+;;; -*- coding: utf-8 -*-
+
+;; ----- ido-last-directory-list -----
+(
+ ("/home/zeltak/ZH_tmp/" . "DIRED/")
+)
+
+;; ----- ido-work-directory-list -----
+(
+ 
+)
+
+;; ----- ido-work-file-list -----
+(
+ 
+)
+
+;; ----- ido-dir-file-cache -----
+(
+ ("/home/zeltak/ZH_tmp/DIRED/" (22142 59455 996403 424000) "../" "./")
+
+ ("/home/zeltak/ZH_tmp/" (22142 59455 996403 424000) "dat/" "Research.odt" "mu4e-alert-20151206.0.tar" "geomerge.org" "DIRED/" "Teiler/" "bookmarks.html" "Kloog_GEO_2015V2.pdf" "datasets.pdf" "citetst.pdf" "citetst.aux" "Screenshots.zip" "bookmarksV2_12_19_15.html" "targil8.R.docx" "database.pdf" "bookmarks-2015-12-19.json" "ql/" "Abstract.docx" "CompromiseInFreeSoftware-1080.mp4" "Input-Font.zip" "NewDatabase.kdbx" "factory-to-ddwrt.bin" "mod4.r" "DOC221215.pdf" "t8.pdf" "citetst.out" "Letter for shi.pdf" "citetst.tex" "citetst.log" "bookmarksV3_NOFOLDERS_12_19_15.html" "Skype_181215.pdf" "dir880-webflash.bin" "bookmarks-2015-12-19_NOFOLDERS.json" "quicklisp.lisp" "rglog.txts" "Untitled 1.odp" "bookmarks.org" "bookmarks_12_19_15.org" "bookmarks_12_19_15.html" "t6extra.pdf" "roni/" "t6.pdf" "citetst.org" "bookmarks-to-org.py" "sshots/" "targil2t.test_en.pdf" "Shi_ikloog.pdf.odt" "Kharol_AtmEnv15_OMI-NO2trends.pdf" "targil8_answ.text" "geomerge/" "../" "./")
+
+ ("/home/zeltak/ZH_tmp/ql/" (22131 50748 833648 553000) "../" "quicklisp.lisp" "./")
+)
+
+;; ----- ido-unc-hosts-cache -----
+t
