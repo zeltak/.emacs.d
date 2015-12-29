@@ -1,7 +1,7 @@
 
 ;; ----- smex-history -----
 (
- helm-insert-org-entity
+ org-cliplink
  org-open-line
  open-line
  whitespace-cleanup-region
@@ -170,4 +170,5 @@
  (open-line . 1)
  (org-open-line . 2)
  (helm-insert-org-entity . 4)
+ (org-cliplink . 2)
 )

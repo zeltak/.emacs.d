@@ -4837,10 +4837,13 @@ With prefix argument, also display headlines without a TODO keyword."
    "* TODO  %?\n%T" )
 
 
+;;;;---------------------------------------------------------------------------
+
   ;; for mail 
   ("r" "respond" entry (file+headline  "~/org/files/agenda/Research.org" "Mails")
    "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
+;;;;---------------------------------------------------------------------------
 
   ;;;;; media related 
   ("m" "Media")
@@ -4860,15 +4863,23 @@ With prefix argument, also display headlines without a TODO keyword."
   ("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
    "*  %^{Description}" )
 
+
+;;;;---------------------------------------------------------------------------
+
 ("c" "Contacts" entry (file "/home/zeltak/org/files/PIM/contacts.org")
                "* %(org-contacts-template-name)
 :PROPERTIES:
 :EMAIL: %(org-contacts-template-email)
 :END:")
 
+
+;;;;---------------------------------------------------------------------------
+
 ("l" "Temp Links from the interwebs" item
          (file+headline "links.org" "Temporary Links")
          "%?\nEntered on %U\n \%i\n %a")
+
+;;;;---------------------------------------------------------------------------
 
 ("s" "Elfeed" entry (file+headline "TODO.org" "Web")
    "*  %:description
