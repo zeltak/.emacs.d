@@ -1825,6 +1825,34 @@ This command does the inverse of `fill-region'."
   (let ((fill-column 90002000))
     (fill-region start end)))
 
+(defun count-sentences (begin end &optional print-message)
+  "Count the number of sentences from BEGIN to END."
+  (interactive (if (use-region-p)
+                   (list (region-beginning)
+                         (region-end)
+                         t)
+                 (list nil nil t)))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region (or begin (point-min))
+                        (progn
+                          (goto-char (or end (point-max)))
+                          (skip-chars-backward " \t\n")
+                          (point)))
+      (goto-char (point-min))
+      (let ((sentences 0))
+        (while (not (looking-at-p "[ \t\n]*\\'"))
+          (forward-sentence 1)
+          (setq sentences (1+ sentences)))
+        (if print-message
+            (message
+             "%s sentences in %s."
+             sentences
+             (if (use-region-p)
+                 "region"
+               "buffer"))
+          sentences)))))
+
 (defun z-count-words-region (posBegin posEnd)
   "Print number of words and chars in region."
   (interactive "r")
@@ -2286,6 +2314,50 @@ lines have identical symbols at identical goal columns as the symbol at point."
           (backward-char 1)))))
   (rectangle-mark-mode))
 
+(defun z/helm-insert-org-entity ()
+  "Helm interface to insert an entity from `org-entities'.
+F1 inserts utf-8 character
+F2 inserts entity code
+F3 inserts LaTeX code (does not wrap in math-mode)
+F4 inserts HTML code"
+  (interactive)
+  (helm :sources (reverse
+                  (let ((sources '())
+                        toplevel
+                        secondlevel)
+                    (dolist (element (append
+                                      '("* User" "** User entities")
+                                      org-entities-user org-entities))
+                      (when (and (stringp element)
+                                 (s-starts-with? "* " element))
+                        (setq toplevel element))
+                      (when (and (stringp element)
+                                 (s-starts-with? "** " element))
+                        (setq secondlevel element)
+                        (add-to-list
+                         'sources
+                         `((name . ,(concat
+                                     toplevel
+                                     (replace-regexp-in-string
+                                      "\\*\\*" " - " secondlevel)))
+                           (candidates . nil)
+                           (action . (("insert utf-8 char" . (lambda (candidate)
+                                                               (insert (nth 6 candidate))))
+                                      ("insert org entity" . (lambda (candidate)
+                                                           (insert (concat "\\" (car candidate)))))
+                                      ("insert latex" . (lambda (candidate)
+                                                          (insert (nth 1 candidate))))
+                                      ("insert html" . (lambda (candidate)
+                                                         (insert (nth 3 candidate)))))))))
+                      (when (and element (listp element))
+                        (setf (cdr (assoc 'candidates (car sources)))
+                              (append
+                               (cdr (assoc 'candidates (car sources)))
+                               (list (cons
+                                      (format "%10s %s" (nth 6 element) element)
+                                      element))))))
+                    sources))))
+
 (defun z/org-convert-header-samelevel  ()
                      (interactive)                                
                      (let ((current-prefix-arg '(4)))             
@@ -2483,14 +2555,14 @@ font-lock-face '(:background "#FFE3E3")))))
 (defun  z/org-cblock-paste-lisp ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC emacs-lisp\n")
+  (insert "#+BEGIN_SRC emacs-lisp  :results none\n")
   (yank)
   (insert "\n#+END_SRC"))
 
 (defun  z/org-cblock-paste-sh ()
    "paste in already quote block"
   (interactive)
-  (insert "#+BEGIN_SRC sh\n")
+  (insert "#+BEGIN_SRC sh  :results none\n")
   (yank)
   (insert "\n#+END_SRC"))
 
@@ -3049,260 +3121,6 @@ org-files and bookmarks"
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
-(defun z/del-nonorg-files ()
-(interactive)
-(dired-mark-files-regexp "\\.org$") 
-(dired-toggle-marks)
-(dired-do-delete)
-)
-
-(defun z/dired-open-in-external-app ()
-  "Open the current file or dired marked files in external app.
-The app is chosen from your OS's preference."
-  (interactive)
-  (let* (
-         (ξfile-list
-          (if (string-equal major-mode "dired-mode")
-              (dired-get-marked-files)
-            (list (buffer-file-name))))
-         (ξdo-it-p (if (<= (length ξfile-list) 5)
-                       t
-                     (y-or-n-p "Open more than 5 files? "))))
-
-    (when ξdo-it-p
-      (cond
-       ((string-equal system-type "windows-nt")
-        (mapc
-         (lambda (fPath)
-           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
-       ((string-equal system-type "darwin")
-        (mapc
-         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
-       ((string-equal system-type "gnu/linux")
-        (mapc
-         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
-
-(defun z/dired-open-in-desktop ()
-  "Show current file in desktop (OS's file manager)."
-  (interactive)
-  (cond
-   ((string-equal system-type "windows-nt")
-    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
-   ((string-equal system-type "darwin") (shell-command "open ."))
-   ((string-equal system-type "gnu/linux")
-    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
-    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
-    ) ))
-
-(defun z/dired-get-size ()
- (interactive)
- (let ((files (dired-get-marked-files)))
-   (with-temp-buffer
-     (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
-     (message "Size of all marked files: %s"
-              (progn 
-                (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
-                 (match-string 1))))))
-
-(defun  z/dired-beet-import ()
-    "Uses beets to import folder"
-    (interactive)
-    (shell-command (concat "beet import" (dired-file-name-at-point))))
-
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
-
-;; (defun z/dired-beet-import ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "beet import %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input))))
-
-(defun z/dired-beet-import-single ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "beet import -s %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
-(defun z/dired-make-exec ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "chmod +x %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
-(defun  z/dired-shell-fb ()
-    "Uses fb to upload file at point."
-    (interactive)
-    (shell-command (concat "fb " (dired-file-name-at-point))))
-
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
-
-;; (defun z/dired-fb-upload ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "fb %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input)
-;;       (shell-command "notify-send fb uploaded")
-;; )))
-
-(defun  z/dired-shell-chmodx ()
-    "chmod"
-    (interactive)
-    (shell-command (concat "chmod +x " (dired-file-name-at-point)))
-    (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
-)
-
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
-
-;; (defun z/dired-fb-upload ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "fb %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input)
-;;       (shell-command "notify-send fb uploaded")
-;; )))
-
-(defun z/dired-mpd-add ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "mpc add file:/ %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
-(defun z/dired-ssh-qnap ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid \n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
-(fset 'z/dired-media-info
-   [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
-
-(defun z/dired-nmap-network ()
-"map all available IP on my netwrok"
-(interactive)
-(sr-term )
-(insert " nmap -sP 10.0.0.1/24" )
-(eshell-send-input)
-)
-
-(defun z/dired-sort-menu ()
-  "Sort dired dir listing in different ways.
-Prompt for a choice.
-URL `http://ergoemacs.org/emacs/dired_sort.html'
-Version 2015-07-30"
-  (interactive)
-  (let (ξsort-by ξarg)
-    (setq ξsort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
-    (cond
-     ((equal ξsort-by "name") (setq ξarg "-Al --si --time-style long-iso "))
-     ((equal ξsort-by "date") (setq ξarg "-Al --si --time-style long-iso -t"))
-     ((equal ξsort-by "size") (setq ξarg "-Al --si --time-style long-iso -S"))
-     ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
-     (t (error "logic error 09535" )))
-    (dired-sort-other ξarg )))
-
-;; ;; Use ido
-;; (require 'ido)
-;; (ido-mode t)
-
-;; ;; Make a hash table to hold the paths
-;; (setq my-target-dirs (make-hash-table :test 'equal))
-
-;; ;; Put some paths in the hash (sorry for Unix pathnames)
-;; (puthash "z" "/home/zeltak/ZH_tmp/" my-target-dirs)
-;; (puthash "target" "/home/zeltak/Downloads/" my-target-dirs)
-
-;; ;; A function to return all the keys from a hash.
-;; (defun get-keys-from-hash (hash)
-;;   (let ((keys ()))
-;;     (maphash (lambda (k v) (push k keys)) hash)
-;;     keys))
-
-;; ;; And the function to prompt for a directory by keyword that is looked
-;; ;; up in the hash-table and used to build the target path from the
-;; ;; value of the lookup.
-;; (defun my-dired-expand-copy ()
-;;   (interactive)
-;;   (let* ((my-hash my-target-dirs)
-;;          (files (dired-get-marked-files))
-;;          (keys (get-keys-from-hash my-hash)))
-;;     (mapc (lambda (file)
-;;             (copy-file file
-;;                        (concat
-;;                         (gethash
-;;                          (ido-completing-read
-;;                           (concat "copy " file " to: ") keys) my-hash)
-;;                         (file-name-nondirectory file))))
-;;           files)))
-
-
-
-
-;; (defun my-dired-expand-copy-2 ()
-;;   (interactive)
-;;   (let* ((my-hash my-target-dirs)
-;;          (files (dired-get-marked-files))
-;;          (keys (get-keys-from-hash my-hash)))
-;;     (mapc (lambda (file)
-;;             (let ((target (gethash
-;;                            (ido-completing-read
-;;                             (concat "copy " file " to: ") keys) my-hash)))
-;;               (if (y-or-n-p "Descend?")
-;;                   ;; Descend into subdirectories relative to target dir
-;;                   (let ((new-target (ido-read-directory-name "new dir: " target))) 
-;;                     (copy-file file (concat new-target
-;;                                             (file-name-nondirectory file)))
-;;                     (message (concat "File: " file " was copied to " new-target)))
-;;                 ;; Else copy to root of originally selected directory
-;;                 (copy-file file (concat target (file-name-nondirectory file)))
-;;                 (message (concat "File: " file " was copied to " target)))))
-;;           files)))
-
-(defun z/dired-backup-lgs ()
-"run laptop git script"
-(interactive)
-(sr-term )
-(insert "~/bin/lgs.sh" )
-(eshell-send-input)
-)
-
 (defun isearch-delete-something ()
   "Delete non-matching text or the last character."
   ;; Mostly copied from `isearch-del-char' and Drew's answer on the page above
@@ -3406,13 +3224,6 @@ Version 2015-07-30"
   (define-key isearch-mode-map (kbd "<left>") 'isearch-repeat-backward) ; single key, useful
   (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
  )
-
-(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
-(define-key dired-mode-map (kbd "`") 'dired-narrow )
-(define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
-(define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
 
 (key-chord-define-global "3e" 'hydra-editing/body)
 (key-chord-define-global "9o" 'hydra-org-edit/body)
@@ -3571,184 +3382,6 @@ _q_:
 ))
 
 (global-set-key
-   (kbd "<f2>")
-(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
-
-"
-【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
-【C/R/D/S】 copy/move(rename)/delete/symlink
-【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
-【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-
-"
-("<f2>" dired "dired")
-("<f1>" sunrise "sunrise")
-("<f3>" dired-jump "dired jump")
-("a" nil )
-("b"  nil  )
-("c"  hydra-dired-configs/body "dir configs")
-("d"  nil )
-("e"  nil )
-("ff"  find-dired "find")
-("fl"  find-lisp-find-dired "lisp find")
-("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  dired-jump "jump")
-("k"  nil )
-("l"  nil )
-("m"  diredp-mark/unmark-extension "unmark extension")
-("n"  dired-narrow-regexp "narrow")
-("o"  hydra-dired-operation/body "dired operations")
-("p"  peep-dired "peep-dired")
-("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
-("s"  z/dired-get-size "size" )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"   hydra-dired-filter/body  "filter" )
-("q"  nil )
-
-))
-
-(defhydra hydra-dired-filter  (:color blue :hint nil :columns 5)
-      "
-Filter by:
-      "
-     ("e" dired-filter-by-extension  "extension 【/.】" ) 
-     ("r" dired-filter-by-regexp  "regex 【/r】" ) 
-     ("f" dired-filter-by-file  "file 【/f】" ) 
-     ("n" dired-filter-by-name  "name 【/n】" ) 
-      ("q" nil "cancel" nil)
- )
-
-(defhydra hydra-dired-configs (:color blue )
-     "
-     "
-    ("o" dired-omit-mode  "dired omit" ) 
-    ("t" dired-details-toggle  "dired details" ) 
-    ("w" wdired-change-to-wdired-mode  "wdired" ) 
-     ("q" nil "cancel" nil)
-)
-
-(defhydra hydra-dired-operations  (:color blue :hint nil :columns 5)
-      "
-Filter by:
-      "
-     ("o" z/del-nonorg-files  "delete non org" ) 
-      ("q" nil "cancel" nil)
- )
-
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
-
-"
-"
-("a" (find-file "~/AUR/") "AUR" )
-("b"  (find-file "~/bin/") "bin" )
-("c"  nil )
-("d" (find-file "~/Downloads/")    "Downloads" )
-("e"  (find-file "~/.emacs.d/") "Emacs.d")
-("E"  (find-file "~/.emacs.g/") "Emacs.g")
-("f"  nil )
-("g"  nil )
-("h"  (find-file "~/") "HOME" )
-("i"  nil )
-("j"  nil )
-("k"  (find-file "~/BK/") "BK" )
-("l"  nil )
-("m"  (find-file "~/music/") "music" )
-("n"  nil )
-("o"  (find-file "~/org/files/") "Org" )
-("p"  (find-file "~/mtp") "mtp" )
-("r"  (find-file "~/mreview/") "mreview" )
-("s"  (find-file "~/Sync/") "Sync" )
-("S"  (find-file "~/scripts/" "scripts") )
-("t"  (find-file "~/mounts/" "mounts") )
-("u"  (find-file "~/Uni//") "Uni" )
-("v"  nil)
-("w"  (find-file "~/dotfiles/") "dotfiles" )
-("x"  nil )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("."  (find-file "~/.config/") "config")
-("/"  (find-file "/") "Root")
-("q" nil  )
-
-))
-
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-operation (:color blue :hint nil)
-
-"
-
-_a_:         _b_:         _c_: clean non-org        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
-_q_: 
-
-"
-
-
-
-("a" nil )
-("b"  nil  )
-("c"  z/del-nonorg-files )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
-("s"  nil )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"  nil )
-("q"  nil )
-
-))
-
-(global-set-key
-   (kbd "\\")
-(defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
-
-"
-"
-("a" nil )
-("c"  nil )
-("d" nil)
-("j"  nil )
-("s"  z/dired-get-size "get size" )
-("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
-("u"  nil )
-("v"  nil)
-("x"  nil )
-(";"  nil )
-("q"  nil )
-
-))
-
-(global-set-key
   (kbd "<f3>")
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
@@ -3785,7 +3418,7 @@ _q_:
   ("S"  isearch-forward-symbol-at-point "isearch@point" )
   ("t"  z/activate-word-column-region "mark current char" )
   ("u"  imenu "imenu")
-  ("v"  nil)
+  ("v"  z/helm-insert-org-entity "insert Unicode")
   ("w"  ispell-word "ispeel word" )
   ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
@@ -4512,6 +4145,15 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq cache-long-scans nil)
 
+(setq read-file-name-completion-ignore-case t)
+(setq read-buffer-completion-ignore-case t)
+(mapc (lambda (x)
+        (add-to-list 'completion-ignored-extensions x))
+      '(".aux" ".bbl" ".blg" ".exe"
+        ".log" ".meta" ".out" ".synctex.gz" ".tdo" ".toc"
+        "-pkg.el" "-autoloads.el"
+        "Notes.bib" "auto/"))
+
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 (autoload 'flyspell-delay-command "flyspell" "Delay on command." t)
@@ -5122,6 +4764,11 @@ With prefix argument, also display headlines without a TODO keyword."
 
 
 
+("E" "Etodo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
+         "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"
+)
+
+
 
 ;;;;; food
 ;; define food group
@@ -5195,10 +4842,6 @@ With prefix argument, also display headlines without a TODO keyword."
    "* TODO Respond to %:from on %:subject\nSCHEDULED: %t\n\n%U\n\n%a\n\n" )
 
 
-  ;;; web capture
-  ("w" "webCapture" entry (file+headline "refile.org" "Web")  "* BOOKMARKS %T\n%c\%a\n%i\n Note:%?" :prepend t :jump-to-captured t :empty-lines-after 1 :unnarrowed t)
-
-
   ;;;;; media related 
   ("m" "Media")
 
@@ -5231,10 +4874,6 @@ With prefix argument, also display headlines without a TODO keyword."
    "*  %:description
     %t
  \nLink: %a\n\n"  :immediate-finish t)
-
-
-("k" "Bookmarks" entry (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
-           "* %? \n:PROPERTIES:\n:CREATED: %U\n:END:\n %x" :empty-lines 1)
 
 
 ("p" "papers")
@@ -5782,6 +5421,446 @@ scroll-step 1)
            (not isearch-mode-end-hook-quit))
       (dired-find-file))))
 
+(define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
+(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+(define-key dired-mode-map (kbd "`") 'dired-narrow )
+(define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
+(define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
+(define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
+
+(global-set-key
+   (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
+
+"
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
+【C/R/D/S】 copy/move(rename)/delete/symlink
+【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+
+"
+("<f2>" dired "dired")
+("<f1>" sunrise "sunrise")
+("<f3>" dired-jump "dired jump")
+("a" nil )
+("b"  nil  )
+("c"  hydra-dired-configs/body "dir configs")
+("d"  nil )
+("e"  nil )
+("ff"  find-dired "find")
+("fl"  find-lisp-find-dired "lisp find")
+("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  dired-jump "jump")
+("k"  nil )
+("l"  nil )
+("m"  diredp-mark/unmark-extension "unmark extension")
+("n"  dired-narrow-regexp "narrow")
+("o"  hydra-dired-operation/body "dired operations")
+("p"  peep-dired "peep-dired")
+("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
+("s"  z/dired-get-size "size" )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"   hydra-dired-filter/body  "filter" )
+("q"  nil )
+
+))
+
+(defhydra hydra-dired-filter  (:color blue :hint nil :columns 5)
+      "
+Filter by:
+      "
+     ("e" dired-filter-by-extension  "extension 【/.】" ) 
+     ("r" dired-filter-by-regexp  "regex 【/r】" ) 
+     ("f" dired-filter-by-file  "file 【/f】" ) 
+     ("n" dired-filter-by-name  "name 【/n】" ) 
+      ("q" nil "cancel" nil)
+ )
+
+(defhydra hydra-dired-configs (:color blue )
+     "
+     "
+    ("o" dired-omit-mode  "dired omit" ) 
+    ("t" dired-details-toggle  "dired details" ) 
+    ("w" wdired-change-to-wdired-mode  "wdired" ) 
+     ("q" nil "cancel" nil)
+)
+
+(defhydra hydra-dired-operations  (:color blue :hint nil :columns 5)
+      "
+Filter by:
+      "
+     ("o" z/del-nonorg-files  "delete non org" ) 
+      ("q" nil "cancel" nil)
+ )
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" (find-file "~/AUR/") "AUR" )
+("b"  (find-file "~/bin/") "bin" )
+("c"  nil )
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  nil )
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "~/mtp") "mtp" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  nil )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("."  (find-file "~/.config/") "config")
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-operation (:color blue :hint nil)
+
+"
+
+_a_:         _b_:         _c_: clean non-org        _d_:        _e_:           _f_:         _g_:  
+_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
+_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
+_v_:        _w_:        _x_:       _y_:       _z_: 
+_q_: 
+
+"
+
+
+
+("a" nil )
+("b"  nil  )
+("c"  z/del-nonorg-files )
+("d"  nil )
+("e"  nil )
+("f"  nil )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  nil )
+("k"  nil )
+("l"  nil )
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("r"  nil )
+("s"  nil )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"  nil )
+("q"  nil )
+
+))
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
+"
+"
+("a" nil )
+("c"  nil )
+("d" nil)
+("j"  nil )
+("s"  z/dired-get-size "get size" )
+("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
+("u"  nil )
+("v"  nil)
+("f"   z/dired-shell-fb "fb" )
+("x"  nil )
+(";"  nil )
+("q"  nil )
+
+))
+
+(defun z/del-nonorg-files ()
+(interactive)
+(dired-mark-files-regexp "\\.org$") 
+(dired-toggle-marks)
+(dired-do-delete)
+)
+
+(defun z/dired-open-in-external-app ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference."
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+
+(defun z/dired-open-in-desktop ()
+  "Show current file in desktop (OS's file manager)."
+  (interactive)
+  (cond
+   ((string-equal system-type "windows-nt")
+    (w32-shell-execute "explore" (replace-regexp-in-string "/" "\\" default-directory t t)))
+   ((string-equal system-type "darwin") (shell-command "open ."))
+   ((string-equal system-type "gnu/linux")
+    (let ((process-connection-type nil)) (start-process "" nil "xdg-open" "."))
+    ;; (shell-command "xdg-open .") ;; 2013-02-10 this sometimes froze emacs till the folder is closed. ⁖ with nautilus
+    ) ))
+
+(defun z/dired-get-size ()
+ (interactive)
+ (let ((files (dired-get-marked-files)))
+   (with-temp-buffer
+     (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+     (message "Size of all marked files: %s"
+              (progn 
+                (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                 (match-string 1))))))
+
+(defun  z/dired-beet-import ()
+    "Uses beets to import folder"
+    (interactive)
+    (shell-command (concat "beet import" (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-beet-import ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "beet import %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input))))
+
+(defun z/dired-beet-import-single ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "beet import -s %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-make-exec ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "chmod +x %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun  z/dired-shell-fb ()
+    "Uses fb to upload file at point."
+    (interactive)
+    (shell-command (concat "fb " (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-fb-upload ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "fb %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input)
+;;       (shell-command "notify-send fb uploaded")
+;; )))
+
+(defun  z/dired-shell-chmodx ()
+    "chmod"
+    (interactive)
+    (shell-command (concat "chmod +x " (dired-file-name-at-point)))
+    (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
+)
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+;; (defun z/dired-fb-upload ()
+;;   (interactive)
+;;   (sr-term)
+;;   (let* ((fmt "fb %s\n")
+;;          (file (sr-clex-file sr-selected-window))
+;;          (command (format fmt file)))
+;;     (if (not (equal sr-terminal-program "eshell"))
+;;         (term-send-raw-string command)
+;;       (insert command)
+;;       (eshell-send-input)
+;;       (shell-command "notify-send fb uploaded")
+;; )))
+
+(defun z/dired-mpd-add ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "mpc add file:/ %s\n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(defun z/dired-ssh-qnap ()
+  (interactive)
+  (sr-term)
+  (let* ((fmt "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid \n")
+         (file (sr-clex-file sr-selected-window))
+         (command (format fmt file)))
+    (if (not (equal sr-terminal-program "eshell"))
+        (term-send-raw-string command)
+      (insert command)
+      (eshell-send-input))))
+
+(fset 'z/dired-media-info
+   [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
+
+(defun z/dired-nmap-network ()
+"map all available IP on my netwrok"
+(interactive)
+(sr-term )
+(insert " nmap -sP 10.0.0.1/24" )
+(eshell-send-input)
+)
+
+(defun z/dired-sort-menu ()
+  "Sort dired dir listing in different ways.
+Prompt for a choice.
+URL `http://ergoemacs.org/emacs/dired_sort.html'
+Version 2015-07-30"
+  (interactive)
+  (let (ξsort-by ξarg)
+    (setq ξsort-by (ido-completing-read "Sort by:" '( "date" "size" "name" "dir")))
+    (cond
+     ((equal ξsort-by "name") (setq ξarg "-Al --si --time-style long-iso "))
+     ((equal ξsort-by "date") (setq ξarg "-Al --si --time-style long-iso -t"))
+     ((equal ξsort-by "size") (setq ξarg "-Al --si --time-style long-iso -S"))
+     ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
+     (t (error "logic error 09535" )))
+    (dired-sort-other ξarg )))
+
+;; ;; Use ido
+;; (require 'ido)
+;; (ido-mode t)
+
+;; ;; Make a hash table to hold the paths
+;; (setq my-target-dirs (make-hash-table :test 'equal))
+
+;; ;; Put some paths in the hash (sorry for Unix pathnames)
+;; (puthash "z" "/home/zeltak/ZH_tmp/" my-target-dirs)
+;; (puthash "target" "/home/zeltak/Downloads/" my-target-dirs)
+
+;; ;; A function to return all the keys from a hash.
+;; (defun get-keys-from-hash (hash)
+;;   (let ((keys ()))
+;;     (maphash (lambda (k v) (push k keys)) hash)
+;;     keys))
+
+;; ;; And the function to prompt for a directory by keyword that is looked
+;; ;; up in the hash-table and used to build the target path from the
+;; ;; value of the lookup.
+;; (defun my-dired-expand-copy ()
+;;   (interactive)
+;;   (let* ((my-hash my-target-dirs)
+;;          (files (dired-get-marked-files))
+;;          (keys (get-keys-from-hash my-hash)))
+;;     (mapc (lambda (file)
+;;             (copy-file file
+;;                        (concat
+;;                         (gethash
+;;                          (ido-completing-read
+;;                           (concat "copy " file " to: ") keys) my-hash)
+;;                         (file-name-nondirectory file))))
+;;           files)))
+
+
+
+
+;; (defun my-dired-expand-copy-2 ()
+;;   (interactive)
+;;   (let* ((my-hash my-target-dirs)
+;;          (files (dired-get-marked-files))
+;;          (keys (get-keys-from-hash my-hash)))
+;;     (mapc (lambda (file)
+;;             (let ((target (gethash
+;;                            (ido-completing-read
+;;                             (concat "copy " file " to: ") keys) my-hash)))
+;;               (if (y-or-n-p "Descend?")
+;;                   ;; Descend into subdirectories relative to target dir
+;;                   (let ((new-target (ido-read-directory-name "new dir: " target))) 
+;;                     (copy-file file (concat new-target
+;;                                             (file-name-nondirectory file)))
+;;                     (message (concat "File: " file " was copied to " new-target)))
+;;                 ;; Else copy to root of originally selected directory
+;;                 (copy-file file (concat target (file-name-nondirectory file)))
+;;                 (message (concat "File: " file " was copied to " target)))))
+;;           files)))
+
+(defun z/dired-backup-lgs ()
+"run laptop git script"
+(interactive)
+(sr-term )
+(insert "~/bin/lgs.sh" )
+(eshell-send-input)
+)
+
 ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
 
 ;; (defvar dired-compress-files-alist
@@ -6127,7 +6206,10 @@ scroll-step 1)
 
 mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 
+;;store org-mode links to messages
 (require 'org-mu4e)
+;;store link to message if in header view, not to header query
+(setq org-mu4e-link-query-in-headers-mode nil)
 
 ;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
@@ -6202,8 +6284,24 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
       ;; ... other cases  ...
       (t "~/Downloads")))) ;; everything else
 
+(defun mml-attach-file--go-to-eob (orig-fun &rest args)
+  "Go to the end of buffer before attaching files."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-max))
+      (apply orig-fun args))))
+
+(advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
+
 (add-to-list 'mu4e-bookmarks
   '("flag:flagged"       "flagged"     ?b))
+
+;; (setq mu4e-headers-fields
+;;     '( (:date          .  25)
+;;        (:flags         .   6)
+;;        (:from          .  22)
+;;        (:subject       .  nil)))
 
 (defgroup mu4e-faces nil 
   "Type faces (fonts) used in mu4e." 

@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- my-dired-expand-copy-2
- my-dired-expand-copy
- hydra-f7/body
- which-key-mode
- org-ref
- message-tab
- crossref-add-bibtex-entry
+ helm-insert-org-entity
+ org-open-line
+ open-line
+ whitespace-cleanup-region
+ whitespace-cleanup
+ helm-mode
+ dired-jump
 )
 
 ;; ----- smex-data -----
@@ -96,11 +96,11 @@
  (company-yasnippet . 3)
  (eww . 4)
  (avy-zap-to-char . 1)
- (dired-filter-mode . 1)
- (dired-narrow . 1)
- (dired-narrow-fuzzy . 1)
+ (dired-filter-mode . 2)
+ (dired-narrow . 5)
+ (dired-narrow-fuzzy . 2)
  (dired-narrow-regexp . 2)
- (dired-filter-by-name . 1)
+ (dired-filter-by-name . 2)
  (dired-filter-by-extension . 2)
  (dired-filter-by-omit . 1)
  (easy-mark . 2)
@@ -157,7 +157,17 @@
  (message-tab . 1)
  (org-ref . 1)
  (which-key-mode . 1)
- (hydra-f7/body . 1)
- (my-dired-expand-copy . 1)
- (my-dired-expand-copy-2 . 2)
+ (hydra-sr-chd/body . 4)
+ (dired-filter-pop . 1)
+ (chmod . 1)
+ (z/dired-shell-fb . 3)
+ (z/dired-beet-import . 1)
+ (z/dired-shell-chmodx . 2)
+ (dired-jump . 1)
+ (helm-mode . 2)
+ (whitespace-cleanup . 1)
+ (whitespace-cleanup-region . 1)
+ (open-line . 1)
+ (org-open-line . 2)
+ (helm-insert-org-entity . 4)
 )
