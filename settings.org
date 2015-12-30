@@ -626,6 +626,31 @@ $Note- is different inside screen or tmux$
 (defun my-pcomplete-capf ()
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 (add-hook 'org-mode-hook #'my-pcomplete-capf)
+** company-emoji
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package company-emoji
+ :ensure t
+ :config
+(require 'company-emoji)
+(add-to-list 'company-backends 'company-emoji)
+
+(defun --set-emoji-font (frame)
+  "Adjust the font settings of FRAME so Emacs can display emoji properly."
+  (if (eq system-type 'darwin)
+      ;; For NS/Cocoa
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+    ;; For Linux
+    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+;; For when Emacs is started in GUI mode:
+(--set-emoji-font nil)
+;; Hook for when a frame is created with emacsclient
+;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
+(add-hook 'after-make-frame-functions '--set-emoji-font)
+
+ )
+#+END_SRC 
 ** company-org-headings
 #+BEGIN_SRC emacs-lisp :results none
   ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -811,6 +836,18 @@ M-x diredful-add
 (setq-default tat/window-close-delay "2")
 (setq-default tat/window-height 15)
 #+END_SRC
+*** dired-fdclone
+https://github.com/knu/dired-fdclone.el
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-fdclone
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
+good package for zip and unzip functions
+
 ** drag stuff
 https://github.com/rejeep/drag-stuff.el
 
@@ -1142,6 +1179,16 @@ https://github.com/technomancy/find-file-in-project
 
  )
 #+END_SRC 
+** flx
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package flx
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
 
 ** Fill colum mode
 #+BEGIN_SRC emacs-lisp :results none
@@ -2007,6 +2054,16 @@ So:
 C-c C-n inside an R src block sends the line point is on to the R process.
 C-c C-c sends the region (or function or paragraph) to the process when point is in the body. 
 To execute `org-ctrl-c-ctrl-c' on the src block with the C-c C-c keying, it is necessary to move point to before or after the body.
+** TODO popup-imenu
+https://github.com/ancane/popup-imenu
+#+BEGIN_SRC emacs-lisp :results none
+(use-package popup-imenu
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
 
 ** TODO Rainbow mode
 http://julien.danjou.info/projects/emacs-packages#rainbow-mode
@@ -6446,17 +6503,12 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
  (setq org-capture-templates
           (quote ( 
 
+;;;;---------------------------------------------------------------------------
 ;;; email
-
-;;;; wanderlust
-
-;("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-;                              "* TODO %a\n%?Added: %U\nDEADLINE: %^t\n" :prepend t)
-
 
 
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
+                            "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
 
 
 
@@ -6465,6 +6517,7 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 )
 
 
+;;;;---------------------------------------------------------------------------
 
 ;;;;; food
 ;; define food group
@@ -6497,8 +6550,7 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 "* SHOP %^{Description} " )
 
 
-
-
+;;;;---------------------------------------------------------------------------
 ;;;; travel  simple template
   ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
   "*  %^{Description}   %^g 
@@ -6512,7 +6564,8 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
   "
    )
 
-  ;;;; Tech  Todos
+;;;;---------------------------------------------------------------------------
+;;;; Tech  Todos
 
   ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
    "*  %^{Description}" )
@@ -6571,11 +6624,14 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 
 ;;;;---------------------------------------------------------------------------
 
-
-
-("k" "Temp Links from the interwebs" entry
+("k" "bookmarks" entry
          (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
-         "%x  %?\nEntered on %U\n")
+         "* %(org-cliplink-capture)  %?\nEntered on %U\n")
+
+("K" "bookmarks" entry
+         (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
+         "* %x  %?\nEntered on %U\n")
+
 
 ;;;;---------------------------------------------------------------------------
 
@@ -6584,6 +6640,7 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
     %t
  \nLink: %a\n\n"  :immediate-finish t)
 
+;;;;---------------------------------------------------------------------------
 
 ("p" "papers")
 
@@ -6596,9 +6653,6 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
     :END:
 "
 "Capture Template for papers")
-
-
-
 
 
     )))
@@ -7508,7 +7562,7 @@ _q_:
  (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
  "
  "
- ("a" nil )
+ ("a" dired-mark-subdir-files "mark all" )
  ("c"  nil )
  ("d" nil)
  ("j"  nil )
@@ -7517,7 +7571,7 @@ _q_:
  ("u"  nil )
  ("v"  nil)
  ("f"   z/dired-shell-fb "fb" )
- ("x"  nil )
+ ("x"   z/dired-shell-chmodx "+x" )
  (";"  nil )
  ("q"  nil )
 
@@ -7673,7 +7727,7 @@ _q_:
    ;;       (shell-command "notify-send fb uploaded")
    ;; )))
  #+END_SRC
-**** TODO chmodx
+**** chmodx
  #+BEGIN_SRC emacs-lisp
  (defun  z/dired-shell-chmodx ()
      "chmod"
@@ -7682,8 +7736,6 @@ _q_:
      (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
  )
 
-  ;; (add-hook 'dired-mode-hook '(lambda () 
-  ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
  #+END_SRC
 
  #+RESULTS:

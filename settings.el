@@ -458,6 +458,28 @@
 
    )
 
+(use-package company-emoji
+ :ensure t
+ :config
+(require 'company-emoji)
+(add-to-list 'company-backends 'company-emoji)
+
+(defun --set-emoji-font (frame)
+  "Adjust the font settings of FRAME so Emacs can display emoji properly."
+  (if (eq system-type 'darwin)
+      ;; For NS/Cocoa
+      (set-fontset-font t 'symbol (font-spec :family "Apple Color Emoji") frame 'prepend)
+    ;; For Linux
+    (set-fontset-font t 'symbol (font-spec :family "Symbola") frame 'prepend)))
+
+;; For when Emacs is started in GUI mode:
+(--set-emoji-font nil)
+;; Hook for when a frame is created with emacsclient
+;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
+(add-hook 'after-make-frame-functions '--set-emoji-font)
+
+ )
+
 ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
 ;; (setq
 ;;  ;; align all annotations to the right tooltip border
@@ -589,6 +611,12 @@
 
 (setq-default tat/window-close-delay "2")
 (setq-default tat/window-height 15)
+
+(use-package dired-fdclone
+ :ensure t
+ :config
+ 
+ )
 
 (use-package drag-stuff
  :ensure t
@@ -841,6 +869,12 @@
  :ensure t
  :config
 
+ )
+
+(use-package flx
+ :ensure t
+ :config
+ 
  )
 
 (use-package fill-column-indicator
@@ -1393,6 +1427,12 @@
 (require 'poly-R) 
 (require 'poly-org)
 (add-to-list 'auto-mode-alist '("\\.org" . poly-org-mode))
+ )
+
+(use-package popup-imenu
+ :ensure t
+ :config
+ 
  )
 
 ;; (use-package rainbow-mode
@@ -4750,17 +4790,12 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-capture-templates
           (quote ( 
 
+;;;;---------------------------------------------------------------------------
 ;;; email
-
-;;;; wanderlust
-
-;("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-;                              "* TODO %a\n%?Added: %U\nDEADLINE: %^t\n" :prepend t)
-
 
 
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
+                            "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
 
 
 
@@ -4769,6 +4804,7 @@ With prefix argument, also display headlines without a TODO keyword."
 )
 
 
+;;;;---------------------------------------------------------------------------
 
 ;;;;; food
 ;; define food group
@@ -4801,8 +4837,7 @@ With prefix argument, also display headlines without a TODO keyword."
 "* SHOP %^{Description} " )
 
 
-
-
+;;;;---------------------------------------------------------------------------
 ;;;; travel  simple template
   ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
   "*  %^{Description}   %^g 
@@ -4816,7 +4851,8 @@ With prefix argument, also display headlines without a TODO keyword."
   "
    )
 
-  ;;;; Tech  Todos
+;;;;---------------------------------------------------------------------------
+;;;; Tech  Todos
 
   ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
    "*  %^{Description}" )
@@ -4875,9 +4911,14 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ;;;;---------------------------------------------------------------------------
 
-("l" "Temp Links from the interwebs" item
-         (file+headline "links.org" "Temporary Links")
-         "%?\nEntered on %U\n \%i\n %a")
+("k" "bookmarks" entry
+         (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
+         "* %(org-cliplink-capture)  %?\nEntered on %U\n")
+
+("K" "bookmarks" entry
+         (file+headline "/home/zeltak/org/files/web/wbookmarks.org" "bookmarks")
+         "* %x  %?\nEntered on %U\n")
+
 
 ;;;;---------------------------------------------------------------------------
 
@@ -4886,6 +4927,7 @@ With prefix argument, also display headlines without a TODO keyword."
     %t
  \nLink: %a\n\n"  :immediate-finish t)
 
+;;;;---------------------------------------------------------------------------
 
 ("p" "papers")
 
@@ -4898,9 +4940,6 @@ With prefix argument, also display headlines without a TODO keyword."
     :END:
 "
 "Capture Template for papers")
-
-
-
 
 
     )))
@@ -5603,7 +5642,7 @@ _q_:
 (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
 "
 "
-("a" nil )
+("a" dired-mark-subdir-files "mark all" )
 ("c"  nil )
 ("d" nil)
 ("j"  nil )
@@ -5612,7 +5651,7 @@ _q_:
 ("u"  nil )
 ("v"  nil)
 ("f"   z/dired-shell-fb "fb" )
-("x"  nil )
+("x"   z/dired-shell-chmodx "+x" )
 (";"  nil )
 ("q"  nil )
 
@@ -5741,9 +5780,6 @@ The app is chosen from your OS's preference."
     (shell-command (concat "chmod +x " (dired-file-name-at-point)))
     (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
 )
-
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
 
 ;; (defun z/dired-fb-upload ()
 ;;   (interactive)
