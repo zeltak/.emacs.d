@@ -306,7 +306,6 @@ https://github.com/tam17aki/ace-isearch
   ;;   '(ace-isearch-use-ace-jump 'printing-char)
   ;; )
 #+END_SRC
-
 ** ace link
 https://github.com/abo-abo/ace-link
 
@@ -344,6 +343,7 @@ https://github.com/syohex/emacs-anzu
 #+END_SRC 
 
 ** async
+
  $Note this is needed for org-download$
  #+BEGIN_SRC emacs-lisp :results none
 (use-package async
@@ -627,6 +627,10 @@ $Note- is different inside screen or tmux$
   (add-hook 'completion-at-point-functions 'pcomplete-completions-at-point nil t))
 (add-hook 'org-mode-hook #'my-pcomplete-capf)
 ** company-emoji
+https://github.com/dunn/company-emoji
+
+make sure to install ttf-ancient-fonts to get the fonts to show up
+
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package company-emoji
@@ -645,12 +649,15 @@ $Note- is different inside screen or tmux$
 
 ;; For when Emacs is started in GUI mode:
 (--set-emoji-font nil)
+
 ;; Hook for when a frame is created with emacsclient
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
 (add-hook 'after-make-frame-functions '--set-emoji-font)
-
  )
 #+END_SRC 
+You can add shortcode aliases by modifying company-emoji-aliases. Run M-x customize-variable [RET] company-emoji-aliases to bring up company-emoji’s customization pane, then add or remove aliases to your taste.
+
+
 ** company-org-headings
 #+BEGIN_SRC emacs-lisp :results none
   ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -670,27 +677,143 @@ $Note- is different inside screen or tmux$
 #+END_SRC
 
 
-** dired plugins
+** `dired plugins`
+*** dired hacks 
+**** dired-avfs
+    https://github.com/Fuco1/dired-hacks#dired-avfs
+
+ This extension therefore depends on the presence of avfsd on your system
+ on arch to get it working issue this (at startup in xinitrc or other startup scripts)
+
+ grep -q "^avfsd $HOME/.avfs " /proc/mounts || avfsd ~/.avfs -o auto_cache     
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package dired-avfs
+  :ensure t
+  :config
+  )
+ #+END_SRC 
+**** dired-filter
+ https://github.com/Fuco1/dired-hacks
+
+ Saved filters
+
+ call ~dired-filter-save-filters~ You will be prompted for a name under which this stack will be saved.
+ it will save the new value into your customize file.
+
+ You can delete saved filters with ~dired-filter-delete-saved-filters~
+
+ To use a saved filter, you can use either ~dired-filter-add-saved-filters~ or ~dired-filter-load-saved-filters  ~
+
+ The first pushes the saved filter on top of the currently active stack, the second clears current filter stack before loading the saved filter configuration.
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package dired-filter
+  :ensure t
+  :config
+  )
+ #+END_SRC 
+**** dired-rainbow
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package dired-rainbow
+  :ensure t
+  :config
+  (require 'dired-rainbow)
+
+ (defconst dired-audio-files-extensions
+   '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
+   "Dired Audio files extensions")
+ (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
+
+ (defconst dired-video-files-extensions
+     '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
+       "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
+     "Dired Video files extensions")
+ (dired-rainbow-define video "#006EFF" dired-video-files-extensions)
+
+ (defconst dired-pdf-files-extensions
+   '("pdf" "PDF")
+   "Dired pdf files extensions")
+ (dired-rainbow-define pdf "#FF0000" dired-pdf-files-extensions)
+
+
+ (defconst dired-org-files-extensions
+   '("org" "ORG")
+   "Dired org files extensions")
+ (dired-rainbow-define org "#FF00A2" dired-org-files-extensions)
+
+
+ (defconst dired-compressed-files-extensions
+   '("zip" "ZIP"  "tar.bz" "tar.gz" "7zip" "7ZIP" "tar" "TAR" "rar" "RAR")
+   "Dired compressed files extensions")
+ (dired-rainbow-define compressed "#B56A00" dired-compressed-files-extensions)
+
+ ; highlight executable files, but not directories
+ (dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
+
+  )
+ #+END_SRC 
+
+**** dired-narrow
+ https://github.com/Fuco1/dired-hacks
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package dired-narrow
+  :ensure t
+  :config
+;;(setq dired-narrow-exit-action 'find-file)
+;;(setq dired-narrow-exit-action 'dired-narrow-find-file)
+  )
+ #+END_SRC
+**** TODO dired-open
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-open
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC
+**** dired-subtree
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-subtree
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC
+**** dired-ranger
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-ranger
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
+
 *** dired-x
+
 http://www.gnu.org/software/emacs/manual/html_node/dired-x/Shell-Command-Guessing.html
 
 $Note-no need to install its a internal dired package$ 
 #+BEGIN_SRC emacs-lisp :results none
 (require 'dired-x)
+  (add-hook 'dired-load-hook
+            (function (lambda () (load "dired-x"))))
+
 (setq dired-guess-shell-alist-user
-      '(("\\.e?ps$" "gv" "xloadimage" "lpr")
-        ("\\.chm$" "xchm")
-        ("\\.rar$" "unrar x")
-        ("\\.ods\\'\\|\\.xlsx?\\'\\|\\.docx?\\'\\|\\.csv\\'" "libreoffice")
-        ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
-        ("\\.pdf$" "okular" "zathura")
-        ("\\.flv$" "mplayer")
-        ("\\.mov$" "mplayer")
-        ("\\.3gp$" "mplayer")
-        ("\\.png$" "feh")
-        ("\\.jpg$" "feh")
-        ("\\.JPG$" "feh")
-        ("\\.avi$" "mplayer")))
+      (list
+       (list "//.chm$" "xchm")
+       (list "//.rm$" "gmplayer")
+       (list "//.rmvb$" "gmplayer")
+       (list "//.avi$" "gmplayer")
+       (list "//.asf$" "gmplayer")
+       (list "//.wmv$" "gmplayer")
+       (list "//.htm$" "w3m")
+       (list "//.html$" "firefox")
+       (list "//.mpg$" "gmplayer")))
 #+END_SRC 
 
 *** dired sort
@@ -699,7 +822,27 @@ $Note-no need to install its a internal dired package$
  :ensure t
  :config
   )
+#+END_SRC
+*** dired-sort-menu
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-sort-menu
+ :ensure t
+ :config
+ 
+ )
 #+END_SRC 
+
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-sort-menu+
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
+
 *** dired+
 #+BEGIN_SRC emacs-lisp :results none
 (use-package dired+
@@ -708,7 +851,8 @@ $Note-no need to install its a internal dired package$
 (toggle-diredp-find-file-reuse-dir 1)
   )
 #+END_SRC 
-*** dired-details
+*** dired-details/+
+disabled since I didn't like the extra verbosity
 #+BEGIN_SRC emacs-lisp :results none
   ;; (use-package dired-details
   ;;  :ensure t
@@ -716,7 +860,6 @@ $Note-no need to install its a internal dired package$
   ;; (setq dired-details-hide-link-targets nil)
   ;;  )
 #+END_SRC 
-*** dired-details+
 
 #+BEGIN_SRC emacs-lisp :results none
   ;; (use-package dired-details+
@@ -726,42 +869,25 @@ $Note-no need to install its a internal dired package$
 #+END_SRC 
 
 *** peep dired
+https://github.com/asok/peep-dired
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package peep-dired
  :ensure t
  :config
- (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
- )
-#+END_SRC 
+ (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "mp3" "flac" "FLAC" "ogg"))
 
-
-*** dired-avfs
-#+BEGIN_SRC emacs-lisp :results none
-(use-package dired-avfs
- :ensure t
- :config
- )
-#+END_SRC 
-
-*** dired-filter
-https://github.com/Fuco1/dired-hacks
-#+BEGIN_SRC emacs-lisp :results none
-(use-package dired-filter
- :ensure t
- :config
- )
-#+END_SRC 
-*** dired-narrow
-https://github.com/Fuco1/dired-hacks
-#+BEGIN_SRC emacs-lisp :results none
-(use-package dired-narrow
- :ensure t
- :config
+;;If you want the dired buffers that were peeped to have the mode enabled set it to true.
+(setq peep-dired-enable-on-directories t)
  )
 #+END_SRC 
 
 *** dired-efap (rename file at point)
+https://github.com/juan-leon/dired-efap
+
+See also variable dired-efap-initial-filename-selection, if you want to control what part of the filename will be initially selected.
+
+Type M-x customize-group RET dired-efap if you want make changes to the default behavior.
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package dired-efap
@@ -771,62 +897,9 @@ https://github.com/Fuco1/dired-hacks
  )
 #+END_SRC 
 
-*** dired-rainbow
+*** dired tmtxt-async-tasks 
+https://truongtx.me/tmtxt-async-tasks.html
 
-#+BEGIN_SRC emacs-lisp :results none
-(use-package dired-rainbow
- :ensure t
- :config
- (require 'dired-rainbow)
-
-(defconst dired-audio-files-extensions
-  '("mp3" "MP3" "ogg" "OGG" "flac" "FLAC" "wav" "WAV")
-  "Dired Audio files extensions")
-(dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
-
-(defconst dired-video-files-extensions
-    '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
-      "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
-    "Dired Video files extensions")
-(dired-rainbow-define video "#006EFF" dired-video-files-extensions)
-
-(defconst dired-pdf-files-extensions
-  '("pdf" "PDF")
-  "Dired pdf files extensions")
-(dired-rainbow-define pdf "#FF0000" dired-pdf-files-extensions)
-
-
-(defconst dired-org-files-extensions
-  '("org" "ORG")
-  "Dired org files extensions")
-(dired-rainbow-define org "#FF00A2" dired-org-files-extensions)
-
-
-(defconst dired-compressed-files-extensions
-  '("zip" "ZIP"  "tar.bz" "tar.gz" "7zip" "7ZIP" "tar" "TAR" "rar" "RAR")
-  "Dired compressed files extensions")
-(dired-rainbow-define compressed "#B56A00" dired-compressed-files-extensions)
-
-; highlight executable files, but not directories
-(dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
-
- )
-#+END_SRC 
-*** TODO diredful
-https://github.com/thamer/diredful
-#+BEGIN_SRC emacs-lisp :results none
-(use-package diredful
- :ensure t
- :config
- (diredful-mode 1)
- )
-#+END_SRC 
-use 
-M-x diredful-add
-
-
-
-*** dired tmtxt-async-tasks and 
 #+BEGIN_SRC emacs-lisp :results none
  (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-async-tasks")
  (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-dired-async")
@@ -847,7 +920,86 @@ https://github.com/knu/dired-fdclone.el
 #+END_SRC 
 
 good package for zip and unzip functions
+*** bf-mode
 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package bf-mode
+ :ensure t
+ :config
+
+     ;; list up file extensions excluded from previes 
+     (setq bf-mode-except-exts
+           (append '("\\.dump$" "\\.data$" "\\.mp3$" "\\.lnk$")
+                   bf-mode-except-exts))
+
+     ;; list up file extensions which should be forced browsing
+      (setq bf-mode-force-browse-exts
+           (append '("\\.txt$" "\\.and.more...")
+                   bf-mode-force-browse-exts))
+
+     ;; browsable file size maximum
+     (setq bf-mode-browsing-size 4000) ;; 100 killo bytes
+
+     ;; browsing htmls with w3m (needs emacs-w3m.el and w3m)
+     (setq bf-mode-html-with-w3m t)
+
+     ;; browsing archive file (contents listing) verbosely
+     (setq bf-mode-archive-list-verbose t)
+
+     ;; browing directory (file listing) verbosely
+     (setq bf-mode-directory-list-verbose t)
+
+     ;; start bf-mode immediately after starting dired
+     (setq bf-mode-enable-at-starting-dired t)
+
+     ;; quitting dired directly from bf-mode
+     (setq bf-mode-directly-quit t)
+
+ )
+#+END_SRC
+*** runner
+https://github.com/thamer/runner
+#+BEGIN_SRC emacs-lisp :results none
+(use-package runner 
+ :ensure t
+ :config
+(require 'runner)
+
+ )
+#+END_SRC 
+
+While in dired mode, position point on any file or directory you wish to add a shell command to, then do:
+M-x runner-add-file (for file or directory names)
+M-x runner-add-extension (for file extension)
+A new buffer will be created allowing you to specify what commands to run
+
+You can also add, edit, or delete any specific pattern by doing:
+M-x runner-add-empty
+M-x runner-edit
+M-x runner-delete
+
+The command database will be saved to the file runner-init-file file:~/.emacs.d/runner-conf.el
+*** unify-opening 
+https://github.com/DamienCassou/unify-opening/blob/master/unify-opening.el
+#+BEGIN_SRC emacs-lisp :results none
+(use-package unify-opening 
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC
+*** begin/end
+https://github.com/DamienCassou/beginend
+
+in dired mode, M-< (resp. M->) go to first (resp. last) file line.
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package beginend
+ :ensure t
+ :config
+ (beginend-setup-all)
+ )
+#+END_SRC
 ** drag stuff
 https://github.com/rejeep/drag-stuff.el
 
@@ -1394,7 +1546,8 @@ Helm-bibtex assumes that the name of a PDF consists of the BibTeX key followed b
 
 ;;set default browser
 (setq helm-bibtex-browser-function
-  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
+  (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
+;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
 
  )
@@ -1595,6 +1748,18 @@ C-j will try to continue the completion, i.e. if the current candidate is a dire
 / will switch to completing the sub-directories of /, but if the candidate is a perfect match, it will act like C-j.
 ~ will switch to completing the sub-directories of ~/.
 C-n and C-p naturally select the next and the previous candidate.
+** org-grep
+https://github.com/pinard/org-grep
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package org-grep
+ :ensure t
+ :config
+
+ )
+#+END_SRC 
+
+
 ** org-caldav-sync
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -1744,8 +1909,7 @@ When you want to add multiple cursors not based on continuous lines, but based o
 First mark the word, then add more cursors.
 
 ** open with
-
-this kills sending email from mu4e so for now its off..need to seek alternatives?
+!this kills sending email from mu4e so for now its off..need to seek alternatives?!
 
 #+BEGIN_SRC emacs-lisp :results none
   ;; (use-package openwith 
@@ -2022,8 +2186,40 @@ https://github.com/politza/pdf-tools
   (use-package projectile
    :ensure t
    :config
-  (projectile-global-mode)
-  (setq projectile-completion-system 'grizzl)
+(projectile-global-mode)
+;; caching can significantly speedup file and directory listings, making it display instantly.
+(setq projectile-enable-caching t)
+
+
+;;(setq projectile-completion-system 'grizzl)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+;;(setq projectile-switch-project-action 'helm-projectile-find-file)
+(setq projectile-switch-project-action 'helm-projectile)
+
+(setq projectile-globally-ignored-directories
+      (append '(
+        ".git"
+        ".svn"
+        "out"
+        "repl"
+        "target"
+        "venv"
+        )
+          projectile-globally-ignored-directories))
+(setq projectile-globally-ignored-files
+      (append '(
+        ".DS_Store"
+        "*.gz"
+        "*.pyc"
+        "*.jar"
+        "*.tar.gz"
+        "*.tgz"
+        "*.zip"
+        )
+          projectile-globally-ignored-files))
+
+
    )
 #+END_SRC
 ** perspective
@@ -2446,6 +2642,7 @@ https://github.com/k-talo/volatile-highlights.el
 ** worf
 look here for more details on keybinds
 https://github.com/abo-abo/worf/blob/master/worf.el
+this package us
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package worf
@@ -2453,37 +2650,6 @@ https://github.com/abo-abo/worf/blob/master/worf.el
  :config
  )
 #+END_SRC 
-
-  (worf-define-key map "g" 'worf-goto)
-  ;; ——— hide/show ————————————————————————————
-  (worf-define-key map "v" 'worf-view)
-  ;; ——— files ————————————————————————————————
-  (worf-define-key map "F" 'worf-attach-visit)
-  (worf-define-key map "A" 'worf-attach)
-  (worf-define-key map "V" 'worf-visit)
-  ;; ——— refile ———————————————————————————————
-  (worf-define-key map "r" 'hydra-refile/body)
-  ;; ——— misc —————————————————————————————————
-  (worf-define-key map "L" 'worf-copy-heading-id)
-  (worf-define-key map "a" 'worf-add :break t)
-  (worf-define-key map "s" 'worf-save)
-  ;; ——— narrow/widen —————————————————————————
-  (worf-define-key map "N" 'org-narrow-to-subtree)
-  (worf-define-key map "W" 'widen)
-  ;; ——— verbs ————————————————————————————————
-  (worf-define-key map "c" 'worf-change-mode)
-  (worf-define-key map "d" 'worf-delete-mode)
-  (worf-define-key map "y" 'worf-yank-mode)
-  (worf-define-key map "C" 'worf-clock-mode)
-  (worf-define-key map "w" 'worf-keyword-mode)
-  (define-key map "m" 'worf-mark)
-  (worf-define-key map "q" 'worf-quit)
-  (worf-define-key map "n" 'worf-new-mode)
-  ;; ——— nouns ————————————————————————————————
-  (worf-define-key map "p" 'worf-property)
-  ;; ——— misc —————————————————————————————————
-  (worf-define-key map "t" 'worf-todo)
-  (worf-define-key map "u" 'undo)
 
 ** weechat.el
 
@@ -3089,6 +3255,15 @@ comment box."
   (insert "‣")
 )
 
+
+(defun z/insert-white-arrow ()
+  " insert   ▻  "
+  (interactive)
+  (insert "▻")
+)
+
+
+
 (defun z/insert-reveal-split ()
   "insert REVEAL split  "
   (interactive)
@@ -3099,7 +3274,6 @@ comment box."
 
 
 #+END_SRC
-
 
 *** kill line backwars 
 #+BEGIN_SRC emacs-lisp :results none
@@ -3221,21 +3395,18 @@ Version 2015-04-19"
 *** specific paren types enter
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
+(defun z/insert-black-lenticular-bracket-white () (interactive) (xah-insert-bracket-pair "〖" "〗") )
+(defun z/insert-black-lenticular-angle   () (interactive) (xah-insert-bracket-pair "«" "»") )
+(defun z/insert-black-lenticular-angle-bold   () (interactive) (xah-insert-bracket-pair "❰" "❱") )
+(defun z/insert-black-arrows   () (interactive) (xah-insert-bracket-pair "◀" "▶") )
+(defun z/insert-black-hands   () (interactive) (xah-insert-bracket-pair "☚" "☛") )
 #+END_SRC
-(defun xah-insert-single-angle-quote‹› () (interactive) (xah-insert-bracket-pair "‹" "›") )
-(defun xah-insert-double-angle-quote«» () (interactive) (xah-insert-bracket-pair "«" "»") )
-(defun xah-insert-double-curly-quote“” () (interactive) (xah-insert-bracket-pair "“" "”") )
-(defun xah-insert-curly-single-quote‘’ () (interactive) (xah-insert-bracket-pair "‘" "’") )
-(defun xah-insert-ascii-double-quote () (interactive) (xah-insert-bracket-pair "\"" "\"") )
-(defun xah-insert-ascii-single-quote () (interactive) (xah-insert-bracket-pair "'" "'") )
-(defun xah-insert-emacs-quote () (interactive) (xah-insert-bracket-pair "`" "'") )
 (defun xah-insert-corner-bracket「」 () (interactive) (xah-insert-bracket-pair "「" "」") )
 (defun xah-insert-white-corner-bracket『』 () (interactive) (xah-insert-bracket-pair "『" "』") )
 (defun xah-insert-angle-bracket〈〉 () (interactive) (xah-insert-bracket-pair "《" "》") )
 (defun xah-insert-double-angle-bracket《》 () (interactive) (xah-insert-bracket-pair "《" "》") )
-(defun xah-insert-white-lenticular-bracket〖〗 () (interactive) (xah-insert-bracket-pair "〖" "〗") )
-(defun xah-insert-black-lenticular-bracket【】 () (interactive) (xah-insert-bracket-pair "【" "】") )
-(defun xah-insert-tortoise-shell-bracket〔〕 () (interactive) (xah-insert-bracket-pair "〔" "〕") )
+
+
 *** open line above and below
 #+BEGIN_SRC emacs-lisp :results none
 (defun z/open-line-above ()
@@ -4441,6 +4612,7 @@ org-files and bookmarks"
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-t"))
+(global-unset-key (kbd "\\"))
 #+END_SRC
 ** global
 #+BEGIN_SRC emacs-lisp :results none
@@ -4456,6 +4628,7 @@ org-files and bookmarks"
 (key-chord-define-global "yy"     'z/copy-line)
 (global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-0") 'backward-kill-line)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4541,13 +4714,13 @@ quick switch other windw
 *** TODO hydra leader
 
 #+BEGIN_SRC emacs-lisp :results none
-
 (global-set-key
    (kbd "\\")
 (defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
 
 "
 LEADER:【C-A-W】-append to killring
+helm-projectile-recentf 【C-c p e】
 "
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>"   "empty")
@@ -4556,7 +4729,6 @@ LEADER:【C-A-W】-append to killring
 ("a" nil )
 ;("c"  company-complete )
 ("c"  nil )
-("d"  org-cut-subtree "org-cut"   )
 ("f"  link-hint-open-link "open link" )
 ("g"  hydra-goto/body )
 ("h"  z/org-move-top-collapse   "collapse tree")
@@ -4568,8 +4740,10 @@ LEADER:【C-A-W】-append to killring
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("b"  set-mark-command 4 "mark prev" )
-("o"   hydra-org-edit/body "org edit" :face 'hydra-face-green )
-("p"  org-paste-subtree  "org-paste")
+("o"  helm-projectile-find-file "proj ff【C-c p f】" )
+("p"  helm-projectile "proj【C-c p h】"  ) 
+("P"  helm-projectile-switch-project   "proj switch 【C-c p p】")
+("d"  helm-projectile-find-dir "proj dir 【 C-c p d 】"  )
 ("e"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
@@ -4584,7 +4758,12 @@ LEADER:【C-A-W】-append to killring
 ("q"  nil )
 
 ))
+
 #+END_SRC
+
+
+
+
 *** Emacs//toggles (f1)
 **** main toggles 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4605,7 +4784,8 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("i"  nil )
 ("j"  helm-colors "color pallete" )
 ("k" key-chord-mode "key-chord"  )
-("l" linum-mode  "linium")
+("l" lentic-mode  "lentic")
+("L" linum-mode  "linium")
 ("m" hydra-toggles-macro/body "macro menu")
 ("n" start-kbd-macro "start macro" :face 'hydra-face-green)
 ("o" end-kbd-macro "end macro" :face 'hydra-face-red)
@@ -4614,7 +4794,6 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("r" read-only-mode "read-only")
 ("s" scratch "scratch")
 ("S" create-scratch-buffer "New scratch" )
-("t" lentic-mode  "lentic")
 ("u" electric-pair-mode "electric-pair")
 ("v" view-mode "view-mode")
 ("w" whitespace-mode "whitespace")
@@ -4693,6 +4872,58 @@ _q_:
 ))
 #+END_SRC
 
+*** dired main (f2)
+#+BEGIN_SRC emacs-lisp :results none
+
+(global-set-key
+   (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
+
+"
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
+【(】 toggle dired details 
+【C/R/D/S】 copy/move(rename)/delete/symlink
+【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+【b】preview file 
+"
+("<f2>" dired "dired")
+("<f1>" sunrise "sunrise")
+("<f3>" dired-jump "dired jump")
+("a" nil )
+("b"  nil  )
+("c"  hydra-dired-configs/body "dir configs")
+("d"  nil )
+("e"  nil )
+("ff"  find-dired "find")
+("fl"  find-lisp-find-dired "lisp find")
+("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  dired-jump "jump")
+("k"  nil )
+("l"  nil )
+("m"  diredp-mark/unmark-extension "unmark extension")
+("n"  dired-narrow-regexp "narrow")
+("o"  hydra-dired-operation/body "dired operations")
+("p"  peep-dired "peep-dired")
+("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
+("s"  z/dired-get-size "size" )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"   hydra-dired-filter/body  "filter" )
+("q"  nil )
+
+))
+#+END_SRC
+
+
 *** search/spelling/editing  (F3)
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4705,14 +4936,8 @@ _q_:
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("<f2>" flyspell-auto-correct-previous-word "correct last word" )
-  ("<f4>" z/flyspell-goto-previous-error "correct last word" )
-  ("1" helm-swoop "Helm-swoop")
-  ("2" helm-multi-swoop "Helm-multi-swoop")
-  ("3" helm-multi-swoop-org "Helm-multi-swoop-org")
-  ("a" helm-apropos "Helm-Apropos")
-  ("b"  backward-kill-line  "kill backwards")
+  ("<f4>" z/flyspell-goto-previous-error "goto prev error" )
   ("c"  cycle-spacing "cycle spacing")
-  ("d"  helm-do-grep "helm-grep" )
   ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
   ("f"  helm-find-files "Helm FF" )
   ("g"  rgrep "Rgrep")
@@ -4721,25 +4946,16 @@ _q_:
   ("i"  ispell "ispell")
   ("j"  highlight-symbol-next  :color red  "HS Next")
   ("k"  highlight-symbol-prev  :color red  "HS Prev")
-  ("l"  helm-locate "helm-locate")
-  ("L"  counsel-locate "council-locate")
   ("m"  flyspell-check-next-highlighted-word "check next error")
   ("n"  flyspell-goto-next-error "check next error" )
-  ("o"  helm-occur "helm Occur")
   ("p"  forward-whitespace "next whitespace"  )
-  ("r"  hydra-rectangle/body "rectangle menu")
-  ("R"  anzu-query-replace-at-cursor "Replace@cursor")
-  ("s"  isearch-forward "isearch" )
-  ("S"  isearch-forward-symbol-at-point "isearch@point" )
+  ("r"  hydra-rectangle/body "rectangle menu (part of hydra)")
   ("t"  z/activate-word-column-region "mark current char" )
   ("u"  imenu "imenu")
   ("v"  z/helm-insert-org-entity "insert Unicode")
   ("w"  ispell-word "ispeel word" )
   ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
-  ("z"  counsel-recoll "recoll" )
-  ("9"  goto-last-change "goto last change" )
-  ("0"  goto-last-change-revrese "goto prev change" )
   ("q"  nil )
 
   ))
@@ -4848,7 +5064,7 @@ Bib:
 
 #+END_SRC
 
-*** ???? (F7)
+*** N/A (F7)
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -4928,8 +5144,8 @@ BKMK Menu
 【C-c -】 convert to dashed lines  【C-M-l  org table menu
 "
 
-("<f9>" helm-org-headlines "helm org headers")
-("<f10> w" worf-goto "worf org headers")
+("<f9>" worf-goto "worf org headers")
+("<f10 w>" helm-org-headlines "helm org headers")
 ("<f10> v" org-velocity-read  "org valocity")
 ("<f8>" z/org-insert-heading-link "link/refile")
 ("RET"  org-insert-todo-heading "org todo header//check list")
@@ -4953,14 +5169,12 @@ BKMK Menu
 ("ey" z/org-export-revel-html  "export reveal html ")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
-("h"  org-insert-heading "insert header")
+("h"  org-search-view "org search")
 ("i"  org-toggle-inline-images "toggle images")
 ("j"  nil )
 ("k"  nil )
 ("l"  hydra-org-links/body "link menu" :face 'hydra-face-green)
 ("m"  org-mark-subtree "mark subtree" )
-("n"  helm-swish-e "swish")
-("o"  org-occur "org-occur" )
 ("p"  org-insert-drawer "insert drawer" )
 ("r"  org-refile "refile")
 ("R"  z/prefix-org-refile "jump to header using refile")
@@ -4997,10 +5211,11 @@ link menus
      ("k" org-link-edit-backward-barf  "backward edit")
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
      ("d" org-id-create "just create Id")
+     ("p" org-cliplink "org-cliplick")
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
-     ("w" worf-copy-heading-id  "worf copy id ot killring" ) 
+     ("w" worf-copy-heading-id  "worf copy id of killring" ) 
      ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -5320,12 +5535,20 @@ comment _e_macs function  // copy-paste-comment-function _r_
 **** hydra-editing-insert (insert Unicode)
 add the org faces macros here (%Tip%, $Note$ etc)
 
+
 #+BEGIN_SRC emacs-lisp :results none
-(defhydra hydra-editing-insert (:color blue)
+(defhydra hydra-editing-insert  (:color blue  :columns 4 :hints nil)
   "unicode"
   ("k"     z/insert-black-lenticular-bracket  "【】") 
+  ("g"     z/insert-black-lenticular-bracket-white  "〖") 
+  ("c"     z/insert-black-lenticular-angle  "»") 
+  ("d"     z/insert-black-lenticular-angle-bold  "❱") 
+  ("e"     z/insert-black-arrows  "◀ ▶") 
+  ("f"     z/insert-black-hands  "☚ ☛") 
+  ("j"     z/insert-black-lenticular-angle  "«»") 
   ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
+  ("w"     z/insert-white-arrow  "▻") 
   ("o"     z/insert-EOL  " \\") 
   ("r"    z/insert-reveal-split  "reveal-split") 
   ("q" nil "cancel" nil)
@@ -5468,6 +5691,35 @@ pop-global-mark this will move you to prev position
 #+END_SRC
 
 
+*** search (C-S-s)
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+ (kbd "C-S-s")
+ (defhydra hydra-search  (:color blue :hint nil :columns 4) 
+   " "
+  ("1" helm-swoop "find word@point in document")
+  ("2" helm-multi-swoop  "find word@point in selected documents")
+  ("3" helm-multi-swoop-org "find word@point in org agenda")
+  ("a" helm-apropos "Helm-Apropos")
+  ("d" helm-do-grep "helm-grep" )
+  ("l" helm-locate "helm-locate")
+  ("L" counsel-locate "council-locate")
+  ("o" helm-occur "helm Occur")
+  ("O"  org-occur "org-occur" )
+  ("n"  helm-swish-e "swish")
+  ("r" rgrep "rgrep")
+  ("R" anzu-query-replace-at-cursor "Replace@cursor")
+  ("s" isearch-forward "isearch" )
+  ("S" isearch-forward-symbol-at-point "isearch@point" )
+  ("z" counsel-recoll "recoll" )
+  ("9" goto-last-change "goto last change" )
+  ("0" goto-last-change-revrese "goto prev change" )  
+
+
+   ("q" nil "cancel")))
+#+END_SRC
+
+
 * Macros
 ** org faces
 *** general
@@ -5590,7 +5842,8 @@ pop-global-mark this will move you to prev position
 *** set emacs browser
 #+BEGIN_SRC emacs-lisp :results none
 (setq browse-url-browser-function (quote browse-url-generic))
-(setq browse-url-generic-program "chromium")
+(setq browse-url-generic-program "firefox")
+;;(setq browse-url-generic-program "chromium")
 #+END_SRC
 ** Backup
 Auto-backup is triggered when you save a file - it will keep the old version of the file around, adding a ~ to its name. 
@@ -6254,9 +6507,6 @@ also the headers can be customized
 
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
 ("c" "tech" todo "TODO" 
          (
@@ -6287,6 +6537,7 @@ also the headers can be customized
                (tags "garden")
 )
 )
+
 
 
 
@@ -7278,6 +7529,7 @@ The variable dired-omit-extensions holds the list of all file extensions to hide
 #+END_SRC
 
 *** TODO wdired mode
+!check why mapping tab doesn't work and kills Emacs startup!
 functions to get tab etc to work 
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -7328,14 +7580,11 @@ functions to get tab etc to work
 
 #+END_SRC
 
+$Note-if you see starnge behivour this maybe a culprit$  
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (require 'wdired)
-
   ;; (eval-after-load 'wdired
   ;;   (progn
-  ;;     (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
-  ;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
-  ;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))) ;
+  ;;     (define-key wdired-mode-map (kbd "d") 'my-mark-file-name-forward))
 #+END_SRC
 *** archive files
 #+BEGIN_SRC emacs-lisp :results none
@@ -7362,7 +7611,7 @@ functions to get tab etc to work
       (dired-find-file))))
 #+END_SRC
 
-*** TODO keybinds
+*** keybinds
  #+BEGIN_SRC emacs-lisp :results none
  (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
  (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
@@ -7371,58 +7620,43 @@ functions to get tab etc to work
  (define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
  (define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
  (define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
+ (define-key dired-mode-map (kbd  "<f1>") 'dired-do-async-shell-command   )
+ (define-key dired-mode-map (kbd  "<f2>") 'dired-efap   )
+ (define-key dired-mode-map (kbd  "y") 'dired-ranger-copy )
  #+END_SRC
 
-*** dired hydra (f2)
-**** main
-#+BEGIN_SRC emacs-lisp :results none
+*** hydra (f2)
+**** TODO hydra leader
+ #+BEGIN_SRC emacs-lisp :results none
 
-(global-set-key
-   (kbd "<f2>")
-(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
-
-"
-【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
-【C/R/D/S】 copy/move(rename)/delete/symlink
-【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
-【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-
-"
-("<f2>" dired "dired")
-("<f1>" sunrise "sunrise")
-("<f3>" dired-jump "dired jump")
-("a" nil )
-("b"  nil  )
-("c"  hydra-dired-configs/body "dir configs")
-("d"  nil )
-("e"  nil )
-("ff"  find-dired "find")
-("fl"  find-lisp-find-dired "lisp find")
-("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  dired-jump "jump")
-("k"  nil )
-("l"  nil )
-("m"  diredp-mark/unmark-extension "unmark extension")
-("n"  dired-narrow-regexp "narrow")
-("o"  hydra-dired-operation/body "dired operations")
-("p"  peep-dired "peep-dired")
+ (global-set-key
+    (kbd "")
+ (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
+ "
+ for ranger-copies using 【C-u】 saves the content of the clip after the paste
+ "
+ ("a" dired-mark-subdir-files "mark all" )
+ ("c"  nil )
+ ("z" hydra-dired-filter/body "filter menu")
+ ("j"  nil )
+ ("o" z/dired-open-in-desktop "open with FM" )
+ ("s"  z/dired-sort-menu "sort menu" )
+ ("n"  z/dired-get-size "get size" )
+ ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
+ ("u"  nil )
+ ("y"  dired-ranger-copy "copy2clip")
+ ("p"  dired-ranger-paste "paste_F_clip")
+ ("d" dired-ranger-move "move2clip")
+ ("f"   z/dired-shell-fb "fb" )
+ ("e"   peep-dired "peep" )
+ ("x"   z/dired-shell-chmodx "+x" )
 ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
-("s"  z/dired-get-size "size" )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"   hydra-dired-filter/body  "filter" )
-("q"  nil )
+(";"  nil )
+ ("q"  nil )
 
-))
-#+END_SRC
+ ))
+ #+END_SRC
+
 
 **** dired filter 
  #+BEGIN_SRC emacs-lisp :results none
@@ -7434,6 +7668,9 @@ Filter by:
      ("r" dired-filter-by-regexp  "regex 【/r】" ) 
      ("f" dired-filter-by-file  "file 【/f】" ) 
      ("n" dired-filter-by-name  "name 【/n】" ) 
+     ("S" dired-filter-save-filters  "save filter" ) 
+     ("l" dired-filter-load-saved-filters  "load filter" ) 
+     ("L" dired-filter-add-saved-filters "add ontop filter" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -7460,6 +7697,7 @@ dired-omit-mode
 Filter by:
       "
      ("o" z/del-nonorg-files  "delete non org" ) 
+     ("i" 'z/dired-media-info  "media-info" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -7554,34 +7792,9 @@ _q_:
 
 ))
 #+END_SRC
-**** TODO hydra leader
- #+BEGIN_SRC emacs-lisp :results none
-
- (global-set-key
-    (kbd "")
- (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
- "
- "
- ("a" dired-mark-subdir-files "mark all" )
- ("c"  nil )
- ("d" nil)
- ("j"  nil )
- ("s"  z/dired-get-size "get size" )
- ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
- ("u"  nil )
- ("v"  nil)
- ("f"   z/dired-shell-fb "fb" )
- ("x"   z/dired-shell-chmodx "+x" )
- (";"  nil )
- ("q"  nil )
-
- ))
- #+END_SRC
-
-
-*** dired functions
+*** functions
 **** marks
-***** mark and delete  non org
+***** mark and delete non org
  #+BEGIN_SRC emacs-lisp :results none
  (defun z/del-nonorg-files ()
  (interactive)
@@ -7620,7 +7833,7 @@ _q_:
          (mapc
           (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
  #+END_SRC
-**** open in WM/DE file manafer
+**** open in WM/DE file manager
  #+BEGIN_SRC emacs-lisp :results none
  (defun z/dired-open-in-desktop ()
    "Show current file in desktop (OS's file manager)."
@@ -7654,14 +7867,9 @@ _q_:
      "Uses beets to import folder"
      (interactive)
      (shell-command (concat "beet import" (dired-file-name-at-point))))
-
-  ;; (add-hook 'dired-mode-hook '(lambda () 
-  ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
-
-
  #+END_SRC
 
- old SR
+old SR
  #+BEGIN_SRC emacs-lisp
    ;; (defun z/dired-beet-import ()
    ;;   (interactive)
@@ -7681,19 +7889,6 @@ _q_:
    (interactive)
    (sr-term)
    (let* ((fmt "beet import -s %s\n")
-          (file (sr-clex-file sr-selected-window))
-          (command (format fmt file)))
-     (if (not (equal sr-terminal-program "eshell"))
-         (term-send-raw-string command)
-       (insert command)
-       (eshell-send-input))))
- #+END_SRC
-**** TODO make executable
- #+BEGIN_SRC emacs-lisp :results none
- (defun z/dired-make-exec ()
-   (interactive)
-   (sr-term)
-   (let* ((fmt "chmod +x %s\n")
           (file (sr-clex-file sr-selected-window))
           (command (format fmt file)))
      (if (not (equal sr-terminal-program "eshell"))
@@ -7729,7 +7924,7 @@ _q_:
  #+END_SRC
 **** chmodx
  #+BEGIN_SRC emacs-lisp
- (defun  z/dired-shell-chmodx ()
+ (defun z/dired-shell-chmodx ()
      "chmod"
      (interactive)
      (shell-command (concat "chmod +x " (dired-file-name-at-point)))
@@ -7738,8 +7933,6 @@ _q_:
 
  #+END_SRC
 
- #+RESULTS:
- : z/dired-shell-chmodx
 
  old SR
  #+BEGIN_SRC emacs-lisp :results none
@@ -7757,47 +7950,15 @@ _q_:
    ;; )))
  #+END_SRC
 
-**** TODO mpc add
- #+BEGIN_SRC emacs-lisp :results none
- (defun z/dired-mpd-add ()
-   (interactive)
-   (sr-term)
-   (let* ((fmt "mpc add file:/ %s\n")
-          (file (sr-clex-file sr-selected-window))
-          (command (format fmt file)))
-     (if (not (equal sr-terminal-program "eshell"))
-         (term-send-raw-string command)
-       (insert command)
-       (eshell-send-input))))
- #+END_SRC
-
-
-
-
-
-
-
 **** sshfs qnap
- #+BEGIN_SRC emacs-lisp :results none
+ #+BEGIN_SRC emacs-lisp
  (defun z/dired-ssh-qnap ()
-   (interactive)
-   (sr-term)
-   (let* ((fmt "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid \n")
-          (file (sr-clex-file sr-selected-window))
-          (command (format fmt file)))
-     (if (not (equal sr-terminal-program "eshell"))
-         (term-send-raw-string command)
-       (insert command)
-       (eshell-send-input))))
+     "chmod"
+     (interactive)
+     (shell-command (concat "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid " (dired-file-name-at-point)))
+     (message (propertize "connected to ssh" 'face 'font-lock-warning-face))
+ )
  #+END_SRC
-
-
-
-
-
-
-
-
 **** mediainfo
  #+BEGIN_SRC emacs-lisp :results none
  (fset 'z/dired-media-info
@@ -7832,6 +7993,72 @@ _q_:
      (dired-sort-other ξarg )))
  #+END_SRC
 **** copy to specific folders
+http://stackoverflow.com/questions/29809698/emacs-dired-using-predefined-variable
+
+#+BEGIN_SRC emacs-lisp  :results none
+;; Use ido
+(require 'ido)
+
+;; Make a hash table to hold the paths
+(setq my-target-dirs (make-hash-table :test 'equal))
+
+;; Put some paths in the hash (sorry for Unix pathnames)
+(puthash "home" "/home/zeltak/" my-target-dirs)
+(puthash "AUR" "/home/zeltak/AUR/" my-target-dirs)
+(puthash "downloads" "/home/zeltak/Downloads/ " my-target-dirs)
+(puthash "ZH_tmp" "/home/zeltak/ZH_tmp/" my-target-dirs)
+(puthash "music" "/home/zeltak/music/" my-target-dirs)
+(puthash "bin" "/home/zeltak/bin/" my-target-dirs)
+(puthash "BK" "/home/zeltak/BK/" my-target-dirs)
+(puthash "org" "/home/zeltak/org/" my-target-dirs)
+(puthash "mreview" "/home/zeltak/mreview/" my-target-dirs)
+(puthash "Sync" "/home/zeltak/Sync/" my-target-dirs)
+(puthash "Uni" "/home/zeltak/Uni/" my-target-dirs)
+(puthash "scripts" "/home/zeltak/scripts" my-target-dirs)
+(puthash "dotfiles" "/home/zeltak/dotfiles/" my-target-dirs)
+(puthash "config" "/home/zeltak/.config/" my-target-dirs)
+
+
+;; A function to return all the keys from a hash.
+(defun get-keys-from-hash (hash)
+  (let ((keys ()))
+    (maphash (lambda (k v) (push k keys)) hash)
+    keys))
+
+;; And the function to prompt for a directory by keyword that is looked
+;; up in the hash-table and used to build the target path from the
+;; value of the lookup.
+(defun my-dired-expand-copy ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (copy-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "copy " file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
+
+
+(defun my-dired-expand-move ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (rename-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "move" file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
+#+END_SRC
+
+
  #+BEGIN_SRC emacs-lisp
    ;; ;; Use ido
    ;; (require 'ido)
@@ -7890,21 +8117,6 @@ _q_:
    ;;                 (message (concat "File: " file " was copied to " target)))))
    ;;           files)))
  #+END_SRC
-**** lgs
- #+BEGIN_SRC emacs-lisp :results none
- (defun z/dired-backup-lgs ()
- "run laptop git script"
- (interactive)
- (sr-term )
- (insert "~/bin/lgs.sh" )
- (eshell-send-input)
- )
- #+END_SRC
-
-***** TODO additional commands
- cuetag.sh {f}  *.flac
- shnsplit -f {F}  -o flac {oF}
-
 *** archive files
 **** TODO compress to tar in dired
 this will only work on Emacs 25..keep track!

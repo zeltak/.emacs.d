@@ -474,10 +474,10 @@
 
 ;; For when Emacs is started in GUI mode:
 (--set-emoji-font nil)
+
 ;; Hook for when a frame is created with emacsclient
 ;; see https://www.gnu.org/software/emacs/manual/html_node/elisp/Creating-Frames.html
 (add-hook 'after-make-frame-functions '--set-emoji-font)
-
  )
 
 ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -495,50 +495,6 @@
 ;; ;;                     company-files
 ;; ;;                     )))))
 
-(require 'dired-x)
-(setq dired-guess-shell-alist-user
-      '(("\\.e?ps$" "gv" "xloadimage" "lpr")
-        ("\\.chm$" "xchm")
-        ("\\.rar$" "unrar x")
-        ("\\.ods\\'\\|\\.xlsx?\\'\\|\\.docx?\\'\\|\\.csv\\'" "libreoffice")
-        ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
-        ("\\.pdf$" "okular" "zathura")
-        ("\\.flv$" "mplayer")
-        ("\\.mov$" "mplayer")
-        ("\\.3gp$" "mplayer")
-        ("\\.png$" "feh")
-        ("\\.jpg$" "feh")
-        ("\\.JPG$" "feh")
-        ("\\.avi$" "mplayer")))
-
-(use-package dired-sort
- :ensure t
- :config
-  )
-
-(use-package dired+
- :ensure t
- :config
-(toggle-diredp-find-file-reuse-dir 1)
-  )
-
-;; (use-package dired-details
-;;  :ensure t
-;;  :config
-;; (setq dired-details-hide-link-targets nil)
-;;  )
-
-;; (use-package dired-details+
-;;  :ensure t
-;;  :config
-;;  )
-
-(use-package peep-dired
- :ensure t
- :config
- (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
- )
-
 (use-package dired-avfs
  :ensure t
  :config
@@ -547,17 +503,6 @@
 (use-package dired-filter
  :ensure t
  :config
- )
-
-(use-package dired-narrow
- :ensure t
- :config
- )
-
-(use-package dired-efap
- :ensure t
- :config
- 
  )
 
 (use-package dired-rainbow
@@ -598,10 +543,94 @@
 
  )
 
-(use-package diredful
+(use-package dired-narrow
+  :ensure t
+  :config
+;;(setq dired-narrow-exit-action 'find-file)
+;;(setq dired-narrow-exit-action 'dired-narrow-find-file)
+  )
+
+(use-package dired-open
  :ensure t
  :config
- (diredful-mode 1)
+ 
+ )
+
+(use-package dired-subtree
+ :ensure t
+ :config
+ 
+ )
+
+(use-package dired-ranger
+ :ensure t
+ :config
+ 
+ )
+
+(require 'dired-x)
+  (add-hook 'dired-load-hook
+            (function (lambda () (load "dired-x"))))
+
+(setq dired-guess-shell-alist-user
+      (list
+       (list "//.chm$" "xchm")
+       (list "//.rm$" "gmplayer")
+       (list "//.rmvb$" "gmplayer")
+       (list "//.avi$" "gmplayer")
+       (list "//.asf$" "gmplayer")
+       (list "//.wmv$" "gmplayer")
+       (list "//.htm$" "w3m")
+       (list "//.html$" "firefox")
+       (list "//.mpg$" "gmplayer")))
+
+(use-package dired-sort
+ :ensure t
+ :config
+  )
+
+(use-package dired-sort-menu
+ :ensure t
+ :config
+ 
+ )
+
+(use-package dired-sort-menu+
+ :ensure t
+ :config
+ 
+ )
+
+(use-package dired+
+ :ensure t
+ :config
+(toggle-diredp-find-file-reuse-dir 1)
+  )
+
+;; (use-package dired-details
+;;  :ensure t
+;;  :config
+;; (setq dired-details-hide-link-targets nil)
+;;  )
+
+;; (use-package dired-details+
+;;  :ensure t
+;;  :config
+;;  )
+
+(use-package peep-dired
+ :ensure t
+ :config
+ (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "mp3" "flac" "FLAC" "ogg"))
+
+;;If you want the dired buffers that were peeped to have the mode enabled set it to true.
+(setq peep-dired-enable-on-directories t)
+ )
+
+(use-package dired-efap
+ :ensure t
+ :config
+ 
  )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-async-tasks")
@@ -616,6 +645,59 @@
  :ensure t
  :config
  
+ )
+
+(use-package bf-mode
+ :ensure t
+ :config
+
+     ;; list up file extensions excluded from previes 
+     (setq bf-mode-except-exts
+           (append '("\\.dump$" "\\.data$" "\\.mp3$" "\\.lnk$")
+                   bf-mode-except-exts))
+
+     ;; list up file extensions which should be forced browsing
+      (setq bf-mode-force-browse-exts
+           (append '("\\.txt$" "\\.and.more...")
+                   bf-mode-force-browse-exts))
+
+     ;; browsable file size maximum
+     (setq bf-mode-browsing-size 4000) ;; 100 killo bytes
+
+     ;; browsing htmls with w3m (needs emacs-w3m.el and w3m)
+     (setq bf-mode-html-with-w3m t)
+
+     ;; browsing archive file (contents listing) verbosely
+     (setq bf-mode-archive-list-verbose t)
+
+     ;; browing directory (file listing) verbosely
+     (setq bf-mode-directory-list-verbose t)
+
+     ;; start bf-mode immediately after starting dired
+     (setq bf-mode-enable-at-starting-dired t)
+
+     ;; quitting dired directly from bf-mode
+     (setq bf-mode-directly-quit t)
+
+ )
+
+(use-package runner 
+ :ensure t
+ :config
+(require 'runner)
+
+ )
+
+(use-package unify-opening 
+ :ensure t
+ :config
+ 
+ )
+
+(use-package beginend
+ :ensure t
+ :config
+ (beginend-setup-all)
  )
 
 (use-package drag-stuff
@@ -1003,7 +1085,8 @@
 
 ;;set default browser
 (setq helm-bibtex-browser-function
-  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
+  (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
+;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
 
 
  )
@@ -1120,6 +1203,12 @@
    ((t :background "#ffbbff" :weight bold))))
 
 (setq ivy-count-format "(%d/%d) ")
+
+(use-package org-grep
+ :ensure t
+ :config
+
+ )
 
 (use-package  org-caldav
  :ensure t
@@ -1409,11 +1498,43 @@
 ;;   )
 
 (use-package projectile
- :ensure t
- :config
+   :ensure t
+   :config
 (projectile-global-mode)
-(setq projectile-completion-system 'grizzl)
- )
+;; caching can significantly speedup file and directory listings, making it display instantly.
+(setq projectile-enable-caching t)
+
+
+;;(setq projectile-completion-system 'grizzl)
+(setq projectile-completion-system 'helm)
+(helm-projectile-on)
+;;(setq projectile-switch-project-action 'helm-projectile-find-file)
+(setq projectile-switch-project-action 'helm-projectile)
+
+(setq projectile-globally-ignored-directories
+      (append '(
+        ".git"
+        ".svn"
+        "out"
+        "repl"
+        "target"
+        "venv"
+        )
+          projectile-globally-ignored-directories))
+(setq projectile-globally-ignored-files
+      (append '(
+        ".DS_Store"
+        "*.gz"
+        "*.pyc"
+        "*.jar"
+        "*.tar.gz"
+        "*.tgz"
+        "*.zip"
+        )
+          projectile-globally-ignored-files))
+
+
+   )
 
 (use-package perspective
  :ensure t
@@ -2145,6 +2266,15 @@ comment box."
   (insert "‣")
 )
 
+
+(defun z/insert-white-arrow ()
+  " insert   ▻  "
+  (interactive)
+  (insert "▻")
+)
+
+
+
 (defun z/insert-reveal-split ()
   "insert REVEAL split  "
   (interactive)
@@ -2260,6 +2390,11 @@ Version 2015-04-19"
             (goto-char (+ ξp2 (length φleft-bracket)))))))))
 
 (defun z/insert-black-lenticular-bracket () (interactive) (xah-insert-bracket-pair "【" "】") )
+(defun z/insert-black-lenticular-bracket-white () (interactive) (xah-insert-bracket-pair "〖" "〗") )
+(defun z/insert-black-lenticular-angle   () (interactive) (xah-insert-bracket-pair "«" "»") )
+(defun z/insert-black-lenticular-angle-bold   () (interactive) (xah-insert-bracket-pair "❰" "❱") )
+(defun z/insert-black-arrows   () (interactive) (xah-insert-bracket-pair "◀" "▶") )
+(defun z/insert-black-hands   () (interactive) (xah-insert-bracket-pair "☚" "☛") )
 
 (defun z/open-line-above ()
   "Open a newline above the current point."
@@ -3222,6 +3357,7 @@ org-files and bookmarks"
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-b"))
 (global-unset-key (kbd "C-M-t"))
+(global-unset-key (kbd "\\"))
 
 (global-set-key (kbd "M-x") 'counsel-M-x)
 
@@ -3231,6 +3367,7 @@ org-files and bookmarks"
 (key-chord-define-global "yy"     'z/copy-line)
 (global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
+(global-set-key (kbd "C-0") 'backward-kill-line)
 
 ;;(global-set-key (kbd "C-<tab>") 'dabbrev-expand)
 ;;(define-key minibuffer-local-map (kbd "C-<tab>") 'dabbrev-expand)
@@ -3288,6 +3425,7 @@ org-files and bookmarks"
 
 "
 LEADER:【C-A-W】-append to killring
+helm-projectile-recentf 【C-c p e】
 "
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>"   "empty")
@@ -3296,7 +3434,6 @@ LEADER:【C-A-W】-append to killring
 ("a" nil )
 ;("c"  company-complete )
 ("c"  nil )
-("d"  org-cut-subtree "org-cut"   )
 ("f"  link-hint-open-link "open link" )
 ("g"  hydra-goto/body )
 ("h"  z/org-move-top-collapse   "collapse tree")
@@ -3308,8 +3445,10 @@ LEADER:【C-A-W】-append to killring
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
 ("b"  set-mark-command 4 "mark prev" )
-("o"   hydra-org-edit/body "org edit" :face 'hydra-face-green )
-("p"  org-paste-subtree  "org-paste")
+("o"  helm-projectile-find-file "proj ff【C-c p f】" )
+("p"  helm-projectile "proj【C-c p h】"  ) 
+("P"  helm-projectile-switch-project   "proj switch 【C-c p p】")
+("d"  helm-projectile-find-dir "proj dir 【 C-c p d 】"  )
 ("e"  duplicate-thing  "duplicate")
 ("r"  repeat "repeat last command" )
 ("s"  nil )
@@ -3342,7 +3481,8 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("i"  nil )
 ("j"  helm-colors "color pallete" )
 ("k" key-chord-mode "key-chord"  )
-("l" linum-mode  "linium")
+("l" lentic-mode  "lentic")
+("L" linum-mode  "linium")
 ("m" hydra-toggles-macro/body "macro menu")
 ("n" start-kbd-macro "start macro" :face 'hydra-face-green)
 ("o" end-kbd-macro "end macro" :face 'hydra-face-red)
@@ -3351,7 +3491,6 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("r" read-only-mode "read-only")
 ("s" scratch "scratch")
 ("S" create-scratch-buffer "New scratch" )
-("t" lentic-mode  "lentic")
 ("u" electric-pair-mode "electric-pair")
 ("v" view-mode "view-mode")
 ("w" whitespace-mode "whitespace")
@@ -3422,6 +3561,53 @@ _q_:
 ))
 
 (global-set-key
+   (kbd "<f2>")
+(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
+
+"
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
+【(】 toggle dired details 
+【C/R/D/S】 copy/move(rename)/delete/symlink
+【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+【b】preview file 
+"
+("<f2>" dired "dired")
+("<f1>" sunrise "sunrise")
+("<f3>" dired-jump "dired jump")
+("a" nil )
+("b"  nil  )
+("c"  hydra-dired-configs/body "dir configs")
+("d"  nil )
+("e"  nil )
+("ff"  find-dired "find")
+("fl"  find-lisp-find-dired "lisp find")
+("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
+("g"  nil )
+("h"  nil )
+("i"  nil )
+("j"  dired-jump "jump")
+("k"  nil )
+("l"  nil )
+("m"  diredp-mark/unmark-extension "unmark extension")
+("n"  dired-narrow-regexp "narrow")
+("o"  hydra-dired-operation/body "dired operations")
+("p"  peep-dired "peep-dired")
+("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
+("s"  z/dired-get-size "size" )
+("t"  nil )
+("u"  nil )
+("v"  nil)
+("w"  nil )
+("x"  nil )
+("y"  nil )
+("z"   hydra-dired-filter/body  "filter" )
+("q"  nil )
+
+))
+
+(global-set-key
   (kbd "<f3>")
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
 
@@ -3430,14 +3616,8 @@ _q_:
  "
   ("<f3>" endless/ispell-word-then-abbrev "check and add" )
   ("<f2>" flyspell-auto-correct-previous-word "correct last word" )
-  ("<f4>" z/flyspell-goto-previous-error "correct last word" )
-  ("1" helm-swoop "Helm-swoop")
-  ("2" helm-multi-swoop "Helm-multi-swoop")
-  ("3" helm-multi-swoop-org "Helm-multi-swoop-org")
-  ("a" helm-apropos "Helm-Apropos")
-  ("b"  backward-kill-line  "kill backwards")
+  ("<f4>" z/flyspell-goto-previous-error "goto prev error" )
   ("c"  cycle-spacing "cycle spacing")
-  ("d"  helm-do-grep "helm-grep" )
   ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
   ("f"  helm-find-files "Helm FF" )
   ("g"  rgrep "Rgrep")
@@ -3446,25 +3626,16 @@ _q_:
   ("i"  ispell "ispell")
   ("j"  highlight-symbol-next  :color red  "HS Next")
   ("k"  highlight-symbol-prev  :color red  "HS Prev")
-  ("l"  helm-locate "helm-locate")
-  ("L"  counsel-locate "council-locate")
   ("m"  flyspell-check-next-highlighted-word "check next error")
   ("n"  flyspell-goto-next-error "check next error" )
-  ("o"  helm-occur "helm Occur")
   ("p"  forward-whitespace "next whitespace"  )
-  ("r"  hydra-rectangle/body "rectangle menu")
-  ("R"  anzu-query-replace-at-cursor "Replace@cursor")
-  ("s"  isearch-forward "isearch" )
-  ("S"  isearch-forward-symbol-at-point "isearch@point" )
+  ("r"  hydra-rectangle/body "rectangle menu (part of hydra)")
   ("t"  z/activate-word-column-region "mark current char" )
   ("u"  imenu "imenu")
   ("v"  z/helm-insert-org-entity "insert Unicode")
   ("w"  ispell-word "ispeel word" )
   ("x"  xah-cycle-hyphen-underscore-space "cycle-underscore" )
   ("y"  nil )
-  ("z"  counsel-recoll "recoll" )
-  ("9"  goto-last-change "goto last change" )
-  ("0"  goto-last-change-revrese "goto prev change" )
   ("q"  nil )
 
   ))
@@ -3612,8 +3783,8 @@ BKMK Menu
 【C-c -】 convert to dashed lines  【C-M-l  org table menu
 "
 
-("<f9>" helm-org-headlines "helm org headers")
-("<f10> w" worf-goto "worf org headers")
+("<f9>" worf-goto "worf org headers")
+("<f10 w>" helm-org-headlines "helm org headers")
 ("<f10> v" org-velocity-read  "org valocity")
 ("<f8>" z/org-insert-heading-link "link/refile")
 ("RET"  org-insert-todo-heading "org todo header//check list")
@@ -3637,14 +3808,12 @@ BKMK Menu
 ("ey" z/org-export-revel-html  "export reveal html ")
 ("f"  hydra-org-food/body "food menu"  :face 'hydra-face-orange )
 ("g"  org-set-tags "tags dialog")
-("h"  org-insert-heading "insert header")
+("h"  org-search-view "org search")
 ("i"  org-toggle-inline-images "toggle images")
 ("j"  nil )
 ("k"  nil )
 ("l"  hydra-org-links/body "link menu" :face 'hydra-face-green)
 ("m"  org-mark-subtree "mark subtree" )
-("n"  helm-swish-e "swish")
-("o"  org-occur "org-occur" )
 ("p"  org-insert-drawer "insert drawer" )
 ("r"  org-refile "refile")
 ("R"  z/prefix-org-refile "jump to header using refile")
@@ -3678,10 +3847,11 @@ link menus
      ("k" org-link-edit-backward-barf  "backward edit")
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
      ("d" org-id-create "just create Id")
+     ("p" org-cliplink "org-cliplick")
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
-     ("w" worf-copy-heading-id  "worf copy id ot killring" ) 
+     ("w" worf-copy-heading-id  "worf copy id of killring" ) 
      ("q" nil "cancel" nil)
  )
 
@@ -3912,11 +4082,18 @@ comment _e_macs function  // copy-paste-comment-function _r_
      ("q" nil "cancel" nil)
 )
 
-(defhydra hydra-editing-insert (:color blue)
+(defhydra hydra-editing-insert  (:color blue  :columns 4 :hints nil)
   "unicode"
   ("k"     z/insert-black-lenticular-bracket  "【】") 
+  ("g"     z/insert-black-lenticular-bracket-white  "〖") 
+  ("c"     z/insert-black-lenticular-angle  "»") 
+  ("d"     z/insert-black-lenticular-angle-bold  "❱") 
+  ("e"     z/insert-black-arrows  "◀ ▶") 
+  ("f"     z/insert-black-hands  "☚ ☛") 
+  ("j"     z/insert-black-lenticular-angle  "«»") 
   ("b"     z/insert-bashscript  "insert basg #!") 
   ("p"     z/insert-play  " ‣") 
+  ("w"     z/insert-white-arrow  "▻") 
   ("o"     z/insert-EOL  " \\") 
   ("r"    z/insert-reveal-split  "reveal-split") 
   ("q" nil "cancel" nil)
@@ -4036,6 +4213,31 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ;; exit points
   ("q"        hydra-vi/post                 "cancel" :color blue))
 
+(global-set-key
+ (kbd "C-S-s")
+ (defhydra hydra-search  (:color blue :hint nil :columns 4) 
+   " "
+  ("1" helm-swoop "find word@point in document")
+  ("2" helm-multi-swoop  "find word@point in selected documents")
+  ("3" helm-multi-swoop-org "find word@point in org agenda")
+  ("a" helm-apropos "Helm-Apropos")
+  ("d" helm-do-grep "helm-grep" )
+  ("l" helm-locate "helm-locate")
+  ("L" counsel-locate "council-locate")
+  ("o" helm-occur "helm Occur")
+  ("O"  org-occur "org-occur" )
+  ("n"  helm-swish-e "swish")
+  ("r" rgrep "rgrep")
+  ("R" anzu-query-replace-at-cursor "Replace@cursor")
+  ("s" isearch-forward "isearch" )
+  ("S" isearch-forward-symbol-at-point "isearch@point" )
+  ("z" counsel-recoll "recoll" )
+  ("9" goto-last-change "goto last change" )
+  ("0" goto-last-change-revrese "goto prev change" )  
+
+
+   ("q" nil "cancel")))
+
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -4132,7 +4334,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
    [?- ?x ?y ])
 
 (setq browse-url-browser-function (quote browse-url-generic))
-(setq browse-url-generic-program "chromium")
+(setq browse-url-generic-program "firefox")
+;;(setq browse-url-generic-program "chromium")
 
 (setq backup-directory-alist
       `((".*" . ,temporary-file-directory)))
@@ -4622,9 +4825,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 
 
-
-
-
 ;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
 ("c" "tech" todo "TODO" 
          (
@@ -4655,6 +4855,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
                (tags "garden")
 )
 )
+
 
 
 
@@ -5444,13 +5645,9 @@ scroll-step 1)
     (previous-line)
     (my-mark-file-name-for-rename))
 
-;; (require 'wdired)
-
 ;; (eval-after-load 'wdired
 ;;   (progn
-;;     (define-key wdired-mode-map (kbd "TAB") 'my-mark-file-name-forward)
-;;     (define-key wdired-mode-map (kbd "S-<tab>") 'my-mark-file-name-backward)
-;;     (define-key wdired-mode-map (kbd "s-a") 'my-mark-file-name-for-rename))) ;
+;;     (define-key wdired-mode-map (kbd "d") 'my-mark-file-name-forward))
 
 ;; Handle zip compression
 (eval-after-load "dired-aux"
@@ -5478,52 +5675,36 @@ scroll-step 1)
 (define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
 (define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
 (define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
+(define-key dired-mode-map (kbd  "<f1>") 'dired-do-async-shell-command   )
+(define-key dired-mode-map (kbd  "<f2>") 'dired-efap   )
+(define-key dired-mode-map (kbd  "y") 'dired-ranger-copy )
 
 (global-set-key
-   (kbd "<f2>")
-(defhydra hydra-dired-main (:color blue :hint nil :columns 5)
-
-"
-【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 
-【C/R/D/S】 copy/move(rename)/delete/symlink
-【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【g】 refresh
-【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-
-"
-("<f2>" dired "dired")
-("<f1>" sunrise "sunrise")
-("<f3>" dired-jump "dired jump")
-("a" nil )
-("b"  nil  )
-("c"  hydra-dired-configs/body "dir configs")
-("d"  nil )
-("e"  nil )
-("ff"  find-dired "find")
-("fl"  find-lisp-find-dired "lisp find")
-("fd"  find-lisp-find-dired-subdirectories "lisp find dirs" )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  dired-jump "jump")
-("k"  nil )
-("l"  nil )
-("m"  diredp-mark/unmark-extension "unmark extension")
-("n"  dired-narrow-regexp "narrow")
-("o"  hydra-dired-operation/body "dired operations")
-("p"  peep-dired "peep-dired")
+    (kbd "")
+ (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
+ "
+ for ranger-copies using 【C-u】 saves the content of the clip after the paste
+ "
+ ("a" dired-mark-subdir-files "mark all" )
+ ("c"  nil )
+ ("z" hydra-dired-filter/body "filter menu")
+ ("j"  nil )
+ ("o" z/dired-open-in-desktop "open with FM" )
+ ("s"  z/dired-sort-menu "sort menu" )
+ ("n"  z/dired-get-size "get size" )
+ ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
+ ("u"  nil )
+ ("y"  dired-ranger-copy "copy2clip")
+ ("p"  dired-ranger-paste "paste_F_clip")
+ ("d" dired-ranger-move "move2clip")
+ ("f"   z/dired-shell-fb "fb" )
+ ("e"   peep-dired "peep" )
+ ("x"   z/dired-shell-chmodx "+x" )
 ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
-("s"  z/dired-get-size "size" )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"   hydra-dired-filter/body  "filter" )
-("q"  nil )
+(";"  nil )
+ ("q"  nil )
 
-))
+ ))
 
 (defhydra hydra-dired-filter  (:color blue :hint nil :columns 5)
       "
@@ -5533,6 +5714,9 @@ Filter by:
      ("r" dired-filter-by-regexp  "regex 【/r】" ) 
      ("f" dired-filter-by-file  "file 【/f】" ) 
      ("n" dired-filter-by-name  "name 【/n】" ) 
+     ("S" dired-filter-save-filters  "save filter" ) 
+     ("l" dired-filter-load-saved-filters  "load filter" ) 
+     ("L" dired-filter-add-saved-filters "add ontop filter" ) 
       ("q" nil "cancel" nil)
  )
 
@@ -5550,6 +5734,7 @@ Filter by:
 Filter by:
       "
      ("o" z/del-nonorg-files  "delete non org" ) 
+     ("i" 'z/dired-media-info  "media-info" ) 
       ("q" nil "cancel" nil)
  )
 
@@ -5637,26 +5822,6 @@ _q_:
 
 ))
 
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
-"
-"
-("a" dired-mark-subdir-files "mark all" )
-("c"  nil )
-("d" nil)
-("j"  nil )
-("s"  z/dired-get-size "get size" )
-("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
-("u"  nil )
-("v"  nil)
-("f"   z/dired-shell-fb "fb" )
-("x"   z/dired-shell-chmodx "+x" )
-(";"  nil )
-("q"  nil )
-
-))
-
 (defun z/del-nonorg-files ()
 (interactive)
 (dired-mark-files-regexp "\\.org$") 
@@ -5717,9 +5882,6 @@ The app is chosen from your OS's preference."
     (interactive)
     (shell-command (concat "beet import" (dired-file-name-at-point))))
 
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
-
 ;; (defun z/dired-beet-import ()
 ;;   (interactive)
 ;;   (sr-term)
@@ -5735,17 +5897,6 @@ The app is chosen from your OS's preference."
   (interactive)
   (sr-term)
   (let* ((fmt "beet import -s %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
-(defun z/dired-make-exec ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "chmod +x %s\n")
          (file (sr-clex-file sr-selected-window))
          (command (format fmt file)))
     (if (not (equal sr-terminal-program "eshell"))
@@ -5774,7 +5925,7 @@ The app is chosen from your OS's preference."
 ;;       (shell-command "notify-send fb uploaded")
 ;; )))
 
-(defun  z/dired-shell-chmodx ()
+(defun z/dired-shell-chmodx ()
     "chmod"
     (interactive)
     (shell-command (concat "chmod +x " (dired-file-name-at-point)))
@@ -5794,27 +5945,12 @@ The app is chosen from your OS's preference."
 ;;       (shell-command "notify-send fb uploaded")
 ;; )))
 
-(defun z/dired-mpd-add ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "mpc add file:/ %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
-
 (defun z/dired-ssh-qnap ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid \n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
+    "chmod"
+    (interactive)
+    (shell-command (concat "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid " (dired-file-name-at-point)))
+    (message (propertize "connected to ssh" 'face 'font-lock-warning-face))
+)
 
 (fset 'z/dired-media-info
    [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
@@ -5842,6 +5978,67 @@ Version 2015-07-30"
      ((equal ξsort-by "dir") (setq ξarg "-Al --si --time-style long-iso --group-directories-first"))
      (t (error "logic error 09535" )))
     (dired-sort-other ξarg )))
+
+;; Use ido
+(require 'ido)
+
+;; Make a hash table to hold the paths
+(setq my-target-dirs (make-hash-table :test 'equal))
+
+;; Put some paths in the hash (sorry for Unix pathnames)
+(puthash "home" "/home/zeltak/" my-target-dirs)
+(puthash "AUR" "/home/zeltak/AUR/" my-target-dirs)
+(puthash "downloads" "/home/zeltak/Downloads/ " my-target-dirs)
+(puthash "ZH_tmp" "/home/zeltak/ZH_tmp/" my-target-dirs)
+(puthash "music" "/home/zeltak/music/" my-target-dirs)
+(puthash "bin" "/home/zeltak/bin/" my-target-dirs)
+(puthash "BK" "/home/zeltak/BK/" my-target-dirs)
+(puthash "org" "/home/zeltak/org/" my-target-dirs)
+(puthash "mreview" "/home/zeltak/mreview/" my-target-dirs)
+(puthash "Sync" "/home/zeltak/Sync/" my-target-dirs)
+(puthash "Uni" "/home/zeltak/Uni/" my-target-dirs)
+(puthash "scripts" "/home/zeltak/scripts" my-target-dirs)
+(puthash "dotfiles" "/home/zeltak/dotfiles/" my-target-dirs)
+(puthash "config" "/home/zeltak/.config/" my-target-dirs)
+
+
+;; A function to return all the keys from a hash.
+(defun get-keys-from-hash (hash)
+  (let ((keys ()))
+    (maphash (lambda (k v) (push k keys)) hash)
+    keys))
+
+;; And the function to prompt for a directory by keyword that is looked
+;; up in the hash-table and used to build the target path from the
+;; value of the lookup.
+(defun my-dired-expand-copy ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (copy-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "copy " file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
+
+
+(defun my-dired-expand-move ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (rename-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "move" file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
 
 ;; ;; Use ido
 ;; (require 'ido)
@@ -5899,14 +6096,6 @@ Version 2015-07-30"
 ;;                 (copy-file file (concat target (file-name-nondirectory file)))
 ;;                 (message (concat "File: " file " was copied to " target)))))
 ;;           files)))
-
-(defun z/dired-backup-lgs ()
-"run laptop git script"
-(interactive)
-(sr-term )
-(insert "~/bin/lgs.sh" )
-(eshell-send-input)
-)
 
 ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
 

@@ -1,1 +1,1 @@
-("~/" "~/org/files/" "~/.emacs.d/" "~/.avfs/home/zeltak/" "~/dotfiles/" "~/.password-store/" "~/stumpwm/")
+("~/.emacs.d/" "~/" "~/org/files/" "~/dotfiles/" "~/BK/emacs/31.12.2015BROKEN/" "~/.avfs/home/zeltak/" "~/.avfs/home/zeltak/.avfs/home/zeltak/" "~/.password-store/" "~/stumpwm/")

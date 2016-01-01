@@ -1,0 +1,1 @@
+(define-package "unify-opening" "20151116.1648" "Make everything use the same mechanism to open files" '((emacs "24.4")) :url "https://github.com/DamienCassou/unify-opening" :keywords '("dired" "org" "mu4e" "open" "runner" "extension" "file"))
