@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- customize-group
- my-dired-expand-move
- package-install-file
- customize-variable
- dired-sort-menu-toggle-reverse
- dired-sort-menu
- dired-ranger-bookmark
+ nlinum-mode
+ helm-find-files
+ hydra-dired-operation/body
+ dired-do-copy
+ z/dired-copy-setdirs
+ z/dired-move-setdirs
+ z/dired-move-setdirs-recurs
 )
 
 ;; ----- smex-data -----
@@ -220,4 +220,12 @@
  (dired-sort-menu . 1)
  (dired-sort-menu-toggle-reverse . 1)
  (my-dired-expand-move . 2)
+ (z/dired-move-setdirs . 2)
+ (z/dired-move-setdirs-recurs . 1)
+ (z/dired-copy-setdirs . 3)
+ (ydired-copy-file-here . 2)
+ (dired-do-copy . 5)
+ (helm-find-files . 8)
+ (hydra-dired-operation/body . 1)
+ (nlinum-mode . 3)
 )

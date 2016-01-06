@@ -131,8 +131,8 @@
     ("8emu" "ikloog@bgu.ac.il" nil 0)
     ("8emz" "zeltak@gmail.com" nil 0)
     ("8fl" "file:~/" nil 0)
-    ("8rs" "#+REVEAL: split" nil 15)
-    ("8rt" "*lets try it on your computer!*" nil 17)
+    ("8rs" "#+REVEAL: split" nil 17)
+    ("8rt" "*lets try it on your computer!*" nil 18)
     ("8tp" "*lets try it on your computer!*" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)
@@ -675,7 +675,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 19)
+    ("i" "I" nil 21)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -819,7 +819,7 @@
     ("neighbour" "neighbor" nil 0)
     ("neighbours" "neighbors" nil 1)
     ("nkow" "know" nil 0)
-    ("note" "$Note$" nil 25)
+    ("note" "$Note$" nil 26)
     ("nothign" "nothing" nil 0)
     ("numric" "numeric" nil 0)
     ("nver" "never" nil 0)
@@ -973,7 +973,7 @@
     ("refered" "referred" nil 0)
     ("refernce" "reference" nil 1)
     ("reffer" "refer" nil 0)
-    ("regardsless" "regardless" nil 0)
+    ("regardsless" "regardless" nil 1)
     ("regession" "regression" nil 0)
     ("regresion" "regression" nil 0)
     ("reimerssmen" "reimbursement" nil 0)
@@ -1148,7 +1148,7 @@
     ("theyve" "they've" nil 0)
     ("thgat" "that" nil 0)
     ("thge" "the" nil 0)
-    ("thier" "their" nil 0)
+    ("thier" "their" nil 1)
     ("thigsn" "things" nil 0)
     ("thisyear" "this year" nil 0)
     ("thna" "than" nil 0)
@@ -1221,6 +1221,7 @@
     ("wernt" "weren't" nil 0)
     ("werre" "were" nil 0)
     ("wethee" "whether" nil 0)
+    ("wether" "whether" nil 0)
     ("whcih" "which" nil 0)
     ("wherre" "where" nil 0)
     ("whic" "which" nil 0)
@@ -1398,9 +1399,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
@@ -1428,9 +1427,7 @@
 
 (define-abbrev-table 'speedbar-mode-abbrev-table '())
 
-(define-abbrev-table 'sql-mode-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'sql-mode-abbrev-table '())
 
 (define-abbrev-table 'sr-mode-abbrev-table '())
 

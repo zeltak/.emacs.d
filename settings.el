@@ -547,7 +547,7 @@
   :ensure t
   :config
 ;;(setq dired-narrow-exit-action 'find-file)
-;;(setq dired-narrow-exit-action 'dired-narrow-find-file)
+(setq dired-narrow-exit-action 'dired-narrow-find-file)
   )
 
 (use-package dired-open
@@ -1304,6 +1304,12 @@
  (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
+ )
+
+(use-package nlinum
+ :ensure t
+ :config
+ 
  )
 
 ;; (use-package openwith 
@@ -3360,6 +3366,7 @@ org-files and bookmarks"
 (global-unset-key (kbd "\\"))
 
 (global-set-key (kbd "M-x") 'counsel-M-x)
+(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 (global-set-key "\C-t" #'transpose-lines)
 (define-key ctl-x-map "\C-t" #'transpose-chars)
@@ -3571,7 +3578,7 @@ _q_:
 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
 【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
 【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-【b】preview file 
+【b】preview file 【v】 viewer
 "
 ("<f2>" dired "dired")
 ("<f1>" sunrise "sunrise")
@@ -5685,6 +5692,7 @@ scroll-step 1)
  "
  for ranger-copies using 【C-u】 saves the content of the clip after the paste
  "
+ ("." hydra-dired-operations/body "dired operations" )
  ("a" dired-mark-subdir-files "mark all" )
  ("c"  nil )
  ("z" hydra-dired-filter/body "filter menu")
@@ -5734,7 +5742,11 @@ Filter by:
 Filter by:
       "
      ("o" z/del-nonorg-files  "delete non org" ) 
-     ("i" 'z/dired-media-info  "media-info" ) 
+     ("m" 'z/dired-media-info  "media-info" ) 
+     ("is" 'xah-dired-scale-image  "scale" ) 
+     ("ic" 'xah-dired-image-autocrop  "autocrop" ) 
+     ("ij" 'xah-dired-2jpg  "to-jpg" ) 
+     ("ip" 'xah-dired-2png "to-png" ) 
       ("q" nil "cancel" nil)
  )
 
@@ -5985,6 +5997,46 @@ Version 2015-07-30"
 ;; Make a hash table to hold the paths
 (setq my-target-dirs (make-hash-table :test 'equal))
 
+
+
+;; A function to return all the keys from a hash.
+(defun get-keys-from-hash (hash)
+  (let ((keys ()))
+    (maphash (lambda (k v) (push k keys)) hash)
+    keys))
+
+;; And the function to prompt for a directory by keyword that is looked
+;; up in the hash-table and used to build the target path from the
+;; value of the lookup.
+(defun z/dired-copy-setdirs ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (copy-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "copy " file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
+
+
+(defun z/dired-move-setdirs ()
+  (interactive)
+  (let* ((my-hash my-target-dirs)
+         (files (dired-get-marked-files))
+         (keys (get-keys-from-hash my-hash)))
+    (mapc (lambda (file)
+            (rename-file file
+                       (concat
+                        (gethash
+                         (ido-completing-read
+                          (concat "move" file " to: ") keys) my-hash)
+                        (file-name-nondirectory file))))
+          files)))
+
 ;; Put some paths in the hash (sorry for Unix pathnames)
 (puthash "home" "/home/zeltak/" my-target-dirs)
 (puthash "AUR" "/home/zeltak/AUR/" my-target-dirs)
@@ -6001,101 +6053,183 @@ Version 2015-07-30"
 (puthash "dotfiles" "/home/zeltak/dotfiles/" my-target-dirs)
 (puthash "config" "/home/zeltak/.config/" my-target-dirs)
 
-
-;; A function to return all the keys from a hash.
-(defun get-keys-from-hash (hash)
-  (let ((keys ()))
-    (maphash (lambda (k v) (push k keys)) hash)
-    keys))
-
-;; And the function to prompt for a directory by keyword that is looked
-;; up in the hash-table and used to build the target path from the
-;; value of the lookup.
-(defun my-dired-expand-copy ()
+(defun z/dired-copy-setdirs-recurs ()
   (interactive)
   (let* ((my-hash my-target-dirs)
          (files (dired-get-marked-files))
          (keys (get-keys-from-hash my-hash)))
     (mapc (lambda (file)
-            (copy-file file
-                       (concat
-                        (gethash
-                         (ido-completing-read
-                          (concat "copy " file " to: ") keys) my-hash)
-                        (file-name-nondirectory file))))
+            (let ((target (gethash
+                           (ido-completing-read
+                            (concat "copy " file " to: ") keys) my-hash)))
+              (if (y-or-n-p "Descend?")
+                  ;; Descend into subdirectories relative to target dir
+                  (let ((new-target (ido-read-directory-name "new dir: " target))) 
+                    (copy-file file (concat new-target
+                                            (file-name-nondirectory file)))
+                    (message (concat "File: " file " was copied to " new-target)))
+                ;; Else copy to root of originally selected directory
+                (copy-file file (concat target (file-name-nondirectory file)))
+                (message (concat "File: " file " was copied to " target)))))
           files)))
 
-
-(defun my-dired-expand-move ()
+(defun z/dired-move-setdirs-recurs ()
   (interactive)
   (let* ((my-hash my-target-dirs)
          (files (dired-get-marked-files))
          (keys (get-keys-from-hash my-hash)))
     (mapc (lambda (file)
-            (rename-file file
-                       (concat
-                        (gethash
-                         (ido-completing-read
-                          (concat "move" file " to: ") keys) my-hash)
-                        (file-name-nondirectory file))))
+            (let ((target (gethash
+                           (ido-completing-read
+                            (concat "move " file " to: ") keys) my-hash)))
+              (if (y-or-n-p "Descend?")
+                  ;; Descend into subdirectories relative to target dir
+                  (let ((new-target (ido-read-directory-name "new dir: " target))) 
+                    (rename-file file (concat new-target
+                                            (file-name-nondirectory file)))
+                    (message (concat "File: " file " was moved to " new-target)))
+                ;; Else copy to root of originally selected directory
+                (rename-file file (concat target (file-name-nondirectory file)))
+                (message (concat "File: " file " was moved to " target)))))
           files)))
 
-;; ;; Use ido
-;; (require 'ido)
-;; (ido-mode t)
+(defun z/dired--next-image ()
+  (interactive)
+  (save-excursion 
+    (with-current-buffer "*image-dired*"
+      (image-dired-forward-image)
+      (image-dired-display-thumbnail-original-image))))
 
-;; ;; Make a hash table to hold the paths
-;; (setq my-target-dirs (make-hash-table :test 'equal))
+(defun z/dired-prev-image ()
+  (interactive)
+  (save-excursion 
+    (with-current-buffer "*image-dired*"
+      (image-dired-backward-image)
+      (image-dired-display-thumbnail-original-image))))
 
-;; ;; Put some paths in the hash (sorry for Unix pathnames)
-;; (puthash "z" "/home/zeltak/ZH_tmp/" my-target-dirs)
-;; (puthash "target" "/home/zeltak/Downloads/" my-target-dirs)
+(defun x/dired-insert-current-image-path ()
+  (interactive)
+  (insert
+   (concat
+    "[["
+    (save-excursion
+      (with-current-buffer "*image-dired*"
+        (image-dired-original-file-name)))
+    "]]")))
 
-;; ;; A function to return all the keys from a hash.
-;; (defun get-keys-from-hash (hash)
-;;   (let ((keys ()))
-;;     (maphash (lambda (k v) (push k keys)) hash)
-;;     keys))
+(defun xah-process-image (φfile-list φargs-str φnew-name-suffix φnew-name-file-suffix )
+  "Wrapper to ImageMagick's “convert” shell command.
+φfile-list is a list of image file paths.
+φargs-str is argument string passed to ImageMagick's “convert” command.
+φnew-name-suffix is the string appended to file. e.g. “_new” gets you “…_new.jpg”
+φnew-name-file-suffix is the new file's file extension. e.g. “.png”
 
-;; ;; And the function to prompt for a directory by keyword that is looked
-;; ;; up in the hash-table and used to build the target path from the
-;; ;; value of the lookup.
-;; (defun my-dired-expand-copy ()
-;;   (interactive)
-;;   (let* ((my-hash my-target-dirs)
-;;          (files (dired-get-marked-files))
-;;          (keys (get-keys-from-hash my-hash)))
-;;     (mapc (lambda (file)
-;;             (copy-file file
-;;                        (concat
-;;                         (gethash
-;;                          (ido-completing-read
-;;                           (concat "copy " file " to: ") keys) my-hash)
-;;                         (file-name-nondirectory file))))
-;;           files)))
+URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
+Version 2015-10-19"
+  (require 'dired)
+  (mapc
+   (lambda (ξf)
+     (let ( newName cmdStr )
+       (setq newName
+             (concat
+              (file-name-sans-extension ξf)
+              φnew-name-suffix
+              φnew-name-file-suffix))
+       (while (file-exists-p newName)
+         (setq newName
+               (concat
+                (file-name-sans-extension newName)
+                φnew-name-suffix
+                (file-name-extension newName t))))
+       ;; relative paths used to get around Windows/Cygwin path remapping problem
+       (setq cmdStr
+             (format
+              "convert %s '%s' '%s'" 
+              φargs-str 
+              (file-relative-name ξf) 
+              (file-relative-name newName)))
+       (shell-command cmdStr)))
+   φfile-list )
+  (revert-buffer))
 
+(defun xah-dired-scale-image (φfile-list φscale-percentage φsharpen?)
+  "Create a scaled version of images of marked files in dired.
+The new names have “-s” appended before the file name extension.
 
+If `universal-argument' is given, output is PNG format. Else, JPG.
 
+When called in lisp code,
+ φfile-list is a list.
+ φscale-percentage is a integer.
+ φsharpen? is true or false.
 
-;; (defun my-dired-expand-copy-2 ()
-;;   (interactive)
-;;   (let* ((my-hash my-target-dirs)
-;;          (files (dired-get-marked-files))
-;;          (keys (get-keys-from-hash my-hash)))
-;;     (mapc (lambda (file)
-;;             (let ((target (gethash
-;;                            (ido-completing-read
-;;                             (concat "copy " file " to: ") keys) my-hash)))
-;;               (if (y-or-n-p "Descend?")
-;;                   ;; Descend into subdirectories relative to target dir
-;;                   (let ((new-target (ido-read-directory-name "new dir: " target))) 
-;;                     (copy-file file (concat new-target
-;;                                             (file-name-nondirectory file)))
-;;                     (message (concat "File: " file " was copied to " new-target)))
-;;                 ;; Else copy to root of originally selected directory
-;;                 (copy-file file (concat target (file-name-nondirectory file)))
-;;                 (message (concat "File: " file " was copied to " target)))))
-;;           files)))
+Requires ImageMagick unix shell command.
+URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
+Version 2015-03-10"
+  (interactive
+   (let (
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((string-equal major-mode "image-mode") (list (buffer-file-name)))
+           (t (list (read-from-minibuffer "file name:"))))))
+     (list myFileList
+           (read-from-minibuffer "Scale %:")
+           (y-or-n-p "Sharpen"))))
+  (let ((sharpenOrNo (if φsharpen? "-sharpen 1" "" ))
+        (outputSuffix (if current-prefix-arg ".png" ".jpg" )))
+    (xah-process-image φfile-list
+                       (format "-scale %s%% -quality 85%% %s " φscale-percentage sharpenOrNo)
+                       "-s" outputSuffix )))
+
+(defun xah-dired-image-autocrop (φfile-list φoutput-image-type-suffix)
+  "Create a new auto-cropped version of images of marked files in dired.
+Requires ImageMagick shell command.
+
+If `universal-argument' is given, output is PNG format. Else, JPG.
+URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
+Version 2015-03-10"
+  (interactive
+   (let (
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((string-equal major-mode "image-mode") (list (buffer-file-name)))
+           (t (list (read-from-minibuffer "file name:")))))
+         (φoutput-image-type-suffix (if current-prefix-arg ".png" ".jpg" )))
+     (list myFileList φoutput-image-type-suffix)))
+  (xah-process-image φfile-list "-trim" "-cropped" φoutput-image-type-suffix ))
+
+(defun xah-dired-2png (φfile-list)
+  "Create a png version of images of marked files in dired.
+Requires ImageMagick shell command.
+URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
+Version 2015-03-10"
+  (interactive
+   (let (
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((string-equal major-mode "image-mode") (list (buffer-file-name)))
+           (t (list (read-from-minibuffer "file name:"))))))
+     (list myFileList)))
+  (xah-process-image φfile-list "" "-2" ".png" ))
+
+(defun xah-dired-2jpg (φfile-list)
+  "Create a JPG version of images of marked files in dired.
+Requires ImageMagick shell command.
+URL `http://ergoemacs.org/emacs/emacs_dired_convert_images.html'
+Version 2015-03-10"
+  (interactive
+   (let (
+         (myFileList
+          (cond
+           ((string-equal major-mode "dired-mode") (dired-get-marked-files))
+           ((string-equal major-mode "image-mode") (list (buffer-file-name)))
+           (t (list (read-from-minibuffer "file name:") )) ) ) )
+     (list myFileList) )
+   )
+  (xah-process-image φfile-list "" "-2" ".jpg" ))
 
 ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
 
