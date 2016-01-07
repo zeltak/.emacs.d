@@ -553,7 +553,20 @@
 (use-package dired-open
  :ensure t
  :config
- 
+ (setq dired-open-extensions
+      '(("pdf" . "okular")
+        ("mkv" . "vlc")
+        ("mp4" . "vlc")
+        ("avi" . "vlc")
+        ("html" . "firefox")
+        ("mp3" . "vlc")
+        ("doc" . "libreoffice")
+        ("docx" . "libreoffice")
+        ("xls" . "libreoffice")
+        ("xlsx" . "libreoffice")
+        ("ppt" . "libreoffice")
+        ("pptx" . "libreoffice")
+))
  )
 
 (use-package dired-subtree
@@ -572,17 +585,17 @@
   (add-hook 'dired-load-hook
             (function (lambda () (load "dired-x"))))
 
-(setq dired-guess-shell-alist-user
-      (list
-       (list "//.chm$" "xchm")
-       (list "//.rm$" "gmplayer")
-       (list "//.rmvb$" "gmplayer")
-       (list "//.avi$" "gmplayer")
-       (list "//.asf$" "gmplayer")
-       (list "//.wmv$" "gmplayer")
-       (list "//.htm$" "w3m")
-       (list "//.html$" "firefox")
-       (list "//.mpg$" "gmplayer")))
+;; (setq dired-guess-shell-alist-user
+;;       (list
+;;        (list "//.chm$" "xchm")
+;;        (list "//.rm$" "gmplayer")
+;;        (list "//.rmvb$" "gmplayer")
+;;        (list "//.avi$" "gmplayer")
+;;        (list "//.asf$" "gmplayer")
+;;        (list "//.wmv$" "gmplayer")
+;;        (list "//.htm$" "w3m")
+;;        (list "//.html$" "firefox")
+;;        (list "//.mpg$" "gmplayer")))
 
 (use-package dired-sort
  :ensure t
@@ -1309,7 +1322,7 @@
 (use-package nlinum
  :ensure t
  :config
- 
+
  )
 
 ;; (use-package openwith 
@@ -3490,6 +3503,7 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("k" key-chord-mode "key-chord"  )
 ("l" lentic-mode  "lentic")
 ("L" linum-mode  "linium")
+("t" nlinum-mode  "line num")
 ("m" hydra-toggles-macro/body "macro menu")
 ("n" start-kbd-macro "start macro" :face 'hydra-face-green)
 ("o" end-kbd-macro "end macro" :face 'hydra-face-red)
@@ -5583,19 +5597,17 @@ scroll-step 1)
 
 (setq dired-dwim-target t)
 
-(setq dired-dwim-target t)
-
 (setq dired-recursive-deletes 'always); “always” means no asking
 ;Always recursively copy directory
 ;(setq dired-recursive-copies 'top) ; “top” means ask once
 (setq dired-recursive-copies 'always) ; never ask
 
-;; Allow running multiple async commands simultaneously
-(defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
-  (when (get-buffer "*Async Shell Command*")
-    (with-current-buffer "*Async Shell Command*"
-      (rename-uniquely))))
-(ad-activate 'shell-command)
+;; ;; Allow running multiple async commands simultaneously
+;; (defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
+;;   (when (get-buffer "*Async Shell Command*")
+;;     (with-current-buffer "*Async Shell Command*"
+;;       (rename-uniquely))))
+;; (ad-activate 'shell-command)
 
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
@@ -5678,19 +5690,21 @@ scroll-step 1)
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
 (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
-(define-key dired-mode-map (kbd "`") 'dired-narrow )
+(define-key dired-mode-map (kbd "/") 'dired-narrow )
 (define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
-(define-key dired-mode-map (kbd  "/") 'hydra-dired-leader/body )
+(define-key dired-mode-map (kbd  "`") 'hydra-dired-leader/body )
 (define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
 (define-key dired-mode-map (kbd  "<f1>") 'dired-do-async-shell-command   )
 (define-key dired-mode-map (kbd  "<f2>") 'dired-efap   )
 (define-key dired-mode-map (kbd  "y") 'dired-ranger-copy )
+(define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
 
 (global-set-key
     (kbd "")
  (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
  "
  for ranger-copies using 【C-u】 saves the content of the clip after the paste
+to open via dired-open: dired-open-by-extension
  "
  ("." hydra-dired-operations/body "dired operations" )
  ("a" dired-mark-subdir-files "mark all" )
@@ -5758,7 +5772,7 @@ Filter by:
 "
 ("a" (find-file "~/AUR/") "AUR" )
 ("b"  (find-file "~/bin/") "bin" )
-("c"  nil )
+("c"  (find-file "~/.config/") "config")
 ("d" (find-file "~/Downloads/")    "Downloads" )
 ("e"  (find-file "~/.emacs.d/") "Emacs.d")
 ("E"  (find-file "~/.emacs.g/") "Emacs.g")
@@ -5772,7 +5786,7 @@ Filter by:
 ("m"  (find-file "~/music/") "music" )
 ("n"  nil )
 ("o"  (find-file "~/org/files/") "Org" )
-("p"  (find-file "~/mtp") "mtp" )
+("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
 ("r"  (find-file "~/mreview/") "mreview" )
 ("s"  (find-file "~/Sync/") "Sync" )
 ("S"  (find-file "~/scripts/" "scripts") )
@@ -5783,7 +5797,6 @@ Filter by:
 ("x"  nil )
 ("y"  nil )
 ("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("."  (find-file "~/.config/") "config")
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 
@@ -6052,6 +6065,7 @@ Version 2015-07-30"
 (puthash "scripts" "/home/zeltak/scripts" my-target-dirs)
 (puthash "dotfiles" "/home/zeltak/dotfiles/" my-target-dirs)
 (puthash "config" "/home/zeltak/.config/" my-target-dirs)
+(puthash "conv" "/home/zeltak/ZH_tmp/$CONV" my-target-dirs)
 
 (defun z/dired-copy-setdirs-recurs ()
   (interactive)

@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ dired-open-by-extension
+ org-cliplink
+ z/dired-move-setdirs
+ z/dired-copy-setdirs
+ dired-do-copy
  nlinum-mode
  helm-find-files
- hydra-dired-operation/body
- dired-do-copy
- z/dired-copy-setdirs
- z/dired-move-setdirs
- z/dired-move-setdirs-recurs
 )
 
 ;; ----- smex-data -----
@@ -170,7 +170,7 @@
  (open-line . 1)
  (org-open-line . 2)
  (helm-insert-org-entity . 4)
- (org-cliplink . 4)
+ (org-cliplink . 6)
  (popup-imenu . 10)
  (diredfd-do-shell-command . 2)
  (diredfd-do-unpack . 5)
@@ -206,7 +206,7 @@
  (sr-fuzzy-narrow . 1)
  (dired-efap . 1)
  (dired-open-xdg . 1)
- (dired-open-by-extension . 1)
+ (dired-open-by-extension . 4)
  (dired-open-file . 1)
  (xah-open-in-terminal . 2)
  (wdired-mode . 2)
@@ -220,12 +220,12 @@
  (dired-sort-menu . 1)
  (dired-sort-menu-toggle-reverse . 1)
  (my-dired-expand-move . 2)
- (z/dired-move-setdirs . 2)
+ (z/dired-move-setdirs . 4)
  (z/dired-move-setdirs-recurs . 1)
- (z/dired-copy-setdirs . 3)
+ (z/dired-copy-setdirs . 5)
  (ydired-copy-file-here . 2)
- (dired-do-copy . 5)
+ (dired-do-copy . 6)
  (helm-find-files . 8)
  (hydra-dired-operation/body . 1)
- (nlinum-mode . 3)
+ (nlinum-mode . 4)
 )
