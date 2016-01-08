@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "dired-narrow" "dired-narrow.el" (22155 49097
-;;;;;;  302956 141000))
+;;;### (autoloads nil "dired-narrow" "dired-narrow.el" (22158 25327
+;;;;;;  892281 515000))
 ;;; Generated autoloads from dired-narrow.el
 
 (autoload 'dired-narrow-regexp "dired-narrow" "\

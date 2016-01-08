@@ -3,7 +3,7 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil nil ("dired-avfs.el") (21847 761 238627 497000))
+;;;### (autoloads nil nil ("dired-avfs.el") (22158 27400 542805 942000))
 
 ;;;***
 

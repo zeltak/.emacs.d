@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- dired-open-by-extension
- org-cliplink
- z/dired-move-setdirs
- z/dired-copy-setdirs
- dired-do-copy
- nlinum-mode
- helm-find-files
+ dired-toggle-sudo
+ ansi-term
+ customize-group
+ customize-variable
+ split-window-right
+ shell
+ find-grep-dired
 )
 
 ;; ----- smex-data -----
@@ -42,15 +42,15 @@
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 8)
+ (customize-variable . 11)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
  (eshell . 1)
- (ansi-term . 1)
+ (ansi-term . 3)
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
- (customize-group . 4)
+ (customize-group . 5)
  (wl . 25)
  (dired-k . 3)
  (xah-cycle-hyphen-underscore-space . 6)
@@ -97,7 +97,7 @@
  (eww . 4)
  (avy-zap-to-char . 1)
  (dired-filter-mode . 2)
- (dired-narrow . 5)
+ (dired-narrow . 6)
  (dired-narrow-fuzzy . 2)
  (dired-narrow-regexp . 2)
  (dired-filter-by-name . 5)
@@ -184,7 +184,7 @@
  (runner-add-extension . 1)
  (dired-sort-name . 1)
  (dired-sort-time . 1)
- (ibuffer . 1)
+ (ibuffer . 2)
  (z/dired-ssh-qnap . 1)
  (z/dired-media-info . 2)
  (z/dired-sort-menu . 2)
@@ -198,7 +198,7 @@
  (org-search-view . 5)
  (helm-projectile . 2)
  (helm-org-capture-templates . 1)
- (find-name-dired . 3)
+ (find-name-dired . 6)
  (peep-dired . 10)
  (z/insert-black-lenticular-angle . 1)
  (z/insert-black-arrows . 1)
@@ -206,16 +206,16 @@
  (sr-fuzzy-narrow . 1)
  (dired-efap . 1)
  (dired-open-xdg . 1)
- (dired-open-by-extension . 4)
- (dired-open-file . 1)
+ (dired-open-by-extension . 1)
+ (dired-open-file . 3)
  (xah-open-in-terminal . 2)
  (wdired-mode . 2)
  (wdired-change-to-wdired-mode . 1)
  (my-mark-file-name-for-rename . 3)
  (dired-ranger-bookmark . 2)
  (dired-ranger-bookmark-visit . 1)
- (dired-ranger-copy . 9)
- (dired-ranger-paste . 3)
+ (dired-ranger-copy . 12)
+ (dired-ranger-paste . 5)
  (z/dired-start-process . 1)
  (dired-sort-menu . 1)
  (dired-sort-menu-toggle-reverse . 1)
@@ -227,5 +227,25 @@
  (dired-do-copy . 6)
  (helm-find-files . 8)
  (hydra-dired-operation/body . 1)
- (nlinum-mode . 4)
+ (nlinum-mode . 6)
+ (dired-up-directory . 12)
+ (lentic-mode . 1)
+ (z/dired-shell-doc2docx . 1)
+ (tda/rsync . 1)
+ (tda/unzip . 2)
+ (tda/rsync-multiple-mark-file . 5)
+ (tda/rsync-multiple . 1)
+ (shell . 2)
+ (diredp-toggle-find-file-reuse-dir . 4)
+ (dired-find-file . 4)
+ (ztree-dir . 1)
+ (imenu . 2)
+ (dired-toggle-sudo . 2)
+ (helm-dired-recent-dirs-view . 5)
+ (image-dired . 4)
+ (image-diredx-adjust-mode . 1)
+ (find-grep-dired . 1)
+ (shell-instead-dired . 4)
+ (split-window-right . 1)
+ (visit-ansi-term . 1)
 )

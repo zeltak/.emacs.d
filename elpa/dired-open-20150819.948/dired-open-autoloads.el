@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "dired-open" "dired-open.el" (22149 22842 373359
-;;;;;;  289000))
+;;;### (autoloads nil "dired-open" "dired-open.el" (22158 27401 293202
+;;;;;;  333000))
 ;;; Generated autoloads from dired-open.el
 
 (autoload 'dired-open-file "dired-open" "\

@@ -295,6 +295,50 @@
  :config
   )
 
+(use-package bm
+ :ensure t
+ :config
+;;restore on load (even before you require bm)
+(setq bm-restore-repository-on-load t)
+
+(require 'bm)
+;; Allow cross-buffer 'next'
+(setq bm-cycle-all-buffers t)  
+;;where to store persistant files
+(setq bm-repository-file "~/.emacs.d/bm-repository")
+;; save bookmarks
+(setq-default bm-buffer-persistence t)
+
+   ;; Loading the repository from file when on start up.
+   (add-hook' after-init-hook 'bm-repository-load)
+
+   ;; Restoring bookmarks when on file find.
+   (add-hook 'find-file-hooks 'bm-buffer-restore)
+
+   ;; Saving bookmark data on killing a buffer
+   (add-hook 'kill-buffer-hook 'bm-buffer-save)
+
+   ;; Saving the repository to file when on exit.
+   ;; kill-buffer-hook is not called when Emacs is killed, so we
+   ;; must save all bookmarks first.
+   (add-hook 'kill-emacs-hook '(lambda nil
+                                   (bm-buffer-save-all)
+                                   (bm-repository-save)))
+
+   ;; Update bookmark repository when saving the file.
+   (add-hook 'after-save-hook 'bm-buffer-save)
+
+   ;; Restore bookmarks when buffer is reverted.
+   (add-hook 'after-revert-hook 'bm-buffer-restore)
+
+
+ )
+
+(use-package helm-bm
+ :ensure t
+ :config
+  )
+
 (use-package bbdb
  :ensure t
  :config
@@ -617,28 +661,9 @@
 (use-package dired+
  :ensure t
  :config
+;;; don't create a buffer for every dir I visit (use 1 to not create and -1 to creare)
 (toggle-diredp-find-file-reuse-dir 1)
   )
-
-;; (use-package dired-details
-;;  :ensure t
-;;  :config
-;; (setq dired-details-hide-link-targets nil)
-;;  )
-
-;; (use-package dired-details+
-;;  :ensure t
-;;  :config
-;;  )
-
-(use-package peep-dired
- :ensure t
- :config
- (setq peep-dired-ignored-extensions '("mkv" "iso" "mp4" "mp3" "flac" "FLAC" "ogg"))
-
-;;If you want the dired buffers that were peeped to have the mode enabled set it to true.
-(setq peep-dired-enable-on-directories t)
- )
 
 (use-package dired-efap
  :ensure t
@@ -647,7 +672,7 @@
  )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-async-tasks")
- (add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-dired-async")
+(add-to-list 'load-path "/home/zeltak/.emacs.g/tmtxt-dired-async")
 (require 'tmtxt-async-tasks)
 (require 'tmtxt-dired-async)
 
@@ -660,57 +685,30 @@
  
  )
 
-(use-package bf-mode
+(use-package dired-toggle-sudo
  :ensure t
  :config
-
-     ;; list up file extensions excluded from previes 
-     (setq bf-mode-except-exts
-           (append '("\\.dump$" "\\.data$" "\\.mp3$" "\\.lnk$")
-                   bf-mode-except-exts))
-
-     ;; list up file extensions which should be forced browsing
-      (setq bf-mode-force-browse-exts
-           (append '("\\.txt$" "\\.and.more...")
-                   bf-mode-force-browse-exts))
-
-     ;; browsable file size maximum
-     (setq bf-mode-browsing-size 4000) ;; 100 killo bytes
-
-     ;; browsing htmls with w3m (needs emacs-w3m.el and w3m)
-     (setq bf-mode-html-with-w3m t)
-
-     ;; browsing archive file (contents listing) verbosely
-     (setq bf-mode-archive-list-verbose t)
-
-     ;; browing directory (file listing) verbosely
-     (setq bf-mode-directory-list-verbose t)
-
-     ;; start bf-mode immediately after starting dired
-     (setq bf-mode-enable-at-starting-dired t)
-
-     ;; quitting dired directly from bf-mode
-     (setq bf-mode-directly-quit t)
-
+(require 'dired-toggle-sudo)
+ (define-key dired-mode-map (kbd "C-c C-s") 'dired-toggle-sudo)
+ (eval-after-load 'tramp
+  '(progn
+     ;; Allow to use: /sudo:user@host:/path/to/file
+     (add-to-list 'tramp-default-proxies-alist
+                  '(".*" "\\`.+\\'" "/ssh:%h:"))))
+ 
  )
 
-(use-package runner 
- :ensure t
- :config
-(require 'runner)
-
- )
-
-(use-package unify-opening 
+(use-package helm-dired-recent-dirs
  :ensure t
  :config
  
  )
 
-(use-package beginend
+(use-package image-dired+
  :ensure t
  :config
- (beginend-setup-all)
+     (eval-after-load 'image-dired+ '(image-diredx-async-mode 1))
+    (eval-after-load 'image-dired+ '(image-diredx-adjust-mode 1))
  )
 
 (use-package drag-stuff
@@ -1025,16 +1023,25 @@
 (helm-mode 1)
 ;(global-set-key (kbd "M-x") 'helm-M-x)
 (setq helm-M-x-fuzzy-match t) ;; optional fuzzy matching for helm-M-x
+(global-set-key (kbd "C-c h") 'helm-command-prefix)
+(global-unset-key (kbd "C-x c"))
+;;Autoresize
+(helm-autoresize-mode t)
+;; sets min and max helm height
+(setq helm-autoresize-max-height 60)
+(setq helm-autoresize-min-height 40)
 )
 
-(setq helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
+(setq  helm-split-window-in-side-p           t ; open helm buffer inside current window, not occupy whole other window
        helm-move-to-line-cycle-in-source     t ; move to end or beginning of source when reaching top or bottom of source.
-      helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
+       helm-scroll-amount                    8 ; scroll 8 lines other window using M-<next>/M-<prior>
        helm-ff-file-name-history-use-recentf t
 )
 
 (setq helm-buffers-fuzzy-matching t
-      helm-recentf-fuzzy-match    t)
+       helm-recentf-fuzzy-match    t)
+
+(global-set-key (kbd "C-x b") 'helm-mini)
 
 (use-package helm-cmd-t
 :ensure t
@@ -1062,6 +1069,12 @@
 (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
 (setq helm-locate-fuzzy-match t)
+
+(use-package helm-ag
+ :ensure t
+ :config
+ 
+ )
 
 (use-package helm-bibtex
  :ensure t
@@ -1130,6 +1143,12 @@
         :full-frame t
         :input "kloog kprep !unpublished"
         :candidate-number-limit 500))
+
+(use-package help-fns+
+ :ensure t
+ :config
+ 
+ )
 
 (use-package mu4e-alert
  :ensure t
@@ -1363,7 +1382,6 @@
         bibtex-autokey-titlewords 2
         bibtex-autokey-titlewords-stretch 1
         bibtex-autokey-titleword-length 5)
-
    )
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
@@ -1621,6 +1639,19 @@
 (use-package shrink-whitespace
  :ensure t
  :config
+ )
+
+(use-package shell-pop
+ :ensure t
+ :config
+ (custom-set-variables
+ '(shell-pop-default-directory "/home/zeltak/")
+ '(shell-pop-shell-type (quote ("ansi-term" "*ansi-term*" (lambda nil (ansi-term shell-pop-term-shell)))))
+ '(shell-pop-term-shell "/bin/zsh")
+ '(shell-pop-universal-key "C-t")
+ '(shell-pop-window-size 30)
+ '(shell-pop-full-span t)
+ '(shell-pop-window-position "bottom"))
  )
 
 (use-package smex
@@ -3347,6 +3378,35 @@ org-files and bookmarks"
 (mu4e)
 (mu4e-headers-search "maildir:/INBOX AND flag:flagged "))
 
+;; taken from here: http://www.enigmacurry.com/2008/12/26/emacs-ansi-term-tricks/
+(defun z/visit-ansi-term ()
+  "If the current buffer is:
+     1) a running ansi-term named *ansi-term*, rename it.
+     2) a stopped ansi-term, kill it and create a new one.
+     3) a non ansi-term, go to an already running ansi-term
+        or start a new one while killing a defunt one"
+  (interactive)
+  (let ((is-term (string= "term-mode" major-mode))
+        (is-running (term-check-proc (buffer-name)))
+        (term-cmd "/bin/zsh")
+        (anon-term (get-buffer "*ansi-term*")))
+    (if is-term
+        (if is-running
+            (if (string= "*ansi-term*" (buffer-name))
+                ;; (call-interactively 'rename-buffer)
+                (ansi-term term-cmd)
+              (if anon-term
+                  (switch-to-buffer "*ansi-term*")
+                (ansi-term term-cmd)))
+          (kill-buffer (buffer-name))
+          (ansi-term term-cmd))
+      (if anon-term
+          (if (term-check-proc "*ansi-term*")
+              (switch-to-buffer "*ansi-term*")
+            (kill-buffer "*ansi-term*")
+            (ansi-term term-cmd))
+        (ansi-term term-cmd)))))
+
 (defun my-yas-get-first-name-from-to-field ()
   (let ((rlt "AGENT_NAME") str)
     (save-excursion
@@ -3431,6 +3491,11 @@ org-files and bookmarks"
     '((t (:foreground "orange" :bold t)))
   "Orange face. For fun.")
 
+(defface hydra-face-brown
+    '((t (:foreground "brown" :bold t)))
+  "brown.")
+
+
 (defface hydra-face-red
     '((t (:foreground "red" :bold t)))
   "red face. For fun.")
@@ -3448,11 +3513,13 @@ LEADER:【C-A-W】-append to killring
 helm-projectile-recentf 【C-c p e】
 "
 ("\]" z/insert-slsh "insert \\")
-("<backspace>"   "empty")
+("<backspace>" helm-all-mark-rings "all mark rings")
 ("\\"  avy-goto-char-timer  "avy jump")
 ("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
 ("a" nil )
-;("c"  company-complete )
+("b" helm-bm "helm" )
+("B" bm-show "bm show" )
+("v"  bm-toggle "add bm")
 ("c"  nil )
 ("f"  link-hint-open-link "open link" )
 ("g"  hydra-goto/body )
@@ -3464,7 +3531,7 @@ helm-projectile-recentf 【C-c p e】
 ("l"  avy-goto-line "jump line" )
 ("m"  helm-mark-ring "HELM mark ")
 ("n"  set-mark-command "mark position")
-("b"  set-mark-command 4 "mark prev" )
+("N"  set-mark-command 4 "mark prev" )
 ("o"  helm-projectile-find-file "proj ff【C-c p f】" )
 ("p"  helm-projectile "proj【C-c p h】"  ) 
 ("P"  helm-projectile-switch-project   "proj switch 【C-c p p】")
@@ -3474,7 +3541,6 @@ helm-projectile-recentf 【C-c p e】
 ("s"  nil )
 ("t"  helm-top "top")
 ("u"  nil )
-("v"  nil)
 ("w"  wrap-region "wrap symbol" )
 ("x"  nil )
 ("k"  helm-show-kill-ring "kill ring")
@@ -3489,6 +3555,7 @@ helm-projectile-recentf 【C-c p e】
 (defhydra hydra-toggles (:color blue  :columns 6)
 "Toggles:   【M-g M-g】 goto line 【C-x SPACE】 start mark rectangle 
 easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//【C-space】 turn selection to region// 【M-3】easy-mark
+Term: 【C-c C-j】-activate Emacs mode 【C-c C-k】 back to normal term mode 
 "
 ("a" pandoc-mode "pandoc"  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
@@ -3510,6 +3577,7 @@ easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//�
 ("O" org-mode "org-mode" )
 ("p" list-packages "elpa"  )
 ("r" read-only-mode "read-only")
+("R" helm-regexp "regex builder")
 ("s" scratch "scratch")
 ("S" create-scratch-buffer "New scratch" )
 ("u" electric-pair-mode "electric-pair")
@@ -3713,7 +3781,7 @@ Bib:
 
 ("<f6>" helm-bibtex "helm-bibtex")
 ("a" nil )
-("b"  nil  )
+("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file" )
 ("c"  org-ref-clean-bibtex-entry "clean bib" )
 ("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
 ("e"  ebib )
@@ -3761,7 +3829,9 @@ Bib:
    (kbd "<f8>")
 (defhydra  hydra-open  (:color blue :hint nil :columns 4)
 "
-BKMK Menu
+【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
+【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
+【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm resume
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
@@ -3774,7 +3844,7 @@ BKMK Menu
 ("e"  nil )
 ("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
-("h"  nil )
+("h"   )
 ("i"  nil )
 ("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
@@ -4243,6 +4313,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("3" helm-multi-swoop-org "find word@point in org agenda")
   ("a" helm-apropos "Helm-Apropos")
   ("d" helm-do-grep "helm-grep" )
+  ("g" helm-do-ag-project-root "search in porject" )
   ("l" helm-locate "helm-locate")
   ("L" counsel-locate "council-locate")
   ("o" helm-occur "helm Occur")
@@ -5612,6 +5683,13 @@ scroll-step 1)
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
 
+;; Allow running multiple async commands simultaneously
+(defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
+  (when (get-buffer "*Async Shell Command*")
+    (with-current-buffer "*Async Shell Command*"
+      (rename-uniquely))))
+(ad-activate 'shell-command)
+
 (setq-default dired-omit-mode t)
 
 ;To activate it, add this to your .emacs
@@ -5688,29 +5766,41 @@ scroll-step 1)
       (dired-find-file))))
 
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
-(define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
-(define-key dired-mode-map (kbd "/") 'dired-narrow )
-(define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
-(define-key dired-mode-map (kbd  "`") 'hydra-dired-leader/body )
-(define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
-(define-key dired-mode-map (kbd  "<f1>") 'dired-do-async-shell-command   )
-(define-key dired-mode-map (kbd  "<f2>") 'dired-efap   )
-(define-key dired-mode-map (kbd  "y") 'dired-ranger-copy )
-(define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
+ (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
+ (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
+;; (define-key dired-mode-map (kbd "/") 'isearch-forward )
+ (define-key dired-mode-map (kbd "/") 'dired-narrow )
+ (define-key dired-mode-map (kbd "S-.") 'helm-dired-recent-dirs-view )
+ (define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
+ (define-key dired-mode-map (kbd  "`") 'hydra-dired-leader/body )
+ (define-key dired-mode-map (kbd  "<f1>") 'dired-do-async-shell-command   )
+ (define-key dired-mode-map (kbd  "<f2>") 'dired-efap   )
+ (define-key dired-mode-map (kbd  "<f3>") 'dired-view-file   )
+ (define-key dired-mode-map (kbd  "<f5>") 'dired-do-copy  )
+ (define-key dired-mode-map (kbd  "<f6>") 'dired-do-rename  )
+ (define-key dired-mode-map (kbd  "<f7>") 'dired-create-directory  )
+ (define-key dired-mode-map (kbd  "<f9>") 'eshell  )
+ (define-key dired-mode-map (kbd  "y") 'tda/rsync-multiple-mark-file )
+ (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
+ (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
 
 (global-set-key
     (kbd "")
  (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
  "
- for ranger-copies using 【C-u】 saves the content of the clip after the paste
-to open via dired-open: dired-open-by-extension
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
+【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
+【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
+【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
  "
- ("." hydra-dired-operations/body "dired operations" )
+ ("1" hydra-dired-operations/body "dired operations" )
  ("a" dired-mark-subdir-files "mark all" )
  ("c"  nil )
  ("z" hydra-dired-filter/body "filter menu")
- ("j"  nil )
+ ("h"  nil )
  ("o" z/dired-open-in-desktop "open with FM" )
  ("s"  z/dired-sort-menu "sort menu" )
  ("n"  z/dired-get-size "get size" )
@@ -5719,8 +5809,7 @@ to open via dired-open: dired-open-by-extension
  ("y"  dired-ranger-copy "copy2clip")
  ("p"  dired-ranger-paste "paste_F_clip")
  ("d" dired-ranger-move "move2clip")
- ("f"   z/dired-shell-fb "fb" )
- ("e"   peep-dired "peep" )
+ ("f" z/dired-shell-fb "fb" )
  ("x"   z/dired-shell-chmodx "+x" )
 ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
 (";"  nil )
@@ -5732,13 +5821,16 @@ to open via dired-open: dired-open-by-extension
       "
 Filter by:
       "
-     ("e" dired-filter-by-extension  "extension 【/.】" ) 
-     ("r" dired-filter-by-regexp  "regex 【/r】" ) 
-     ("f" dired-filter-by-file  "file 【/f】" ) 
-     ("n" dired-filter-by-name  "name 【/n】" ) 
+     ("e" dired-filter-by-extension  "extension"  :face 'hydra-face-brown ) 
+     ("r" dired-filter-by-regexp  "regex" :face 'hydra-face-brown ) 
+     ("f" dired-filter-by-file  "file"  :face 'hydra-face-brown ) 
+     ("n" dired-filter-by-name  "name"  :face 'hydra-face-brown ) 
      ("S" dired-filter-save-filters  "save filter" ) 
-     ("l" dired-filter-load-saved-filters  "load filter" ) 
-     ("L" dired-filter-add-saved-filters "add ontop filter" ) 
+     ("l" dired-filter-load-saved-filters  "load filter"  :face 'hydra-face-brown ) 
+     ("L" dired-filter-add-saved-filters "add ontop filter"  :face 'hydra-face-brown ) 
+     ("z" dired-filter-mode "toggle (clear) filter"  :face 'hydra-face-brown ) 
+     ("d" find-name-dired  "find file dired" ) 
+     ("g" find-grep-dired  "find grep dired" ) 
       ("q" nil "cancel" nil)
  )
 
@@ -5757,6 +5849,8 @@ Filter by:
       "
      ("o" z/del-nonorg-files  "delete non org" ) 
      ("m" 'z/dired-media-info  "media-info" ) 
+     ("cd" ' z/dired-shell-doc2docx  "doc2docx" ) 
+     ("cp" ' z/dired-shell-pdf2text  "pdf2text" ) 
      ("is" 'xah-dired-scale-image  "scale" ) 
      ("ic" 'xah-dired-image-autocrop  "autocrop" ) 
      ("ij" 'xah-dired-2jpg  "to-jpg" ) 
@@ -5937,38 +6031,13 @@ The app is chosen from your OS's preference."
  ;; (add-hook 'dired-mode-hook '(lambda () 
  ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
 
-;; (defun z/dired-fb-upload ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "fb %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input)
-;;       (shell-command "notify-send fb uploaded")
-;; )))
-
 (defun z/dired-shell-chmodx ()
     "chmod"
     (interactive)
     (shell-command (concat "chmod +x " (dired-file-name-at-point)))
+     (revert-buffer)
     (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
 )
-
-;; (defun z/dired-fb-upload ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "fb %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input)
-;;       (shell-command "notify-send fb uploaded")
-;; )))
 
 (defun z/dired-ssh-qnap ()
     "chmod"
@@ -6244,6 +6313,41 @@ Version 2015-03-10"
      (list myFileList) )
    )
   (xah-process-image φfile-list "" "-2" ".jpg" ))
+
+(defun  z/dired-shell-doc2docx ()
+    "Uses fb to upload file at point."
+    (interactive)
+    (shell-command (concat "libreoffice --headless --convert-to docx " (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+(defun  z/dired-shell-pdf2text ()
+    "Uses fb to upload file at point."
+    (interactive)
+    (shell-command (concat "pdftotext " (dired-file-name-at-point))))
+
+ ;; (add-hook 'dired-mode-hook '(lambda () 
+ ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+
+(defun  z/dired-shell-ncdu ()
+     "ncdu"
+     (interactive)
+   (z/visit-ansi-term)
+(term-send-input)
+    (insert "ncdu" )
+(term-send-input)
+
+)
+
+(defun  z/dired-shell-sshfs-qnap ()
+     "ssh qnap"
+     (interactive)
+   (z/visit-ansi-term)
+(term-send-input)
+    (insert "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid  " )
+(term-send-input)
+)
 
 ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
 
