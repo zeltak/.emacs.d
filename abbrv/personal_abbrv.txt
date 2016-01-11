@@ -347,6 +347,7 @@
     ("claerly" "clearly" nil 0)
     ("cliant" "client" nil 0)
     ("cliche" "cliche" nil 0)
+    ("climbea" "climbed" nil 0)
     ("clustres" "clusters" nil 0)
     ("clustring" "clustering" nil 0)
     ("cna" "can" nil 0)
@@ -1290,6 +1291,8 @@
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
 (define-abbrev-table 'gscholar-bibtex-mode-abbrev-table '())
+
+(define-abbrev-table 'helm-ag-mode-abbrev-table '())
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
 

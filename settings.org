@@ -1506,10 +1506,200 @@ for projectile fuzzy match
  #+END_SRC
 **** helm occur
 no config needed
-** helm-ag
-https://github.com/syohex/emacs-helm-ag
+*** helm-ag
+ https://github.com/syohex/emacs-helm-ag
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-ag
+  :ensure t
+  :config
+ 
+  )
+ #+END_SRC 
+
+
+*** helm bibtex
+ https://github.com/tmalsburg/helm-bibtex
+
+**** settings
+
+ Helm-bibtex assumes that the name of a PDF consists of the BibTeX key followed by the suffix .pdf. For example, if a BibTeX entry has the key Darwin1859, helm-bibtex searches for Darwin1859.pdf.
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-bibtex
+  :ensure t
+  :config
+
+ ;;;if not installing through MELPA
+ ;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
+
+ ;;; telling helm-bibtex where your bibliographies can be found:
+ (setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.2015.misc.bib" ))
+
+ ;;Specify where PDFs can be found:
+ (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
+
+ ;;;If the BibTeX entries have a field that specifies the full path to the PDFs, that field can also be used
+ (setq helm-bibtex-pdf-field "File")
+
+ ;;;; Note files
+ (setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes")
+ (setq helm-bibtex-notes-extension ".org")
+
+ (setq helm-bibtex-format-citation-functions
+   '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
+     (latex-mode    . helm-bibtex-format-citation-cite)
+     (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
+     (default       . helm-bibtex-format-citation-default)))
+
+ ;;Fields used for searching
+ (setq helm-bibtex-additional-search-fields '(tags))
+
+ ;;;Symbols used for indicating the availability of notes and PDF files
+ (setq helm-bibtex-pdf-symbol "𝍌")
+ (setq helm-bibtex-notes-symbol "✎")
+
+ ;;set default browser
+ (setq helm-bibtex-browser-function
+   (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
+ ;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
+
+
+  )
+ #+END_SRC 
+
+**** my papers 
+ this example below also restricts to a specific bib file
+
+ #+BEGIN_SRC emacs-lisp :results none
+  (defun helm-bibtex-ikloog-publications ()
+    "Search BibTeX entries authored by me"
+    (interactive)
+ (let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+    (helm :sources '(helm-source-bibtex)
+          :full-frame t
+          :input "kloog !kprep !ktalk !kconf !unpublished"
+          :candidate-number-limit 500)))
+
+ #+END_SRC
+
+**** my papers (all)
+ #+BEGIN_SRC emacs-lisp :results none
+
+  ;; Define helm-search with predefined search expression:
+  (defun helm-bibtex-ikloog-publications-all ()
+    "Search BibTeX entries authored by me (ALL including prep)"
+    (interactive)
+    (helm :sources '(helm-source-bibtex)
+          :full-frame t
+          :input "kloog !unpublished"
+          :candidate-number-limit 500))
+ #+END_SRC
+
+**** my prepared maunscripts
+ #+BEGIN_SRC emacs-lisp :results none
+
+  ;; Define helm-search with predefined search expression:
+  (defun helm-bibtex-ikloog-prep         ()
+    "Search BibTeX entries in preperation with me"
+    (interactive)
+    (helm :sources '(helm-source-bibtex)
+          :full-frame t
+          :input "kloog kprep !unpublished"
+          :candidate-number-limit 500))
+
+  #+END_SRC
+*** helm-grepint
+ https://github.com/kopoli/helm-grepint
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-grepint
+  :ensure t
+  :config
+      (require 'helm-grepint)
+     (helm-grepint-set-default-config)
+     (global-set-key (kbd "C-c g") #'helm-grepint-grep)
+     (global-set-key (kbd "C-c G") #'helm-grepint-grep-root)
+  )
+ #+END_SRC 
+ Key bindings within helm:
+
+ RET selects an item and closes the helm session.
+ Right arrow selects the item, but does not close the helm session. This is similar as helm-occur.
+*** helm-fuzzier
+ https://github.com/EphramPerdition/helm-fuzzier
+
+ better fuzzy matching for helm
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-fuzzier
+  :ensure t
+  :config
+  (require 'helm-fuzzier)
+   (helm-fuzzier-mode 1)
+  )
+ #+END_SRC 
+
+ helm-fuzzier will only enhance matching for sources that have fuzzy-matching enabled, so be sure to enable fuzzy-matching for the sources you're interested in by setting the appropriate variable (helm-M-x-fuzzy-match, helm-mode-fuzzy-match, helm-apropos-fuzzy-match, etc').
+
+*** helm-swoop
+ https://github.com/ShingoFukuyama/helm-swoop
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-swoop
+  :ensure t
+  :config
+ ;; Move up and down like isearch
+ (define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
+ (define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
+ (define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
+ (define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
+
+ ;; From helm-swoop to helm-multi-swoop-all
+ (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+
+ ;; Save buffer when helm-multi-swoop-edit complete
+ (setq helm-multi-swoop-edit-save t)
+
+ ;; If nil, you can slightly boost invoke speed in exchange for text color
+ (setq helm-swoop-speed-or-color nil)
+
+
+  )
+ #+END_SRC 
+ helm-multi-swoop
+
+ Select any buffers by [C-SPC] or [M-SPC]
+ Press [RET] to start helm-multi-swoop
+
+ Edit mode
+
+ While doing helm-swoop type C-c C-e to enter the edit mode. Before enter the edit mode, you can choose some lines marked by C-SPC or M-SPC to edit. Apply changes to original buffer type C-x C-s.
+
+*** helm mu
+ https://github.com/emacs-helm/helm-mu
+
+ When you would like to read an email without finishing the helm session, you can select the email and press ~Ctrl-z~
+ To search for contacts use `helm-mu-contacts`
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-mu
+  :ensure t
+  :config
+   )
+ #+END_SRC
+*** helm-projectile
+
+ #+BEGIN_SRC emacs-lisp :results none
+ (use-package helm-projectile
+  :ensure t
+  :config
+ 
+  )
+ #+END_SRC
+*** helm-flyspell
+
 #+BEGIN_SRC emacs-lisp :results none
-(use-package helm-ag
+(use-package helm-flyspell
  :ensure t
  :config
  
@@ -1517,97 +1707,6 @@ https://github.com/syohex/emacs-helm-ag
 #+END_SRC 
 
 
-** helm bibtex
-https://github.com/tmalsburg/helm-bibtex
-
-*** settings
-
-Helm-bibtex assumes that the name of a PDF consists of the BibTeX key followed by the suffix .pdf. For example, if a BibTeX entry has the key Darwin1859, helm-bibtex searches for Darwin1859.pdf.
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-bibtex
- :ensure t
- :config
-
-;;;if not installing through MELPA
-;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
-
-;;; telling helm-bibtex where your bibliographies can be found:
-(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.2015.misc.bib" ))
-
-;;Specify where PDFs can be found:
-(setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
-
-;;;If the BibTeX entries have a field that specifies the full path to the PDFs, that field can also be used
-(setq helm-bibtex-pdf-field "File")
-
-;;;; Note files
-(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes")
-(setq helm-bibtex-notes-extension ".org")
-
-(setq helm-bibtex-format-citation-functions
-  '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
-    (latex-mode    . helm-bibtex-format-citation-cite)
-    (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
-    (default       . helm-bibtex-format-citation-default)))
-
-;;Fields used for searching
-(setq helm-bibtex-additional-search-fields '(tags))
-
-;;;Symbols used for indicating the availability of notes and PDF files
-(setq helm-bibtex-pdf-symbol "𝍌")
-(setq helm-bibtex-notes-symbol "✎")
-
-;;set default browser
-(setq helm-bibtex-browser-function
-  (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
-;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
-
-
- )
-#+END_SRC 
-
-*** my papers 
-this example below also restricts to a specific bib file
-
-#+BEGIN_SRC emacs-lisp :results none
- (defun helm-bibtex-ikloog-publications ()
-   "Search BibTeX entries authored by me"
-   (interactive)
-(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
-   (helm :sources '(helm-source-bibtex)
-         :full-frame t
-         :input "kloog !kprep !ktalk !kconf !unpublished"
-         :candidate-number-limit 500)))
-
-#+END_SRC
-
-*** my papers (all)
-#+BEGIN_SRC emacs-lisp :results none
-
- ;; Define helm-search with predefined search expression:
- (defun helm-bibtex-ikloog-publications-all ()
-   "Search BibTeX entries authored by me (ALL including prep)"
-   (interactive)
-   (helm :sources '(helm-source-bibtex)
-         :full-frame t
-         :input "kloog !unpublished"
-         :candidate-number-limit 500))
-#+END_SRC
-
-*** my prepared maunscripts
-#+BEGIN_SRC emacs-lisp :results none
-
- ;; Define helm-search with predefined search expression:
- (defun helm-bibtex-ikloog-prep         ()
-   "Search BibTeX entries in preperation with me"
-   (interactive)
-   (helm :sources '(helm-source-bibtex)
-         :full-frame t
-         :input "kloog kprep !unpublished"
-         :candidate-number-limit 500))
-
- #+END_SRC
 ** help-fns+
 http://www.emacswiki.org/emacs/help-fns+.el
 
@@ -1643,96 +1742,6 @@ https://github.com/iqbalansari/mu4e-alert
 (defun alert-fringe-restore (info)
   (copy-face 'alert-saved-fringe-face 'fringe))
 #+END_SRC
-
-** helm mu
-https://github.com/emacs-helm/helm-mu
-
-When you would like to read an email without finishing the helm session, you can select the email and press ~Ctrl-z~
-To search for contacts use `helm-mu-contacts`
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-mu
- :ensure t
- :config
-  )
-#+END_SRC
-** helm-fuzzier
-https://github.com/EphramPerdition/helm-fuzzier
-
-better fuzzy matching for helm
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-fuzzier
- :ensure t
- :config
- (require 'helm-fuzzier)
-  (helm-fuzzier-mode 1)
- )
-#+END_SRC 
-
-helm-fuzzier will only enhance matching for sources that have fuzzy-matching enabled, so be sure to enable fuzzy-matching for the sources you're interested in by setting the appropriate variable (helm-M-x-fuzzy-match, helm-mode-fuzzy-match, helm-apropos-fuzzy-match, etc').
-
-** helm-grepint
-https://github.com/kopoli/helm-grepint
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-grepint
- :ensure t
- :config
-     (require 'helm-grepint)
-    (helm-grepint-set-default-config)
-    (global-set-key (kbd "C-c g") #'helm-grepint-grep)
-    (global-set-key (kbd "C-c G") #'helm-grepint-grep-root)
- )
-#+END_SRC 
-Key bindings within helm:
-
-RET selects an item and closes the helm session.
-Right arrow selects the item, but does not close the helm session. This is similar as helm-occur.
-** helm-swoop
-https://github.com/ShingoFukuyama/helm-swoop
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-swoop
- :ensure t
- :config
-;; Move up and down like isearch
-(define-key helm-swoop-map (kbd "C-r") 'helm-previous-line)
-(define-key helm-swoop-map (kbd "C-s") 'helm-next-line)
-(define-key helm-multi-swoop-map (kbd "C-r") 'helm-previous-line)
-(define-key helm-multi-swoop-map (kbd "C-s") 'helm-next-line)
-
-;; From helm-swoop to helm-multi-swoop-all
-(define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
-
-;; Save buffer when helm-multi-swoop-edit complete
-(setq helm-multi-swoop-edit-save t)
-
-;; If nil, you can slightly boost invoke speed in exchange for text color
-(setq helm-swoop-speed-or-color nil)
-
-
- )
-#+END_SRC 
-helm-multi-swoop
-
-Select any buffers by [C-SPC] or [M-SPC]
-Press [RET] to start helm-multi-swoop
-
-Edit mode
-
-While doing helm-swoop type C-c C-e to enter the edit mode. Before enter the edit mode, you can choose some lines marked by C-SPC or M-SPC to edit. Apply changes to original buffer type C-x C-s.
-
-** helm-projectile
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package helm-projectile
- :ensure t
- :config
- 
- )
-#+END_SRC 
-
 
 ** Highlight symbol
 https://github.com/nschum/highlight-symbol.el
@@ -4588,6 +4597,14 @@ org-files and bookmarks"
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 #+END_SRC
+*** helm-ag-prefix
+#+BEGIN_SRC emacs-lisp :results none
+(defun z/helm-mg-prefix  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'helm-ag)))
+#+END_SRC
+
 ** isearch
 #+BEGIN_SRC emacs-lisp :results none
 (defun isearch-delete-something ()
@@ -5026,7 +5043,6 @@ _q_:
   (global-set-key
   (kbd "<f3>")
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
-
   "
 【C-SPACE】 recntangle select // 【C-;】 ispell cycle // 【C-x z】 repeat last command- keep press 【z】to repeat
  "
@@ -5035,10 +5051,10 @@ _q_:
   ("<f4>" z/flyspell-goto-previous-error "goto prev error" )
   ("c"  cycle-spacing "cycle spacing")
   ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
-  ("f"  helm-find-files "Helm FF" )
   ("g"  rgrep "Rgrep")
   ("h"  highlight-symbol "HS symbol")
   ("H"  highlight-symbol-remove-all "HS remove")
+  ("f"  helm-flyspell-correct "helm-flyspell")
   ("i"  ispell "ispell")
   ("j"  highlight-symbol-next  :color red  "HS Next")
   ("k"  highlight-symbol-prev  :color red  "HS Prev")
@@ -5181,16 +5197,15 @@ Bib:
 
 
 *** bookmark hydra (F8)
-whats this:  (global-set-key (kbd "C-c h") 'helm-command-prefix)
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
    (kbd "<f8>")
 (defhydra  hydra-open  (:color blue :hint nil :columns 4)
 "
-【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
+【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
 【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
-【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm resume
+【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm res
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
@@ -5203,7 +5218,7 @@ whats this:  (global-set-key (kbd "C-c h") 'helm-command-prefix)
 ("e"  nil )
 ("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
-("h"   )
+("h"  nil )
 ("i"  nil )
 ("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
@@ -5798,13 +5813,16 @@ pop-global-mark this will move you to prev position
   ("1" helm-swoop "find word@point in document")
   ("2" helm-multi-swoop  "find word@point in selected documents")
   ("3" helm-multi-swoop-org "find word@point in org agenda")
-  ("a" helm-apropos "Helm-Apropos")
-  ("d" helm-do-grep "helm-grep" )
-  ("g" helm-do-ag-project-root "search in porject" )
+  ("a" helm-ag "Helm-ag")
+  ("d" z/helm-mg-prefix "helm-ag-recursive" )
+  ("D" helm-do-ag-project-root "helm-ag in porject" )
+  ("g" helm-do-grep "helm-grep" )
+  ("f"  helm-find-files "Helm FF" )
   ("l" helm-locate "helm-locate")
   ("L" counsel-locate "council-locate")
   ("o" helm-occur "helm Occur")
   ("O"  org-occur "org-occur" )
+  ("P" helm-apropos "Helm-Apropos")
   ("n"  helm-swish-e "swish")
   ("r" rgrep "rgrep")
   ("R" anzu-query-replace-at-cursor "Replace@cursor")
