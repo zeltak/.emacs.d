@@ -3232,29 +3232,29 @@ http://endlessparentheses.com/ispell-and-abbrev-the-perfect-auto-correct.html
 this will store the abbrevs here: 
 file:/home/zeltak/.emacs.d/abbrv/personal_abbrv.txt
 
- #+BEGIN_SRC emacs-lisp :results none
-; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
+#+BEGIN_SRC emacs-lisp  :results none
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (progn
+               (backward-word)
+               (and (setq bef (thing-at-point 'word))
+                    (not (ispell-word nil 'quiet)))))
+      (setq aft (thing-at-point 'word)))
+    (when (and aft bef (not (equal aft bef)))
+      (setq aft (downcase aft))
+      (setq bef (downcase bef))
+      (define-abbrev
+        (if p local-abbrev-table global-abbrev-table)
+        bef aft)
+      (message "\"%s\" now expands to \"%s\" %sally"
+               bef aft (if p "loc" "glob")))))
 
- (define-prefix-command 'endless/toggle-map)
- ;; The manual recommends C-c for user keys, but C-x t is
- ;; always free, whereas C-c t is used by some modes.
- (define-key ctl-x-map "t" 'endless/toggle-map)
- (define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
-
- (defun endless/ispell-word-then-abbrev (p)
-   "Call `ispell-word'. Then create an abbrev for the correction made.
- With prefix P, create local abbrev. Otherwise it will be global."
-   (interactive "P")
-   (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-     (call-interactively 'ispell-word)
-     (setq aft (downcase (or (thing-at-point 'word) "")))
-     (unless (string= aft bef)
-       (message "\"%s\" now expands to \"%s\" %sally"
-		bef aft (if p "loc" "glob"))
-       (define-abbrev
-         (if p local-abbrev-table global-abbrev-table)
-         bef aft))))
- #+END_SRC
+#+END_SRC
 
 *** common used regex
 **** delete all numeric characters
@@ -5143,7 +5143,8 @@ Bib:
 
 ("<f6>" helm-bibtex "helm-bibtex")
 ("a" nil )
-("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file" )
+("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file"   :face 'hydra-face-brown )
+("m" (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "ikloog-bitex file"  :face 'hydra-face-brown )
 ("c"  org-ref-clean-bibtex-entry "clean bib" )
 ("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
 ("e"  ebib )
@@ -5152,13 +5153,12 @@ Bib:
 ("h"  nil )
 ("i"  nil )
 ("j"  nil )
-("k"  helm-bibtex-ikloog-publications "kloog papers" )
-("K"  helm-bibtex-ikloog-publications-all "kloog ALL")
+("k"  helm-bibtex-ikloog-publications "kloog papers"  :face 'hydra-face-green )
+("K"  helm-bibtex-ikloog-publications-all "kloog ALL"  :face 'hydra-face-green )
 ("l"  nil )
-("m"  nil )
 ("n"  org-bibtex-create "new bib entry")
 ("o"  nil )
-("p"  helm-bibtex-ikloog-prep "kloog prep")
+("p"  helm-bibtex-ikloog-prep "kloog prep"  :face 'hydra-face-green )
 ("r"  helm-resume "helm resume")
 ("s"  bibtex-sort-buffer "sort buffer")
 ("t"  nil )
@@ -5403,11 +5403,11 @@ _q_: quit
  #+BEGIN_SRC emacs-lisp :results none
   (defhydra hydra-org-time (:color blue)
     "time command"
-    ("a"  org-timestamp-select "select time stamp")
-    ("s" org-timestamp-now  "timestamp current" )
-    ("i" z-insert-date "insert current data")  
+    ("s"  org-time-stamp "agenda date")
+    ("X" org-time-stamp-inactive  "stamp date" )
+    ("Y" z-insert-date "insert current data")  
     ("d" org-deadline  "set deadline")  
-    ("i" org-schedule  "set schedule")  
+    ("f" org-schedule  "set schedule")  
     ("q" nil "cancel")
  )
  #+END_SRC
@@ -6286,10 +6286,10 @@ this will make org-store-link use id when creating a link.
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-agenda-files '("~/org/files/agenda/"))
 #+END_SRC
-*** agenda popup behivour
+*** TODO agenda popup behivour
 #+BEGIN_SRC emacs-lisp :results none
-(setq org-agenda-window-setup "current-window")
-(setq org-agenda-restore-windows-after-quit t)
+;(setq org-agenda-window-setup "current-window")
+;(setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
 
 *** agenda view
@@ -6721,10 +6721,12 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)"  "|" "DONE(d)")
               (sequence "TASK(f)" "|" "DONE(d)")
+              (sequence "STUD(s)" "|" "DONE(d)")
 )))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("TASK" :foreground "magenta" :weight bold)
+              ("STUD" :foreground "orchid" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
               ("PAUSED" :foreground "gray" :weight bold)
               ("SUBMITTED" :foreground "#FFC612" :weight bold)
@@ -6933,18 +6935,29 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
    )
 
 ;;;;---------------------------------------------------------------------------
+;;;; meetings
+
+  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
+   "* %?\n%^T" )
+
+  ("M" "recurring" entry (file+headline "~/org/files/agenda/meetings.org" "Recurring")
+   "* %?\n%^T" )
+
+
+;;;;---------------------------------------------------------------------------
 ;;;; Tech  Todos
 
   ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
    "*  %^{Description}" )
 
-  ;;;; Home Todos
+;;;;---------------------------------------------------------------------------
+;;;; Home Todos
 
   ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
    "* TODO  %?\n%T" )
 
-
-  ;;; Uni todos
+;;;;---------------------------------------------------------------------------
+;;; Uni todos
 
   ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
    "* TODO  %?\n%T" )
@@ -6963,21 +6976,21 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 ;;;;---------------------------------------------------------------------------
 
   ;;;;; media related 
-  ("m" "Media")
+  ("d" "Media")
 
-  ("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+  ("dm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
    "*  %^{Description}  " )
 
-  ("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+  ("dp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
    "*   %^{Description}   :Pre_Release: " )
 
-  ("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+  ("dt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
    "*  %^{Description}" )
 
-  ("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+  ("ds" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
    "*  %^{Description}" )
 
-  ("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+  ("dc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
    "*  %^{Description}" )
 
 
@@ -7294,12 +7307,19 @@ Other interesting characters are ↴, ⬎, ⤷, and ⋱.
 #+BEGIN_SRC emacs-lisp :results none
 ;(setq org-export-in-background t)
 #+END_SRC
-*** add ODT, beamer etc  exporters
+*** extra exporters; ODT, beamer etc  exporters
 **** add (require) specific models. 
 #+BEGIN_SRC emacs-lisp :results none
 (require 'ox-odt)
 (require 'ox-beamer)
 (require 'ox-latex)
+
+#+END_SRC
+**** odt defaule export format 
+#+BEGIN_SRC emacs-lisp  :results none
+;; org v8 bundled with Emacs 24.4
+(setq org-odt-preferred-output-format "docx")
+;; BTW, you can assign "pdf" in above variables if you prefer PDF format
 
 #+END_SRC
 **** koma
@@ -8552,9 +8572,13 @@ http://stackoverflow.com/questions/1431351/how-do-i-uncompress-unzip-within-emac
 ** global 
 #+BEGIN_SRC emacs-lisp :results none
 ;; stop asking whether to save newly added abbrev when quitting emacs
-(setq save-abbrevs t)
+;(setq save-abbrevs t)
+(setq save-abbrevs 'silently)
+
 ;; turn on abbrev mode globally
 (setq-default abbrev-mode t)
+
+
 #+END_SRC
 
 ** personal abbriviations
@@ -9109,5 +9133,29 @@ $Note-if you see starnge behivour this maybe a culprit$
  '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10"))) 
 
 #+END_SRC
-
+*** Functions
+#+BEGIN_SRC emacs-lisp  :results none
+;; Function to return first name of email recipient
+;; Used by yasnippet
+;; Based closely on
+;; http://blog.binchen.org/posts/how-to-use-yasnippets-to-produce-email-templates-in-emacs.html
+(defun my-yas-get-first-name-from-to-field ()
+  (let ((rlt "NAME") str rlt2)
+    (save-excursion
+      (goto-char (point-min))
+      ;; first line in email could be some hidden line containing NO to field
+      (setq str (buffer-substring-no-properties (point-min) (point-max))))
+    ;; take name from TO field
+    (when (string-match "^To: \"?\\([^ ,]+\\)" str)
+      (setq rlt (match-string 1 str)))
+    ;;get name in FROM field if available
+    (when (string-match "^\\([^ ,\n]+\\).+writes:$" str)
+      (progn (setq rlt2 (match-string 1 str))
+             ;;prefer name in FROM field if TO field has "@"
+             (when (string-match "@" rlt)
+               (setq rlt rlt2))
+             ))
+    (message "rlt=%s" rlt)
+    rlt))
+#+END_SRC
 

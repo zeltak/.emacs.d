@@ -1073,7 +1073,7 @@
 (use-package helm-ag
  :ensure t
  :config
- 
+
  )
 
 (use-package helm-bibtex
@@ -1144,40 +1144,6 @@
         :input "kloog kprep !unpublished"
         :candidate-number-limit 500))
 
-(use-package help-fns+
- :ensure t
- :config
- 
- )
-
-(use-package mu4e-alert
- :ensure t
- :config
-;; Choose the style you prefer for desktop notifications
-(mu4e-alert-set-default-style 'libnotify)
-(add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
-(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
-;;below will color the fringe (left side of an Emacs window)..worked but couldn't see how to disable it
-;;;(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
-(mu4e-alert-enable-notifications)
-
- )
-
-(defun alert-fringe-restore (info)
-  (copy-face 'alert-saved-fringe-face 'fringe))
-
-(use-package helm-mu
- :ensure t
- :config
-  )
-
-(use-package helm-fuzzier
- :ensure t
- :config
- (require 'helm-fuzzier)
-  (helm-fuzzier-mode 1)
- )
-
 (use-package helm-grepint
  :ensure t
  :config
@@ -1185,6 +1151,13 @@
     (helm-grepint-set-default-config)
     (global-set-key (kbd "C-c g") #'helm-grepint-grep)
     (global-set-key (kbd "C-c G") #'helm-grepint-grep-root)
+ )
+
+(use-package helm-fuzzier
+ :ensure t
+ :config
+ (require 'helm-fuzzier)
+  (helm-fuzzier-mode 1)
  )
 
 (use-package helm-swoop
@@ -1208,11 +1181,44 @@
 
  )
 
+(use-package helm-mu
+ :ensure t
+ :config
+  )
+
 (use-package helm-projectile
+ :ensure t
+ :config
+
+ )
+
+(use-package helm-flyspell
  :ensure t
  :config
  
  )
+
+(use-package help-fns+
+ :ensure t
+ :config
+ 
+ )
+
+(use-package mu4e-alert
+ :ensure t
+ :config
+;; Choose the style you prefer for desktop notifications
+(mu4e-alert-set-default-style 'libnotify)
+(add-hook 'after-init-hook #'mu4e-alert-enable-notifications) 
+(add-hook 'after-init-hook #'mu4e-alert-enable-mode-line-display)
+;;below will color the fringe (left side of an Emacs window)..worked but couldn't see how to disable it
+;;;(alert-add-rule :category "mu4e-alert" :style 'fringe :predicate (lambda (_) (string-match-p "^mu4e-" (symbol-name major-mode))) :continue t)
+(mu4e-alert-enable-notifications)
+
+ )
+
+(defun alert-fringe-restore (info)
+  (copy-face 'alert-saved-fringe-face 'fringe))
 
 (use-package highlight-symbol
  :ensure t
@@ -2243,27 +2249,26 @@ there's a region, all lines that region covers will be duplicated."
     (beginning-of-line (or (and arg (1+ arg)) 2))
     (if (and arg (not (= 1 arg))) (message "%d lines copied" arg)))
 
-; (define-key ctl-x-map "\C-i" 'endless/ispell-word-then-abbrev)
-
- (define-prefix-command 'endless/toggle-map)
- ;; The manual recommends C-c for user keys, but C-x t is
- ;; always free, whereas C-c t is used by some modes.
- (define-key ctl-x-map "t" 'endless/toggle-map)
- (define-key endless/toggle-map "w" 'endless/ispell-word-then-abbrev)
-
- (defun endless/ispell-word-then-abbrev (p)
-   "Call `ispell-word'. Then create an abbrev for the correction made.
- With prefix P, create local abbrev. Otherwise it will be global."
-   (interactive "P")
-   (let ((bef (downcase (or (thing-at-point 'word) ""))) aft)
-     (call-interactively 'ispell-word)
-     (setq aft (downcase (or (thing-at-point 'word) "")))
-     (unless (string= aft bef)
-       (message "\"%s\" now expands to \"%s\" %sally"
-                bef aft (if p "loc" "glob"))
-       (define-abbrev
-         (if p local-abbrev-table global-abbrev-table)
-         bef aft))))
+(defun endless/ispell-word-then-abbrev (p)
+  "Call `ispell-word', then create an abbrev for it.
+With prefix P, create local abbrev. Otherwise it will
+be global."
+  (interactive "P")
+  (let (bef aft)
+    (save-excursion
+      (while (progn
+               (backward-word)
+               (and (setq bef (thing-at-point 'word))
+                    (not (ispell-word nil 'quiet)))))
+      (setq aft (thing-at-point 'word)))
+    (when (and aft bef (not (equal aft bef)))
+      (setq aft (downcase aft))
+      (setq bef (downcase bef))
+      (define-abbrev
+        (if p local-abbrev-table global-abbrev-table)
+        bef aft)
+      (message "\"%s\" now expands to \"%s\" %sally"
+               bef aft (if p "loc" "glob")))))
 
 (defun z/regex-delete-numeric  ()
   "delete all numeric characters"
@@ -3346,6 +3351,11 @@ org-files and bookmarks"
                    helm-source-bookmarks
                    helm-source-bookmark-set)))
 
+(defun z/helm-mg-prefix  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'helm-ag)))
+
 (defun isearch-delete-something ()
   "Delete non-matching text or the last character."
   ;; Mostly copied from `isearch-del-char' and Drew's answer on the page above
@@ -3699,7 +3709,6 @@ _q_:
 (global-set-key
   (kbd "<f3>")
   (defhydra hydra-spell  (:color blue :hint nil :columns 4)
-
   "
 【C-SPACE】 recntangle select // 【C-;】 ispell cycle // 【C-x z】 repeat last command- keep press 【z】to repeat
  "
@@ -3708,10 +3717,10 @@ _q_:
   ("<f4>" z/flyspell-goto-previous-error "goto prev error" )
   ("c"  cycle-spacing "cycle spacing")
   ("e"  hydra-editing/body "editing menu" 'hydra-face-green)
-  ("f"  helm-find-files "Helm FF" )
   ("g"  rgrep "Rgrep")
   ("h"  highlight-symbol "HS symbol")
   ("H"  highlight-symbol-remove-all "HS remove")
+  ("f"  helm-flyspell-correct "helm-flyspell")
   ("i"  ispell "ispell")
   ("j"  highlight-symbol-next  :color red  "HS Next")
   ("k"  highlight-symbol-prev  :color red  "HS Prev")
@@ -3781,7 +3790,8 @@ Bib:
 
 ("<f6>" helm-bibtex "helm-bibtex")
 ("a" nil )
-("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file" )
+("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file"   :face 'hydra-face-brown )
+("m" (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "ikloog-bitex file"  :face 'hydra-face-brown )
 ("c"  org-ref-clean-bibtex-entry "clean bib" )
 ("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
 ("e"  ebib )
@@ -3790,13 +3800,12 @@ Bib:
 ("h"  nil )
 ("i"  nil )
 ("j"  nil )
-("k"  helm-bibtex-ikloog-publications "kloog papers" )
-("K"  helm-bibtex-ikloog-publications-all "kloog ALL")
+("k"  helm-bibtex-ikloog-publications "kloog papers"  :face 'hydra-face-green )
+("K"  helm-bibtex-ikloog-publications-all "kloog ALL"  :face 'hydra-face-green )
 ("l"  nil )
-("m"  nil )
 ("n"  org-bibtex-create "new bib entry")
 ("o"  nil )
-("p"  helm-bibtex-ikloog-prep "kloog prep")
+("p"  helm-bibtex-ikloog-prep "kloog prep"  :face 'hydra-face-green )
 ("r"  helm-resume "helm resume")
 ("s"  bibtex-sort-buffer "sort buffer")
 ("t"  nil )
@@ -3829,9 +3838,9 @@ Bib:
    (kbd "<f8>")
 (defhydra  hydra-open  (:color blue :hint nil :columns 4)
 "
-【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
+【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
 【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
-【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm resume
+【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm res
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
@@ -3844,7 +3853,7 @@ Bib:
 ("e"  nil )
 ("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
-("h"   )
+("h"  nil )
 ("i"  nil )
 ("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
@@ -3999,11 +4008,11 @@ _q_: quit
 
 (defhydra hydra-org-time (:color blue)
    "time command"
-   ("a"  org-timestamp-select "select time stamp")
-   ("s" org-timestamp-now  "timestamp current" )
-   ("i" z-insert-date "insert current data")  
+   ("s"  org-time-stamp "agenda date")
+   ("X" org-time-stamp-inactive  "stamp date" )
+   ("Y" z-insert-date "insert current data")  
    ("d" org-deadline  "set deadline")  
-   ("i" org-schedule  "set schedule")  
+   ("f" org-schedule  "set schedule")  
    ("q" nil "cancel")
 )
 
@@ -4311,13 +4320,16 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("1" helm-swoop "find word@point in document")
   ("2" helm-multi-swoop  "find word@point in selected documents")
   ("3" helm-multi-swoop-org "find word@point in org agenda")
-  ("a" helm-apropos "Helm-Apropos")
-  ("d" helm-do-grep "helm-grep" )
-  ("g" helm-do-ag-project-root "search in porject" )
+  ("a" helm-ag "Helm-ag")
+  ("d" z/helm-mg-prefix "helm-ag-recursive" )
+  ("D" helm-do-ag-project-root "helm-ag in porject" )
+  ("g" helm-do-grep "helm-grep" )
+  ("f"  helm-find-files "Helm FF" )
   ("l" helm-locate "helm-locate")
   ("L" counsel-locate "council-locate")
   ("o" helm-occur "helm Occur")
   ("O"  org-occur "org-occur" )
+  ("P" helm-apropos "Helm-Apropos")
   ("n"  helm-swish-e "swish")
   ("r" rgrep "rgrep")
   ("R" anzu-query-replace-at-cursor "Replace@cursor")
@@ -4638,8 +4650,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq org-agenda-files '("~/org/files/agenda/"))
 
-(setq org-agenda-window-setup "current-window")
-(setq org-agenda-restore-windows-after-quit t)
+;(setq org-agenda-window-setup "current-window")
+;(setq org-agenda-restore-windows-after-quit t)
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -4984,10 +4996,12 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)"  "|" "DONE(d)")
               (sequence "TASK(f)" "|" "DONE(d)")
+              (sequence "STUD(s)" "|" "DONE(d)")
 )))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("TASK" :foreground "magenta" :weight bold)
+              ("STUD" :foreground "orchid" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
               ("PAUSED" :foreground "gray" :weight bold)
               ("SUBMITTED" :foreground "#FFC612" :weight bold)
@@ -5145,18 +5159,29 @@ With prefix argument, also display headlines without a TODO keyword."
    )
 
 ;;;;---------------------------------------------------------------------------
+;;;; meetings
+
+  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
+   "* %?\n%^T" )
+
+  ("M" "recurring" entry (file+headline "~/org/files/agenda/meetings.org" "Recurring")
+   "* %?\n%^T" )
+
+
+;;;;---------------------------------------------------------------------------
 ;;;; Tech  Todos
 
   ("x" "nix_TD" entry (file+headline "~/org/files/agenda/TODO.org" "TODO")
    "*  %^{Description}" )
 
-  ;;;; Home Todos
+;;;;---------------------------------------------------------------------------
+;;;; Home Todos
 
   ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
    "* TODO  %?\n%T" )
 
-
-  ;;; Uni todos
+;;;;---------------------------------------------------------------------------
+;;; Uni todos
 
   ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
    "* TODO  %?\n%T" )
@@ -5175,21 +5200,21 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;;;---------------------------------------------------------------------------
 
   ;;;;; media related 
-  ("m" "Media")
+  ("d" "Media")
 
-  ("mm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+  ("dm" "dl_movie" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
    "*  %^{Description}  " )
 
-  ("mp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
+  ("dp" "dl_movie_prerelease" entry (file+headline "~/org/files/agenda/dl.org" "Movies")
    "*   %^{Description}   :Pre_Release: " )
 
-  ("mt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
+  ("dt" "dl_TV" entry (file+headline "~/org/files/agenda/dl.org" "TV")
    "*  %^{Description}" )
 
-  ("ms" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
+  ("ds" "dl_music" entry (file+headline "~/org/files/agenda/dl.org" "Music")
    "*  %^{Description}" )
 
-  ("mc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
+  ("dc" "dl_comics" entry (file+headline "~/org/files/agenda/dl.org" "comics")
    "*  %^{Description}" )
 
 
@@ -5455,6 +5480,10 @@ With prefix argument, also display headlines without a TODO keyword."
 (require 'ox-odt)
 (require 'ox-beamer)
 (require 'ox-latex)
+
+;; org v8 bundled with Emacs 24.4
+(setq org-odt-preferred-output-format "docx")
+;; BTW, you can assign "pdf" in above variables if you prefer PDF format
 
 (eval-after-load 'ox '(require 'ox-koma-letter))
 
@@ -6451,7 +6480,9 @@ Version 2015-03-10"
 (defalias '\" 'replace-straight-quotes)
 
 ;; stop asking whether to save newly added abbrev when quitting emacs
-(setq save-abbrevs t)
+;(setq save-abbrevs t)
+(setq save-abbrevs 'silently)
+
 ;; turn on abbrev mode globally
 (setq-default abbrev-mode t)
 
@@ -6858,3 +6889,26 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
  '(mu4e-header-key-face ((t :inherit mu4e-contact-face :foreground "Gray50"))) 
  '(mu4e-header-value-face ((t :inherit mu4e-contact-face))) 
  '(message-cited-text ((t :inherit mu4e-rw-default :foreground "Gray10")))
+
+;; Function to return first name of email recipient
+;; Used by yasnippet
+;; Based closely on
+;; http://blog.binchen.org/posts/how-to-use-yasnippets-to-produce-email-templates-in-emacs.html
+(defun my-yas-get-first-name-from-to-field ()
+  (let ((rlt "NAME") str rlt2)
+    (save-excursion
+      (goto-char (point-min))
+      ;; first line in email could be some hidden line containing NO to field
+      (setq str (buffer-substring-no-properties (point-min) (point-max))))
+    ;; take name from TO field
+    (when (string-match "^To: \"?\\([^ ,]+\\)" str)
+      (setq rlt (match-string 1 str)))
+    ;;get name in FROM field if available
+    (when (string-match "^\\([^ ,\n]+\\).+writes:$" str)
+      (progn (setq rlt2 (match-string 1 str))
+             ;;prefer name in FROM field if TO field has "@"
+             (when (string-match "@" rlt)
+               (setq rlt rlt2))
+             ))
+    (message "rlt=%s" rlt)
+    rlt))
