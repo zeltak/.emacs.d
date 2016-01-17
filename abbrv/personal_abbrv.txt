@@ -676,7 +676,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 21)
+    ("i" "I" nil 22)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -729,8 +729,9 @@
     ("invitaion" "invitation" nil 0)
     ("invstigated" "investigated" nil 0)
     ("inwhich" "in which" nil 0)
-    ("isnt" "isn't" nil 2)
+    ("isnt" "isn't" nil 3)
     ("isntc" "isn't" nil 0)
+    ("israeli" "israeli" nil 0)
     ("isthe" "is the" nil 0)
     ("itis" "it is" nil 0)
     ("ititial" "initial" nil 0)
@@ -1289,6 +1290,8 @@
 
 (define-abbrev-table 'google-contacts-mode-abbrev-table '())
 
+(define-abbrev-table 'google-maps-static-mode-abbrev-table '())
+
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
 (define-abbrev-table 'gscholar-bibtex-mode-abbrev-table '())
@@ -1404,6 +1407,8 @@
 (define-abbrev-table 'python-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+
+(define-abbrev-table 'ranger-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 

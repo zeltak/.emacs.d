@@ -43,6 +43,17 @@
      (org-download-heading-lvl)
      (org-download-image-dir . "~/ZH_tmp/"))))
  '(send-mail-function (quote smtpmail-send-it))
+ '(shell-pop-default-directory "/home/zeltak/")
+ '(shell-pop-full-span t)
+ '(shell-pop-shell-type
+   (quote
+    ("ansi-term" "*ansi-term*"
+     (lambda nil
+       (ansi-term shell-pop-term-shell)))))
+ '(shell-pop-term-shell "/bin/zsh")
+ '(shell-pop-universal-key "C-t")
+ '(shell-pop-window-position "bottom")
+ '(shell-pop-window-size 30)
  '(sr-avfs-root "~/.avfs")
  '(sr-history-length 30)
  '(sr-popviewer-enabled t)

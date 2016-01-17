@@ -27,7 +27,8 @@
 (add-to-list 'package-archives '("marmalade" . "https://marmalade-repo.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;;(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
+;; org maybe suspect of hanging melpa, if you have hangs disable this first
+(add-to-list 'package-archives '("org" . "http://orgmode.org/elpa/"))
 
 
 
@@ -52,7 +53,3 @@
 ;; init.el ends here
 
 
-(put 'narrow-to-region 'disabled nil)
-(put 'dired-find-alternate-file 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'upcase-region 'disabled nil)

@@ -1,83 +1,101 @@
 ;;; Zprime: based on the excellent leuven-theme.el from github:
 ;;; https://github.com/fniessen/emacs-leuven-theme
-;; zprime Version 0.4
+;; zprime Version 0.5
 ;; lueven Version: 20141124.1455
 ;; Keywords: color theme
-
 ;; To use it, put the following in your Emacs configuration file:
-;;
-;;   (load-theme 'zprime t)
-;;
+;;(load-theme 'zprime t)
 ;; Requirements: Emacs 24.
 
 ;;; Code:
-
 (deftheme zprime
-  "Face colors with a light background.
-Basic, Font Lock, Isearch, Gnus, Message, Org mode, Diff, Ediff,
-Flyspell, Semantic, and Ansi-Color faces are included -- and much
-more...")
-
-;;;define here colors variables
-
+  "Face colors with a light background based on lueven: https://github.com/fniessen/emacs-leuven-theme")
+;;;define here colors variables via names that can be used across multiple modes
 (let ((class '((class color) (min-colors 89)))
 
-      ;; Zprime generic colors
-      (cancel '(:slant italic :strike-through t :foreground "gray55"))
-      (clock-line '(:box (:line-width 1 :color "#335EA8") :foreground "black" :background "#EEC900"))
-      (code-block '(:foreground "#000088" :background "#FFFFE0"))
-      (code-inline '(:foreground "#006400" :background "#FDFFF7"))
-      (column '(:height 1.0 :weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
-      (diff-added '(:foreground "#008000" :background "#DDFFDD"))
-      (diff-changed '(:foreground "#0000FF" :background "#DDDDFF"))
-      (diff-header '(:foreground "#800000" :background "#FFFFAF"))
-      (diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
-      (diff-none '(:foreground "gray33"))
-      (diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
-      (directory '(:weight bold :foreground "blue" :background "#FFFFD2"))
-;      (directory '(:weight bold  :foreground "#64CEFC" :background "#073642"))
-      (highlight-line '(:background "#FFFFD7")) ; #F5F5F5
-      (highlight-line-gnus '(:background "#DAEAFC")) ; defined in `gnus-zprime.el'
-      (link '(:weight normal :underline t :foreground "#006DAF"))
-      (mail-header-name '(:family "Sans Serif" :weight normal :foreground "#A3A3A2"))
-      (mail-header-other '(:family "Sans Serif" :slant normal :foreground "#666666"))
-      (mail-read '(:weight normal :foreground "#86878B"))
-      (mail-ticked '(:weight bold :foreground "#FF0000"))
-      (mail-to '(:family "Sans Serif" :underline nil :foreground "#006DAF"))
-      (mail-unread '(:weight bold :foreground "black"))
-      (marked-line '(:weight bold :foreground "red" :background "pink"))
-      (match '(:weight bold :background "#FBE448")) ; occur patterns
-      (ol1 '(:height 1.09 :weight bold  :box (:line-width 1 :color "#0099CC")  :foreground "#64CEFC" :background "#04329C"))
-      (ol2 '(:height 1.0 :weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
-      (ol3 '(:height 1.0 :weight bold :foreground "#005522" :background "#EFFFEF"))
-      (ol4 '(:height 1.0 :weight bold :slant normal :foreground "#EA6300"))
-      (ol5 '(:height 1.0 :weight bold :slant normal :foreground "#E3258D"))
-      (ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
-      (ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
-      (ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
-      (paren-matched '(:background "#99CCFF"))
-      (paren-unmatched '(:underline "red" :foreground nil :background "#FFDCDC"))
-      (region '(:background "#ABDFFA"))
-      (shadow '(:foreground "#7F7F7F"))
-      (string '(:foreground "#008000")) ; or #D0372D
-      (subject '(:family "Sans Serif" :weight bold :foreground "black"))
-      (symlink '(:foreground "deep sky blue"))
-      (tab '(:foreground "#D0D0D0" :background "white"))
-      (volatile-highlight '(:underline nil :background "#FFF876"))
-      (vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA")))
+;;;;;;;;;;;;;;;; define coloe variables here
+      
+;;; higlighter for the lines
+(highlight-line '(:background "#33B5E5"))
 
-;;; here starts the theme (zprime)
+;;;for marking
+(marked-line '(:weight bold :foreground "white" :background "#F72870"))
+
+;;;; files and folders
+;; folder colors
+(folder-colors  ' (:weight bold  :foreground "white" :background "#4E4E4E")   )
+;;top directory
+(directory '(:height 1.05 :weight bold :foreground "white" :background "#1DBDCF"))
+;;symlinks
+(symlink '(:foreground "#F6C97E"))
+
+
+
+;;;;org mode 
+;;orgmode headers
+(ol1 '(:height 1.09 :weight bold  :box (:line-width 1 :color "#0099CC")  :foreground "#64CEFC" :background "#04329C"))
+(ol2 '(:height 1.0 :weight bold :overline "#123555" :foreground "#123555" :background "#E5F4FB"))
+(ol3 '(:height 1.0 :weight bold :foreground "#005522" :background "#EFFFEF"))
+(ol4 '(:height 1.0 :weight bold :slant normal :foreground "#EA6300"))
+(ol5 '(:height 1.0 :weight bold :slant normal :foreground "#E3258D"))
+(ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
+(ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
+(ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
+;;links
+(link '(:height 1.08 :weight bold :underline t :foreground "#40A8D5"))
+
+;;;diff
+(diff-added '(:foreground "#008000" :background "#DDFFDD"))
+(diff-changed '(:foreground "#0000FF" :background "#DDDDFF"))
+(diff-header '(:foreground "#800000" :background "#FFFFAF"))
+(diff-hunk-header '(:foreground "#990099" :background "#FFEEFF"))
+(diff-none '(:foreground "gray33"))
+(diff-removed '(:foreground "#A60000" :background "#FFDDDD"))
+
+;;;;gnus/mail
+(highlight-line-gnus '(:background "#DAEAFC")) ; defined in `gnus-zprime.el'
+(mail-header-name '(:family "Sans Serif" :weight normal :foreground "#A3A3A2"))
+(mail-header-other '(:family "Sans Serif" :slant normal :foreground "#666666"))
+(mail-read '(:weight normal :foreground "#86878B"))
+(mail-ticked '(:weight bold :foreground "#FF0000"))
+(mail-to '(:family "Sans Serif" :underline nil :foreground "#006DAF"))
+(mail-unread '(:weight bold :foreground "black"))
+
+
+(match '(:weight bold :background "#FBE448")) ; occur patterns
+
+(cancel '(:slant italic :strike-through t :foreground "gray55"))
+(clock-line '(:box (:line-width 1 :color "#335EA8") :foreground "black" :background "#EEC900"))
+(code-block '(:foreground "#000088" :background "#FFFFE0"))
+(code-inline '(:foreground "#006400" :background "#FDFFF7"))
+(column '(:height 1.0 :weight normal :slant normal :underline nil :strike-through nil :foreground "#E6AD4F" :background "#FFF2DE"))
+(paren-matched '(:background "#99CCFF"))
+(paren-unmatched '(:underline "red" :foreground nil :background "#FFDCDC"))
+(region '(:background "#ABDFFA"))
+(shadow '(:foreground "#7F7F7F"))
+(string '(:foreground "#008000")) ; or #D0372D
+(subject '(:family "Sans Serif" :weight bold :foreground "black"))
+(tab '(:foreground "#D0D0D0" :background "white"))
+(volatile-highlight '(:underline nil :background "#FFF876"))
+(vc-branch '(:box (:line-width 1 :color "#00CC33") :foreground "black" :background "#AAFFAA")))
+
+;;; here starts the proper theme (zprime)
   
   (custom-theme-set-faces
-   'zprime
-   `(default ((,class (:foreground "#333333" :background "#FFFFFF"))))
-   `(bold ((,class (:weight bold :foreground "black"))))
-   `(bold-italic ((,class (:weight bold :slant italic :foreground "black"))))
-   `(italic ((,class (:slant italic :foreground "#1A1A1A"))))
-   `(underline ((,class (:underline t))))
-   `(cursor ((,class (:background "#0FB300"))))
+'zprime
+`(default ((,class (:foreground "#333333" :background "#FFFFFF"))))
+`(bold ((,class (:weight bold :foreground "black"))))
+`(bold-italic ((,class (:weight bold :slant italic :foreground "black"))))
+`(italic ((,class (:slant italic :foreground "#1A1A1A"))))
+`(underline ((,class (:underline t))))
+;;; cursor color
+  `(cursor ((,class (:background "#33B5E5"))))
+;;`(cursor ((,class (:background "#0FB300"))))
+;;;where to define higlight line (we use color definition from color variables)
+`(hl-line ((,class ,highlight-line)))
 
-   ;; Highlighting faces
+
+;; Highlighting faces
    `(fringe ((,class (:foreground "#9B9B9B" :background "#EDEDED"))))
    `(highlight ((,class ,volatile-highlight)))
    `(region ((,class ,region)))
@@ -92,13 +110,7 @@ more...")
    `(whitespace-tab ((,class ,tab)))
    `(whitespace-trailing ((,class (:foreground "#B3B3B3" :background "#FFFF57"))))
 
-   ;; ;; Mode line faces
-   ;; `(mode-line ((,class (:box (:line-width 1 :color "#1A2F54") :foreground "#008ED1" :background "#002E41"))))
-   ;; `(mode-line-inactive ((,class (:box (:line-width 1 :color "#4E4E4C") :foreground "#F0F0EF" :background "#F0F0EF"))))
-   ;; `(mode-line-buffer-id ((,class (:weight bold :foreground "#008ED1"))))
-   ;; `(mode-line-emphasis ((,class (:weight bold :foreground "#008ED1"))))
-   ;; `(mode-line-highlight ((,class (:foreground "green"))))
-
+;;;;;;;;;;;;;;modline faces 
 (set-face-attribute  'mode-line
                  nil 
                  :foreground "#008ED1"
@@ -111,6 +123,28 @@ more...")
                  :box '(:line-width 1 :style released-button))
 
 
+;;;;;;;;;;;;dired
+;;;thee two get the color from the directory definition in start of theme 
+   `(dired-directory ((,class ,directory)))
+   `(dired-header ((,class ,directory)))
+   `(diredp-dir-heading ((,class ,directory)))
+   `(diredp-dir-priv ((,class ,directory)))
+   `(dired-ignored ((,class (:strike-through t :foreground "red"))))
+   `(dired-mark ((,class ,marked-line)))
+   `(dired-marked ((,class ,marked-line)))
+   `(diredp-flag-mark-line ((,class ,marked-line)))
+   `(dired-symlink ((,class ,symlink)))
+   `(diredp-compressed-file-suffix ((,class (:foreground "red"))))
+   `(diredp-date-time ((,class (:foreground "purple"))))
+   `(diredp-dir-name ((,class (:weight bold  :foreground "white" :background "#4E4E4E"))))
+   `(diredp-exec-priv ((,class (:background "#03C03C"))))
+   `(diredp-executable-tag ((,class (:foreground "ForestGreen" :background "white"))))
+   `(diredp-file-name ((,class (:foreground "black"))))
+   `(diredp-file-suffix ((,class (:foreground "#C0C0C0"))))
+   `(diredp-ignored-file-name ((,class ,shadow)))
+   `(diredp-read-priv ((,class (:background "#0A99FF"))))
+   `(diredp-write-priv ((,class (:foreground "white" :background "#FF4040"))))
+
    
    ;; Escape and prompt faces
    `(minibuffer-prompt ((,class (:weight bold :foreground "black" :background "gold"))))
@@ -122,15 +156,16 @@ more...")
 
      ;;;;;;;;;;; orgmode
 
+;;org-agenda
    `(org-agenda-block-count ((,class (:weight bold :foreground "#A5A5A5"))))
-   `(org-agenda-calendar-event ((,class (:weight bold :foreground "#3774CC" :background "#A8C5EF"))))
+   `(org-agenda-calendar-event ((,class (:weight bold :foreground "#3774CC" ))))
    `(org-agenda-calendar-sexp ((,class (:foreground "#777777" :background "#E4EBFE"))))
    `(org-agenda-clocking ((,class (:foreground "black" :background "#EEC900"))))
    `(org-agenda-column-dateline ((,class ,column)))
    `(org-agenda-current-time ((,class (:underline t :foreground "#1662AF"))))
-   `(org-agenda-date ((,class (:height 1.6 :weight bold :foreground "#1662AF"))))
-   `(org-agenda-date-today ((,class (:height 1.6 :weight bold :foreground "#4F4A3D" :background "#FFFFCC"))))
-   `(org-agenda-date-weekend ((,class (:height 1.6 :weight bold :foreground "#4E4E4E"))))
+   `(org-agenda-date ((,class (:height 1.2 :weight bold  :foreground "white" :background "#4E4E4E" ))))
+   `(org-agenda-date-today ((,class (:height 1.3 :weight bold :foreground "white" :background "#1DBDCF"))))
+   `(org-agenda-date-weekend ((,class (:height 1.2 :weight bold  :foreground "white" :background "#5CC57C"))))
    `(org-agenda-diary ((,class (:weight bold :foreground "green4" :background "light blue"))))
    `(org-agenda-dimmed-todo-face ((,class (:foreground "gold2"))))
    `(org-agenda-done ((,class (:foreground "#555555"))))
@@ -140,6 +175,7 @@ more...")
    `(org-agenda-structure ((,class (:height 1.6 :weight bold :foreground "#1F8DD6"))))
    `(org-archived ((,class (:foreground "gray70"))))
    `(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
+;;;org source blocks
    `(org-block ((,class ,code-block)))
    `(org-block-background ((,class (:background "#FFFFE0"))))
    `(org-block-begin-line ((,class (:underline "#A7A6AA" :foreground "#555555" :background "#E2E1D5"))))
@@ -502,49 +538,29 @@ more...")
    `(dircolors-face-text ((,class (:foreground "black"))))
    `(dircolors-face-yacc ((,class (:foreground "black"))))
 
-;;;dired
-
-   `(dired-directory ((,class ,directory)))
-   `(dired-header ((,class ,directory)))
-   `(dired-ignored ((,class (:strike-through t :foreground "red"))))
-   `(dired-mark ((,class ,marked-line)))
-   `(dired-marked ((,class ,marked-line)))
-   `(dired-symlink ((,class ,symlink)))
-   `(diredp-compressed-file-suffix ((,class (:foreground "red"))))
-   `(diredp-date-time ((,class (:foreground "purple"))))
-   `(diredp-dir-heading ((,class ,directory)))
-   `(diredp-dir-priv ((,class ,directory)))
-   `(diredp-exec-priv ((,class (:background "#03C03C"))))
-   `(diredp-executable-tag ((,class (:foreground "ForestGreen" :background "white"))))
-   `(diredp-file-name ((,class (:foreground "black"))))
-   `(diredp-file-suffix ((,class (:foreground "#C0C0C0"))))
-   `(diredp-flag-mark-line ((,class ,marked-line)))
-   `(diredp-ignored-file-name ((,class ,shadow)))
-   `(diredp-read-priv ((,class (:background "#0A99FF"))))
-   `(diredp-write-priv ((,class (:foreground "white" :background "#FF4040"))))
 
 ;;;sunrise
 
-     `(sr-active-path-face ((t (:bold t :background "#ace6ac" :foreground "yellow" :weight bold))))
-     `(sr-alt-marked-dir-face ((t (:bold t :foreground "DeepPink" :weight bold))))
-     `(sr-alt-marked-file-face ((t (:foreground "DeepPink"))))
-     `(sr-broken-link-face ((t (:italic t :foreground "red" :slant italic))))
-     `(sr-clex-hotchar-face ((t (:bold t :foreground "red" :weight bold))))
-     `(sr-compressed-face ((t (:foreground "magenta"))))
-     `(sr-directory-face ((t (:bold t :foreground "blue1" :weight bold))))
-      `(sr-editing-path-face ((t (:bold t :background "red" :foreground "yellow" :weight bold))))
-      `(sr-encrypted-face ((t (:foreground "DarkOrange1"))))
-      `(sr-highlight-path-face ((t (:bold t :background "yellow" :foreground "#ace6ac" :weight bold))))
-      `(sr-html-face ((t (:foreground "DarkOliveGreen"))))
-      `(sr-log-face ((t (:foreground "brown"))))
-      `(sr-marked-dir-face ((t (:bold t :foreground "red" :weight bold))))
-      `(sr-marked-file-face ((t (:foreground "red"))))
-      `(sr-mirror-path-face ((t (:bold t :background "blue" :foreground "yellow" :weight bold))))
-      `(sr-packaged-face ((t (:foreground "DarkMagenta"))))
-      `(sr-passive-path-face ((t (:bold t :background "white" :foreground "lightgray" :weight bold))))
-      `(sr-symlink-directory-face ((t (:italic t :foreground "blue1" :slant italic))))
-      `(sr-symlink-face ((t (:italic t :foreground "DeepSkyBlue" :slant italic))))
-      `(sr-xml-face ((t (:foreground "DarkGreen"))))
+     ;; `(sr-active-path-face ((t (:bold t :background "#ace6ac" :foreground "yellow" :weight bold))))
+     ;; `(sr-alt-marked-dir-face ((t (:bold t :foreground "DeepPink" :weight bold))))
+     ;; `(sr-alt-marked-file-face ((t (:foreground "DeepPink"))))
+     ;; `(sr-broken-link-face ((t (:italic t :foreground "red" :slant italic))))
+     ;; `(sr-clex-hotchar-face ((t (:bold t :foreground "red" :weight bold))))
+     ;; `(sr-compressed-face ((t (:foreground "magenta"))))
+     ;; `(sr-directory-face ((t (:bold t :foreground "blue1" :weight bold))))
+     ;;  `(sr-editing-path-face ((t (:bold t :background "red" :foreground "yellow" :weight bold))))
+     ;;  `(sr-encrypted-face ((t (:foreground "DarkOrange1"))))
+     ;;  `(sr-highlight-path-face ((t (:bold t :background "yellow" :foreground "#ace6ac" :weight bold))))
+     ;;  `(sr-html-face ((t (:foreground "DarkOliveGreen"))))
+     ;;  `(sr-log-face ((t (:foreground "brown"))))
+     ;;  `(sr-marked-dir-face ((t (:bold t :foreground "red" :weight bold))))
+     ;;  `(sr-marked-file-face ((t (:foreground "red"))))
+     ;;  `(sr-mirror-path-face ((t (:bold t :background "blue" :foreground "yellow" :weight bold))))
+     ;;  `(sr-packaged-face ((t (:foreground "DarkMagenta"))))
+     ;;  `(sr-passive-path-face ((t (:bold t :background "white" :foreground "lightgray" :weight bold))))
+     ;;  `(sr-symlink-directory-face ((t (:italic t :foreground "blue1" :slant italic))))
+     ;;  `(sr-symlink-face ((t (:italic t :foreground "DeepSkyBlue" :slant italic))))
+     ;;  `(sr-xml-face ((t (:foreground "DarkGreen"))))
 
 
 
@@ -574,23 +590,20 @@ more...")
    `(google-translate-suggestion-face ((t (:slant italic :underline t))))
    `(google-translate-listen-button-face ((t (:height 0.8))))
 
-    ;;; Helm 
+;helm 
    `(helm-action ((,class (:foreground "black"))))
- 
    `(helm-source-header ((,class (:foregrounf "white" :background "#839496")))) 
-
-   `(helm-selection ((,class (:foregrounf "black" :background "#2AA198")))) 
-
+   `(helm-selection ((,class ,highlight-line)))
    `(helm-header ((,class (:foreground "white" :background "#073642")))) 
-    ;;modline color for helm inof there
+    ;;modline color for helm info there
    `(helm-candidate-number ((,class (:foreground "green" :background "#073642")))) 
-
    `(helm-bookmarks-su-face ((,class (:foreground "#DC322F"))))
    `(helm-buffer-process ((,class (:foreground "#008200"))))
    `(helm-candidate-number ((,class (:foreground "black" :background "#073642"))))
    `(helm-dir-heading ((,class (:foreground "##073642" :background "white"))))
    `(helm-dir-priv ((,class (:foreground "#DC322F" :background "light grey"))))
-   `(helm-ff-directory ((,class ,directory)))
+;;helm find file (ff) faces
+`(helm-ff-directory ((,class ,folder-colors)))
    `(helm-ff-executable ((,class (:foreground "green3" :background "white"))))
    `(helm-ff-file ((,class (:foreground "black"))))
    `(helm-ff-invalid-symlink ((,class (:foreground "yellow" :background "red"))))
@@ -616,7 +629,6 @@ more...")
 
 
    `(highlight-symbol-face ((,class (:background "#FFFFA0"))))
-   `(hl-line ((,class ,highlight-line)))
    `(hl-tags-face ((,class (:background "#FEFCAE"))))
    `(holiday-face ((,class (:foreground "#777777" :background "#E4EBFE"))))
    `(html-helper-bold-face ((,class (:weight bold :foreground "black"))))

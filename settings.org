@@ -548,6 +548,27 @@ https://github.com/Malabarba/elisp-bug-hunter
  :config
   )
 #+END_SRC
+** calfw
+https://github.com/kiwanami/emacs-calfw
+#+BEGIN_SRC emacs-lisp :results none
+(use-package calfw
+ :ensure t
+ :config
+ (require 'calfw)
+(require 'calfw-org)
+
+(defun my-open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "blue")  ; orgmode source
+    (cfw:howm-create-source "magenta")  ; howm source
+    (cfw:cal-create-source "Orange") ; diary source
+   ))) 
+ )
+#+END_SRC 
+
 
 ** Counsel
 #+BEGIN_SRC emacs-lisp :results none
@@ -727,7 +748,6 @@ You can add shortcode aliases by modifying company-emoji-aliases. Run M-x custom
   ;; ;;                     )))))
 #+END_SRC
 
-
 ** `dired plugins`
 *** dired hacks 
 **** dired-avfs
@@ -830,6 +850,8 @@ You can add shortcode aliases by modifying company-emoji-aliases. Run M-x custom
         ("mp3" . "vlc")
         ("doc" . "libreoffice")
         ("docx" . "libreoffice")
+        ("odt" . "libreoffice")
+        ("odf" . "libreoffice")
         ("xls" . "libreoffice")
         ("xlsx" . "libreoffice")
         ("ppt" . "libreoffice")
@@ -1396,27 +1418,27 @@ https://github.com/cute-jumper/gscholar-bibtex
 (add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
 (autoload 'gmail2bbdb-import-file "gmail2bbdb")
 #+END_SRC
-** gnorb
+*** gnorb
 
-ht/tps://github.com/girzel/gnorb
+ ht/tps://github.com/girzel/gnorb
 
-examples:
+ examples:
 
-- Whang attachments from Gnus messages onto Org headings, using org-attach.
-- Automate the above as part of the org capture process
-- Email contents of org subtree under point (prompt for export routine)
-- Single-keystroke Org links or email citations of BBDB contacts
-- Initiate search of emails from contacts in open BBDB buffer
-- Initiate Org agenda tag search from BBDB buffer
-- Inverse of the above: pop up a BBDB buffer alongside an Org tags search
-- Treat headings as email-related TODOs, and handle them DWIM-style
+ - Whang attachments from Gnus messages onto Org headings, using org-attach.
+ - Automate the above as part of the org capture process
+ - Email contents of org subtree under point (prompt for export routine)
+ - Single-keystroke Org links or email citations of BBDB contacts
+ - Initiate search of emails from contacts in open BBDB buffer
+ - Initiate Org agenda tag search from BBDB buffer
+ - Inverse of the above: pop up a BBDB buffer alongside an Org tags search
+ - Treat headings as email-related TODOs, and handle them DWIM-style
 
-  #+BEGIN_SRC emacs-lisp :results none
-  (use-package gnorb
-   :ensure t
-   :config
-      )
-  #+END_SRC 
+   #+BEGIN_SRC emacs-lisp :results none
+   (use-package gnorb
+    :ensure t
+    :config
+       )
+   #+END_SRC 
   
   
 ** grizzl
@@ -1796,20 +1818,6 @@ https://github.com/pinard/org-grep
 #+END_SRC 
 
 
-** org-caldav-sync
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package  org-caldav
- :ensure t
- :config
- (require 'org-caldav)
-
-(setq org-caldav-url "https://www.google.com/calendar/dav")
-(setq org-caldav-calendar-id "ikloog@gmail.com")
-(setq org-caldav-inbox (expand-file-name "/home/zeltak/org/files/PIM/org-caldev.org"))
-(setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
- )
-#+END_SRC
 ** org highlight
 #+BEGIN_SRC emacs-lisp :results none
 ;(require 'highlights)
@@ -2048,7 +2056,7 @@ https://github.com/rexim/org-cliplink
  
  )
 #+END_SRC 
-** org-Download 						     :ATTACH:
+** org-Download
    :PROPERTIES:
    :ID:       54e01618-35eb-45c5-b0b7-6f830faef316
    :Attachments: screenshot_2015-04-05_08:15:22.png
@@ -2140,28 +2148,6 @@ https://github.com/tj64/org-dp
 #+BEGIN_SRC emacs-lisp :results none
 (require 'org-contacts)
 #+END_SRC
-** org-gcal
-   :PROPERTIES:
-   :ID:       c93bd6d4-28e3-44ca-a492-6a36a1c74ad9
-   :END:
-
-see [[id:c93bd6d4-28e3-44ca-a492-6a36a1c74ad9][org-gcal]] for how to set this up again in case you get errors 
-
-#+BEGIN_SRC emacs-lisp :results none
-(use-package org-gcal 
- :ensure t
- :config
-(require 'org-gcal)
-(setq org-gcal-client-id "882257512275-kgh7942bb0pach0aq88n7kru5d351lcv.apps.googleusercontent.com"
-      org-gcal-client-secret "J2sBmUIreacPE_LaAO_3CNnR"
-      org-gcal-file-alist '(
-("ikloog@gmail.com" .  "~/org/files/agenda/gcal.org")
-
-))
-;for closing use package
-)
-#+END_SRC 
-
 ** org-vcard
 https://github.com/flexibeast/org-vcard
 
@@ -2225,11 +2211,19 @@ https://github.com/politza/pdf-tools
 #+END_SRC 
 
 ** projectile
+
+@Warning@: projectile global mode will kill ssh/sudo in tramp with hanging in:
+#+BEGIN_EXAMPLE
+Decrypting /home/chz/.authinfo.gpg...done
+#+END_EXAMPLE
+follow this : https://github.com/bbatsov/projectile/issues/835 for more details 
+
 #+BEGIN_SRC emacs-lisp :results none
   (use-package projectile
    :ensure t
    :config
-(projectile-global-mode)
+;;;disable global mode otherwise it kills tramp shh
+;;(projectile-global-mode)
 ;; caching can significantly speedup file and directory listings, making it display instantly.
 (setq projectile-enable-caching t)
 
@@ -2304,25 +2298,25 @@ https://github.com/ancane/popup-imenu
 #+END_SRC 
 
 
-** TODO Rainbow mode
+** Rainbow mode
 http://julien.danjou.info/projects/emacs-packages#rainbow-mode
 
 fix or update since it seems broken and colors are white
 
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (use-package rainbow-mode
-  ;; :ensure t
-  ;; :config
-  ;; )
+  (use-package rainbow-mode
+  :ensure t
+  :config
+  )
 
-  ;; (dolist (hook '(css-mode-hook
-  ;;                 html-mode-hook
-  ;;                 js-mode-hook
-  ;;                 emacs-lisp-mode-hook
-  ;;                 org-mode-hook
-  ;;                 text-mode-hook
-  ;;                 ))
-  ;;   (add-hook hook 'rainbow-mode))
+  (dolist (hook '(css-mode-hook
+                  html-mode-hook
+                  js-mode-hook
+                  emacs-lisp-mode-hook
+                  org-mode-hook
+                  text-mode-hook
+                  ))
+    (add-hook hook 'rainbow-mode))
 #+END_SRC
 ** rainbow-delimiters
 https://github.com/Fanael/rainbow-delimiters
@@ -4795,7 +4789,7 @@ quick switch other windw
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 #+END_SRC
-* hydra
+* hydras
   :PROPERTIES:
   :ID:       e240cc34-4260-4f99-9dce-e34a77c7fa8a
   :END:
@@ -4824,7 +4818,7 @@ quick switch other windw
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
-   (kbd "\\")
+   (kbd "")
 (defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
 
 "
@@ -5206,6 +5200,7 @@ Bib:
 【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
 【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
 【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm res
+【C-f/b】 helm frwd/back 1 char
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
@@ -5493,6 +5488,7 @@ _q_: quit
       ("s"   org-agenda-schedule      "schedule task ")
       ("d"   org-agenda-deadline      "deadline task ")
       ("p"   org-agenda-date-prompt      "prompt date ")
+      ("M"   cfw:org-open-agenda-day      "month view ")
        ("q"     nil                          "cancel" )
   ))
 #+END_SRC
@@ -6054,6 +6050,25 @@ $note its built into emacs no intsall needed$
         "-pkg.el" "-autoloads.el"
         "Notes.bib" "auto/"))
 #+END_SRC
+** TRAMP
+*** set temp directory
+#+BEGIN_SRC emacs-lisp  :results none
+(setq temporary-file-directory "/tmp")
+#+END_SRC
+*** use sudo with ssh
+http://mollermara.com/tags/productivity/
+
+It’s even possible to remotely edit files as root using /sudo:server:/path/to/file, although this doesn’t work out of the box. You’ll need to add this to your .emacs
+
+#+BEGIN_SRC emacs-lisp  :results none
+(add-to-list 'tramp-default-proxies-alist 
+     '((and (string-match system-name 
+                  (tramp-file-name-host (car target-alist)))
+            "THISSHOULDNEVERMATCH")
+       "\\`root\\'" "/ssh:%h:"))
+#+END_SRC
+
+This allows you to sudo into remote servers, but also prevents it from interfering with sudoing locally.
 
 ** Editing
 *** spelling
@@ -6288,8 +6303,8 @@ this will make org-store-link use id when creating a link.
 #+END_SRC
 *** TODO agenda popup behivour
 #+BEGIN_SRC emacs-lisp :results none
-;(setq org-agenda-window-setup "current-window")
-;(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-window-setup "current-window")
+(setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
 
 *** agenda view
@@ -6297,8 +6312,8 @@ this will make org-store-link use id when creating a link.
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
-(setq org-agenda-ndays 7)
-;start agenda from today!
+(setq org-agenda-ndays 10)
+;start agenda from today-  don't show listings from earlier in the week
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
 (setq org-deadline-warning-days 10)
@@ -6306,6 +6321,11 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-span 14)
+
+#+END_SRC
+*** define Israeli weekends
+#+BEGIN_SRC emacs-lisp  :results none
+(setq org-agenda-weekend-days '(5 6))
 #+END_SRC
 
 *** look and feel
@@ -7378,6 +7398,48 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 #+BEGIN_SRC emacs-lisp :results none
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 #+END_SRC
+** TODO org chd
+change dir only in dir mode hook?
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "\\")
+(defhydra hydra-org-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+
+("\\"  hydra-leader/body  "LEADER" :face 'hydra-face-orange  )
+("a"  nil )
+("b"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu" )
+("c"  nil )
+("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads" )
+("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs")
+("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food")
+("g"  nil )
+("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home" )
+("i"  nil )
+("j"  nil )
+("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux" )
+("k"  nil )
+("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" )
+("n"  nil )
+("o"  nil )
+("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" )
+("r"  (find-file "/home/zeltak/org/files/agenda/Research.org") "research" )
+("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research" )
+("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org" "TODO") )
+("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel" )
+("v"  nil )
+("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
+("x"  (find-file "/home/zeltak/org/files/Tech/tech.org")  "Tech")
+("x"  nil )
+("y"  nil )
+("q"  nil  )
+
+))
+
+#+END_SRC
+
 * look and feel
 ** Base
 
@@ -7772,6 +7834,7 @@ $Note-if you see starnge behivour this maybe a culprit$
  (define-key dired-mode-map (kbd  "y") 'tda/rsync-multiple-mark-file )
  (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
  (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
+ (define-key dired-mode-map (kbd  "<C-a>") 'dired-mark-subdir-files )
  #+END_SRC
 
 *** hydra (f2)
@@ -7876,6 +7939,7 @@ change dir only in dir mode hook?
 "
 "
 ("a" (find-file "~/AUR/") "AUR" )
+("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
 ("b"  (find-file "~/bin/") "bin" )
 ("c"  (find-file "~/.config/") "config")
 ("d" (find-file "~/Downloads/")    "Downloads" )
@@ -8437,8 +8501,15 @@ how to launch it in eshell
 (term-send-input)
 )
  #+END_SRC
+*** look and feel
+**** add highlight line
+#+BEGIN_SRC emacs-lisp  :results none
+;; Always hilight the current agenda line
+(add-hook 'dired-mode-hook
+          '(lambda () (hl-line-mode 1))
+          'append)
 
-
+#+END_SRC
 *** TASK archive files
 **** TASK compress to tar in dired
 this will only work on Emacs 25..keep track!
@@ -9158,4 +9229,7 @@ $Note-if you see starnge behivour this maybe a culprit$
     (message "rlt=%s" rlt)
     rlt))
 #+END_SRC
+
+
+
 

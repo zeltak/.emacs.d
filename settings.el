@@ -395,6 +395,23 @@
  :config
   )
 
+(use-package calfw
+ :ensure t
+ :config
+ (require 'calfw)
+(require 'calfw-org)
+
+(defun my-open-calendar ()
+  (interactive)
+  (cfw:open-calendar-buffer
+   :contents-sources
+   (list
+    (cfw:org-create-source "blue")  ; orgmode source
+    (cfw:howm-create-source "magenta")  ; howm source
+    (cfw:cal-create-source "Orange") ; diary source
+   ))) 
+ )
+
 (use-package counsel
  :ensure t
  :config
@@ -606,6 +623,8 @@
         ("mp3" . "vlc")
         ("doc" . "libreoffice")
         ("docx" . "libreoffice")
+        ("odt" . "libreoffice")
+        ("odf" . "libreoffice")
         ("xls" . "libreoffice")
         ("xlsx" . "libreoffice")
         ("ppt" . "libreoffice")
@@ -1248,17 +1267,6 @@
 
  )
 
-(use-package  org-caldav
- :ensure t
- :config
- (require 'org-caldav)
-
-(setq org-caldav-url "https://www.google.com/calendar/dav")
-(setq org-caldav-calendar-id "ikloog@gmail.com")
-(setq org-caldav-inbox (expand-file-name "/home/zeltak/org/files/PIM/org-caldev.org"))
-(setq org-caldav-files '("/home/zeltak/org/files/agenda/gcal.org"))
- )
-
 ;(require 'highlights)
 ;; make sure you have dash, helm, helm-bibtex, ebib, s, f, hydra and key-chord
 ;; in your load-path
@@ -1492,19 +1500,6 @@
 
 (require 'org-contacts)
 
-(use-package org-gcal 
- :ensure t
- :config
-(require 'org-gcal)
-(setq org-gcal-client-id "882257512275-kgh7942bb0pach0aq88n7kru5d351lcv.apps.googleusercontent.com"
-      org-gcal-client-secret "J2sBmUIreacPE_LaAO_3CNnR"
-      org-gcal-file-alist '(
-("ikloog@gmail.com" .  "~/org/files/agenda/gcal.org")
-
-))
-;for closing use package
-)
-
 (use-package org-vcard
  :ensure t
  :config
@@ -1543,7 +1538,8 @@
 (use-package projectile
    :ensure t
    :config
-(projectile-global-mode)
+;;;disable global mode otherwise it kills tramp shh
+;;(projectile-global-mode)
 ;; caching can significantly speedup file and directory listings, making it display instantly.
 (setq projectile-enable-caching t)
 
@@ -1599,19 +1595,19 @@
  
  )
 
-;; (use-package rainbow-mode
-;; :ensure t
-;; :config
-;; )
+(use-package rainbow-mode
+:ensure t
+:config
+)
 
-;; (dolist (hook '(css-mode-hook
-;;                 html-mode-hook
-;;                 js-mode-hook
-;;                 emacs-lisp-mode-hook
-;;                 org-mode-hook
-;;                 text-mode-hook
-;;                 ))
-;;   (add-hook hook 'rainbow-mode))
+(dolist (hook '(css-mode-hook
+                html-mode-hook
+                js-mode-hook
+                emacs-lisp-mode-hook
+                org-mode-hook
+                text-mode-hook
+                ))
+  (add-hook hook 'rainbow-mode))
 
 (use-package rainbow-delimiters
  :ensure t
@@ -3515,7 +3511,7 @@ org-files and bookmarks"
   "green face. For fun.")
 
 (global-set-key
-   (kbd "\\")
+   (kbd "")
 (defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
 
 "
@@ -3841,6 +3837,7 @@ Bib:
 【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
 【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
 【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm res
+【C-f/b】 helm frwd/back 1 char
 "
 ("<f8>" helm-bookmarks "BKMK's")
 ("<f7>" helm-mini "helm-mini")
@@ -4060,6 +4057,7 @@ _q_: quit
       ("s"   org-agenda-schedule      "schedule task ")
       ("d"   org-agenda-deadline      "deadline task ")
       ("p"   org-agenda-date-prompt      "prompt date ")
+      ("M"   cfw:org-open-agenda-day      "month view ")
        ("q"     nil                          "cancel" )
   ))
 
@@ -4501,6 +4499,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
         "-pkg.el" "-autoloads.el"
         "Notes.bib" "auto/"))
 
+(setq temporary-file-directory "/tmp")
+
+(add-to-list 'tramp-default-proxies-alist 
+     '((and (string-match system-name 
+                  (tramp-file-name-host (car target-alist)))
+            "THISSHOULDNEVERMATCH")
+       "\\`root\\'" "/ssh:%h:"))
+
 ;Spelling
 (autoload 'flyspell-mode "flyspell" "On-the-fly spelling checker." t)
 (autoload 'flyspell-delay-command "flyspell" "Delay on command." t)
@@ -4650,14 +4656,14 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq org-agenda-files '("~/org/files/agenda/"))
 
-;(setq org-agenda-window-setup "current-window")
-;(setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-window-setup "current-window")
+(setq org-agenda-restore-windows-after-quit t)
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
-(setq org-agenda-ndays 7)
-;start agenda from today!
+(setq org-agenda-ndays 10)
+;start agenda from today-  don't show listings from earlier in the week
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
 (setq org-deadline-warning-days 10)
@@ -4665,6 +4671,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq org-agenda-skip-deadline-if-done t)
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-span 14)
+
+(setq org-agenda-weekend-days '(5 6))
 
 ;; Do not dim blocked tasks
 (setq org-agenda-dim-blocked-tasks nil)
@@ -5522,6 +5530,43 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
 
+(global-set-key
+   (kbd "\\")
+(defhydra hydra-org-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+
+("\\"  hydra-leader/body  "LEADER" :face 'hydra-face-orange  )
+("a"  nil )
+("b"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu" )
+("c"  nil )
+("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads" )
+("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs")
+("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food")
+("g"  nil )
+("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home" )
+("i"  nil )
+("j"  nil )
+("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux" )
+("k"  nil )
+("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" )
+("n"  nil )
+("o"  nil )
+("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" )
+("r"  (find-file "/home/zeltak/org/files/agenda/Research.org") "research" )
+("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research" )
+("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org" "TODO") )
+("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel" )
+("v"  nil )
+("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
+("x"  (find-file "/home/zeltak/org/files/Tech/tech.org")  "Tech")
+("x"  nil )
+("y"  nil )
+("q"  nil  )
+
+))
+
 ;; Remove splash screen
 (setq inhibit-splash-screen t)
 
@@ -5812,6 +5857,7 @@ scroll-step 1)
  (define-key dired-mode-map (kbd  "y") 'tda/rsync-multiple-mark-file )
  (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
  (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
+ (define-key dired-mode-map (kbd  "<C-a>") 'dired-mark-subdir-files )
 
 (global-set-key
     (kbd "")
@@ -5894,6 +5940,7 @@ Filter by:
 "
 "
 ("a" (find-file "~/AUR/") "AUR" )
+("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
 ("b"  (find-file "~/bin/") "bin" )
 ("c"  (find-file "~/.config/") "config")
 ("d" (find-file "~/Downloads/")    "Downloads" )
@@ -6377,6 +6424,11 @@ Version 2015-03-10"
     (insert "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid  " )
 (term-send-input)
 )
+
+;; Always hilight the current agenda line
+(add-hook 'dired-mode-hook
+          '(lambda () (hl-line-mode 1))
+          'append)
 
 ;; (define-key dired-mode-map "c" 'dired-do-compress-to)
 

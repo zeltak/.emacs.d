@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*- <16/01/08 16:17:26 /home/zeltak/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <16/01/16 09:41:12 /home/zeltak/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
@@ -18,7 +18,70 @@
   ("perl-file-spec" t)
   ("perl-cwd-realpath" t)
   ("perl" "\\perl"))
- (["sudo" "root" "zx1voics" nil nil]
-  nil)
- (["ssh" nil "zx1voics" nil nil]
-  nil))
+ (["ssh" nil "syn" nil nil]
+  ("locale" "LC_ALL=C")
+  ("uname" "Linux 3.10.35")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("~" "/var/services/homes/zeltak")
+  ("file-exists" "test -e")
+  ("stat" nil)
+  ("perl" nil)
+  ("ls" "/bin/ls --color=never")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 100)
+  ("gid-string" "users")
+  ("readlink" nil)
+  ("gvfs-monitor-dir" nil)
+  ("inotifywait" nil))
+ (["ssh" "zeltak" "132.72.152.204" nil nil]
+  ("locale" "LC_ALL=C")
+  ("uname" "Linux 3.10.35")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("file-exists" "test -e")
+  ("perl" nil)
+  ("ls" "/bin/ls --color=never")
+  ("stat" nil)
+  ("id" "/usr/bin/id")
+  ("gid-string" "users")
+  ("gid-integer" 100)
+  ("~" "/var/services/homes/zeltak")
+  ("readlink" nil)
+  ("gvfs-monitor-dir" nil)
+  ("inotifywait" nil))
+ (["ssh" nil "132.72.152.204" nil nil]
+  ("locale" "LC_ALL=C")
+  ("uname" "Linux 3.10.35")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("~" "/var/services/homes/zeltak")
+  ("file-exists" "test -e")
+  ("stat" nil)
+  ("perl" nil)
+  ("ls" "/bin/ls --color=never")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 100)
+  ("gid-string" "users"))
+ (["ssh" "admin" "132.72.152.204" nil nil]
+  ("locale" "LC_ALL=C")
+  ("uname" "Linux 3.10.35")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin"))
+  ("remote-shell" "/bin/sh")
+  ("~" "/var/services/homes/admin")
+  ("file-exists" "test -e")
+  ("stat" nil)
+  ("perl" nil)
+  ("ls" "/bin/ls --color=never")
+  ("id" "/usr/bin/id")
+  ("gid-integer" 100)
+  ("gid-string" "users")
+  ("ls-dired" nil)))
