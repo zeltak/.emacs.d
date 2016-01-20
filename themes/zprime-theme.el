@@ -18,12 +18,17 @@
 ;;; higlighter for the lines
 (highlight-line '(:background "#33B5E5"))
 
+;;links
+(link '(:height 1.08  :underline t :foreground "#0000EE"))
+
+
 ;;;for marking
 (marked-line '(:weight bold :foreground "white" :background "#F72870"))
 
 ;;;; files and folders
 ;; folder colors
-(folder-colors  ' (:weight bold  :foreground "white" :background "#4E4E4E")   )
+(folder-colors  ' (:underline "#A7A6AA" :height 1.2 :weight bold  :foreground "#4E4E4E")   )
+;(folder-colors  ' (:weight bold  :foreground "white" :background "#4E4E4E")   )
 ;;top directory
 (directory '(:height 1.05 :weight bold :foreground "white" :background "#1DBDCF"))
 ;;symlinks
@@ -41,8 +46,8 @@
 (ol6 '(:height 1.0 :weight bold :slant italic :foreground "#0077CC"))
 (ol7 '(:height 1.0 :weight bold :slant italic :foreground "#2EAE2C"))
 (ol8 '(:height 1.0 :weight bold :slant italic :foreground "#FD8008"))
-;;links
-(link '(:height 1.08 :weight bold :underline t :foreground "#40A8D5"))
+
+
 
 ;;;diff
 (diff-added '(:foreground "#008000" :background "#DDFFDD"))
@@ -136,7 +141,9 @@
    `(dired-symlink ((,class ,symlink)))
    `(diredp-compressed-file-suffix ((,class (:foreground "red"))))
    `(diredp-date-time ((,class (:foreground "purple"))))
-   `(diredp-dir-name ((,class (:weight bold  :foreground "white" :background "#4E4E4E"))))
+;;   `(diredp-dir-name ((,class (:underline "#A7A6AA" :height 1.1 :weight bold  :foreground "#4E4E4E"  :box (:line-width 1 :color "#4E4E4E")  ))))
+   `(diredp-dir-name ((,class (:height 1.2 :weight bold :foreground "black" :background "#F7F4CA"  ))))
+   ;; `(diredp-dir-name ((,class (:weight bold  :foreground "white" :background "#4E4E4E"))))
    `(diredp-exec-priv ((,class (:background "#03C03C"))))
    `(diredp-executable-tag ((,class (:foreground "ForestGreen" :background "white"))))
    `(diredp-file-name ((,class (:foreground "black"))))
@@ -157,24 +164,29 @@
      ;;;;;;;;;;; orgmode
 
 ;;org-agenda
-   `(org-agenda-block-count ((,class (:weight bold :foreground "#A5A5A5"))))
-   `(org-agenda-calendar-event ((,class (:weight bold :foreground "#3774CC" ))))
-   `(org-agenda-calendar-sexp ((,class (:foreground "#777777" :background "#E4EBFE"))))
-   `(org-agenda-clocking ((,class (:foreground "black" :background "#EEC900"))))
-   `(org-agenda-column-dateline ((,class ,column)))
-   `(org-agenda-current-time ((,class (:underline t :foreground "#1662AF"))))
-   `(org-agenda-date ((,class (:height 1.2 :weight bold  :foreground "white" :background "#4E4E4E" ))))
-   `(org-agenda-date-today ((,class (:height 1.3 :weight bold :foreground "white" :background "#1DBDCF"))))
-   `(org-agenda-date-weekend ((,class (:height 1.2 :weight bold  :foreground "white" :background "#5CC57C"))))
-   `(org-agenda-diary ((,class (:weight bold :foreground "green4" :background "light blue"))))
-   `(org-agenda-dimmed-todo-face ((,class (:foreground "gold2"))))
-   `(org-agenda-done ((,class (:foreground "#555555"))))
-   `(org-agenda-filter-category ((,class (:weight bold :foreground "orange"))))
-   `(org-agenda-filter-tags ((,class (:weight bold :foreground "orange"))))
-   `(org-agenda-restriction-lock ((,class (:background "#E77D63"))))
-   `(org-agenda-structure ((,class (:height 1.6 :weight bold :foreground "#1F8DD6"))))
-   `(org-archived ((,class (:foreground "gray70"))))
-   `(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
+`(org-agenda-block-count ((,class (:weight bold :foreground "#A5A5A5"))))
+`(org-agenda-calendar-event ((,class (:weight bold :foreground "#3774CC" ))))
+`(org-agenda-calendar-sexp ((,class (:foreground "#777777" :background "#E4EBFE"))))
+`(org-agenda-clocking ((,class (:foreground "black" :background "#EEC900"))))
+`(org-agenda-column-dateline ((,class ,column)))
+;`(org-agenda-current-time ((,class (:underline t :foreground "#1662AF"))))
+`(org-agenda-current-time ((,class (:weight bold :foreground "black" :background "#F7F4CA"  ))))
+
+`(org-agenda-date ((,class (:height 1.2 :weight bold  :foreground "#4E4E4E"  ))))
+;`(org-agenda-date ((,class (:height 1.2 :weight bold  :foreground "white" :background "#4E4E4E" ))))
+;`(org-agenda-date-today ((,class (:height 1.3 :weight bold :foreground "white" :background "#1DBDCF"))))
+`(org-agenda-date-today ((,class (:height 1.3 :weight bold :foreground "white" :background "#296EC5"))))
+`(org-agenda-date-weekend ((,class (:height 1.2 :weight bold   :foreground "#5CC57C"))))
+
+`(org-agenda-diary ((,class (:weight bold :foreground "green4" :background "light blue"))))
+`(org-agenda-dimmed-todo-face ((,class (:foreground "gold2"))))
+`(org-agenda-done ((,class (:foreground "#555555"))))
+`(org-agenda-filter-category ((,class (:weight bold :foreground "orange"))))
+`(org-agenda-filter-tags ((,class (:weight bold :foreground "orange"))))
+`(org-agenda-restriction-lock ((,class (:background "#E77D63"))))
+`(org-agenda-structure ((,class (:height 1.6 :weight bold :foreground "#1F8DD6"))))
+`(org-archived ((,class (:foreground "gray70"))))
+`(org-beamer-tag ((,class (:box (:line-width 1 :color "#FABC18") :foreground "#2C2C2C" :background "#FFF8D0"))))
 ;;;org source blocks
    `(org-block ((,class ,code-block)))
    `(org-block-background ((,class (:background "#FFFFE0"))))

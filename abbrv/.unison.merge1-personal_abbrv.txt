@@ -124,8 +124,6 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     (".rs" "#+REVEAL: split" nil 0)
-    ("7su" "ssh:/uni:/" nil 3)
-    ("7suni" "ssh:/uni:/" nil 0)
     ("8bash" "#!/bin/bash" nil 0)
     ("8c" "#-------------->" nil 0)
     ("8c " "#-------->" nil 0)
@@ -133,8 +131,8 @@
     ("8emu" "ikloog@bgu.ac.il" nil 0)
     ("8emz" "zeltak@gmail.com" nil 0)
     ("8fl" "file:~/" nil 0)
-    ("8rs" "#+REVEAL: split" nil 0)
-    ("8rt" "*lets try it on your computer!*" nil 0)
+    ("8rs" "#+REVEAL: split" nil 17)
+    ("8rt" "*lets try it on your computer!*" nil 18)
     ("8tp" "*lets try it on your computer!*" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)

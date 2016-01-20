@@ -13,4 +13,5 @@
     ("Note" "$Note$" nil 0)
     ("Tip" "%Tip%" nil 0)
     ("Warning" "@Warning@" nil 0)
+    ("7su" "ssh:/uni:/" nil 0)
 ))

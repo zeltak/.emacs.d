@@ -52,9 +52,9 @@
 (if (system-type-is-gnu)
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
-(add-to-list 'default-frame-alist '(font . "Pragmata Pro-19"))
+;(add-to-list 'default-frame-alist '(font . "Pragmata Pro-19"))
 ;(add-to-list 'default-frame-alist '(font . "Fantasque Sans Mono 14"))
-;(add-to-list 'default-frame-alist '(font . "fira mono 14"))
+(add-to-list 'default-frame-alist '(font . "fira mono 19"))
 )
 
 ;; fontso in Win
@@ -576,11 +576,23 @@
   "Dired Audio files extensions")
 (dired-rainbow-define audio "#329EE8" dired-audio-files-extensions)
 
+
+(defconst dired-docs-files-extensions
+  '("docx" "doc" "odf" "odt" "xls" "xlsx" "ppt" "pptx" "ods" "odt")
+  "Dired Docs files extensions")
+(dired-rainbow-define docs "#42D14A" dired-docs-files-extensions)
+
 (defconst dired-video-files-extensions
     '("vob" "VOB" "mkv" "MKV" "mpe" "mpg" "MPG" "mp4" "MP4" "ts" "TS" "m2ts"
       "M2TS" "avi" "AVI" "mov" "MOV" "wmv" "asf" "m2v" "m4v" "mpeg" "MPEG" "tp")
     "Dired Video files extensions")
 (dired-rainbow-define video "#006EFF" dired-video-files-extensions)
+
+(defconst dired-image-files-extensions
+    '("jpeg" "jpg" "JPG" "JPEG" "png" "PNG" "bmp" "tif" "tiff" "xbm" "svg" )
+    "Dired image files extensions")
+(dired-rainbow-define image "#E009CF" dired-image-files-extensions)
+
 
 (defconst dired-pdf-files-extensions
   '("pdf" "PDF")
@@ -599,8 +611,6 @@
   "Dired compressed files extensions")
 (dired-rainbow-define compressed "#B56A00" dired-compressed-files-extensions)
 
-; highlight executable files, but not directories
-(dired-rainbow-define-chmod executable-unix "Green" "-.*x.*")
 
  )
 
@@ -1654,6 +1664,12 @@
  '(shell-pop-window-size 30)
  '(shell-pop-full-span t)
  '(shell-pop-window-position "bottom"))
+ )
+
+(use-package smooth-scrolling
+ :ensure t
+ :config
+(require 'smooth-scrolling)
  )
 
 (use-package smex
@@ -3228,8 +3244,8 @@ Repeated invocations toggle between the two most recently open buffers."
 
 (defun z/buffer-close-andmove-other   ()
      (interactive)    
-     (ace-window 1)        
-      (ace-delete-window)
+     (save-buffer)        
+      (delete-window)
 )
 
 (defun ood () (interactive) (dired "/home/zeltak/org"))
@@ -3372,6 +3388,18 @@ org-files and bookmarks"
 (define-key isearch-mode-map (kbd "<backspace>") 
   #'isearch-delete-something)
 
+(defun endless/isearch-symbol-with-prefix (p)
+  "Like isearch, unless prefix argument is provided.
+With a prefix argument P, isearch for the symbol at point."
+  (interactive "P")
+  (let ((current-prefix-arg nil))
+    (call-interactively
+     (if p #'isearch-forward-symbol-at-point
+       #'isearch-forward))))
+
+(global-set-key [remap isearch-forward]
+                #'endless/isearch-symbol-with-prefix)
+
 (defun z/mu4e-inbox ()
 "Display the inbox."
 (interactive)
@@ -3501,58 +3529,78 @@ org-files and bookmarks"
     '((t (:foreground "brown" :bold t)))
   "brown.")
 
+(defface hydra-face-cyan
+    '((t (:foreground "#42B7DE" :bold t :underline t)))
+  "cyan")
 
 (defface hydra-face-red
     '((t (:foreground "red" :bold t)))
-  "red face. For fun.")
+  "red")
 
 (defface hydra-face-green
     '((t (:foreground "green" :bold t)))
-  "green face. For fun.")
+  "green")
+
+
+(defface hydra-face-brown
+    '((t (:foreground "#C15F0D" :bold t)))
+  "brown")
+
+
+(defface hydra-face-purple
+    '((t (:foreground "#D52BFF" :bold t)))
+  "purple")
 
 (global-set-key
-   (kbd "")
-(defhydra hydra-leader  (:color blue  :columns 4 :hints nil)
+    (kbd "\\")
+ (defhydra hydra-leader  (:color blue :hint nil :columns 5)
+ "
+LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
+ "
 
-"
-LEADER:【C-A-W】-append to killring
-helm-projectile-recentf 【C-c p e】
-"
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>" helm-all-mark-rings "all mark rings")
 ("\\"  avy-goto-char-timer  "avy jump")
-("<f12>" z/buffer-close-andmove-other "move back to window and close" :exit t)   
-("a" nil )
-("b" helm-bm "helm" )
-("B" bm-show "bm show" )
-("v"  bm-toggle "add bm")
-("c"  nil )
-("f"  link-hint-open-link "open link" )
-("g"  hydra-goto/body )
-("h"  z/org-move-top-collapse   "collapse tree")
-("H"  hide-sublevels "collapse tree")
+("|"   hydra-goto/body "goto" )
+("RET" avy-goto-line "goto line" )
+("8"   helm-mark-ring "HELM mark ")
+("T"   helm-top "top")
+(";"   comment-or-uncomment-region )
+("5"   duplicate-current-line-or-region  "duplicate" :color red)
+("6"   z/copy-comment-paste  "duplicate-comment")
+("="  repeat "repeat last command" )
+("/"  (dired "~/") "dired" )
+
+("<up>" drag-stuff-up  "marked up" :color red)
+("<down>" drag-stuff-down  "marked down" :color red)
+
+("a"  z/org-agenda-calendar "org agenda" )
+("c"  z/org-move-top-collapse "collapse headers" )
 ("i"  hydra-editing-insert/body "insert symbol" )
-("j"  nil )
-("y"  org-copy-subtree  "org-copy" )
-("l"  avy-goto-line "jump line" )
-("m"  helm-mark-ring "HELM mark ")
-("n"  set-mark-command "mark position")
-("N"  set-mark-command 4 "mark prev" )
-("o"  helm-projectile-find-file "proj ff【C-c p f】" )
-("p"  helm-projectile "proj【C-c p h】"  ) 
-("P"  helm-projectile-switch-project   "proj switch 【C-c p p】")
-("d"  helm-projectile-find-dir "proj dir 【 C-c p d 】"  )
-("e"  duplicate-thing  "duplicate")
-("r"  repeat "repeat last command" )
-("s"  nil )
-("t"  helm-top "top")
-("u"  nil )
-("w"  wrap-region "wrap symbol" )
-("x"  nil )
 ("k"  helm-show-kill-ring "kill ring")
-("z"  avy-zap-to-cha "avy zap")
-(";"  comment-or-uncomment-region )
-("q"  nil )
+("v"  helm-bm "helm-bm" )
+("V"  bm-toggle "add bm")
+("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
+("x"  z/buffer-close-andmove-other  "close window")
+
+("b"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
+("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
+("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
+("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
+("g"  nil )
+("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
+("j"  nil )
+("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
+("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
+("n"  nil )
+("o"  nil )
+("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
+("r"  (find-file "/home/zeltak/org/files/agenda/Research.org") "research" :face 'hydra-face-cyan )
+("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
+("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
+("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
+("y"  nil )
+("q"  nil  )
 
 ))
 
@@ -3945,6 +3993,7 @@ link menus
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
      ("d" org-id-create "just create Id")
      ("p" org-cliplink "org-cliplick")
+     ("o"  link-hint-open-link "open link" )
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
@@ -4042,7 +4091,7 @@ _q_: quit
 【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
 【S-left//right】 change deadline 【k】 launch capture with date/task
 【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
-【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 
+【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 【v】 view mode                             
 "
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
       ("c"  org-agenda-columns  "agenda columns" )
@@ -4269,6 +4318,7 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("c" goto-char "char")
   ("o" ace-link-org "goto org link")
   ("2" er/expand-region "expand")
+  ("z"  avy-zap-to-cha "avy zap")
   ("q" nil "quit"))
 
 (defhydra hydra-vi (:body-pre hydra-vi/pre
@@ -4546,7 +4596,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;allow speedkeys
 (setq org-use-speed-commands t)
 (setq org-speed-commands-user nil)
-(setq org-src-fontify-natively t);; syntax highlighting the source code
 
 ;;   (defun update-last-edited (beg end length)
 ;;     (when
@@ -5470,6 +5519,8 @@ With prefix argument, also display headlines without a TODO keyword."
  'org-mode
 '(("\\(\\†[^†\n]+\\†\\)" (0 '(:weight bold  :box (:line-width 1 :color "#A5A0FF")  :foreground "#00006F" :background "#FFFFFF") t))))
 
+(setq org-src-fontify-natively t);; syntax highlighting the source code
+
 ;    (defun prettier-org-code-blocks ()
 ;      (interactive)
 ;      (font-lock-add-keywords nil
@@ -5529,43 +5580,6 @@ With prefix argument, also display headlines without a TODO keyword."
 org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
-
-(global-set-key
-   (kbd "\\")
-(defhydra hydra-org-chd  (:color blue :hint nil :columns 4)
-
-"
-"
-
-("\\"  hydra-leader/body  "LEADER" :face 'hydra-face-orange  )
-("a"  nil )
-("b"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu" )
-("c"  nil )
-("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads" )
-("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs")
-("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food")
-("g"  nil )
-("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home" )
-("i"  nil )
-("j"  nil )
-("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux" )
-("k"  nil )
-("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" )
-("n"  nil )
-("o"  nil )
-("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" )
-("r"  (find-file "/home/zeltak/org/files/agenda/Research.org") "research" )
-("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research" )
-("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org" "TODO") )
-("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel" )
-("v"  nil )
-("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
-("x"  (find-file "/home/zeltak/org/files/Tech/tech.org")  "Tech")
-("x"  nil )
-("y"  nil )
-("q"  nil  )
-
-))
 
 ;; Remove splash screen
 (setq inhibit-splash-screen t)
@@ -5871,23 +5885,30 @@ scroll-step 1)
 【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
 【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
  "
+ ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
  ("1" hydra-dired-operations/body "dired operations" )
  ("a" dired-mark-subdir-files "mark all" )
- ("c"  nil )
- ("z" hydra-dired-filter/body "filter menu")
+ ("c" z/dired-copy-setdirs "copy to dirs"  :face 'hydra-face-red )
+ ("C" z/dired-copy-setdirs-recurs "copy to dirs-RECURSE"   :face 'hydra-face-red  )
+ ("m" z/dired-move-setdirs  "move to dirs-RECURSE"   :face 'hydra-face-red  )            
+ ("M" z/dired-move-setdirs-recurs   "move to dirs-RECURSE"   :face 'hydra-face-red  )            
+ ("z" dired-filter-load-saved-filters "load filter")
+ ("Z" hydra-dired-filter/body "filter menu")
  ("h"  nil )
  ("o" z/dired-open-in-desktop "open with FM" )
  ("s"  z/dired-sort-menu "sort menu" )
  ("n"  z/dired-get-size "get size" )
  ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
- ("u"  nil )
- ("y"  dired-ranger-copy "copy2clip")
- ("p"  dired-ranger-paste "paste_F_clip")
- ("d" dired-ranger-move "move2clip")
+ ("u"  diredfd-do-unpack "unpack"   :face 'hydra-face-brown  )
+ ("U"  z/dired-archive-unrar "unrar" :face 'hydra-face-brown )
+ ("p"  diredfd-do-pack  "pack" :face 'hydra-face-brown )
+ ("Y"  dired-ranger-copy "copy2clip" )
+ ("P"  dired-ranger-paste "paste_F_clip")
+ ("D" dired-ranger-move "move2clip")
  ("f" z/dired-shell-fb "fb" )
- ("x"   z/dired-shell-chmodx "+x" )
-("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
-(";"  nil )
+ ("x"  z/dired-shell-chmodx "+x" )
+ ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
+ (";"  nil )
  ("q"  nil )
 
  ))
@@ -5952,7 +5973,7 @@ Filter by:
 ("i"  nil )
 ("j"  nil )
 ("k"  (find-file "~/BK/") "BK" )
-("l"  nil )
+("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
 ("n"  nil )
 ("o"  (find-file "~/org/files/") "Org" )
@@ -5969,51 +5990,6 @@ Filter by:
 ("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
-
-))
-
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-operation (:color blue :hint nil)
-
-"
-
-_a_:         _b_:         _c_: clean non-org        _d_:        _e_:           _f_:         _g_:  
-_h_:         _i_:         _j_:       _k_:       _l_:          _m_:        _n_:      
-_o_:        _p_:        _r_:       _s_:       _t_:           _u_:       
-_v_:        _w_:        _x_:       _y_:       _z_: 
-_q_: 
-
-"
-
-
-
-("a" nil )
-("b"  nil  )
-("c"  z/del-nonorg-files )
-("d"  nil )
-("e"  nil )
-("f"  nil )
-("g"  nil )
-("h"  nil )
-("i"  nil )
-("j"  nil )
-("k"  nil )
-("l"  nil )
-("m"  nil )
-("n"  nil )
-("o"  nil )
-("p"  nil )
-("r"  nil )
-("s"  nil )
-("t"  nil )
-("u"  nil )
-("v"  nil)
-("w"  nil )
-("x"  nil )
-("y"  nil )
-("z"  nil )
-("q"  nil )
 
 ))
 
@@ -6075,18 +6051,7 @@ The app is chosen from your OS's preference."
 (defun  z/dired-beet-import ()
     "Uses beets to import folder"
     (interactive)
-    (shell-command (concat "beet import" (dired-file-name-at-point))))
-
-;; (defun z/dired-beet-import ()
-;;   (interactive)
-;;   (sr-term)
-;;   (let* ((fmt "beet import %s\n")
-;;          (file (sr-clex-file sr-selected-window))
-;;          (command (format fmt file)))
-;;     (if (not (equal sr-terminal-program "eshell"))
-;;         (term-send-raw-string command)
-;;       (insert command)
-;;       (eshell-send-input))))
+    (dired-do-async-shell-command (concat "beet import" (dired-file-name-at-point))))
 
 (defun z/dired-beet-import-single ()
   (interactive)
@@ -6100,20 +6065,20 @@ The app is chosen from your OS's preference."
       (eshell-send-input))))
 
 (defun  z/dired-shell-fb ()
-    "Uses fb to upload file at point."
-    (interactive)
-    (shell-command (concat "fb " (dired-file-name-at-point))))
-
- ;; (add-hook 'dired-mode-hook '(lambda () 
- ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
+     "Uses fb to upload file at point."
+     (interactive)
+     (shell-command (concat "fb " (dired-file-name-at-point)))
+     (message (propertize "Uploaded to FB" 'face 'font-lock-warning-face))
+)
 
 (defun z/dired-shell-chmodx ()
-    "chmod"
-    (interactive)
-    (shell-command (concat "chmod +x " (dired-file-name-at-point)))
-     (revert-buffer)
+     "chmod"
+     (interactive)
+     (shell-command (concat "chmod +x " (dired-file-name-at-point)))
+;;; to refresh view use revert buffer  
+    (revert-buffer)
     (message (propertize "changed mode to executable" 'face 'font-lock-warning-face))
-)
+ )
 
 (defun z/dired-ssh-qnap ()
     "chmod"
@@ -6154,8 +6119,6 @@ Version 2015-07-30"
 
 ;; Make a hash table to hold the paths
 (setq my-target-dirs (make-hash-table :test 'equal))
-
-
 
 ;; A function to return all the keys from a hash.
 (defun get-keys-from-hash (hash)
@@ -6424,6 +6387,11 @@ Version 2015-03-10"
     (insert "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid  " )
 (term-send-input)
 )
+
+(defun  z/dired-archive-unrar ()
+    "Uses beets to import folder"
+    (interactive)
+    (shell-command (concat "unrar x" (dired-file-name-at-point))))
 
 ;; Always hilight the current agenda line
 (add-hook 'dired-mode-hook

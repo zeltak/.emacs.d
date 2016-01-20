@@ -124,8 +124,6 @@
 (define-abbrev-table 'global-abbrev-table
   '(
     (".rs" "#+REVEAL: split" nil 0)
-    ("7su" "ssh:/uni:/" nil 3)
-    ("7suni" "ssh:/uni:/" nil 0)
     ("8bash" "#!/bin/bash" nil 0)
     ("8c" "#-------------->" nil 0)
     ("8c " "#-------->" nil 0)
@@ -133,8 +131,8 @@
     ("8emu" "ikloog@bgu.ac.il" nil 0)
     ("8emz" "zeltak@gmail.com" nil 0)
     ("8fl" "file:~/" nil 0)
-    ("8rs" "#+REVEAL: split" nil 0)
-    ("8rt" "*lets try it on your computer!*" nil 0)
+    ("8rs" "#+REVEAL: split" nil 17)
+    ("8rt" "*lets try it on your computer!*" nil 18)
     ("8tp" "*lets try it on your computer!*" nil 0)
     ("8tst" "this is a mfm test" nil 0)
     ("8wr" "@Warning@" nil 0)
@@ -678,7 +676,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 22)
+    ("i" "I" nil 21)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -731,9 +729,8 @@
     ("invitaion" "invitation" nil 0)
     ("invstigated" "investigated" nil 0)
     ("inwhich" "in which" nil 0)
-    ("isnt" "isn't" nil 3)
+    ("isnt" "isn't" nil 2)
     ("isntc" "isn't" nil 0)
-    ("israeli" "israeli" nil 0)
     ("isthe" "is the" nil 0)
     ("itis" "it is" nil 0)
     ("ititial" "initial" nil 0)
@@ -1292,8 +1289,6 @@
 
 (define-abbrev-table 'google-contacts-mode-abbrev-table '())
 
-(define-abbrev-table 'google-maps-static-mode-abbrev-table '())
-
 (define-abbrev-table 'grep-mode-abbrev-table '())
 
 (define-abbrev-table 'gscholar-bibtex-mode-abbrev-table '())
@@ -1409,8 +1404,6 @@
 (define-abbrev-table 'python-mode-abbrev-table '())
 
 (define-abbrev-table 'python-mode-skeleton-abbrev-table '())
-
-(define-abbrev-table 'ranger-mode-abbrev-table '())
 
 (define-abbrev-table 'reb-lisp-mode-abbrev-table '())
 
