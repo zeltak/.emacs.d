@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ cdrw-get-size
+ dired-get-size
  load-theme
  describe-face
  customize-face
  cfw:open-org-calendar
  deft
- wl
- ranger
 )
 
 ;; ----- smex-data -----
@@ -255,4 +255,6 @@
  (describe-face . 1)
  (arview-dired . 1)
  (arview . 1)
+ (dired-get-size . 1)
+ (cdrw-get-size . 2)
 )

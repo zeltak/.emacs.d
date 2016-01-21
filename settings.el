@@ -3817,9 +3817,9 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
   ("<f4>"    elfeed            "elfeed")
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
-  ("d"    z/del_exe_mu4e            "delete")
-  ("f"    z/flag_exe_mu4e            "flag")
-  ("F"    z/unflag_exe_mu4e            "unflag")
+  ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
+  ("f"    (execute-kbd-macro (symbol-function 'mu4e-flag-exe))         "flag")
+  ("F"    (execute-kbd-macro (symbol-function 'mu4e-unflag-exe))          "unflag")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
@@ -4086,6 +4086,7 @@ _q_: quit
      (kbd "<f10>")
   (defhydra hydra-org-agenda (:color blue :hint nil :columns 4)
 "AGENDA:
+【g】- Refresh agenda 
 【SPACE//TAB】open//open-go item in side view 【F】will toggle follow mode for space/tab view
 【A】Append another view 【/】 filter tag 【=】 filter regex 【|】 clean all filters
 【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
@@ -4476,14 +4477,11 @@ comment _e_macs function  // copy-paste-comment-function _r_
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
 
-(fset 'z/del_exe_mu4e
-   [?d ?x ?y ])
+(fset 'z/dired-macro-beetimp
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
 
-(fset 'z/flag_exe_mu4e
-   [?+ ?x ?y ])
-
-(fset 'z/unflag_exe_mu4e
-   [?- ?x ?y ])
+(fset 'z/dired-macro-beetimp-single
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "firefox")
@@ -5872,6 +5870,12 @@ scroll-step 1)
  (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
  (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
  (define-key dired-mode-map (kbd  "<C-a>") 'dired-mark-subdir-files )
+ (define-key dired-mode-map (kbd  "S-<f1>") 'hydra-toggles/body  )
+ (define-key dired-mode-map (kbd  "S-<f3>") 'hydra-spell/body  )
+ (define-key dired-mode-map (kbd  "S-<f4>") 'hydra-org-blocks/body  )
+ (define-key dired-mode-map (kbd  "S-<f5>") 'hydra-mu4e/body  )
+ (define-key dired-mode-map (kbd  "S-<f6>") 'hydra-bib/body  )
+ (define-key dired-mode-map (kbd  "S-<f9>") 'hydra-org/body  )
 
 (global-set-key
     (kbd "")
@@ -5887,6 +5891,7 @@ scroll-step 1)
  "
  ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
  ("1" hydra-dired-operations/body "dired operations" )
+ ("2" hydra-dired-searches/body "dired searches" )
  ("a" dired-mark-subdir-files "mark all" )
  ("c" z/dired-copy-setdirs "copy to dirs"  :face 'hydra-face-red )
  ("C" z/dired-copy-setdirs-recurs "copy to dirs-RECURSE"   :face 'hydra-face-red  )
@@ -5912,6 +5917,46 @@ scroll-step 1)
  ("q"  nil )
 
  ))
+
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" (find-file "~/AUR/") "AUR" )
+("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
+("3" (find-file "/home/zeltak/mounts/lraid/r/") "P2P" )
+("b"  (find-file "~/bin/") "bin" )
+("c"  (find-file "~/.config/") "config")
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  (find-file "~/MLT/") "MLT")
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
 
 (defhydra hydra-dired-filter  (:color blue :hint nil :columns 5)
       "
@@ -5943,55 +5988,28 @@ Filter by:
       "
 Filter by:
       "
+     ("b" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp))  "beet import" ) 
+     ("B" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp-single))  "beet import single" ) 
      ("o" z/del-nonorg-files  "delete non org" ) 
-     ("m" 'z/dired-media-info  "media-info" ) 
-     ("cd" ' z/dired-shell-doc2docx  "doc2docx" ) 
-     ("cp" ' z/dired-shell-pdf2text  "pdf2text" ) 
-     ("is" 'xah-dired-scale-image  "scale" ) 
-     ("ic" 'xah-dired-image-autocrop  "autocrop" ) 
-     ("ij" 'xah-dired-2jpg  "to-jpg" ) 
-     ("ip" 'xah-dired-2png "to-png" ) 
+     ("m" z/dired-media-info  "media-info" ) 
+     ("cd" z/dired-shell-doc2docx  "doc2docx" ) 
+     ("cp" z/dired-shell-pdf2text  "pdf2text" ) 
+     ("is" xah-dired-scale-image  "scale" ) 
+     ("ic" xah-dired-image-autocrop  "autocrop" ) 
+     ("ij" xah-dired-2jpg  "to-jpg" ) 
+     ("ip" xah-dired-2png "to-png" ) 
       ("q" nil "cancel" nil)
  )
 
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
-
-"
-"
-("a" (find-file "~/AUR/") "AUR" )
-("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
-("b"  (find-file "~/bin/") "bin" )
-("c"  (find-file "~/.config/") "config")
-("d" (find-file "~/Downloads/")    "Downloads" )
-("e"  (find-file "~/.emacs.d/") "Emacs.d")
-("E"  (find-file "~/.emacs.g/") "Emacs.g")
-("f"  nil )
-("g"  nil )
-("h"  (find-file "~/") "HOME" )
-("i"  nil )
-("j"  nil )
-("k"  (find-file "~/BK/") "BK" )
-("l"  (find-file "~/MLT/") "MLT")
-("m"  (find-file "~/music/") "music" )
-("n"  nil )
-("o"  (find-file "~/org/files/") "Org" )
-("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
-("r"  (find-file "~/mreview/") "mreview" )
-("s"  (find-file "~/Sync/") "Sync" )
-("S"  (find-file "~/scripts/" "scripts") )
-("t"  (find-file "~/mounts/" "mounts") )
-("u"  (find-file "~/Uni//") "Uni" )
-("v"  nil)
-("w"  (find-file "~/dotfiles/") "dotfiles" )
-("x"  nil )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("/"  (find-file "/") "Root")
-("q" nil  )
-
-))
+(defhydra hydra-dired-searches  (:color blue :hint nil :columns 5)
+      "
+Filter by:
+      "
+     ("i" z/dired-search-imdb "imdb" ) 
+     ("g" z/dired-search-google "google" ) 
+     ("m" z/dired-search-allmusic "allmusic" ) 
+      ("q" nil "cancel" nil)
+ )
 
 (defun z/del-nonorg-files ()
 (interactive)
@@ -6048,21 +6066,34 @@ The app is chosen from your OS's preference."
                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
                  (match-string 1))))))
 
-(defun  z/dired-beet-import ()
-    "Uses beets to import folder"
-    (interactive)
-    (dired-do-async-shell-command (concat "beet import" (dired-file-name-at-point))))
+;; (defun  z/dired-beet-importx ()
+;;     "Uses beets to import folder"
+;;    (interactive)
+;;   (dired-do-async-shell-command (concat "beet import -s" (dired-file-name-at-point))))
 
-(defun z/dired-beet-import-single ()
-  (interactive)
-  (sr-term)
-  (let* ((fmt "beet import -s %s\n")
-         (file (sr-clex-file sr-selected-window))
-         (command (format fmt file)))
-    (if (not (equal sr-terminal-program "eshell"))
-        (term-send-raw-string command)
-      (insert command)
-      (eshell-send-input))))
+(defun  z/dired-media-info ()
+     "media info "
+     (interactive)
+     (shell-command (concat "mediainfo "  (dired-file-name-at-point)
+)))
+
+(defun  z/dired-shell-netstat ()
+ "netstat"
+(interactive)
+(z/visit-ansi-term)
+(term-send-input)
+(insert "netstat -tlnp" )
+(term-send-input)
+)
+
+(defun  z/dired-shell-nmap-hlan ()
+ "nmap-hlan"
+(interactive)
+(z/visit-ansi-term)
+(term-send-input)
+(insert "nmap -sP 192.168.0.1/24" )
+(term-send-input)
+)
 
 (defun  z/dired-shell-fb ()
      "Uses fb to upload file at point."
@@ -6086,9 +6117,6 @@ The app is chosen from your OS's preference."
     (shell-command (concat "sshfs -p 12121 admin@10.0.0.2:/share/MD0_DATA/ /home/zeltak/mounts/lraid " (dired-file-name-at-point)))
     (message (propertize "connected to ssh" 'face 'font-lock-warning-face))
 )
-
-(fset 'z/dired-media-info
-   [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
 
 (defun z/dired-nmap-network ()
 "map all available IP on my netwrok"
@@ -6370,13 +6398,12 @@ Version 2015-03-10"
  ;;                               (local-set-key (kbd "O") 'cygstart-in-dired)))
 
 (defun  z/dired-shell-ncdu ()
-     "ncdu"
-     (interactive)
-   (z/visit-ansi-term)
+ "ncdu"
+(interactive)
+(z/visit-ansi-term)
 (term-send-input)
-    (insert "ncdu" )
+(insert "ncdu" )
 (term-send-input)
-
 )
 
 (defun  z/dired-shell-sshfs-qnap ()
@@ -6392,6 +6419,24 @@ Version 2015-03-10"
     "Uses beets to import folder"
     (interactive)
     (shell-command (concat "unrar x" (dired-file-name-at-point))))
+
+(defun  z/dired-search-imdb ()
+     "imdb point "
+     (interactive)
+     (shell-command (concat "surfraw imdb " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+)))
+
+(defun  z/dired-search-google ()
+     "google point "
+     (interactive)
+     (shell-command (concat "surfraw google " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+)))
+
+(defun  z/dired-search-allmusic ()
+     "allmusic point "
+     (interactive)
+     (shell-command (concat "surfraw yubnub allmusic  " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+)))
 
 ;; Always hilight the current agenda line
 (add-hook 'dired-mode-hook
@@ -6666,6 +6711,33 @@ Version 2015-03-10"
                                     "ikloog@bgu.ac.il"
                                     "ekloog@hsph.harvard.edu"))
 
+(fset 'z/mu4e-del-exe
+    [?d ?x ?y ])
+
+;;for the function
+(defun z/mu4e-del-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-del-exe)) 
+    )
+
+(fset 'z/mu4e-flag-exe
+    [?+ ?x ?y ])
+
+;;for the function
+(defun z/mu4e-flag-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-flag-exe)) 
+    )
+
+(fset 'z/mu4e-unflag-exe
+    [?- ?x ?y ])
+
+;;for the function
+(defun z/mu4e-unflag-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-unflag-exe)) 
+    )
+
 (setq mu4e-update-interval 60)
 (setq mu4e-headers-auto-update t)
 (setq mu4e-index-update-error-warning  t)
@@ -6741,7 +6813,9 @@ Version 2015-03-10"
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
 
-
+(define-key mu4e-headers-mode-map (kbd "w") 'z/mu4e-del-exe-func )
+(define-key mu4e-headers-mode-map (kbd "f") 'z/mu4e-flag-exe-func )
+(define-key mu4e-headers-mode-map (kbd "F") 'z/mu4e-unflag-exe-func )
 
 mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 

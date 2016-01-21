@@ -5167,9 +5167,9 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
   ("<f4>"    elfeed            "elfeed")
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
-  ("d"    z/del_exe_mu4e            "delete")
-  ("f"    z/flag_exe_mu4e            "flag")
-  ("F"    z/unflag_exe_mu4e            "unflag")
+  ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
+  ("f"    (execute-kbd-macro (symbol-function 'mu4e-flag-exe))         "flag")
+  ("F"    (execute-kbd-macro (symbol-function 'mu4e-unflag-exe))          "unflag")
   ("o"     mu4e-headers-change-sorting            "sort")
     ("q"     nil                          "cancel" )
 ))
@@ -5181,6 +5181,7 @@ link-hint-open-link - Use avy to select and open a single visible link. If only 
 link-hint-open-multiple-links - Use avy to select multiple visible links and open them as soon as a key that does not correspond to a link (a key not in the avy overlay) is pressed (like pentadactyl’s g;).
 link-hint-open-all-links - Opens all links visible in the buffer.
 link-hint-copy-link - Use avy to select and copy a single visible link to the kill ring. select-enable-clipboard and select-enable-clipboard can each be set to a non-nil value to also use the clipboard and/or primary.
+
 *** latex/bib (F6)
 
 #+BEGIN_SRC emacs-lisp :results none
@@ -5527,6 +5528,7 @@ _q_: quit
      (kbd "<f10>")
   (defhydra hydra-org-agenda (:color blue :hint nil :columns 4)
 "AGENDA:
+【g】- Refresh agenda 
 【SPACE//TAB】open//open-go item in side view 【F】will toggle follow mode for space/tab view
 【A】Append another view 【/】 filter tag 【=】 filter regex 【|】 clean all filters
 【v】Choose view 【f】forward in time 【b】back in time 【.】goto today 【j】 jump to date
@@ -5990,22 +5992,17 @@ pop-global-mark this will move you to prev position
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
 #+END_SRC
-** mu4e
-*** delete and exe
- #+BEGIN_SRC emacs-lisp :results none
- (fset 'z/del_exe_mu4e
-    [?d ?x ?y ])
- #+END_SRC
-*** flag and exe
- #+BEGIN_SRC emacs-lisp :results none
- (fset 'z/flag_exe_mu4e
-    [?+ ?x ?y ])
- #+END_SRC
-*** unflag and exe
- #+BEGIN_SRC emacs-lisp :results none
- (fset 'z/unflag_exe_mu4e
-    [?- ?x ?y ])
- #+END_SRC
+** dired
+*** beet import 
+#+BEGIN_SRC emacs-lisp  :results none
+(fset 'z/dired-macro-beetimp
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
+#+END_SRC
+*** beet import single
+#+BEGIN_SRC emacs-lisp  :results none
+(fset 'z/dired-macro-beetimp-single
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
+#+END_SRC
 * Settings
   :PROPERTIES:
   :ID:       0991546e-92b4-42d3-9b99-d3c639d2d5f8
@@ -7859,10 +7856,16 @@ $Note-if you see starnge behivour this maybe a culprit$
  (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
  (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
  (define-key dired-mode-map (kbd  "<C-a>") 'dired-mark-subdir-files )
+ (define-key dired-mode-map (kbd  "S-<f1>") 'hydra-toggles/body  )
+ (define-key dired-mode-map (kbd  "S-<f3>") 'hydra-spell/body  )
+ (define-key dired-mode-map (kbd  "S-<f4>") 'hydra-org-blocks/body  )
+ (define-key dired-mode-map (kbd  "S-<f5>") 'hydra-mu4e/body  )
+ (define-key dired-mode-map (kbd  "S-<f6>") 'hydra-bib/body  )
+ (define-key dired-mode-map (kbd  "S-<f9>") 'hydra-org/body  )
  #+END_SRC
 
 *** hydra (f2)
-**** hydra leader
+**** dired leader
  #+BEGIN_SRC emacs-lisp :results none
     (global-set-key
        (kbd "")
@@ -7878,6 +7881,7 @@ $Note-if you see starnge behivour this maybe a culprit$
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
     ("1" hydra-dired-operations/body "dired operations" )
+    ("2" hydra-dired-searches/body "dired searches" )
     ("a" dired-mark-subdir-files "mark all" )
     ("c" z/dired-copy-setdirs "copy to dirs"  :face 'hydra-face-red )
     ("C" z/dired-copy-setdirs-recurs "copy to dirs-RECURSE"   :face 'hydra-face-red  )
@@ -7904,6 +7908,52 @@ $Note-if you see starnge behivour this maybe a culprit$
 
     ))
  #+END_SRC
+
+
+**** dired chd
+change dir only in dir mode hook?
+#+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+   (kbd "")
+(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
+
+"
+"
+("a" (find-file "~/AUR/") "AUR" )
+("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
+("3" (find-file "/home/zeltak/mounts/lraid/r/") "P2P" )
+("b"  (find-file "~/bin/") "bin" )
+("c"  (find-file "~/.config/") "config")
+("d" (find-file "~/Downloads/")    "Downloads" )
+("e"  (find-file "~/.emacs.d/") "Emacs.d")
+("E"  (find-file "~/.emacs.g/") "Emacs.g")
+("f"  nil )
+("g"  nil )
+("h"  (find-file "~/") "HOME" )
+("i"  nil )
+("j"  nil )
+("k"  (find-file "~/BK/") "BK" )
+("l"  (find-file "~/MLT/") "MLT")
+("m"  (find-file "~/music/") "music" )
+("n"  nil )
+("o"  (find-file "~/org/files/") "Org" )
+("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
+("r"  (find-file "~/mreview/") "mreview" )
+("s"  (find-file "~/Sync/") "Sync" )
+("S"  (find-file "~/scripts/" "scripts") )
+("t"  (find-file "~/mounts/" "mounts") )
+("u"  (find-file "~/Uni//") "Uni" )
+("v"  nil)
+("w"  (find-file "~/dotfiles/") "dotfiles" )
+("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
+("y"  nil )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("/"  (find-file "/") "Root")
+("q" nil  )
+
+))
+
+#+END_SRC
 
 
 **** dired filter and find 
@@ -7941,67 +7991,40 @@ Filter by:
 
 dired-omit-mode
 
+
 **** dired operations
  #+BEGIN_SRC emacs-lisp :results none
  (defhydra hydra-dired-operations  (:color blue :hint nil :columns 5)
       "
 Filter by:
       "
+     ("b" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp))  "beet import" ) 
+     ("B" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp-single))  "beet import single" ) 
      ("o" z/del-nonorg-files  "delete non org" ) 
-     ("m" 'z/dired-media-info  "media-info" ) 
-     ("cd" ' z/dired-shell-doc2docx  "doc2docx" ) 
-     ("cp" ' z/dired-shell-pdf2text  "pdf2text" ) 
-     ("is" 'xah-dired-scale-image  "scale" ) 
-     ("ic" 'xah-dired-image-autocrop  "autocrop" ) 
-     ("ij" 'xah-dired-2jpg  "to-jpg" ) 
-     ("ip" 'xah-dired-2png "to-png" ) 
+     ("m" z/dired-media-info  "media-info" ) 
+     ("cd" z/dired-shell-doc2docx  "doc2docx" ) 
+     ("cp" z/dired-shell-pdf2text  "pdf2text" ) 
+     ("is" xah-dired-scale-image  "scale" ) 
+     ("ic" xah-dired-image-autocrop  "autocrop" ) 
+     ("ij" xah-dired-2jpg  "to-jpg" ) 
+     ("ip" xah-dired-2png "to-png" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
 
-**** TODO dired chd
-change dir only in dir mode hook?
-#+BEGIN_SRC emacs-lisp :results none
-(global-set-key
-   (kbd "")
-(defhydra hydra-dired-chd  (:color blue :hint nil :columns 4)
 
-"
-"
-("a" (find-file "~/AUR/") "AUR" )
-("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
-("b"  (find-file "~/bin/") "bin" )
-("c"  (find-file "~/.config/") "config")
-("d" (find-file "~/Downloads/")    "Downloads" )
-("e"  (find-file "~/.emacs.d/") "Emacs.d")
-("E"  (find-file "~/.emacs.g/") "Emacs.g")
-("f"  nil )
-("g"  nil )
-("h"  (find-file "~/") "HOME" )
-("i"  nil )
-("j"  nil )
-("k"  (find-file "~/BK/") "BK" )
-("l"  (find-file "~/MLT/") "MLT")
-("m"  (find-file "~/music/") "music" )
-("n"  nil )
-("o"  (find-file "~/org/files/") "Org" )
-("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
-("r"  (find-file "~/mreview/") "mreview" )
-("s"  (find-file "~/Sync/") "Sync" )
-("S"  (find-file "~/scripts/" "scripts") )
-("t"  (find-file "~/mounts/" "mounts") )
-("u"  (find-file "~/Uni//") "Uni" )
-("v"  nil)
-("w"  (find-file "~/dotfiles/") "dotfiles" )
-("x"  nil )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("/"  (find-file "/") "Root")
-("q" nil  )
-
-))
-
-#+END_SRC
+**** dired searches
+ #+BEGIN_SRC emacs-lisp :results none
+ (defhydra hydra-dired-searches  (:color blue :hint nil :columns 5)
+      "
+Filter by:
+      "
+     ("i" z/dired-search-imdb "imdb" ) 
+     ("g" z/dired-search-google "google" ) 
+     ("m" z/dired-search-allmusic "allmusic" ) 
+      ("q" nil "cancel" nil)
+ )
+ #+END_SRC
 
 
 *** functions
@@ -8074,26 +8097,49 @@ change dir only in dir mode hook?
  #+END_SRC
 
 **** TODO beet import
+
  #+BEGIN_SRC emacs-lisp :results none
- (defun  z/dired-beet-import ()
-     "Uses beets to import folder"
-     (interactive)
-     (dired-do-async-shell-command (concat "beet import" (dired-file-name-at-point))))
+   ;; (defun  z/dired-beet-importx ()
+   ;;     "Uses beets to import folder"
+   ;;    (interactive)
+   ;;   (dired-do-async-shell-command (concat "beet import -s" (dired-file-name-at-point))))
+ #+END_SRC
+**** media
+***** mediainfo
+#+BEGIN_SRC emacs-lisp :results none
+  (defun  z/dired-media-info ()
+      "media info "
+      (interactive)
+      (shell-command (concat "mediainfo "  (dired-file-name-at-point)
+ )))
+#+END_SRC
+**** networking
+***** netstat
+#+BEGIN_SRC emacs-lisp :results none
+(defun  z/dired-shell-netstat ()
+ "netstat"
+(interactive)
+(z/visit-ansi-term)
+(term-send-input)
+(insert "netstat -tlnp" )
+(term-send-input)
+)
+ #+END_SRC
+***** nmap home lan
+#+BEGIN_SRC emacs-lisp :results none
+(defun  z/dired-shell-nmap-hlan ()
+ "nmap-hlan"
+(interactive)
+(z/visit-ansi-term)
+(term-send-input)
+(insert "nmap -sP 192.168.0.1/24" )
+(term-send-input)
+)
  #+END_SRC
 
-**** TODO beet import single
- #+BEGIN_SRC emacs-lisp :results none
- (defun z/dired-beet-import-single ()
-   (interactive)
-   (sr-term)
-   (let* ((fmt "beet import -s %s\n")
-          (file (sr-clex-file sr-selected-window))
-          (command (format fmt file)))
-     (if (not (equal sr-terminal-program "eshell"))
-         (term-send-raw-string command)
-       (insert command)
-       (eshell-send-input))))
- #+END_SRC
+
+ 
+
 **** fb
  #+BEGIN_SRC emacs-lisp
  (defun  z/dired-shell-fb ()
@@ -8127,11 +8173,6 @@ change dir only in dir mode hook?
       (message (propertize "connected to ssh" 'face 'font-lock-warning-face))
   )
   #+END_SRC
-**** mediainfo
- #+BEGIN_SRC emacs-lisp :results none
- (fset 'z/dired-media-info
-    [?& ?m ?e ?d ?i ?a ?i ?n ?f ?o return ])
- #+END_SRC
 **** nmap network
  #+BEGIN_SRC emacs-lisp :results none
  (defun z/dired-nmap-network ()
@@ -8439,21 +8480,15 @@ Version 2015-03-10"
 ***** TODO ncdu
 how to launch it in eshell
  #+BEGIN_SRC emacs-lisp
- (defun  z/dired-shell-ncdu ()
-     "ncdu"
-     (interactive)
-   (z/visit-ansi-term)
+(defun  z/dired-shell-ncdu ()
+ "ncdu"
+(interactive)
+(z/visit-ansi-term)
 (term-send-input)
-    (insert "ncdu" )
+(insert "ncdu" )
 (term-send-input)
-
 )
  #+END_SRC
-
- #+RESULTS:
- : z/dired-shell-ncdu
-
-
 
 ***** TODO sshfs qnap
 how to launch it in eshell
@@ -8474,6 +8509,33 @@ how to launch it in eshell
      (interactive)
      (shell-command (concat "unrar x" (dired-file-name-at-point))))
  #+END_SRC
+
+**** searching
+***** imdb search
+  #+BEGIN_SRC emacs-lisp :results none
+  (defun  z/dired-search-imdb ()
+      "imdb point "
+      (interactive)
+      (shell-command (concat "surfraw imdb " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+ )))
+  #+END_SRC
+***** google search
+  #+BEGIN_SRC emacs-lisp :results none
+  (defun  z/dired-search-google ()
+      "google point "
+      (interactive)
+      (shell-command (concat "surfraw google " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+ )))
+  #+END_SRC
+
+***** allmusic search
+  #+BEGIN_SRC emacs-lisp :results none
+  (defun  z/dired-search-allmusic ()
+      "allmusic point "
+      (interactive)
+      (shell-command (concat "surfraw yubnub allmusic  " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
+ )))
+  #+END_SRC
 
 
 *** look and feel
@@ -8880,6 +8942,43 @@ for ubuntu
 
 
 #+END_SRC
+*** mu4e macros
+**** delete and exe
+   #+BEGIN_SRC emacs-lisp :results none
+   (fset 'z/mu4e-del-exe
+      [?d ?x ?y ])
+
+  ;;for the function
+  (defun z/mu4e-del-exe-func ()
+    (interactive)
+  (execute-kbd-macro (symbol-function 'z/mu4e-del-exe)) 
+      )
+
+   #+END_SRC
+**** flag and exe
+   #+BEGIN_SRC emacs-lisp :results none
+   (fset 'z/mu4e-flag-exe
+      [?+ ?x ?y ])
+
+  ;;for the function
+  (defun z/mu4e-flag-exe-func ()
+    (interactive)
+  (execute-kbd-macro (symbol-function 'z/mu4e-flag-exe)) 
+      )
+
+   #+END_SRC
+**** unflag and exe
+   #+BEGIN_SRC emacs-lisp :results none
+   (fset 'z/mu4e-unflag-exe
+      [?- ?x ?y ])
+
+  ;;for the function
+  (defun z/mu4e-unflag-exe-func ()
+    (interactive)
+  (execute-kbd-macro (symbol-function 'z/mu4e-unflag-exe)) 
+      )
+
+   #+END_SRC
 *** fetching and indexing
 #+BEGIN_SRC emacs-lisp :results none
 (setq mu4e-update-interval 60)
@@ -8971,9 +9070,14 @@ OLD:
        ("/[Gmail].Sent Mail"   . ?s)
        ("/[Gmail].Trash"       . ?t)
        ("/[Gmail].All Mail"    . ?a)))
+
 #+END_SRC
 *** extra keybinds
 #+BEGIN_SRC emacs-lisp :results none
+
+(define-key mu4e-headers-mode-map (kbd "w") 'z/mu4e-del-exe-func )
+(define-key mu4e-headers-mode-map (kbd "f") 'z/mu4e-flag-exe-func )
+(define-key mu4e-headers-mode-map (kbd "F") 'z/mu4e-unflag-exe-func )
 
 #+END_SRC
 *** composing
