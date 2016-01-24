@@ -1941,14 +1941,14 @@
   (add-hook 'latex-mode-hook 'wrap-region-mode)
 )
 
-;; (use-package workgroups2
-;; :ensure t
-;; :config
-;; (workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
-;; (require 'workgroups2)
-;; Change workgroups session file
-;; (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
-;; )
+;;  (use-package workgroups2
+;;  :ensure t
+;;  :config
+;;  (workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
+;;  (require 'workgroups2)
+ ;; Change workgroups session file
+;;  (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+;;  )
 
 (use-package xah-find
  :ensure t
@@ -3560,6 +3560,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>" helm-all-mark-rings "all mark rings")
+;;("\\"  avy-goto-char-timer  "avy jump")
 ("\\"  avy-goto-char-timer  "avy jump")
 ("|"   hydra-goto/body "goto" )
 ("RET" avy-goto-line "goto line" )
@@ -4052,15 +4053,18 @@ _q_: quit
 
 ))
 
-(defhydra hydra-org-time (:color blue)
-   "time command"
-   ("s"  org-time-stamp "agenda date")
-   ("X" org-time-stamp-inactive  "stamp date" )
-   ("Y" z-insert-date "insert current data")  
-   ("d" org-deadline  "set deadline")  
-   ("f" org-schedule  "set schedule")  
-   ("q" nil "cancel")
-)
+(defhydra hydra-org-time  (:color blue :hint nil :columns 4)
+"
+☚+1w☛ implies that this event will repeat every week at the same time & date  ☚--☛ multi day
+【.】 Go to today 【r】rebuild agenda 
+"
+    ("s"  org-time-stamp "agenda date")
+    ("X" org-time-stamp-inactive  "stamp date" )
+    ("Y" z-insert-date "insert current data")  
+    ("d" org-deadline  "set deadline")  
+    ("f" org-schedule  "set schedule")  
+    ("q" nil "cancel")
+ )
 
 (global-set-key
  (kbd "C-M-o")
@@ -4391,66 +4395,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
    ("q" nil "cancel")))
 
-(fset 'orgstyle-tnote
-   [?! home ?!])
-(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
-
-
-(fset 'orgstyle-warning
-   "@\341@WARNING:")
-(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
-
-(fset 'orgstyle-warning2
-   [?@ home ?@])
-(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
-
-
-
-(fset 'orgstyle-com1
-   [?~ home ?~])
-(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
-
-(fset 'orgstyle-note
-   "$\341$NOTE:")
-(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
-
-(fset 'orgstyle-note2
-   [?$ home ?$])
-(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
-
-(fset 'orgstyle-tip
-   "%\341%TIP:")
-(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
-
-
-(fset 'orgstyle-tip2
-   [?% home ?%])
-(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
-
-
-(fset 'orgstyle-code
-   [?^ home ?^])
-(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
-
-(fset 'orgstyle-header
-   [?& home ?&])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
-
-(fset 'orgstyle-bold
-   [?* home ?*])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
-
-(fset 'orgstyle-highlight-green
-   [?' home ?'])
-(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
-
-(fset 'orgstyle-com2
-   [?` home ?`])
-(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
-
-(fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
-
 ;;;; Saved macros
 ;; Saved macro - adds latex end-lines to verse passages
 (fset 'versify
@@ -4476,12 +4420,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
        (interactive)
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
-
-(fset 'z/dired-macro-beetimp
-   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
-
-(fset 'z/dired-macro-beetimp-single
-   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
 
 (setq browse-url-browser-function (quote browse-url-generic))
 (setq browse-url-generic-program "firefox")
@@ -4549,6 +4487,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq temporary-file-directory "/tmp")
 
+(setq password-cache-expiry nil)
+
 (add-to-list 'tramp-default-proxies-alist 
      '((and (string-match system-name 
                   (tramp-file-name-host (car target-alist)))
@@ -4570,6 +4510,66 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
+
+(fset 'orgstyle-tnote
+   [?! home ?!])
+(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+
+
+(fset 'orgstyle-warning
+   "@\341@WARNING:")
+(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
+
+(fset 'orgstyle-warning2
+   [?@ home ?@])
+(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
+
+
+
+(fset 'orgstyle-com1
+   [?~ home ?~])
+(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
+
+(fset 'orgstyle-note
+   "$\341$NOTE:")
+(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
+
+(fset 'orgstyle-note2
+   [?$ home ?$])
+(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
+
+(fset 'orgstyle-tip
+   "%\341%TIP:")
+(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
+
+
+(fset 'orgstyle-tip2
+   [?% home ?%])
+(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
+
+
+(fset 'orgstyle-code
+   [?^ home ?^])
+(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
+
+(fset 'orgstyle-header
+   [?& home ?&])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
+
+(fset 'orgstyle-bold
+   [?* home ?*])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
+
+(fset 'orgstyle-highlight-green
+   [?' home ?'])
+(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
+
+(fset 'orgstyle-com2
+   [?` home ?`])
+(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
+
+(fset 'underline_net_delete
+   [?\M-% ?\  return return ?!])
 
 (setq org-directory "~/org/files/")
 (setq org-default-notes-file "~/org/files/refile.org")
@@ -4705,6 +4705,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq org-agenda-window-setup "current-window")
 (setq org-agenda-restore-windows-after-quit t)
+
+(run-with-idle-timer 30 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -5989,7 +5991,9 @@ Filter by:
 Filter by:
       "
      ("b" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp))  "beet import" ) 
-     ("B" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp-single))  "beet import single" ) 
+     ("d"  z/dired-shell-ncdu  "ncdu" ) 
+     ("nm" z/dired-shell-nmap-hlan  "nmap" ) 
+     ("ns" z/dired-shell-netstat  "netstat") 
      ("o" z/del-nonorg-files  "delete non org" ) 
      ("m" z/dired-media-info  "media-info" ) 
      ("cd" z/dired-shell-doc2docx  "doc2docx" ) 
@@ -6437,6 +6441,12 @@ Version 2015-03-10"
      (interactive)
      (shell-command (concat "surfraw yubnub allmusic  " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
 )))
+
+(fset 'z/dired-macro-beetimp
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
+
+(fset 'z/dired-macro-beetimp-single
+   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
 
 ;; Always hilight the current agenda line
 (add-hook 'dired-mode-hook

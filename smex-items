@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- cdrw-get-size
- dired-get-size
- load-theme
- describe-face
- customize-face
- cfw:open-org-calendar
- deft
+ dired-jump
+ avy-pop-mark
+ avy-goto-char-timer
+ ansi-term
+ eshell
+ find-file
+ find-file-other-window
 )
 
 ;; ----- smex-data -----
@@ -24,7 +24,7 @@
  (transpose-lines . 1)
  (org-goto . 1)
  (tiny-expand . 5)
- (find-file-other-window . 1)
+ (find-file-other-window . 2)
  (rainbow-delimiters-mode . 1)
  (isearch-forward . 8)
  (rgrep . 2)
@@ -46,8 +46,8 @@
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
- (eshell . 1)
- (ansi-term . 3)
+ (eshell . 2)
+ (ansi-term . 4)
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
  (customize-group . 5)
@@ -59,7 +59,7 @@
  (deer . 10)
  (z-year-increment . 1)
  (quick-calc . 1)
- (avy-goto-char-timer . 4)
+ (avy-goto-char-timer . 9)
  (org-table-copy-region . 1)
  (kill-rectangle . 1)
  (yank-rectangle . 1)
@@ -140,7 +140,7 @@
  (ebib . 1)
  (open-line-above . 1)
  (org-insert-drawer . 3)
- (z/del_exe_mu4e . 1)
+ (z/del_exe_mu4e . 2)
  (ivy-bookmark-goto . 2)
  (browse-url . 2)
  (eww-open-file . 3)
@@ -149,7 +149,7 @@
  (org-export-html-bookmarks . 1)
  (package-install . 1)
  (package-install-file . 4)
- (wg-save-session . 2)
+ (wg-save-session . 3)
  (wg-switch-to-workgroup . 1)
  (wg-reload-session . 1)
  (persp-mode . 1)
@@ -161,9 +161,9 @@
  (dired-filter-pop . 2)
  (chmod . 2)
  (z/dired-shell-fb . 3)
- (z/dired-beet-import . 1)
+ (z/dired-beet-import . 3)
  (z/dired-shell-chmodx . 3)
- (dired-jump . 6)
+ (dired-jump . 7)
  (helm-mode . 2)
  (whitespace-cleanup . 1)
  (whitespace-cleanup-region . 1)
@@ -186,7 +186,7 @@
  (dired-sort-time . 1)
  (ibuffer . 2)
  (z/dired-ssh-qnap . 1)
- (z/dired-media-info . 2)
+ (z/dired-media-info . 3)
  (z/dired-sort-menu . 2)
  (find-dired . 1)
  (dired-filter-save-filters . 1)
@@ -255,6 +255,15 @@
  (describe-face . 1)
  (arview-dired . 1)
  (arview . 1)
- (dired-get-size . 1)
- (cdrw-get-size . 2)
+ (z/dired-macro-beetimp . 3)
+ (z/mu4e-flag-exe-func . 1)
+ (z/dired-imdb-point . 9)
+ (org-agenda-redo . 1)
+ (turn-on-gnus-dired-mode . 1)
+ (z/dired-beet-importx . 4)
+ (z/dired-shell-ncdu . 2)
+ (z/dired-shell-netstat . 1)
+ (z/dired-shell-nmap-hlan . 1)
+ (find-file . 3)
+ (avy-pop-mark . 2)
 )

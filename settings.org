@@ -2826,14 +2826,14 @@ https://github.com/rejeep/wrap-region.el
 ** workgroup2
 http://workgroups2.readthedocs.org/en/latest/guide/installation.html
 #+BEGIN_SRC emacs-lisp :results none
-  ;; (use-package workgroups2
-  ;; :ensure t
-  ;; :config
-  ;; (workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
-  ;; (require 'workgroups2)
-  ;; Change workgroups session file
-  ;; (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
-  ;; )
+;;  (use-package workgroups2
+;;  :ensure t
+;;  :config
+;;  (workgroups-mode 1)        ; put this one at the bottom of .emacs (init.el)
+;;  (require 'workgroups2)
+ ;; Change workgroups session file
+;;  (setq wg-session-file "~/.emacs.d/.emacs_workgroups") 
+;;  )
 #+END_SRC 
 
 ** TODO xah-find
@@ -4881,6 +4881,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>" helm-all-mark-rings "all mark rings")
+;;("\\"  avy-goto-char-timer  "avy jump")
 ("\\"  avy-goto-char-timer  "avy jump")
 ("|"   hydra-goto/body "goto" )
 ("RET" avy-goto-line "goto line" )
@@ -5456,8 +5457,11 @@ _q_: quit
 **** orgmode time functions 
 
  #+BEGIN_SRC emacs-lisp :results none
-  (defhydra hydra-org-time (:color blue)
-    "time command"
+  (defhydra hydra-org-time  (:color blue :hint nil :columns 4)
+"
+☚+1w☛ implies that this event will repeat every week at the same time & date  ☚--☛ multi day
+【.】 Go to today 【r】rebuild agenda 
+"
     ("s"  org-time-stamp "agenda date")
     ("X" org-time-stamp-inactive  "stamp date" )
     ("Y" z-insert-date "insert current data")  
@@ -5895,71 +5899,6 @@ pop-global-mark this will move you to prev position
 
 
 * Macros
-** org faces
-*** general
-#+BEGIN_SRC emacs-lisp :results none
-(fset 'orgstyle-tnote
-   [?! home ?!])
-(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
-
-
-(fset 'orgstyle-warning
-   "@\341@WARNING:")
-(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
-
-(fset 'orgstyle-warning2
-   [?@ home ?@])
-(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
-
-
-
-(fset 'orgstyle-com1
-   [?~ home ?~])
-(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
-
-(fset 'orgstyle-note
-   "$\341$NOTE:")
-(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
-
-(fset 'orgstyle-note2
-   [?$ home ?$])
-(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
-
-(fset 'orgstyle-tip
-   "%\341%TIP:")
-(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
-
-
-(fset 'orgstyle-tip2
-   [?% home ?%])
-(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
-
-
-(fset 'orgstyle-code
-   [?^ home ?^])
-(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
-
-(fset 'orgstyle-header
-   [?& home ?&])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
-
-(fset 'orgstyle-bold
-   [?* home ?*])
-(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
-
-(fset 'orgstyle-highlight-green
-   [?' home ?'])
-(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
-
-(fset 'orgstyle-com2
-   [?` home ?`])
-(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
-
-(fset 'underline_net_delete
-   [?\M-% ?\  return return ?!])
-
-#+END_SRC
-
 ** Editing
 *** lines not paragraphs
 #+BEGIN_SRC emacs-lisp :results none
@@ -5991,17 +5930,6 @@ pop-global-mark this will move you to prev position
        (interactive)
        (let ((current-prefix-arg ',prefix))
          (call-interactively ',(car args))))))
-#+END_SRC
-** dired
-*** beet import 
-#+BEGIN_SRC emacs-lisp  :results none
-(fset 'z/dired-macro-beetimp
-   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
-#+END_SRC
-*** beet import single
-#+BEGIN_SRC emacs-lisp  :results none
-(fset 'z/dired-macro-beetimp-single
-   [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
 #+END_SRC
 * Settings
   :PROPERTIES:
@@ -6111,6 +6039,11 @@ $note its built into emacs no intsall needed$
 #+BEGIN_SRC emacs-lisp  :results none
 (setq temporary-file-directory "/tmp")
 #+END_SRC
+*** cache password
+don't let passwords expire
+#+BEGIN_SRC emacs-lisp  :results none
+(setq password-cache-expiry nil)
+#+END_SRC
 *** use sudo with ssh
 http://mollermara.com/tags/productivity/
 
@@ -6150,6 +6083,72 @@ set currently to 100mb
 (setq large-file-warning-threshold 100000000)
 #+END_SRC
 * Org
+** org faces
+*** general
+#+BEGIN_SRC emacs-lisp :results none
+(fset 'orgstyle-tnote
+   [?! home ?!])
+(define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
+
+
+(fset 'orgstyle-warning
+   "@\341@WARNING:")
+(define-key org-mode-map (kbd "C-2") 'orgstyle-warning)
+
+(fset 'orgstyle-warning2
+   [?@ home ?@])
+(define-key org-mode-map (kbd "C-S-2") 'orgstyle-warning2)
+
+
+
+(fset 'orgstyle-com1
+   [?~ home ?~])
+(define-key org-mode-map (kbd "C-3") 'orgstyle-com1)
+
+(fset 'orgstyle-note
+   "$\341$NOTE:")
+(define-key org-mode-map (kbd "C-4") 'orgstyle-note)
+
+(fset 'orgstyle-note2
+   [?$ home ?$])
+(define-key org-mode-map (kbd "C-S-4") 'orgstyle-note2)
+
+(fset 'orgstyle-tip
+   "%\341%TIP:")
+(define-key org-mode-map (kbd "C-5") 'orgstyle-tip)
+
+
+(fset 'orgstyle-tip2
+   [?% home ?%])
+(define-key org-mode-map (kbd "C-S-5") 'orgstyle-tip2)
+
+
+(fset 'orgstyle-code
+   [?^ home ?^])
+(define-key org-mode-map (kbd "C-6") 'orgstyle-code)
+
+(fset 'orgstyle-header
+   [?& home ?&])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-header)
+
+(fset 'orgstyle-bold
+   [?* home ?*])
+(define-key org-mode-map (kbd "C-7") 'orgstyle-bold)
+
+(fset 'orgstyle-highlight-green
+   [?' home ?'])
+(define-key org-mode-map (kbd "C-9") 'orgstyle-highlight-green)
+
+(fset 'orgstyle-com2
+   [?` home ?`])
+(define-key org-mode-map (kbd "C-0") 'orgstyle-com2)
+
+(fset 'underline_net_delete
+   [?\M-% ?\  return return ?!])
+
+#+END_SRC
+
+
 ** Base
 *** org base configs
 **** define org mode locations for all operations
@@ -6359,7 +6358,10 @@ this will make org-store-link use id when creating a link.
 (setq org-agenda-window-setup "current-window")
 (setq org-agenda-restore-windows-after-quit t)
 #+END_SRC
-
+*** keep refreshing org agenda
+#+BEGIN_SRC emacs-lisp  :results none
+(run-with-idle-timer 30 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
+#+END_SRC
 *** agenda view
 #+BEGIN_SRC emacs-lisp :results none
 ;change agenda colors
@@ -7999,7 +8001,9 @@ dired-omit-mode
 Filter by:
       "
      ("b" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp))  "beet import" ) 
-     ("B" (execute-kbd-macro (symbol-function 'z/dired-macro-beetimp-single))  "beet import single" ) 
+     ("d"  z/dired-shell-ncdu  "ncdu" ) 
+     ("nm" z/dired-shell-nmap-hlan  "nmap" ) 
+     ("ns" z/dired-shell-netstat  "netstat") 
      ("o" z/del-nonorg-files  "delete non org" ) 
      ("m" z/dired-media-info  "media-info" ) 
      ("cd" z/dired-shell-doc2docx  "doc2docx" ) 
@@ -8136,10 +8140,6 @@ Filter by:
 (term-send-input)
 )
  #+END_SRC
-
-
- 
-
 **** fb
  #+BEGIN_SRC emacs-lisp
  (defun  z/dired-shell-fb ()
@@ -8537,6 +8537,18 @@ how to launch it in eshell
  )))
   #+END_SRC
 
+
+*** dired macro
+**** beet import 
+ #+BEGIN_SRC emacs-lisp  :results none
+ (fset 'z/dired-macro-beetimp
+    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
+ #+END_SRC
+**** beet import single
+ #+BEGIN_SRC emacs-lisp  :results none
+ (fset 'z/dired-macro-beetimp-single
+    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
+ #+END_SRC
 
 *** look and feel
 **** add highlight line

@@ -317,7 +317,7 @@
     ("capabilites" "capabilities" nil 0)
     ("carmelize" "caramelize" nil 0)
     ("catagoris" "categories" nil 0)
-    ("catagory" "category" nil 0)
+    ("catagory" "category" nil 1)
     ("categiory" "category" nil 0)
     ("certian" "certain" nil 0)
     ("chaina" "china" nil 1)
@@ -354,6 +354,7 @@
     ("clustring" "clustering" nil 0)
     ("cna" "can" nil 0)
     ("colection" "collection" nil 0)
+    ("collabortion" "collaboration" nil 0)
     ("collecion" "collection" nil 0)
     ("comand" "command" nil 0)
     ("comanies" "companies" nil 0)
@@ -1408,7 +1409,9 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'ranger-mode-abbrev-table '())
 
@@ -1465,6 +1468,8 @@
 (define-abbrev-table 'transmission-info-mode-abbrev-table '())
 
 (define-abbrev-table 'transmission-mode-abbrev-table '())
+
+(define-abbrev-table 'transmission-peers-mode-abbrev-table '())
 
 (define-abbrev-table 'twittering-edit-mode-abbrev-table '())
 
