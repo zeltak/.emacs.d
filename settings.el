@@ -1582,7 +1582,6 @@
         )
           projectile-globally-ignored-files))
 
-
    )
 
 (use-package perspective
@@ -3451,6 +3450,13 @@ With a prefix argument P, isearch for the symbol at point."
         (setq rlt (match-string 1 str)))
     (message "rlt=%s" rlt)
     rlt))
+
+(defun projectile-find-file-in-project-org ()
+(interactive)                                
+(let ((default-directory "/home/zeltak/org/files/"))
+(projectile-find-file)))
+
+;;(global-set-key (kbd "M-C-w") 'projectile-find-file-in-project-org)
 
 (global-unset-key (kbd "<f1>"))
 (global-unset-key (kbd "<f2>"))
