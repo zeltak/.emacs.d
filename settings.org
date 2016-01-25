@@ -2270,7 +2270,6 @@ follow this : https://github.com/bbatsov/projectile/issues/835 for more details
         )
           projectile-globally-ignored-files))
 
-
    )
 #+END_SRC
 ** perspective
@@ -4725,6 +4724,19 @@ With a prefix argument P, isearch for the symbol at point."
         (setq rlt (match-string 1 str)))
     (message "rlt=%s" rlt)
     rlt))
+#+END_SRC
+** projectile
+   :PROPERTIES:
+   :ID:       a8d31985-4c01-4ce2-8986-945af198ee4a
+   :END:
+#+BEGIN_SRC emacs-lisp  :results none
+(defun projectile-find-file-in-project-org ()
+(interactive)                                
+(let ((default-directory "/home/zeltak/org/files/"))
+(projectile-find-file)))
+
+;;(global-set-key (kbd "M-C-w") 'projectile-find-file-in-project-org)
+
 #+END_SRC
 * Key binds
   :PROPERTIES:
