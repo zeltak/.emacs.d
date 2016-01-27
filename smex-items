@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ zin/org-tag-match-context
+ load-file
  dired-jump
  avy-pop-mark
  avy-goto-char-timer
  ansi-term
  eshell
- find-file
- find-file-other-window
 )
 
 ;; ----- smex-data -----
@@ -266,4 +266,6 @@
  (z/dired-shell-nmap-hlan . 1)
  (find-file . 3)
  (avy-pop-mark . 2)
+ (load-file . 1)
+ (zin/org-tag-match-context . 4)
 )

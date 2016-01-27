@@ -49,7 +49,7 @@
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-mode/contrib/lisp/")
 
 ; fonts in linux
-(if (system-type-is-gnu)
+(if (string= system-name "zx1voics")
 ;(add-to-list 'default-frame-alist '(font . "Inconsolata-16"))
 ;(add-to-list 'default-frame-alist '(font . "Source Code Pro-14"))
 ;(add-to-list 'default-frame-alist '(font . "Pragmata Pro-19"))
@@ -58,8 +58,12 @@
 )
 
 ;; fontso in Win
-(if (system-type-is-win)
-(add-to-list 'default-frame-alist '(font . "Consolas-14"))
+;(if (system-type-is-win)
+;(add-to-list 'default-frame-alist '(font . "Consolas-14"))
+;)
+
+(if (string= system-name "zuni")
+(add-to-list 'default-frame-alist '(font . "fira mono 23"))
 )
 
 (prefer-coding-system 'utf-8)
@@ -2599,578 +2603,6 @@ F4 inserts HTML code"
                                       element))))))
                     sources))))
 
-(defun z/org-convert-header-samelevel  ()
-                     (interactive)                                
-                     (let ((current-prefix-arg '(4)))             
-                       (call-interactively #'org-toggle-heading)))
-
-(defun z/org-tangle-atpoint  ()
-                     (interactive)                                
-                     (let ((current-prefix-arg '(4)))             
-                       (call-interactively #'org-babel-tangle)))
-
-(defun z/org-agenda-calendar ()
-"open work agenda"
-(interactive)                                
-(org-agenda nil "a")
-)
-
-(defun z/org-agenda-work ()
-"open work agenda"
-(interactive)                                
-(org-agenda nil "w")
-)
-
-(defun z/org-agenda-allan ()
-"open work agenda"
-(interactive)                                
-(org-agenda nil "l")
-)
-
-(defun z/org-agenda-joel ()
-"open work agenda"
-(interactive)                                
-(org-agenda nil "j")
-)
-
-(defun z/org-agenda-cook ()
-"open work agenda"
-(interactive)                                
-(org-agenda nil "f")
-)
-
-(fset 'expdf
-      [?\C-c ?\C-e ?\l ?\o ])
-
-(defun z/org-sparse-todo ()
-    "all todo sparse"
-    (interactive)
-    (org-match-sparse-tree t )
-)
-
-(defun z/org-agenda-search()
-""
-(interactive)                                
-(org-agenda nil "s")
-)
-
-(defun z/org-agenda-search-todo ()
-""
-(interactive)                                
-(org-agenda nil "S")
-)
-
-(defun z/org-link-file  ()
-                     (interactive)                                
-                     (let ((current-prefix-arg '(4)))             
-                       (call-interactively #'org-insert-link)))
-
-(defun insert-heading-link (dir)
-  "select a headline from org-files in dir and insert a link to it."
-  (interactive  (list (read-directory-name "Directory: ")))
-  (let ((org-agenda-files (f-entries
-                           dir
-                           (lambda (f)
-                             (string=
-                              "org"
-                              (file-name-extension f)))
-                           t)))
-    (helm-org-agenda-files-headings)))
-
-(defun helm-org-insert-id-link-to-heading-at-marker (marker)
-  (with-current-buffer (marker-buffer marker)
-    (let ((file-name (buffer-file-name))
-          (id (save-excursion (goto-char (marker-position marker))
-                              (org-id-get-create)
-                              (org-id-store-link))))
-
-      (with-helm-current-buffer
-        (org-insert-link
-         file-name id)))))
-
-
-(cl-defun helm-source-org-headings-for-files (filenames
-                                              &optional (min-depth 1) (max-depth 8))
-  (helm-build-sync-source "Org Headings"
-    :candidates (helm-org-get-candidates filenames min-depth max-depth)
-    :action '(("Go to line" . helm-org-goto-marker)
-              ("Refile to this heading" . helm-org-heading-refile)
-              ("Insert link to this heading"
-               . helm-org-insert-link-to-heading-at-marker)
-              ("Insert id link to this heading" .
-               helm-org-insert-id-link-to-heading-at-marker))))
-
-(defadvice org-babel-execute:sh (around sacha activate)
-  (if (assoc-default :term (ad-get-arg 1) nil)
-    (let ((buffer (make-term "babel" "/bin/zsh")))
-      (with-current-buffer buffer
-        (insert (org-babel-expand-body:generic
-             body params (org-babel-variable-assignments:sh params)))
-        (term-send-input))
-(pop-to-buffer buffer))
-    ad-do-it))
-
-(defun org-timestamp-now ()
-  "Inserts org timestamp at end of heading"
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (org-end-of-line nil)
-    (insert " ")
-    (org-insert-time-stamp nil nil t nil nil nil)))
-
-(defun org-timestamp-select ()
-  "Inserts org timestamp at end of heading"
-  (interactive)
-  (save-excursion
-    (org-back-to-heading)
-    (org-end-of-line nil)
-    (org-time-stamp-inactive nil)))
-
-(defun org-table-import-ods (&optional file-name)
-(interactive "fFile: ")
-(let ((csv-file (org-odt-convert file-name "csv"))
-(pos (point)))
-(save-excursion
-(insert (with-temp-buffer
-(insert-file-contents csv-file)
-(org-table-convert-region (point-min) (point-max) '(4))
-(buffer-string))))))
-
-(defun org-set-line-checkbox (arg)
-  (interactive "P")
-  (let ((n (or arg 1)))
-    (when (region-active-p)
-      (setq n (count-lines (region-beginning)
-                           (region-end)))
-      (goto-char (region-beginning)))
-    (dotimes (i n)
-      (beginning-of-line)
-      (insert "- [ ] ")
-      (forward-line))
-    (beginning-of-line)))
-
-(defun org-set-line-headline (arg)
-  (interactive "P")
-  (let ((n (or arg 1)))
-    (when (region-active-p)
-      (setq n (count-lines (region-beginning)
-                           (region-end)))
-      (goto-char (region-beginning)))
-    (dotimes (i n)
-      (beginning-of-line)
-      (insert "** TODO ")
-      (forward-line))
-    (beginning-of-line)))
-
-(defun org-mark-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element)))
-(add-text-properties begin (- end 1) '(read-only t
-font-lock-face '(:background "#FFE3E3")))))
-"read_only")
-(message "Made readonly!"))
-(defun org-remove-readonly ()
-(interactive)
-(org-map-entries
-(lambda ()
-(let* ((element (org-element-at-point))
-(begin (org-element-property :begin element))
-(end (org-element-property :end element))
-(inhibit-read-only t))
-(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
-"read_only"))
-(add-hook 'org-mode-hook 'org-mark-readonly)
-
-(defun z/org-cblock-comment ()    
-(interactive)
-(org-edit-special)
-(mark-whole-buffer)
-(comment-dwim nil)
-(org-edit-src-exit))
-
-(defun  z/org-cblock-paste-lisp ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_SRC emacs-lisp  :results none\n")
-  (yank)
-  (insert "\n#+END_SRC"))
-
-(defun  z/org-cblock-paste-sh ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_SRC sh  :results none\n")
-  (yank)
-  (insert "\n#+END_SRC"))
-
-(defun  z/org-cblock-paste-example ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_EXAMPLE\n")
-  (yank)
-  (insert "\n#+END_EXAMPLE"))
-
-(defun  z/org-cblock-paste-R ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_SRC R :session Rorg  :results none\n")
-  (yank)
-  (insert "\n#+END_SRC"))
-
-(defun  z/org-cblock-paste-SAS ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_SRC SAS\n")
-  (yank)
-  (insert "\n#+END_SRC"))
-
-(defun  z/org-cblock-paste-QUOTE ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_QUOTE\n")
-  (yank)
-  (insert "\n#+END_QUOTE"))
-
-(defun z/org-cblock-iwrap-emacs-lisp (&optional lang lines)
-  "Wrap sexp-at-point or region in src-block.
-Use Org-Babel LANGuage for the src-block if given, Emacs-Lisp
-otherwise. A region instead of the sexp-at-point is wrapped if
-either
-   - optional argument LINES is an (positive or negative) integer
-   - or the region is active
-In the first case the region is determined by moving +/- LINES
-forward/backward from point using `forward-line', in the second
-case the active region is used.
-When called with prefix argument 'C-u', prompt the user for the
-Org-Babel language to use. When called with two prefix arguments
-'C-u C-u', prompt the user for both the Org-Babel language to use
-and the number of lines to be wrapped."
-  (interactive
-   (cond
-    ((equal current-prefix-arg nil) nil)
-    ((equal current-prefix-arg '(4))
-     (list
-      (ido-completing-read "Org-Babel language: "
-                           (mapcar
-                            (lambda (--lang)
-                              (symbol-name (car --lang)))
-                            org-babel-load-languages)
-                           nil nil nil nil "emacs-lisp")))
-    ((equal current-prefix-arg '(16))
-     (list
-      (ido-completing-read "Org-Babel language: "
-                           (mapcar
-                            (lambda (--lang)
-                              (symbol-name (car --lang)))
-                            org-babel-load-languages)
-                           nil nil nil nil "emacs-lisp")
-      (read-number "Number of lines to wrap: " 1)))))
-  (let* ((language (or lang "emacs-lisp"))
-         (beg (or (and (not lines)
-                       (region-active-p)
-                       (region-beginning))
-                  (point)))
-         (marker (save-excursion (goto-char beg) (point-marker)))
-         (bol (save-excursion (goto-char beg) (bolp)))
-         (end (cond
-               (lines (save-excursion
-                        (forward-line lines) (point)))
-               ((region-active-p)(region-end))
-               (t (save-excursion
-                    (forward-sexp) (point)))))
-         (cut-strg (buffer-substring beg end)))
-    (delete-region beg end)
-    (goto-char (marker-position marker))
-    (insert
-     (format
-      "%s#+begin_src %s\n%s%s#+end_src\n"
-      (if (or (and lines (< lines 0)) bol) "" "\n")
-      language
-      cut-strg
-      (if lines "" "\n")))
-    (set-marker marker nil)))
-
-(defun z/org-cblock-iwrap-ASK ()
-(interactive)
-(let ((current-prefix-arg '(4)))
-(call-interactively
-'z/org-cblock-iwrap-emacs-lisp)))
-
-(defun z/org-cblock-iwrap-ASK-LINE ()
-(interactive)
-(let ((current-prefix-arg '(4)))
-(call-interactively
-'z/org-cblock-iwrap-emacs-lisp)))
-
-(defun z/org-cblock-iwrap-R ()
-(interactive)
-(z/org-cblock-iwrap-emacs-lisp  "R" ))
-
-(defun z/org-cblock-iwrap-sh ()
-(interactive)
-(z/org-cblock-iwrap-emacs-lisp  "sh" ))
-
-(defun  z/org-cblock-nowrap-example ()
-   "paste in already quote block"
-  (interactive)
-  (insert "#+BEGIN_EXAMPLE\n")
-  (insert "\n#+END_EXAMPLE"))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; function to wrap blocks of text in org templates                       ;;
-;; e.g. latex or src etc                                                  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun z/org-cblock-iwrap-menu ()
-  "Make a template at point."
-  (interactive)
-  (if (org-at-table-p)
-      (call-interactively 'org-table-rotate-recalc-marks)
-    (let* ((choices '(("s" . "SRC")
-                      ("e" . "EXAMPLE")
-                      ("q" . "QUOTE")
-                      ("v" . "VERSE")
-                      ("c" . "CENTER")
-                      ("l" . "LaTeX")
-                      ("h" . "HTML")
-                      ("r" . "R")
-                      ("a" . "ASCII")))
-           (key
-            (key-description
-             (vector
-              (read-key
-               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
-                       (mapconcat (lambda (choice)
-                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
-                                            ": "
-                                            (cdr choice)))
-                                  choices
-                                  ", ")))))))
-      (let ((result (assoc key choices)))
-        (when result
-          (let ((choice (cdr result)))
-            (cond
-             ((region-active-p)
-              (let ((start (region-beginning))
-                    (end (region-end)))
-                (goto-char end)
-                (insert "#+END_" choice "\n")
-                (goto-char start)
-                (insert "#+BEGIN_" choice "\n")))
-             (t
-              (insert "#+BEGIN_" choice "\n")
-              (save-excursion (insert "#+END_" choice))))))))))
-
-(defun recipe-template ()
-        (interactive)
-        (goto-line 0)
-        (search-forward "* Inbox")
-         (org-meta-return)
-         (org-metaright)
-         (setq recipe-name (read-string "Title: "))
-         (insert recipe-name)
-         (org-todo "COOK") 
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Ingridients")
-         (org-meta-return)
-         (insert "Preperation")
-         (search-backward recipe-name)
-         (setq src1 (read-string "Time: "))
-         (org-set-property "Time" src1)
-         (setq src2 (read-string "Rating: "))
-         (org-set-property "Rating" src2)
-         (setq src3 (read-string "Sources: "))
-         (org-set-property "Source" src3)
-         (setq src4 (read-string "Ammount: "))
-         (org-set-property "Ammount" src4)
-         (setq src5 (read-string "Fav: "))
-         (org-set-property "Fav" src5)
-         (search-forward "Ingridients")
-         (evil-open-below 1)
-         (beginning-of-visual-line)
-)
-
-(defun blank-recipe-template ()
-        (interactive)
-         (org-meta-return)
-         (org-metaright)
-         (setq recipe-name (read-string "Title: "))
-         (insert recipe-name)
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Ingridients")
-         (org-meta-return)
-         (insert "Preperation")
-         (search-backward recipe-name)
-         (setq src1 (read-string "Time: "))
-         (org-set-property "Time" src1)
-         (setq src2 (read-string "Rating: "))
-         (org-set-property "Rating" src2)
-         (setq src3 (read-string "Sources: "))
-         (org-set-property "Source" src3)
-         (setq src4 (read-string "Ammount: "))
-         (org-set-property "Ammount" src4)
-         (setq src5 (read-string "Fav: "))
-         (org-set-property "Fav" src5)
-         (search-forward "Ingridients")
-         (evil-open-below 1)
-         (beginning-of-visual-line)
-)
-
-(defun travel-template ()
-        (interactive)
-        (goto-line 0)
-        (search-forward "* Inbox")
-         (org-meta-return)
-         (org-metaright)
-         (setq travel-name (read-string "Title: "))
-         (insert travel-name)
-         (org-set-tags)
-         (org-meta-return)
-         (org-metaright)
-         (insert "Details")
-         (org-meta-return)
-         (search-backward travel-name)
-         (setq src1 (read-string "Rating: "))
-         (org-set-property "Rating" src1)
-         (setq src2 (read-string "Sources: "))
-         (org-set-property "Source" src2)
-         (setq src3 (read-string "Fav: "))
-         (org-set-property "Fav" src3)
-         (search-forward "Details")
-         (evil-open-below 1)
-)
-
-; Speed commands are really useful, but I often want to make use of
-; them when I'm not at the beginning of a header. Ths command brings
-; you back to the beginning of an item's header, so that you can do
-; speed commands.
- 
-(defun org-go-speed ()
-"Goes to the beginning of an element's header, so that you can
-execute speed commands."
-(interactive)
-(when (equal major-mode 'org-mode)
-(if (org-at-heading-p)
-(org-beginning-of-line)
-(org-up-element))))
-
-(defun z/org-email-heading ()
-  "Send the current org-mode heading as the body of an email, with headline as the subject.
-use these properties
-TO
-CC
-BCC
-OTHER-HEADERS is an alist specifying additional
-header fields.  Elements look like (HEADER . VALUE) where both
-HEADER and VALUE are strings.
-Save when it was sent as a SENT property. this is overwritten on
-subsequent sends."
-  (interactive)
-  ; store location.
-  (setq *email-heading-point* (set-marker (make-marker) (point)))
-  (save-excursion
-    (org-mark-subtree)
-    (let ((content (buffer-substring (point) (mark)))
-          (TO (org-entry-get (point) "TO" t))
-          (SUBJECT (nth 4 (org-heading-components)))
-          (OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
-          (continue nil)
-          (switch-function nil)
-          (yank-action nil)
-          (send-actions '((email-send-action . nil)))
-          (return-action '(email-heading-return)))
-      
-      (compose-mail TO SUBJECT OTHER-HEADERS continue switch-function yank-action send-actions return-action)
-      (message-goto-body)
-      (insert content)
-      (when CC
-        (message-goto-cc)
-        (insert CC))
-      (when BCC
-        (message-goto-bcc)
-        (insert BCC))
-      (if TO
-          (message-goto-body)
-        (message-goto-to)))))
-
-(defun z/org-email-heading-me ()
-  "Send the current org-mode heading as the body of an email, with headline as the subject."
-  (interactive)
-  (save-excursion
-    (org-mark-subtree)
-    (let ((content (buffer-substring (point) (mark)))
-          (SUBJECT (nth 4 (org-heading-components))))
-
-      (compose-mail "ikloog@gmail.com" SUBJECT)
-      (message-goto-body)
-      (insert content)
-      (message-send)
-      (message-kill-buffer))))
-
-(defun z/org-export-revel-browse ()
-"export to org reveal"
-(interactive)                                
-(org-reveal-export-to-html-and-browse)
-)
-
-(defun z/org-export-revel-html ()
-"export to org reveal"
-(interactive)                                
-(org-reveal-export-to-html)
-)
-
-(defun z/org-export-revel-subtree ()
-"export to org reveal"
-(interactive)                                
-(org-reveal-export-current-subtree)
-)
-
-(defun z/org-move-top-collapse  ()
-     (interactive)            
-     (beginning-of-buffer)                    
-     (hide-sublevels 1)
-)
-
-(defun z/org-export-html-bookmarks ()
-  "Extract bookmarks from the current org file and create an html file that
-can be imported into a web browser."
-  (interactive)
-  (unless (eq major-mode 'org-mode) 
-    (error "Not in an org buffer"))
-  (let ((file (file-name-nondirectory (buffer-file-name)))
-        bookmarks)
-  (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward org-bracket-link-analytic-regexp nil t)
-      (when (equal (match-string 2) "http")
-        (let ((url (concat (match-string 1)
-                           (match-string 3)))
-              (desc (match-string 5)))
-          (push (concat "<DT><A HREF=\"" url "\">" desc "</A>\n") bookmarks))))
-    (with-temp-buffer 
-      (insert
-       "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n"
-       "<HTML>\n"
-       "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; 
-charset=UTF-8\">\n"
-       "<Title>Bookmarks</Title>\n"
-       "<H1>Bookmarks</H1>\n"
-       "<DT><H3 FOLDED>" file " (" (format-time-string "%Y-%m-%d") ")</H3>\n"
-       "<DL><p>\n")
-      (apply 'insert (nreverse bookmarks))
-      (insert
-       "</DL><p>\n"
-       "</HTML>")
-      (write-file (concat (file-name-sans-extension file) 
-"-bookmarks.html"))))))
-
 (defun z/insert-slsh ()
   " insert     "
   (interactive)
@@ -3575,13 +3007,16 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 (";"   comment-or-uncomment-region )
 ("5"   duplicate-current-line-or-region  "duplicate" :color red)
 ("6"   z/copy-comment-paste  "duplicate-comment")
-("="  repeat "repeat last command" )
+("="  org-capture "org-capture" )
+("-"  z/org-capture-meeting  "org-capture-meeting" )
+("<f3>"  repeat "repeat last command" )
 ("/"  (dired "~/") "dired" )
 
 ("<up>" drag-stuff-up  "marked up" :color red)
 ("<down>" drag-stuff-down  "marked down" :color red)
 
 ("a"  z/org-agenda-calendar "org agenda" )
+("z"  cfw:open-org-calendar "month calander" )
 ("c"  z/org-move-top-collapse "collapse headers" )
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
@@ -4105,6 +3540,7 @@ _q_: quit
 【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 【v】 view mode                             
 "
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
+      ("<f9>" cfw:open-org-calendarz  "month calendar"  )
       ("c"  org-agenda-columns  "agenda columns" )
       ("t"    org-agenda-todo      "change todo")
       ("k"    org-agenda-kill      "delete C-k")
@@ -4855,180 +4291,185 @@ comment _e_macs function  // copy-paste-comment-function _r_
    (org-cmp-effort a b)))
 
 (setq org-agenda-custom-commands 
-'(
+ '(
 
-;;TODO sparse tree
-("O" occur-tree "TODO")
-
-
- ("D" "Timeline for today" ((agenda "" ))
-           ((org-agenda-ndays 1)
-            ;;(org-agenda-show-log t)
-           ;; (org-agenda-log-mode-items '(clock closed))
-            (org-agenda-entry-types '())))
+ ;;TODO sparse tree
+ ("O" occur-tree "TODO")
 
 
+  ("D" "Timeline for today" ((agenda "" ))
+            ((org-agenda-ndays 1)
+             ;;(org-agenda-show-log t)
+            ;; (org-agenda-log-mode-items '(clock closed))
+             (org-agenda-entry-types '())))
 
 
+ ;;;;;ALL
 
-;;;;;ALL
-
-;all common tasks (from research|bgu|home files)
-("p" "all" todo "TODO|BGU|EXP" 
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
-(org-agenda-sorting-strategy '(priority-down effort-down deadline-up))
- (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
-(org-columns-default-format "%50ITEM %TODO %10PRIORITY %20DEADLINE %TAGS")
-))
+ ;all common tasks (from research|bgu|home files)
+ ("p" "all" todo "TODO|BGU|EXP" 
+ (
+ (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" "~/org/files/agenda/home.org" ))
+ (org-agenda-sorting-strategy '(priority-down effort-down deadline-up))
+  (org-agenda-cmp-user-defined 'my/org-sort-agenda-items-todo)
+ (org-columns-default-format "%50ITEM %TODO %10PRIORITY %20DEADLINE %TAGS")
+ ))
 
 
 
-;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
+ ;;;;;;;WORK;;;;;;;;;;;;;;;;;;;;;;
 
-;work related only tasks (from research|bgu files)
-("w" "work" todo "TODO|BGU|EXP" 
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
-;(org-agenda-sorting-strategy '(priority-down effort-down))
-(org-agenda-view-columns-initially t)
-;;(org-agenda-sorting-strategy '(priority-down  tag-up ))
+ ;work related only tasks (from research|bgu files)
+ ("w" "work" todo "TODO|BGU|EXP" 
+ (
+ (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org" ))
+ ;(org-agenda-sorting-strategy '(priority-down effort-down))
+ (org-agenda-view-columns-initially t)
+ ;;(org-agenda-sorting-strategy '(priority-down  tag-up ))
 
-))
-         
-;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
-;;custom sparse tree
-("L" occur-tree "allan")
+ ))
+        
+ ;;;;;;;;;;;Allan;;;;;;;;;;;;;;;;;;;;
+ ;;custom sparse tree
+ ("L" occur-tree "allan")
 
-; allan todos
-("l" "allan tasks" tags-todo "allan"
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-))
-
-
-;;;;;;;;;Joel;;;;;;;;;;;;;;;;
-("j" "joel tasks" tags-todo "joel"
-(
-(org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
-(org-agenda-sorting-strategy '(priority-down effort-down))
-))
-
-;;custom sparse tree
-("J" occur-tree "joel")
+ ; allan todos
+ ("l" "allan tasks" tags-todo "allan"
+ (
+ (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+ (org-agenda-sorting-strategy '(priority-down effort-down))
+ ))
 
 
+ ;;;;;;;;;Joel;;;;;;;;;;;;;;;;
+ ;; ("j" "joel tasks" tags-todo "joel"
+ ;; (
+ ;; (org-agenda-files (list "~/org/files/agenda/Research.org"  "~/org/files/agenda/bgu.org"))
+ ;; (org-agenda-sorting-strategy '(priority-down effort-down))
+ ;; ))
 
-;;;;;;;;;;;;;COOKING;;;;;;;;;;;
-
-("f" . "Food commands")
-
-
-("fb" "food" todo "COOK" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-
-("fd" "cook dessert" tags-todo "dessert" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-
-("fp" "protein" tags-todo "protein" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-("fo" "soup" tags-todo "soup" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-
-("fs" "side" tags-todo "side" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-
-("fb" "breakfest" tags-todo "breakfest" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-
-("fk" "drink" tags-todo "drink" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
-
-("fl" "salad" tags-todo "salad" 
-         (
-    (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-))
+ ;;custom sparse tree
+ ;("J" occur-tree "joel")
 
 
 
+  ("j" "TODO dowith and TASK with"
+          ((org-sec-with-view "TODO dowith")
+           (org-sec-where-view "TODO doat")
+           (org-sec-assigned-with-view "TASK with")
+           (org-sec-stuck-with-view "STUCK with")))
 
-;;;;;;;;;;;;;COOKING;;;;;;;;;;;
-("fc" "to cook"  tags "Cuisine=\"American\""
+
+ ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+
+ ("f" . "Food commands")
+
+
+ ("fb" "food" todo "COOK" 
           (
-         (org-agenda-files '("~/org/files/agenda/food.org")) 
-    (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
-
-))
-
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
 
 
-
-;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
-("c" "tech" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/TODO.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
-
-;;;;;;;;;;;;;;;;;HOME;;;;;;;;;;;;;;;;
+ ("fd" "cook dessert" tags-todo "dessert" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
 
 
-("h" "home" todo "TODO" 
-         (
-         (org-agenda-files '("~/org/files/agenda/home.org")) 
-          (org-agenda-sorting-strategy 
-          '(priority-up effort-down)
-)
-)
-)
+ ("fp" "protein" tags-todo "protein" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
+
+ ("fo" "soup" tags-todo "soup" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
 
 
-("x" "Agenda and Home-related tasks"
-               (
-               (agenda "")
-               (tags-todo "+PRIORITY=\"A\"")
-               (tags "garden")
-)
-)
+ ("fs" "side" tags-todo "side" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
+
+
+ ("fb" "breakfest" tags-todo "breakfest" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
+
+
+ ("fk" "drink" tags-todo "drink" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
+
+ ("fl" "salad" tags-todo "salad" 
+          (
+     (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+ ))
 
 
 
 
-;;end brackets for setq
-)
-)
+ ;;;;;;;;;;;;;COOKING;;;;;;;;;;;
+ ("fc" "to cook"  tags "Cuisine=\"American\""
+           (
+          (org-agenda-files '("~/org/files/agenda/food.org")) 
+     (org-agenda-sorting-strategy '(priority-down)) ;;  Sort by prioirty where prioirty goes first.
+
+ ))
+
+
+
+
+ ;;;;;;;;;;;;;;;;;TECH;;;;;;;;;;;;;;
+ ("c" "tech" todo "TODO" 
+          (
+          (org-agenda-files '("~/org/files/agenda/TODO.org")) 
+           (org-agenda-sorting-strategy 
+           '(priority-up effort-down)
+ )
+ )
+ )
+
+ ;;;;;;;;;;;;;;;;;HOME;;;;;;;;;;;;;;;;
+
+
+ ("h" "home" todo "TODO" 
+          (
+          (org-agenda-files '("~/org/files/agenda/home.org")) 
+           (org-agenda-sorting-strategy 
+           '(priority-up effort-down)
+ )
+ )
+ )
+
+
+ ("x" "Agenda and Home-related tasks"
+                (
+                (agenda "")
+                (tags-todo "+PRIORITY=\"A\"")
+                (tags "garden")
+ )
+ )
+
+("z" tags "download" nil)  
+
+
+
+ ;;end brackets for setq
+ )
+ )
 
 ;;iimage in org (display images in org files)
 (setq org-startup-with-inline-images t)
@@ -5043,6 +4484,31 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;;   '(("Indian" . (:foreground "#00000"))
 ;;      ("Asian"  . (:foreground "#C00000"))
 ;;      ("israeli"  . (:foreground "#C0a000"))))
+
+(setq org-tag-alist '((:startgroup . nil)
+                           ("@work" . ?w) ("@home" . ?h) ("@pc" . ?p) ("@family" . ?f)
+                           (:endgroup . nil)
+                           ("students" . ?s)
+                           ))
+
+;; ; Tags with fast selection keys
+;; (setq org-tag-alist (quote ((:startgroup)
+;;                             ("@errand" . ?e)
+;;                             ("@office" . ?o)
+;;                             ("@home" . ?H)
+;;                             ("@farm" . ?f)
+;;                             (:endgroup)
+;;                             ("WAITING" . ?w)
+;;                             ("HOLD" . ?h)
+;;                             ("PERSONAL" . ?P)
+;;                             ("WORK" . ?W)
+;;                             ("FARM" . ?F)
+;;                             ("ORG" . ?O)
+;;                             ("NORANG" . ?N)
+;;                             ("crypt" . ?E)
+;;                             ("NOTE" . ?n)
+;;                             ("CANCELLED" . ?c)
+;;                             ("FLAGGED" . ??))))
 
 (org-add-link-type
  "tag"
@@ -5586,6 +5052,584 @@ With prefix argument, also display headlines without a TODO keyword."
 org-use-sub-superscripts nil        ;; don't use `_' for subscript
 
 (setq org-attach-directory "/home/zeltak/org/attach/files_2015/")
+
+(defun z/org-convert-header-samelevel  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-toggle-heading)))
+
+(defun z/org-tangle-atpoint  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-babel-tangle)))
+
+(defun z/org-agenda-calendar ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "a")
+)
+
+(defun z/org-agenda-work ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "w")
+)
+
+(defun z/org-agenda-allan ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "l")
+)
+
+(defun z/org-agenda-joel ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "j")
+)
+
+(defun z/org-agenda-cook ()
+"open work agenda"
+(interactive)                                
+(org-agenda nil "f")
+)
+
+(fset 'expdf
+      [?\C-c ?\C-e ?\l ?\o ])
+
+(defun z/org-sparse-todo ()
+    "all todo sparse"
+    (interactive)
+    (org-match-sparse-tree t )
+)
+
+(defun z/org-agenda-search()
+""
+(interactive)                                
+(org-agenda nil "s")
+)
+
+(defun z/org-agenda-search-todo ()
+""
+(interactive)                                
+(org-agenda nil "S")
+)
+
+(defun z/org-capture-meeting ()
+"open work agenda"
+(interactive)                                
+(org-capture nil "m")
+)
+
+(defun z/org-link-file  ()
+                     (interactive)                                
+                     (let ((current-prefix-arg '(4)))             
+                       (call-interactively #'org-insert-link)))
+
+(defun insert-heading-link (dir)
+  "select a headline from org-files in dir and insert a link to it."
+  (interactive  (list (read-directory-name "Directory: ")))
+  (let ((org-agenda-files (f-entries
+                           dir
+                           (lambda (f)
+                             (string=
+                              "org"
+                              (file-name-extension f)))
+                           t)))
+    (helm-org-agenda-files-headings)))
+
+(defun helm-org-insert-id-link-to-heading-at-marker (marker)
+  (with-current-buffer (marker-buffer marker)
+    (let ((file-name (buffer-file-name))
+          (id (save-excursion (goto-char (marker-position marker))
+                              (org-id-get-create)
+                              (org-id-store-link))))
+
+      (with-helm-current-buffer
+        (org-insert-link
+         file-name id)))))
+
+
+(cl-defun helm-source-org-headings-for-files (filenames
+                                              &optional (min-depth 1) (max-depth 8))
+  (helm-build-sync-source "Org Headings"
+    :candidates (helm-org-get-candidates filenames min-depth max-depth)
+    :action '(("Go to line" . helm-org-goto-marker)
+              ("Refile to this heading" . helm-org-heading-refile)
+              ("Insert link to this heading"
+               . helm-org-insert-link-to-heading-at-marker)
+              ("Insert id link to this heading" .
+               helm-org-insert-id-link-to-heading-at-marker))))
+
+(defadvice org-babel-execute:sh (around sacha activate)
+  (if (assoc-default :term (ad-get-arg 1) nil)
+    (let ((buffer (make-term "babel" "/bin/zsh")))
+      (with-current-buffer buffer
+        (insert (org-babel-expand-body:generic
+             body params (org-babel-variable-assignments:sh params)))
+        (term-send-input))
+(pop-to-buffer buffer))
+    ad-do-it))
+
+(defun org-timestamp-now ()
+  "Inserts org timestamp at end of heading"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (org-end-of-line nil)
+    (insert " ")
+    (org-insert-time-stamp nil nil t nil nil nil)))
+
+(defun org-timestamp-select ()
+  "Inserts org timestamp at end of heading"
+  (interactive)
+  (save-excursion
+    (org-back-to-heading)
+    (org-end-of-line nil)
+    (org-time-stamp-inactive nil)))
+
+(defun org-table-import-ods (&optional file-name)
+(interactive "fFile: ")
+(let ((csv-file (org-odt-convert file-name "csv"))
+(pos (point)))
+(save-excursion
+(insert (with-temp-buffer
+(insert-file-contents csv-file)
+(org-table-convert-region (point-min) (point-max) '(4))
+(buffer-string))))))
+
+(defun org-set-line-checkbox (arg)
+  (interactive "P")
+  (let ((n (or arg 1)))
+    (when (region-active-p)
+      (setq n (count-lines (region-beginning)
+                           (region-end)))
+      (goto-char (region-beginning)))
+    (dotimes (i n)
+      (beginning-of-line)
+      (insert "- [ ] ")
+      (forward-line))
+    (beginning-of-line)))
+
+(defun org-set-line-headline (arg)
+  (interactive "P")
+  (let ((n (or arg 1)))
+    (when (region-active-p)
+      (setq n (count-lines (region-beginning)
+                           (region-end)))
+      (goto-char (region-beginning)))
+    (dotimes (i n)
+      (beginning-of-line)
+      (insert "** TODO ")
+      (forward-line))
+    (beginning-of-line)))
+
+(defun org-mark-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element)))
+(add-text-properties begin (- end 1) '(read-only t
+font-lock-face '(:background "#FFE3E3")))))
+"read_only")
+(message "Made readonly!"))
+(defun org-remove-readonly ()
+(interactive)
+(org-map-entries
+(lambda ()
+(let* ((element (org-element-at-point))
+(begin (org-element-property :begin element))
+(end (org-element-property :end element))
+(inhibit-read-only t))
+(remove-text-properties begin (- end 1) '(read-only t font-lock-face '(:background "yellow")))))
+"read_only"))
+(add-hook 'org-mode-hook 'org-mark-readonly)
+
+(defun z/org-cblock-comment ()    
+(interactive)
+(org-edit-special)
+(mark-whole-buffer)
+(comment-dwim nil)
+(org-edit-src-exit))
+
+(defun  z/org-cblock-paste-lisp ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC emacs-lisp  :results none\n")
+  (yank)
+  (insert "\n#+END_SRC"))
+
+(defun  z/org-cblock-paste-sh ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC sh  :results none\n")
+  (yank)
+  (insert "\n#+END_SRC"))
+
+(defun  z/org-cblock-paste-example ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_EXAMPLE\n")
+  (yank)
+  (insert "\n#+END_EXAMPLE"))
+
+(defun  z/org-cblock-paste-R ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC R :session Rorg  :results none\n")
+  (yank)
+  (insert "\n#+END_SRC"))
+
+(defun  z/org-cblock-paste-SAS ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_SRC SAS\n")
+  (yank)
+  (insert "\n#+END_SRC"))
+
+(defun  z/org-cblock-paste-QUOTE ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_QUOTE\n")
+  (yank)
+  (insert "\n#+END_QUOTE"))
+
+(defun z/org-cblock-iwrap-emacs-lisp (&optional lang lines)
+  "Wrap sexp-at-point or region in src-block.
+Use Org-Babel LANGuage for the src-block if given, Emacs-Lisp
+otherwise. A region instead of the sexp-at-point is wrapped if
+either
+   - optional argument LINES is an (positive or negative) integer
+   - or the region is active
+In the first case the region is determined by moving +/- LINES
+forward/backward from point using `forward-line', in the second
+case the active region is used.
+When called with prefix argument 'C-u', prompt the user for the
+Org-Babel language to use. When called with two prefix arguments
+'C-u C-u', prompt the user for both the Org-Babel language to use
+and the number of lines to be wrapped."
+  (interactive
+   (cond
+    ((equal current-prefix-arg nil) nil)
+    ((equal current-prefix-arg '(4))
+     (list
+      (ido-completing-read "Org-Babel language: "
+                           (mapcar
+                            (lambda (--lang)
+                              (symbol-name (car --lang)))
+                            org-babel-load-languages)
+                           nil nil nil nil "emacs-lisp")))
+    ((equal current-prefix-arg '(16))
+     (list
+      (ido-completing-read "Org-Babel language: "
+                           (mapcar
+                            (lambda (--lang)
+                              (symbol-name (car --lang)))
+                            org-babel-load-languages)
+                           nil nil nil nil "emacs-lisp")
+      (read-number "Number of lines to wrap: " 1)))))
+  (let* ((language (or lang "emacs-lisp"))
+         (beg (or (and (not lines)
+                       (region-active-p)
+                       (region-beginning))
+                  (point)))
+         (marker (save-excursion (goto-char beg) (point-marker)))
+         (bol (save-excursion (goto-char beg) (bolp)))
+         (end (cond
+               (lines (save-excursion
+                        (forward-line lines) (point)))
+               ((region-active-p)(region-end))
+               (t (save-excursion
+                    (forward-sexp) (point)))))
+         (cut-strg (buffer-substring beg end)))
+    (delete-region beg end)
+    (goto-char (marker-position marker))
+    (insert
+     (format
+      "%s#+begin_src %s\n%s%s#+end_src\n"
+      (if (or (and lines (< lines 0)) bol) "" "\n")
+      language
+      cut-strg
+      (if lines "" "\n")))
+    (set-marker marker nil)))
+
+(defun z/org-cblock-iwrap-ASK ()
+(interactive)
+(let ((current-prefix-arg '(4)))
+(call-interactively
+'z/org-cblock-iwrap-emacs-lisp)))
+
+(defun z/org-cblock-iwrap-ASK-LINE ()
+(interactive)
+(let ((current-prefix-arg '(4)))
+(call-interactively
+'z/org-cblock-iwrap-emacs-lisp)))
+
+(defun z/org-cblock-iwrap-R ()
+(interactive)
+(z/org-cblock-iwrap-emacs-lisp  "R" ))
+
+(defun z/org-cblock-iwrap-sh ()
+(interactive)
+(z/org-cblock-iwrap-emacs-lisp  "sh" ))
+
+(defun  z/org-cblock-nowrap-example ()
+   "paste in already quote block"
+  (interactive)
+  (insert "#+BEGIN_EXAMPLE\n")
+  (insert "\n#+END_EXAMPLE"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; function to wrap blocks of text in org templates                       ;;
+;; e.g. latex or src etc                                                  ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun z/org-cblock-iwrap-menu ()
+  "Make a template at point."
+  (interactive)
+  (if (org-at-table-p)
+      (call-interactively 'org-table-rotate-recalc-marks)
+    (let* ((choices '(("s" . "SRC")
+                      ("e" . "EXAMPLE")
+                      ("q" . "QUOTE")
+                      ("v" . "VERSE")
+                      ("c" . "CENTER")
+                      ("l" . "LaTeX")
+                      ("h" . "HTML")
+                      ("r" . "R")
+                      ("a" . "ASCII")))
+           (key
+            (key-description
+             (vector
+              (read-key
+               (concat (propertize "Template type: " 'face 'minibuffer-prompt)
+                       (mapconcat (lambda (choice)
+                                    (concat (propertize (car choice) 'face 'font-lock-type-face)
+                                            ": "
+                                            (cdr choice)))
+                                  choices
+                                  ", ")))))))
+      (let ((result (assoc key choices)))
+        (when result
+          (let ((choice (cdr result)))
+            (cond
+             ((region-active-p)
+              (let ((start (region-beginning))
+                    (end (region-end)))
+                (goto-char end)
+                (insert "#+END_" choice "\n")
+                (goto-char start)
+                (insert "#+BEGIN_" choice "\n")))
+             (t
+              (insert "#+BEGIN_" choice "\n")
+              (save-excursion (insert "#+END_" choice))))))))))
+
+(defun recipe-template ()
+        (interactive)
+        (goto-line 0)
+        (search-forward "* Inbox")
+         (org-meta-return)
+         (org-metaright)
+         (setq recipe-name (read-string "Title: "))
+         (insert recipe-name)
+         (org-todo "COOK") 
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Ingridients")
+         (org-meta-return)
+         (insert "Preperation")
+         (search-backward recipe-name)
+         (setq src1 (read-string "Time: "))
+         (org-set-property "Time" src1)
+         (setq src2 (read-string "Rating: "))
+         (org-set-property "Rating" src2)
+         (setq src3 (read-string "Sources: "))
+         (org-set-property "Source" src3)
+         (setq src4 (read-string "Ammount: "))
+         (org-set-property "Ammount" src4)
+         (setq src5 (read-string "Fav: "))
+         (org-set-property "Fav" src5)
+         (search-forward "Ingridients")
+         (evil-open-below 1)
+         (beginning-of-visual-line)
+)
+
+(defun blank-recipe-template ()
+        (interactive)
+         (org-meta-return)
+         (org-metaright)
+         (setq recipe-name (read-string "Title: "))
+         (insert recipe-name)
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Ingridients")
+         (org-meta-return)
+         (insert "Preperation")
+         (search-backward recipe-name)
+         (setq src1 (read-string "Time: "))
+         (org-set-property "Time" src1)
+         (setq src2 (read-string "Rating: "))
+         (org-set-property "Rating" src2)
+         (setq src3 (read-string "Sources: "))
+         (org-set-property "Source" src3)
+         (setq src4 (read-string "Ammount: "))
+         (org-set-property "Ammount" src4)
+         (setq src5 (read-string "Fav: "))
+         (org-set-property "Fav" src5)
+         (search-forward "Ingridients")
+         (evil-open-below 1)
+         (beginning-of-visual-line)
+)
+
+(defun travel-template ()
+        (interactive)
+        (goto-line 0)
+        (search-forward "* Inbox")
+         (org-meta-return)
+         (org-metaright)
+         (setq travel-name (read-string "Title: "))
+         (insert travel-name)
+         (org-set-tags)
+         (org-meta-return)
+         (org-metaright)
+         (insert "Details")
+         (org-meta-return)
+         (search-backward travel-name)
+         (setq src1 (read-string "Rating: "))
+         (org-set-property "Rating" src1)
+         (setq src2 (read-string "Sources: "))
+         (org-set-property "Source" src2)
+         (setq src3 (read-string "Fav: "))
+         (org-set-property "Fav" src3)
+         (search-forward "Details")
+         (evil-open-below 1)
+)
+
+(defun z/org-email-heading ()
+  "Send the current org-mode heading as the body of an email, with headline as the subject.
+use these properties
+TO
+CC
+BCC
+OTHER-HEADERS is an alist specifying additional
+header fields.  Elements look like (HEADER . VALUE) where both
+HEADER and VALUE are strings.
+Save when it was sent as a SENT property. this is overwritten on
+subsequent sends."
+  (interactive)
+  ; store location.
+  (setq *email-heading-point* (set-marker (make-marker) (point)))
+  (save-excursion
+    (org-mark-subtree)
+    (let ((content (buffer-substring (point) (mark)))
+          (TO (org-entry-get (point) "TO" t))
+          (SUBJECT (nth 4 (org-heading-components)))
+          (OTHER-HEADERS (eval (org-entry-get (point) "OTHER-HEADERS")))
+          (continue nil)
+          (switch-function nil)
+          (yank-action nil)
+          (send-actions '((email-send-action . nil)))
+          (return-action '(email-heading-return)))
+     
+      (compose-mail TO SUBJECT OTHER-HEADERS continue switch-function yank-action send-actions return-action)
+      (message-goto-body)
+      (insert content)
+      (when CC
+        (message-goto-cc)
+        (insert CC))
+      (when BCC
+        (message-goto-bcc)
+        (insert BCC))
+      (if TO
+          (message-goto-body)
+        (message-goto-to)))))
+
+(defun z/org-email-heading-me ()
+  "Send the current org-mode heading as the body of an email, with headline as the subject."
+  (interactive)
+  (save-excursion
+    (org-mark-subtree)
+    (let ((content (buffer-substring (point) (mark)))
+          (SUBJECT (nth 4 (org-heading-components))))
+
+      (compose-mail "ikloog@gmail.com" SUBJECT)
+      (message-goto-body)
+      (insert content)
+      (message-send)
+      (message-kill-buffer))))
+
+(defun z/org-export-revel-browse ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-to-html-and-browse)
+)
+
+(defun z/org-export-revel-html ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-to-html)
+)
+
+(defun z/org-export-revel-subtree ()
+"export to org reveal"
+(interactive)                                
+(org-reveal-export-current-subtree)
+)
+
+(defun z/org-export-html-bookmarks ()
+  "Extract bookmarks from the current org file and create an html file that
+can be imported into a web browser."
+  (interactive)
+  (unless (eq major-mode 'org-mode) 
+    (error "Not in an org buffer"))
+  (let ((file (file-name-nondirectory (buffer-file-name)))
+        bookmarks)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward org-bracket-link-analytic-regexp nil t)
+      (when (equal (match-string 2) "http")
+        (let ((url (concat (match-string 1)
+                           (match-string 3)))
+              (desc (match-string 5)))
+          (push (concat "<DT><A HREF=\"" url "\">" desc "</A>\n") bookmarks))))
+    (with-temp-buffer 
+      (insert
+       "<!DOCTYPE NETSCAPE-Bookmark-file-1>\n"
+       "<HTML>\n"
+       "<META HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; 
+charset=UTF-8\">\n"
+       "<Title>Bookmarks</Title>\n"
+       "<H1>Bookmarks</H1>\n"
+       "<DT><H3 FOLDED>" file " (" (format-time-string "%Y-%m-%d") ")</H3>\n"
+       "<DL><p>\n")
+      (apply 'insert (nreverse bookmarks))
+      (insert
+       "</DL><p>\n"
+       "</HTML>")
+      (write-file (concat (file-name-sans-extension file) 
+"-bookmarks.html"))))))
+
+(defun z/org-move-top-collapse  ()
+     (interactive)            
+     (beginning-of-buffer)                    
+     (hide-sublevels 1)
+)
+
+; Speed commands are really useful, but I often want to make use of
+; them when I'm not at the beginning of a header. Ths command brings
+; you back to the beginning of an item's header, so that you can do
+; speed commands.
+ 
+(defun org-go-speed ()
+"Goes to the beginning of an element's header, so that you can
+execute speed commands."
+(interactive)
+(when (equal major-mode 'org-mode)
+(if (org-at-heading-p)
+(org-beginning-of-line)
+(org-up-element))))
 
 ;; Remove splash screen
 (setq inhibit-splash-screen t)
