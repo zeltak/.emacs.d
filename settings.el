@@ -16,33 +16,11 @@
 )
 
 ;;;add custom themes to list
-  (add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
-  ;to load a specifc theme 
-  ;(load-file "~/.emacs.d/themes/zprime-theme.el")
-  ;load the choosen theme at startup 
-  (load-theme 'zprime t)
-
-;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
-
-;; ;; last t is for NO-ENABLE
-  ;;   (load-theme 'zprime t t)
-  ;;   (load-theme 'tango-dark t t)
-  
-  ;;   (defun mb/pick-color-theme (frame)
-  ;;     (select-frame frame)
-  ;;     (if (window-system frame)
-  ;;         (progn  
-  ;;           (disable-theme 'tango-dark) ; in case it was active
-  ;;           (enable-theme 'zprime))
-  ;;       (progn  
-  ;;         (disable-theme 'zprime) ; in case it was active
-  ;;         (enable-theme 'tango-dark))))
-  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
-  
-  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
-  ;;   (if window-system
-  ;;       (enable-theme 'zprime)
-  ;;     (enable-theme 'tango-dark))
+(add-to-list 'custom-theme-load-path "/home/zeltak/.emacs.d/themes")
+;to load a specifc theme 
+;(load-file "~/.emacs.d/themes/zprime-theme.el")
+;load the choosen theme at startup 
+(load-theme 'zprime t)
 
 (setq org-export-backends (quote (ascii html icalendar latex org)))
 
@@ -945,6 +923,12 @@
  :config
 (require 'elfeed-goodies)
 (elfeed-goodies/setup) 
+ )
+
+(use-package eyebrowse
+ :ensure t
+ :config
+(eyebrowse-mode t) 
  )
 
 (use-package engine-mode
@@ -4480,11 +4464,6 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq org-use-tag-inheritance nil)
 
-;; (setq org-tag-faces
-;;   '(("Indian" . (:foreground "#00000"))
-;;      ("Asian"  . (:foreground "#C00000"))
-;;      ("israeli"  . (:foreground "#C0a000"))))
-
 (setq org-tag-alist '((:startgroup . nil)
                            ("@work" . ?w) ("@home" . ?h) ("@pc" . ?p) ("@family" . ?f)
                            (:endgroup . nil)
@@ -4509,6 +4488,11 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;;                             ("NOTE" . ?n)
 ;;                             ("CANCELLED" . ?c)
 ;;                             ("FLAGGED" . ??))))
+
+;; (setq org-tag-faces
+;;   '(("Indian" . (:foreground "#00000"))
+;;      ("Asian"  . (:foreground "#C00000"))
+;;      ("israeli"  . (:foreground "#C0a000"))))
 
 (org-add-link-type
  "tag"
@@ -4560,6 +4544,9 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-priority-faces '((?A . (:foreground "#F0DFAF" :weight bold))
                            (?B . (:foreground "LightSteelBlue"))
                            (?C . (:foreground "OliveDrab"))))
+
+;; Mark entries as done when archiving
+         org-archive-mark-done t
 
 (setq org-outline-path-complete-in-steps nil)
 
@@ -4690,8 +4677,9 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
-  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
-   "* %?\n%^T" )
+ ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
+  "* %?\n%^T" )
+
 
   ("M" "recurring" entry (file+headline "~/org/files/agenda/meetings.org" "Recurring")
    "* %?\n%^T" )
@@ -6052,6 +6040,7 @@ Filter by:
      ("ic" xah-dired-image-autocrop  "autocrop" ) 
      ("ij" xah-dired-2jpg  "to-jpg" ) 
      ("ip" xah-dired-2png "to-png" ) 
+     ("v"  dired-do-version  "version (copy) file" ) 
       ("q" nil "cancel" nil)
  )
 
@@ -6473,6 +6462,46 @@ Version 2015-03-10"
     "Uses beets to import folder"
     (interactive)
     (shell-command (concat "unrar x" (dired-file-name-at-point))))
+
+(defcustom dired-keep-marker-version ?V
+  "Controls marking of versioned files.
+If t, versioned files are marked if and as the corresponding original files were.
+If a character, copied files are unconditionally marked with that character."
+  :type '(choice (const :tag "Keep" t)
+         (character :tag "Mark"))
+  :group 'dired-mark)
+
+(defun dired-version-file (from to ok-flag)
+  (dired-handle-overwrite to)
+  (dired-copy-file-recursive from to ok-flag dired-copy-preserve-time t
+                 dired-recursive-copies))
+
+(defun dired-do-version (&optional arg)
+  "Search for numeric pattern in file name and create a version of that file
+with that number incremented by one, or, in case such file already exists,
+will search for a file with the similar name, incrementing the counter each
+time by one.
+Additionally, if called with prefix argument, will prompt for number format.
+The formatting is the same as is used with `format' function."
+  (interactive "P")
+  (let ((fn-list (dired-get-marked-files nil nil)))
+    (dired-create-files
+     (function dired-version-file) "Version" fn-list
+     (function
+      (lambda (from)
+        (let (new-name (i 0) (fmt (if arg (read-string "Version format: " "%d") "%d")))
+          (while (or (null new-name) (file-exists-p new-name))
+            (setq new-name
+                  (if (string-match  "^\\([^0-9]*\\)\\([0-9]+\\)\\(.*\\)$" from)
+                      (concat (match-string 1 from)
+                              (format fmt
+                                      (+ (string-to-number (match-string 2 from)) (1+ i)))
+                              (match-string 3 from))
+                    (concat from (format (concat "." fmt) i)))
+                  i (1+ i))) new-name)))
+     dired-keep-marker-version)))
+
+;;(define-key dired-mode-map (kbd "c") 'dired-do-version)
 
 (defun  z/dired-search-imdb ()
      "imdb point "

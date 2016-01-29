@@ -2,7 +2,25 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("zdo.home" 0 8
+(#1=(#("zlap.org" 0 8
+      (bmkp-full-record #1#))
+    (buffer-name . "org")
+    (front-context-string . "files\n  lrwxrwxr")
+    (rear-context-string . "0K Jan 15 09:49 ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(22184 42013 344499 150000))
+    (created . #2#)
+    (position . 90)
+    (filename . "/ssh:zlap:/home/zeltak/org/")
+    (dired-directory . "/ssh:zlap:/home/zeltak/org/")
+    (dired-marked)
+    (dired-switches . "-alhv --group-directories-first ")
+    (dired-subdirs)
+    (dired-hidden-dirs)
+    (handler . bmkp-jump-dired))
+#1=(#("zdo.home" 0 8
       (bmkp-full-record #1#))
     (buffer-name . "zeltak</ssh:zdo:>")
     (front-context-string . "org\n  -rw-r--r--")
@@ -982,8 +1000,8 @@
     (rear-context-string . "Guide\n\n* TODO LE")
     (front-context-region-string)
     (rear-context-region-string)
-    (visits . 17)
-    (time 22165 6211 498429 427000)
+    (visits . 18)
+    (time 22184 33137 293410 38000)
     (created 21790 12030 918290 497000)
     (position . 40))
 #1=(#("autostart.sh" 0 12

@@ -50,29 +50,6 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
   ;(load-file "~/.emacs.d/themes/zprime-theme.el")
   ;load the choosen theme at startup 
   (load-theme 'zprime t)
-
-;;;; below works but changes GUI apps theme when launching term..not good..maybe look into this in future  
-
-;; ;; last t is for NO-ENABLE
-  ;;   (load-theme 'zprime t t)
-  ;;   (load-theme 'tango-dark t t)
-  
-  ;;   (defun mb/pick-color-theme (frame)
-  ;;     (select-frame frame)
-  ;;     (if (window-system frame)
-  ;;         (progn  
-  ;;           (disable-theme 'tango-dark) ; in case it was active
-  ;;           (enable-theme 'zprime))
-  ;;       (progn  
-  ;;         (disable-theme 'zprime) ; in case it was active
-  ;;         (enable-theme 'tango-dark))))
-  ;;   (add-hook 'after-make-frame-functions 'mb/pick-color-theme)
-  
-  ;;   ;; For when started with emacs or emacs -nw rather than emacs --daemon
-  ;;   (if window-system
-  ;;       (enable-theme 'zprime)
-  ;;     (enable-theme 'tango-dark))
-
 #+END_SRC
 
 ** custom org export options (must be on top of settings to work for reason still discovered)
@@ -84,6 +61,9 @@ To edit the theme file:~/.emacs.d/themes/zprime-theme.el
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-mode/contrib/lisp/")
 #+END_SRC
 ** Fonts
+   :PROPERTIES:
+   :ID:       2094e9ab-4a0b-4d66-aec5-e08a2a0aa52f
+   :END:
 #+begin_src emacs-lisp results none
 ; fonts in linux
 (if (string= system-name "zx1voics")
@@ -1284,6 +1264,17 @@ this is saved in file:/home/zeltak/.emacs.d/custom.el
 (elfeed-goodies/setup) 
  )
 #+END_SRC 
+** eyebrowse
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package eyebrowse
+ :ensure t
+ :config
+(eyebrowse-mode t) 
+ )
+#+END_SRC 
+
+
 
 ** engine-mode
    
@@ -6054,13 +6045,6 @@ http://orgmode.org/manual/Tag-inheritance.html
 (setq org-use-tag-inheritance nil)
 #+END_SRC
 
-*** TODO org-tag-faces
-#+begin_src emacs-lisp results none
-  ;; (setq org-tag-faces
-  ;;   '(("Indian" . (:foreground "#00000"))
-  ;;      ("Asian"  . (:foreground "#C00000"))
-  ;;      ("israeli"  . (:foreground "#C0a000"))))
-#+end_src
 *** tag alist
     :PROPERTIES:
     :ID:       0d5a4d74-bf97-4860-b622-30335324afe0
@@ -6095,6 +6079,13 @@ http://orgmode.org/manual/Tag-inheritance.html
 #+END_SRC
 
 
+*** TODO org-tag-faces
+#+begin_src emacs-lisp results none
+  ;; (setq org-tag-faces
+  ;;   '(("Indian" . (:foreground "#00000"))
+  ;;      ("Asian"  . (:foreground "#C00000"))
+  ;;      ("israeli"  . (:foreground "#C0a000"))))
+#+end_src
 *** tag searches function  
     :PROPERTIES:
     :ID:       c1e25ca7-8cbd-4bd8-b417-3ac09c61474b
@@ -6166,7 +6157,11 @@ With prefix argument, also display headlines without a TODO keyword."
                            (?B . (:foreground "LightSteelBlue"))
                            (?C . (:foreground "OliveDrab"))))
 #+END_SRC
-
+*** archive
+#+BEGIN_SRC emacs-lisp  :results none
+ ;; Mark entries as done when archiving
+          org-archive-mark-done t
+#+END_SRC
 ** Refile
 *** set which refile method to us (currently helm)
 this command below will use helm for completion since in the above helm config we sepcify these two commands: (require 'helm-config) and (helm-mode 1)
@@ -6336,8 +6331,9 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 ;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
-  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
-   "* %?\n%^T" )
+ ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
+  "* %?\n%^T" )
+
 
   ("M" "recurring" entry (file+headline "~/org/files/agenda/meetings.org" "Recurring")
    "* %?\n%^T" )
@@ -8088,6 +8084,7 @@ Filter by:
      ("ic" xah-dired-image-autocrop  "autocrop" ) 
      ("ij" xah-dired-2jpg  "to-jpg" ) 
      ("ip" xah-dired-2png "to-png" ) 
+     ("v"  dired-do-version  "version (copy) file" ) 
       ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -8585,7 +8582,48 @@ how to launch it in eshell
      (interactive)
      (shell-command (concat "unrar x" (dired-file-name-at-point))))
  #+END_SRC
+**** copy file (version it)
+#+BEGIN_SRC emacs-lisp  :results none
+(defcustom dired-keep-marker-version ?V
+  "Controls marking of versioned files.
+If t, versioned files are marked if and as the corresponding original files were.
+If a character, copied files are unconditionally marked with that character."
+  :type '(choice (const :tag "Keep" t)
+         (character :tag "Mark"))
+  :group 'dired-mark)
 
+(defun dired-version-file (from to ok-flag)
+  (dired-handle-overwrite to)
+  (dired-copy-file-recursive from to ok-flag dired-copy-preserve-time t
+                 dired-recursive-copies))
+
+(defun dired-do-version (&optional arg)
+  "Search for numeric pattern in file name and create a version of that file
+with that number incremented by one, or, in case such file already exists,
+will search for a file with the similar name, incrementing the counter each
+time by one.
+Additionally, if called with prefix argument, will prompt for number format.
+The formatting is the same as is used with `format' function."
+  (interactive "P")
+  (let ((fn-list (dired-get-marked-files nil nil)))
+    (dired-create-files
+     (function dired-version-file) "Version" fn-list
+     (function
+      (lambda (from)
+        (let (new-name (i 0) (fmt (if arg (read-string "Version format: " "%d") "%d")))
+          (while (or (null new-name) (file-exists-p new-name))
+            (setq new-name
+                  (if (string-match  "^\\([^0-9]*\\)\\([0-9]+\\)\\(.*\\)$" from)
+                      (concat (match-string 1 from)
+                              (format fmt
+                                      (+ (string-to-number (match-string 2 from)) (1+ i)))
+                              (match-string 3 from))
+                    (concat from (format (concat "." fmt) i)))
+                  i (1+ i))) new-name)))
+     dired-keep-marker-version)))
+
+;;(define-key dired-mode-map (kbd "c") 'dired-do-version)
+#+END_SRC
 **** searching
 ***** imdb search
   #+BEGIN_SRC emacs-lisp :results none

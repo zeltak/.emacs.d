@@ -1,7 +1,7 @@
 
 ;; ----- smex-history -----
 (
- zin/org-tag-match-context
+ eyebrowse-mode
  load-file
  dired-jump
  avy-pop-mark
@@ -268,4 +268,5 @@
  (avy-pop-mark . 2)
  (load-file . 1)
  (zin/org-tag-match-context . 4)
+ (eyebrowse-mode . 2)
 )
