@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*- <16/01/23 22:01:00 /home/zeltak/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <16/01/27 18:56:46 /home/zeltak/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
@@ -85,13 +85,11 @@
   ("gid-integer" 100)
   ("gid-string" "users")
   ("ls-dired" nil))
+ (["ssh" nil "zlap" nil nil]
+  nil)
+ (["ssh" nil "zdo" nil nil]
+  nil)
  (["ssh" "zeltak" "uni" nil nil]
   nil)
  (["ssh" nil "192.168.0.2" nil nil]
-  nil)
- (["ssh" nil "10.0.0.2" nil nil]
-  nil)
- (["ssh" nil "ssh" nil nil]
-  nil)
- (["ssh" nil "zdo" nil nil]
   nil))

@@ -552,7 +552,21 @@ https://github.com/kiwanami/emacs-calfw
    ))) 
  )
 #+END_SRC 
+** char-menu
 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package char-menu
+ :ensure t
+ :config
+ 
+(setq char-menu '("—" "‘’" "“”" "…" "«»" "–" "【】" "◀▶" "☚ ☛"
+                            ("Typography" "•" "©" "†" "‡" "°" "·" "§" "№" "★")
+                            ("Math"       "≈" "≡" "≠" "∞" "×" "±" "∓" "÷" "√")
+                            ("Arrows"     "←" "→" "↑" "↓" "⇐" "⇒" "⇑" "⇓")
+                            ("Greek"      "α" "β" "Y" "δ" "ε" "ζ" "η" "θ" "ι" "κ" "λ" "μ" "ν" "ξ" "ο" "π" "ρ" "σ" "τ" "υ" "φ" "χ" "ψ" "ω") 
+))
+ )
+#+END_SRC 
 
 ** Counsel
 #+BEGIN_SRC emacs-lisp :results none
@@ -712,8 +726,6 @@ make sure to install ttf-ancient-fonts to get the fonts to show up
  )
 #+END_SRC 
 You can add shortcode aliases by modifying company-emoji-aliases. Run M-x customize-variable [RET] company-emoji-aliases to bring up company-emoji’s customization pane, then add or remove aliases to your taste.
-
-
 ** company-org-headings
 #+BEGIN_SRC emacs-lisp :results none
   ;; (add-to-list 'load-path "/home/zeltak/.emacs.g/company-org-headings")
@@ -731,6 +743,18 @@ You can add shortcode aliases by modifying company-emoji-aliases. Run M-x custom
   ;; ;;                     company-files
   ;; ;;                     )))))
 #+END_SRC
+
+** crux
+https://github.com/bbatsov/crux
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package crux
+ :ensure t
+ :config
+ 
+ )
+#+END_SRC 
+
 
 ** `dired plugins`
 *** dired hacks 
@@ -1007,7 +1031,18 @@ https://github.com/mhayashi1120/Emacs-image-diredx
      (eval-after-load 'image-dired+ '(image-diredx-async-mode 1))
     (eval-after-load 'image-dired+ '(image-diredx-adjust-mode 1))
  )
+#+END_SRC
+*** dired-atool
+https://github.com/HKey/dired-atool
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package dired-atool
+ :ensure t
+ :config
+ (dired-atool-setup)
+ )
 #+END_SRC 
+
 
 
 
@@ -3983,6 +4018,27 @@ With a prefix argument P, isearch for the symbol at point."
     (message "rlt=%s" rlt)
     rlt))
 #+END_SRC
+** Shell
+*** TODO search bash history
+can be edited and converted to zsh
+#+BEGIN_SRC emacs-lisp  :results none
+(defun counsel-yank-bash-history ()
+  "Yank the bash history"
+  (interactive)
+  (let (hist-cmd collection val)
+    (shell-command "history -r") ; reload history
+    (setq collection
+          (nreverse
+           (split-string (with-temp-buffer (insert-file-contents (file-truename "~/.bash_history"))
+                                           (buffer-string))
+                         "\n"
+                         t)))
+    (when (and collection (> (length collection) 0)
+               (setq val (if (= 1 (length collection)) (car collection)
+                           (ivy-read (format "Bash history:") collection))))
+        (kill-new val)
+        (message "%s => kill-ring" val))))
+#+END_SRC
 ** projectile
    :PROPERTIES:
    :ID:       a8d31985-4c01-4ce2-8986-945af198ee4a
@@ -4158,6 +4214,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("\\"  avy-goto-char-timer  "avy jump")
 ("|"   hydra-goto/body "goto" )
 ("RET" avy-goto-line "goto line" )
+("1"   hydra-org-tags/body "tags")
 ("8"   helm-mark-ring "HELM mark ")
 ("T"   helm-top "top")
 (";"   comment-or-uncomment-region )
@@ -4174,6 +4231,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("a"  z/org-agenda-calendar "org agenda" )
 ("z"  cfw:open-org-calendar "month calander" )
 ("c"  z/org-move-top-collapse "collapse headers" )
+("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
 ("v"  helm-bm "helm-bm" )
@@ -4202,7 +4260,6 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 
 ))
  #+END_SRC
-
 *** Emacs//toggles (f1)
 **** main toggles 
 #+BEGIN_SRC emacs-lisp :results none
@@ -4749,7 +4806,7 @@ _q_: quit
 
 
 
-*** org editing (C-M-o)
+*** org editing (C-M-o)						      :allan:
 
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
@@ -4766,7 +4823,7 @@ _q_: quit
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/org-cblock-comment  "line to checkbox" )
-   ("s" hydra-org-time/body "time stamps" )
+   ("s" org-clone-subtree-with-time-shift  "add a time series for headers" )
    ("w" worf-mode "Worf mode" )
    ("<up>" org-move-subtree-up "header up" :color red )
    ("<down>" org-move-subtree-down "header down" :color red)
@@ -4798,7 +4855,53 @@ _q_: quit
 (define-key evil-normal-state-map (kbd "[u") 'org-up-element)
 
 
+*** org  tags
+    :PROPERTIES:
+    :ID:       b1bd78ae-83b5-4cb4-a4b5-6db5287f3956
+    :END:
+ #+BEGIN_SRC emacs-lisp :results none
+(global-set-key
+    (kbd "")
+ (defhydra hydra-org-tags  (:color blue :hint nil :columns 4)
+ "
+ "
+
+("1" (org-set-tags-command) "set tags"  :face 'hydra-face-green)
+("a" (org-set-tags-to "allan") "Allan" )
+("b" (org-set-tags-to "boris") "Boris" )
+;("c" (org-set-tags-to "") "tags" )
+("d" (org-set-tags-to "david") "David" )
+;("e" (org-set-tags-to "allan") "tags" )
+;("f" (org-set-tags-to "allan") "tags" )
+;("g" (org-set-tags-to "allan") "tags" )
+("h" (org-set-tags-to "hila") "Hila" )
+;("i" (org-set-tags-to "allan") "tags" )
+("j" (org-set-tags-to "joel") "Joel" )
+;("k" (org-set-tags-to "allan") "tags" )
+("l" (org-set-tags-to "lara") "Lara" )
+("m" (org-set-tags-to "meytar") "Meytar" )
+;("n" (org-set-tags-to "allan") "tags" )
+("o" (org-set-tags-to "omer") "Omer" )
+;("p" (org-set-tags-to "allan") "tags" )
+;("q" (org-set-tags-to "allan") "tags" )
+("r" (org-set-tags-to "adar") "Adar" )
+("s" (org-set-tags-to "massimo") "Massimo" )
+("S" (org-set-tags-to "francesca") "Francesca" )
+;("t" (org-set-tags-to "allan") "tags" )
+;("u" (org-set-tags-to "allan") "tags" )
+("v" (org-set-tags-to "adi") "Adi" )
+;("w" (org-set-tags-to "allan") "tags" )
+("x" (org-set-tags-to "alex") "Alex" )
+("y" (org-set-tags-to "maayan") "Maayan" )
+("z" (org-set-tags-to "bob") "Bob" )
+("q" nil "cancel")
+
+))
+ #+END_SRC
+
+
 *** agenda (F10)
+
 **** org agenda main
      :PROPERTIES:
      :ID:       5d5567f8-9f16-4b76-adb6-8600ce16e2ec
@@ -4895,6 +4998,7 @@ _q_: quit
    ("q" nil "cancel")))
 #+END_SRC
 *** org tables (C-M-t)
+
 #+BEGIN_SRC emacs-lisp :results none
 (global-set-key
  (kbd "C-M-l")
@@ -4930,6 +5034,7 @@ FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum
       ;("<left>" drag-stuff-left  "marked left" :color red)
       ;("<right>" drag-stuff-right "marked right" :color red)
       ("p" duplicate-current-line-or-region  "duplicate" :color red)
+      ("o" crux-smart-open-line  "open line" )
       (";"  hydra-commenting/body  "comment!" )
       ("i"  hydra-editing-insert/body  "insert" )   
       ("f" flush-blank-line  "flush blank" )
@@ -5277,7 +5382,7 @@ here we put these files in the /tmp dir
 $note its built into emacs no intsall needed$
 
 #+BEGIN_SRC emacs-lisp :results none
-(setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
+ (setq recentf-save-file "/home/zeltak/.emacs.t/recentf")  ;; (setq recentf-auto-cleanup 'never) ;; disable before we start recentf!
 (require 'recentf)
 (recentf-mode 1)
 (setq recentf-max-menu-items 50)
@@ -5320,6 +5425,20 @@ $note its built into emacs no intsall needed$
 don't let passwords expire
 #+BEGIN_SRC emacs-lisp  :results none
 (setq password-cache-expiry nil)
+#+END_SRC
+*** tramp defaults and use .ssh settings 
+#+BEGIN_SRC emacs-lisp  :results none
+(setq tramp-default-method "ssh"
+        tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+        tramp-adb-program "adb"
+        ;; use the settings in ~/.ssh/config instead of Tramp's
+        tramp-use-ssh-controlmaster-options nil
+        backup-enable-predicate
+        (lambda (name)
+          (and (normal-backup-enable-predicate name)
+               (not (let ((method (file-remote-p name 'method)))
+                      (when (stringp method)
+                        (member method '("su" "sudo"))))))))
 #+END_SRC
 *** use sudo with ssh
 http://mollermara.com/tags/productivity/
@@ -5560,7 +5679,14 @@ use setq org-support-shift-select:
 (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 ;;;this will make sure there are no empty lines betwwn headers after collapsing headers 
 (setq org-cycle-separator-lines 0) 
-#+END_SRC 
+#+END_SRC
+*** don't let edit invisible areas
+#+BEGIN_SRC emacs-lisp  :results none
+ ;; don't let me accidentally delete text without realizing it in org.  ie: point is buried in a subtree, but you only
+ ;; see the heading and you accidentally kill a line without knowing it.
+ ;; this might not be supported for evil-mode
+ org-catch-invisible-edits 'show-and-error
+#+END_SRC
 ** custom link types
 *** grep link
 #+BEGIN_SRC emacs-lisp :results none
@@ -5810,6 +5936,20 @@ You could also add this, so that the appointments refresh and new get added ever
    (org-cmp-effort a b)))
 #+END_SRC
 
+*** agenda icons 
+this will set icons based on the category
+#+BEGIN_EXAMPLE
+#+CATEGORY: work
+#+END_EXAMPLE
+
+#+BEGIN_SRC emacs-lisp  :results none
+(setq org-agenda-category-icon-alist '(
+                                  ("pc"      "/home/zeltak/MLT/programs/Krusader/Toolbar/refresh.png" nil nil nil nil)
+                                  ("work"       "/home/zeltak/MLT/org/bgu.png" nil nil nil nil)
+                                  ))
+#+END_SRC
+
+
 ** 'my custom agenda command'
    :PROPERTIES:
    :ID:       4b396dfc-0c1c-407c-9d2d-6cca29c8879c
@@ -5822,7 +5962,6 @@ and here id:cf2c69b4-3d4c-4f81-a01d-bbbe1d120e62
 $Note$ that to get the priorities to appear first you need to use priorities-down.
 
 ("w" tags-todo "CATEGORY=\"work\"")
-
 
 (org-agenda-view-columns-initially t)
 
@@ -6046,46 +6185,59 @@ http://orgmode.org/manual/Tag-inheritance.html
 #+END_SRC
 
 *** tag alist
-    :PROPERTIES:
-    :ID:       0d5a4d74-bf97-4860-b622-30335324afe0
-    :END:
-#+BEGIN_SRC emacs-lisp  :results none
-  (setq org-tag-alist '((:startgroup . nil)
-                             ("@work" . ?w) ("@home" . ?h) ("@pc" . ?p) ("@family" . ?f)
-                             (:endgroup . nil)
-                             ("students" . ?s)
-                             ))
-#+END_SRC
 
 #+BEGIN_SRC emacs-lisp  :results none
-  ;; ; Tags with fast selection keys
-  ;; (setq org-tag-alist (quote ((:startgroup)
-  ;;                             ("@errand" . ?e)
-  ;;                             ("@office" . ?o)
-  ;;                             ("@home" . ?H)
-  ;;                             ("@farm" . ?f)
-  ;;                             (:endgroup)
-  ;;                             ("WAITING" . ?w)
-  ;;                             ("HOLD" . ?h)
-  ;;                             ("PERSONAL" . ?P)
-  ;;                             ("WORK" . ?W)
-  ;;                             ("FARM" . ?F)
-  ;;                             ("ORG" . ?O)
-  ;;                             ("NORANG" . ?N)
-  ;;                             ("crypt" . ?E)
-  ;;                             ("NOTE" . ?n)
-  ;;                             ("CANCELLED" . ?c)
-  ;;                             ("FLAGGED" . ??))))
+(setq org-tag-persistent-alist  '(
+                      ;; where
+                      (:startgroup)
+                      ("@home" . ?h)
+                      ("@work" . ?w)
+                      ("@pc" . ?p)
+                      ("@family" . ?f)
+                      (:endgroup)
+(:startgrouptag)
+                           ("people")
+                           (:grouptags)
+                           ("allan" . ?a)
+                           ("joel" . ?j)
+                           ("david" . ?d)
+                           ("meytar" . ?m)
+                           ("maayan" . ?y)
+                           ("alex" . ?x)
+                           ("omer" . ?o)
+                           ("adar" . ?a)
+                           ("hila" . ?z)
+                           ("adi" . ?v)
+                           ("boris" . ?b)
+                           ("lara" . ?l)
+                           ("massimo" . ?s)
+                           ("francesca")
+                           (:endgrouptag)
+))
 #+END_SRC
 
 
 *** TODO org-tag-faces
+
+does not work at all
 #+begin_src emacs-lisp results none
-  ;; (setq org-tag-faces
+(setq org-tag-faces
+      '(("@home" . "#f1c40f")
+        ("@work" . "#3498db")
+        ("allan" . (:foreground "blue" :weight bold))))
+
+
+;; (setq org-tag-faces
   ;;   '(("Indian" . (:foreground "#00000"))
   ;;      ("Asian"  . (:foreground "#C00000"))
   ;;      ("israeli"  . (:foreground "#C0a000"))))
 #+end_src
+*** Allow setting single tags without the menu			      
+#+BEGIN_SRC emacs-lisp  :results none
+;; Allow setting single tags without the menu
+(setq org-fast-tag-selection-single-key (quote expert))
+#+END_SRC
+
 *** tag searches function  
     :PROPERTIES:
     :ID:       c1e25ca7-8cbd-4bd8-b417-3ac09c61474b
@@ -6183,7 +6335,17 @@ set how many levels of headers to show while refiling
                                  (org-agenda-files :maxlevel . 9))))
 #+end_src
 
-#+RESULTS:
+$Note$ that you can also refile per file with specific levels 
+
+#+BEGIN_EXAMPLE
+
+(setq org-refile-targets (quote (("tickler.org" :maxlevel . 1)
+                                 ("organizer.org" :level . 1)
+                                 ("someday.org" :level . 2))))
+
+#+END_EXAMPLE
+
+here you can  refile to any level 1 headings in the first two files, and any level 2 headings (but not level 1 headings) in the third file.
 
 ** Capture
 *** load org-protocl and org-capture
@@ -8005,7 +8167,7 @@ change dir only in dir mode hook?
 ("g"  nil )
 ("h"  (find-file "~/") "HOME" )
 ("i"  nil )
-("j"  nil )
+("j"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )

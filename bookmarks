@@ -2,7 +2,19 @@
 ;;; This format is meant to be slightly human-readable;
 ;;; nevertheless, you probably don't want to edit it.
 ;;; -*- End Of Bookmark File Format Version Stamp -*-
-(#1=(#("zlap.org" 0 8
+(#1=(#("ssh.papers.meta" 0 15
+      (bmkp-full-record #1#))
+    (filename . "/ssh:zlap:/home/zeltak/org/files/Uni/papers/paper.meta.org")
+    (buffer-name . "paper.meta.org")
+    (front-context-string . "diabetes mellitu")
+    (rear-context-string . "and gestational ")
+    (front-context-region-string)
+    (rear-context-region-string)
+    (visits . 0)
+    (time . #2=(22189 45219 742577 763000))
+    (created . #2#)
+    (position . 546))
+#1=(#("zlap.org" 0 8
       (bmkp-full-record #1#))
     (buffer-name . "org")
     (front-context-string . "files\n  lrwxrwxr")

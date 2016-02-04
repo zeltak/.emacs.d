@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ crux-smart-open-line
+ crux-open-with
+ org-set-tags-to
+ org-set-tags-command
+ org-set-tags
+ counsel-yank-bash-history
  eyebrowse-mode
- load-file
- dired-jump
- avy-pop-mark
- avy-goto-char-timer
- ansi-term
- eshell
 )
 
 ;; ----- smex-data -----
@@ -269,4 +269,10 @@
  (load-file . 1)
  (zin/org-tag-match-context . 4)
  (eyebrowse-mode . 2)
+ (counsel-yank-bash-history . 1)
+ (org-set-tags-to . 2)
+ (org-set-tags . 2)
+ (org-set-tags-command . 1)
+ (crux-open-with . 3)
+ (crux-smart-open-line . 1)
 )

@@ -394,6 +394,18 @@
    ))) 
  )
 
+(use-package char-menu
+ :ensure t
+ :config
+ 
+(setq char-menu '("—" "‘’" "“”" "…" "«»" "–" "【】" "◀▶" "☚ ☛"
+                            ("Typography" "•" "©" "†" "‡" "°" "·" "§" "№" "★")
+                            ("Math"       "≈" "≡" "≠" "∞" "×" "±" "∓" "÷" "√")
+                            ("Arrows"     "←" "→" "↑" "↓" "⇐" "⇒" "⇑" "⇓")
+                            ("Greek"      "α" "β" "Y" "δ" "ε" "ζ" "η" "θ" "ι" "κ" "λ" "μ" "ν" "ξ" "ο" "π" "ρ" "σ" "τ" "υ" "φ" "χ" "ψ" "ω") 
+))
+ )
+
 (use-package counsel
  :ensure t
  :config
@@ -537,6 +549,12 @@
 ;; ;;                     company-abbrev
 ;; ;;                     company-files
 ;; ;;                     )))))
+
+(use-package crux
+ :ensure t
+ :config
+ 
+ )
 
 (use-package dired-avfs
  :ensure t
@@ -720,6 +738,12 @@
  :config
      (eval-after-load 'image-dired+ '(image-diredx-async-mode 1))
     (eval-after-load 'image-dired+ '(image-diredx-adjust-mode 1))
+ )
+
+(use-package dired-atool
+ :ensure t
+ :config
+ (dired-atool-setup)
  )
 
 (use-package drag-stuff
@@ -2867,6 +2891,23 @@ With a prefix argument P, isearch for the symbol at point."
     (message "rlt=%s" rlt)
     rlt))
 
+(defun counsel-yank-bash-history ()
+  "Yank the bash history"
+  (interactive)
+  (let (hist-cmd collection val)
+    (shell-command "history -r") ; reload history
+    (setq collection
+          (nreverse
+           (split-string (with-temp-buffer (insert-file-contents (file-truename "~/.bash_history"))
+                                           (buffer-string))
+                         "\n"
+                         t)))
+    (when (and collection (> (length collection) 0)
+               (setq val (if (= 1 (length collection)) (car collection)
+                           (ivy-read (format "Bash history:") collection))))
+        (kill-new val)
+        (message "%s => kill-ring" val))))
+
 (defun projectile-find-file-in-project-org ()
 (interactive)                                
 (let ((default-directory "/home/zeltak/org/files/"))
@@ -2986,6 +3027,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("\\"  avy-goto-char-timer  "avy jump")
 ("|"   hydra-goto/body "goto" )
 ("RET" avy-goto-line "goto line" )
+("1"   hydra-org-tags/body "tags")
 ("8"   helm-mark-ring "HELM mark ")
 ("T"   helm-top "top")
 (";"   comment-or-uncomment-region )
@@ -3002,6 +3044,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("a"  z/org-agenda-calendar "org agenda" )
 ("z"  cfw:open-org-calendar "month calander" )
 ("c"  z/org-move-top-collapse "collapse headers" )
+("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
 ("v"  helm-bm "helm-bm" )
@@ -3505,11 +3548,49 @@ _q_: quit
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/org-cblock-comment  "line to checkbox" )
-   ("s" hydra-org-time/body "time stamps" )
+   ("s" org-clone-subtree-with-time-shift  "add a time series for headers" )
    ("w" worf-mode "Worf mode" )
    ("<up>" org-move-subtree-up "header up" :color red )
    ("<down>" org-move-subtree-down "header down" :color red)
    ("q" nil "cancel")))
+
+(global-set-key
+    (kbd "")
+ (defhydra hydra-org-tags  (:color blue :hint nil :columns 4)
+ "
+ "
+
+("1" (org-set-tags-command) "set tags"  :face 'hydra-face-green)
+("a" (org-set-tags-to "allan") "Allan" )
+("b" (org-set-tags-to "boris") "Boris" )
+;("c" (org-set-tags-to "") "tags" )
+("d" (org-set-tags-to "david") "David" )
+;("e" (org-set-tags-to "allan") "tags" )
+;("f" (org-set-tags-to "allan") "tags" )
+;("g" (org-set-tags-to "allan") "tags" )
+("h" (org-set-tags-to "hila") "Hila" )
+;("i" (org-set-tags-to "allan") "tags" )
+("j" (org-set-tags-to "joel") "Joel" )
+;("k" (org-set-tags-to "allan") "tags" )
+("l" (org-set-tags-to "lara") "Lara" )
+("m" (org-set-tags-to "meytar") "Meytar" )
+;("n" (org-set-tags-to "allan") "tags" )
+("o" (org-set-tags-to "omer") "Omer" )
+;("p" (org-set-tags-to "allan") "tags" )
+;("q" (org-set-tags-to "allan") "tags" )
+("r" (org-set-tags-to "adar") "Adar" )
+("s" (org-set-tags-to "massimo") "Massimo" )
+("S" (org-set-tags-to "francesca") "Francesca" )
+;("t" (org-set-tags-to "allan") "tags" )
+;("u" (org-set-tags-to "allan") "tags" )
+("v" (org-set-tags-to "adi") "Adi" )
+;("w" (org-set-tags-to "allan") "tags" )
+("x" (org-set-tags-to "alex") "Alex" )
+("y" (org-set-tags-to "maayan") "Maayan" )
+("z" (org-set-tags-to "bob") "Bob" )
+("q" nil "cancel")
+
+))
 
 (global-set-key
      (kbd "<f10>")
@@ -3619,6 +3700,7 @@ FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum
    ;("<left>" drag-stuff-left  "marked left" :color red)
    ;("<right>" drag-stuff-right "marked right" :color red)
    ("p" duplicate-current-line-or-region  "duplicate" :color red)
+   ("o" crux-smart-open-line  "open line" )
    (";"  hydra-commenting/body  "comment!" )
    ("i"  hydra-editing-insert/body  "insert" )   
    ("f" flush-blank-line  "flush blank" )
@@ -3915,6 +3997,18 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq password-cache-expiry nil)
 
+(setq tramp-default-method "ssh"
+        tramp-default-user-alist '(("\\`su\\(do\\)?\\'" nil "root"))
+        tramp-adb-program "adb"
+        ;; use the settings in ~/.ssh/config instead of Tramp's
+        tramp-use-ssh-controlmaster-options nil
+        backup-enable-predicate
+        (lambda (name)
+          (and (normal-backup-enable-predicate name)
+               (not (let ((method (file-remote-p name 'method)))
+                      (when (stringp method)
+                        (member method '("su" "sudo"))))))))
+
 (add-to-list 'tramp-default-proxies-alist 
      '((and (string-match system-name 
                   (tramp-file-name-host (car target-alist)))
@@ -4081,6 +4175,11 @@ comment _e_macs function  // copy-paste-comment-function _r_
 (setq org-blank-before-new-entry '((heading . nil) (plain-list-item . nil)))
 ;;;this will make sure there are no empty lines betwwn headers after collapsing headers 
 (setq org-cycle-separator-lines 0)
+
+;; don't let me accidentally delete text without realizing it in org.  ie: point is buried in a subtree, but you only
+;; see the heading and you accidentally kill a line without knowing it.
+;; this might not be supported for evil-mode
+org-catch-invisible-edits 'show-and-error
 
 (org-add-link-type
  "grep"
@@ -4274,6 +4373,11 @@ comment _e_macs function  // copy-paste-comment-function _r_
    (org-cmp-priority a b)
    (org-cmp-effort a b)))
 
+(setq org-agenda-category-icon-alist '(
+                                  ("pc"      "/home/zeltak/MLT/programs/Krusader/Toolbar/refresh.png" nil nil nil nil)
+                                  ("work"       "/home/zeltak/MLT/org/bgu.png" nil nil nil nil)
+                                  ))
+
 (setq org-agenda-custom-commands 
  '(
 
@@ -4464,35 +4568,47 @@ comment _e_macs function  // copy-paste-comment-function _r_
 
 (setq org-use-tag-inheritance nil)
 
-(setq org-tag-alist '((:startgroup . nil)
-                           ("@work" . ?w) ("@home" . ?h) ("@pc" . ?p) ("@family" . ?f)
-                           (:endgroup . nil)
-                           ("students" . ?s)
-                           ))
+(setq org-tag-persistent-alist  '(
+                      ;; where
+                      (:startgroup)
+                      ("@home" . ?h)
+                      ("@work" . ?w)
+                      ("@pc" . ?p)
+                      ("@family" . ?f)
+                      (:endgroup)
+(:startgrouptag)
+                           ("people")
+                           (:grouptags)
+                           ("allan" . ?a)
+                           ("joel" . ?j)
+                           ("david" . ?d)
+                           ("meytar" . ?m)
+                           ("maayan" . ?y)
+                           ("alex" . ?x)
+                           ("omer" . ?o)
+                           ("adar" . ?a)
+                           ("hila" . ?z)
+                           ("adi" . ?v)
+                           ("boris" . ?b)
+                           ("lara" . ?l)
+                           ("massimo" . ?s)
+                           ("francesca")
+                           (:endgrouptag)
+))
 
-;; ; Tags with fast selection keys
-;; (setq org-tag-alist (quote ((:startgroup)
-;;                             ("@errand" . ?e)
-;;                             ("@office" . ?o)
-;;                             ("@home" . ?H)
-;;                             ("@farm" . ?f)
-;;                             (:endgroup)
-;;                             ("WAITING" . ?w)
-;;                             ("HOLD" . ?h)
-;;                             ("PERSONAL" . ?P)
-;;                             ("WORK" . ?W)
-;;                             ("FARM" . ?F)
-;;                             ("ORG" . ?O)
-;;                             ("NORANG" . ?N)
-;;                             ("crypt" . ?E)
-;;                             ("NOTE" . ?n)
-;;                             ("CANCELLED" . ?c)
-;;                             ("FLAGGED" . ??))))
+(setq org-tag-faces
+      '(("@home" . "#f1c40f")
+        ("@work" . "#3498db")
+        ("allan" . (:foreground "blue" :weight bold))))
+
 
 ;; (setq org-tag-faces
-;;   '(("Indian" . (:foreground "#00000"))
-;;      ("Asian"  . (:foreground "#C00000"))
-;;      ("israeli"  . (:foreground "#C0a000"))))
+  ;;   '(("Indian" . (:foreground "#00000"))
+  ;;      ("Asian"  . (:foreground "#C00000"))
+  ;;      ("israeli"  . (:foreground "#C0a000"))))
+
+;; Allow setting single tags without the menu
+(setq org-fast-tag-selection-single-key (quote expert))
 
 (org-add-link-type
  "tag"
@@ -5976,7 +6092,7 @@ scroll-step 1)
 ("g"  nil )
 ("h"  (find-file "~/") "HOME" )
 ("i"  nil )
-("j"  nil )
+("j"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
