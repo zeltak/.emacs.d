@@ -1,4 +1,4 @@
-;; -*- emacs-lisp -*- <16/01/27 18:56:46 /home/zeltak/.emacs.d/tramp>
+;; -*- emacs-lisp -*- <16/02/02 09:25:44 /home/zeltak/.emacs.d/tramp>
 ;; Tramp connection history.  Don't change this file.
 ;; You can delete it, forcing Tramp to reapply the checks.
 
@@ -86,10 +86,30 @@
   ("gid-string" "users")
   ("ls-dired" nil))
  (["ssh" nil "zlap" nil nil]
-  nil)
+  ("uname" "Linux 4.3.3-2-ARCH")
+  ("test" "test")
+  ("remote-path"
+   ("/bin" "/usr/bin" "/sbin" "/usr/sbin" "/usr/local/bin" "/usr/local/sbin"))
+  ("remote-shell" "/bin/sh")
+  ("locale" "LC_ALL=en_US.utf8")
+  ("~" "/home/zeltak")
+  ("file-exists" "test -e")
+  ("stat" "\\stat")
+  ("id" "/bin/id")
+  ("gid-integer" 100)
+  ("gid-string" "users")
+  ("perl-file-spec" t)
+  ("perl-cwd-realpath" t)
+  ("perl" "\\perl")
+  ("ls" "/bin/ls --color=never")
+  ("ls-dired" t)
+  ("readlink" "\\readlink")
+  ("gvfs-monitor-dir" "/bin/gvfs-monitor-dir"))
  (["ssh" nil "zdo" nil nil]
   nil)
  (["ssh" "zeltak" "uni" nil nil]
   nil)
  (["ssh" nil "192.168.0.2" nil nil]
+  nil)
+ (["ssh" nil "ssh" nil nil]
   nil))

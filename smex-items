@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ toggle-window-split
  crux-smart-open-line
  crux-open-with
  org-set-tags-to
  org-set-tags-command
  org-set-tags
  counsel-yank-bash-history
- eyebrowse-mode
 )
 
 ;; ----- smex-data -----
@@ -275,4 +275,5 @@
  (org-set-tags-command . 1)
  (crux-open-with . 3)
  (crux-smart-open-line . 1)
+ (toggle-window-split . 2)
 )

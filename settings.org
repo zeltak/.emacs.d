@@ -3518,24 +3518,23 @@ Version 2015-04-19"
 
 *** open line above and below
 #+BEGIN_SRC emacs-lisp :results none
-(defun z/open-line-above ()
-  "Open a newline above the current point."
+(defun z/insert-line-below ()
+  "Insert and auto-indent line below cursor, like in vim."
   (interactive)
-  (save-excursion
-    (beginning-of-line)
-    (newline)
-    (forward-line -1)))
+  (move-end-of-line 1)
+  (open-line 1)
+  (next-line)
+  (indent-for-tab-command))
 
-
-(defun z/open-line-below ()
-  "Open a newline below the current point."
+(defun z/insert-line-above ()
+  "Insert and auto-indent line above cursor, like in vim."
   (interactive)
-  (save-excursion
-    (end-of-line)
-    (newline)))
+  (previous-line)
+  (move-end-of-line 1)
+  (stag-insert-line-below))
 
-(global-set-key (kbd "C-S-o")     'z/open-line-above)
-(global-set-key (kbd "C-o")       'z/open-line-below)
+(global-set-key (kbd "C-o")       ' z/insert-line-below)
+(global-set-key (kbd "C-S-o")     ' z/insert-line-above)
 #+END_SRC
 
 
@@ -3762,6 +3761,33 @@ Repeated invocations toggle between the two most recently open buffers."
      (save-buffer)        
       (delete-window)
 )
+#+END_SRC
+*** toggle window splits
+#+BEGIN_SRC emacs-lisp  :results none
+(defun z/toggle-window-split ()
+  (interactive)
+  (if (= (count-windows) 2)
+      (let* ((this-win-buffer (window-buffer))
+             (next-win-buffer (window-buffer (next-window)))
+             (this-win-edges (window-edges (selected-window)))
+             (next-win-edges (window-edges (next-window)))
+             (this-win-2nd (not (and (<= (car this-win-edges)
+                                         (car next-win-edges))
+                                     (<= (cadr this-win-edges)
+                                         (cadr next-win-edges)))))
+             (splitter
+              (if (= (car this-win-edges)
+                     (car (window-edges (next-window))))
+                  'split-window-horizontally
+                'split-window-vertically)))
+        (delete-other-windows)
+        (let ((first-win (selected-window)))
+          (funcall splitter)
+          (if this-win-2nd (other-window 1))
+          (set-window-buffer (selected-window) this-win-buffer)
+          (set-window-buffer (next-window) next-win-buffer)
+          (select-window first-win)
+          (if this-win-2nd (other-window 1))))))
 #+END_SRC
 ** open a specific dir
    :PROPERTIES:
@@ -5149,6 +5175,7 @@ add the org faces macros here (%Tip%, $Note$ etc)
    ("<f12>" switch-to-previous-buffer  "last buffer"  )
    ("<f11>" ace-delete-window "delete window")
    ("<home>" ace-window "ace-window//also M-1" :exit t)   
+   ("0" z/toggle-window-split "toggle splits")   
    ("=" (lambda ()
           (interactive)
           (split-window-right)
