@@ -4117,7 +4117,6 @@ NOTE: Starting helm-find-files with C-u will show you a little history of the la
 #+END_SRC
 ** editing 
 #+BEGIN_SRC emacs-lisp :results none
-(key-chord-define-global "yy"     'z/copy-line)
 (global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 (global-set-key (kbd "C-0") 'backward-kill-line)
@@ -4178,6 +4177,10 @@ quick switch other windw
 #+BEGIN_SRC emacs-lisp :results none
 (key-chord-define-global "3e" 'hydra-editing/body)
 (key-chord-define-global "9o" 'hydra-org-edit/body)
+(key-chord-define-global "yy"     'z/copy-line)
+(key-chord-define-global "dd"     'kill-whole-line)
+(key-chord-define-global "pp"     'yank)
+
 #+END_SRC
 ** Ess/org tangle
 #+BEGIN_SRC emacs-lisp :results none
@@ -4255,7 +4258,6 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("<down>" drag-stuff-down  "marked down" :color red)
 
 ("a"  z/org-agenda-calendar "org agenda" )
-("z"  cfw:open-org-calendar "month calander" )
 ("c"  z/org-move-top-collapse "collapse headers" )
 ("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
@@ -4295,7 +4297,9 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 "Toggles:   【M-g M-g】 goto line 【C-x SPACE】 start mark rectangle 
 easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//【C-space】 turn selection to region// 【M-3】easy-mark
 Term: 【C-c C-j】-activate Emacs mode 【C-c C-k】 back to normal term mode 
+*calc* use 【C-enter】to copy results to clip and 【=】to print answer
 "
+("8" calculator "calc"  )
 ("a" pandoc-mode "pandoc"  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
@@ -4960,6 +4964,7 @@ _q_: quit
       ("d"   org-agenda-deadline      "deadline task ")
       ("p"   org-agenda-date-prompt      "prompt date ")
       ("M"   cfw:org-open-agenda-day      "month view ")
+      ("z"  cfw:open-org-calendar "month calander" )
        ("q"     nil                          "cancel" )
   ))
 #+END_SRC
