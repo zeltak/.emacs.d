@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- toggle-window-split
+ eyebrowse-mode
+ cfw:org-from-calendar
+ cfw:org-open-agenda-day
+ mu4e-view-mark-for-unflag
+ calculator
  crux-smart-open-line
  crux-open-with
- org-set-tags-to
- org-set-tags-command
- org-set-tags
- counsel-yank-bash-history
 )
 
 ;; ----- smex-data -----
@@ -268,7 +268,7 @@
  (avy-pop-mark . 2)
  (load-file . 1)
  (zin/org-tag-match-context . 4)
- (eyebrowse-mode . 2)
+ (eyebrowse-mode . 3)
  (counsel-yank-bash-history . 1)
  (org-set-tags-to . 2)
  (org-set-tags . 2)
@@ -276,4 +276,8 @@
  (crux-open-with . 3)
  (crux-smart-open-line . 1)
  (toggle-window-split . 2)
+ (calculator . 2)
+ (mu4e-view-mark-for-unflag . 2)
+ (cfw:org-open-agenda-day . 1)
+ (cfw:org-from-calendar . 1)
 )

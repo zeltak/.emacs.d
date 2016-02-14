@@ -4673,6 +4673,7 @@ Bib:
 
 "ORG editing
 【C-c -】 convert to dashed lines  【C-M-l  org table menu
+【C-u C-u C-c c】 go to where capture was filled
 "
 
 ("<f9>" worf-goto "worf org headers")
@@ -5802,7 +5803,7 @@ this will make org-store-link use id when creating a link.
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
-(setq org-agenda-ndays 10)
+(setq org-agenda-ndays 7)
 ;start agenda from today-  don't show listings from earlier in the week
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
@@ -6476,53 +6477,6 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 
 
 ;;;;---------------------------------------------------------------------------
-
-;;;;; food
-;; define food group
-
-("f" "Food")
-
-;;;; new recipe Inbox
-("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* COOK %^{Recipe Name} %^g     
-    :PROPERTIES:
-    :ID: %(org-id-uuid)
-    :Time: %^{minutes|-|10|15|30|60}
-    :Rating: %^{rating?|-|1|2|3|4|5}
-    :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|-|1|2|4|6|8}
-    :Fav: %^{}
-    :END:
-%^{prompt|** Ingredients}
-%?
-%^{prompt|** Preparation}
-"
-"Capture Template for food recipe")
-
-
-
-;; add to shopping cart
-("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
-"* SHOP %^{Description} " )
-
-
-;;;;---------------------------------------------------------------------------
-;;;; travel  simple template
-  ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
-  "*  %^{Description}   %^g 
-  %t 
-  %^{address}p
-  %^{Rating}p
-  %^{URL}p
-  %^{map}p
-  %^{Fav}p
-  %?
-  "
-   )
-
-;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
@@ -6542,13 +6496,13 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 ;;;;---------------------------------------------------------------------------
 ;;;; Home Todos
 
-  ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
    "* TODO  %?\n%T" )
 
 ;;;;---------------------------------------------------------------------------
 ;;; Uni todos
 
-  ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+  ("v" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
    "* TODO  %?\n%T" )
 
   ;;;BGU todos 
@@ -6625,8 +6579,61 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 "Capture Template for papers")
 
 
-    )))
-#+END_SRC
+;;;;---------------------------------------------------------------------------
+
+;;;;; food
+;; define food group
+
+("f" "Food")
+
+;;;; new recipe Inbox
+("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+"* COOK %^{Recipe Name} %^g     
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Time: %^{minutes|-|10|15|30|60}
+    :Rating: %^{rating?|-|1|2|3|4|5}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|-|1|2|4|6|8}
+    :Fav: %^{}
+    :END:
+%^{prompt|** Ingredients}
+%?
+%^{prompt|** Preparation}
+"
+"Capture Template for food recipe")
+
+
+
+;; add to shopping cart
+("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+"* SHOP %^{Description} " )
+
+
+;;;;---------------------------------------------------------------------------
+;;;; travel  simple template
+  ("u" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+  "* %^{Description}   
+  %t 
+:PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Rating: %^{rating?|-|1|2|3|4|5}
+    :price: %^{price?|-|1-5|5-10|10-20|20-50|50+}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian|Jewish}
+    :Fav: %^{}
+    :END:
+
+%^{prompt|** My Review}
+ %?
+   "
+    )
+
+
+     )))
+ #+END_SRC
 
 
 ** mobile org

@@ -2965,7 +2965,6 @@ With a prefix argument P, isearch for the symbol at point."
 (global-set-key "\C-t" #'transpose-lines)
 (define-key ctl-x-map "\C-t" #'transpose-chars)
 
-(key-chord-define-global "yy"     'z/copy-line)
 (global-set-key (kbd "C-+") 'z/copy-line)
 (key-chord-define-global "jj"     'avy-goto-word-or-subword-1)
 (global-set-key (kbd "C-0") 'backward-kill-line)
@@ -3005,6 +3004,9 @@ With a prefix argument P, isearch for the symbol at point."
 
 (key-chord-define-global "3e" 'hydra-editing/body)
 (key-chord-define-global "9o" 'hydra-org-edit/body)
+(key-chord-define-global "yy"     'z/copy-line)
+(key-chord-define-global "dd"     'kill-whole-line)
+(key-chord-define-global "pp"     'yank)
 
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 
@@ -3066,7 +3068,6 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("<down>" drag-stuff-down  "marked down" :color red)
 
 ("a"  z/org-agenda-calendar "org agenda" )
-("z"  cfw:open-org-calendar "month calander" )
 ("c"  z/org-move-top-collapse "collapse headers" )
 ("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
@@ -3103,7 +3104,9 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 "Toggles:   【M-g M-g】 goto line 【C-x SPACE】 start mark rectangle 
 easy-kill: 【M-w w】 select word // w, +- , 1..9 to increment (0 to reset)//【C-space】 turn selection to region// 【M-3】easy-mark
 Term: 【C-c C-j】-activate Emacs mode 【C-c C-k】 back to normal term mode 
+*calc* use 【C-enter】to copy results to clip and 【=】to print answer
 "
+("8" calculator "calc"  )
 ("a" pandoc-mode "pandoc"  )
 ("b" bug-hunter-file "bug hunter" :face 'hydra-face-orange )
 ("c" cua-mode "cua" :face 'hydra-face-red )
@@ -3419,6 +3422,7 @@ Bib:
 
 "ORG editing
 【C-c -】 convert to dashed lines  【C-M-l  org table menu
+【C-u C-u C-c c】 go to where capture was filled
 "
 
 ("<f9>" worf-goto "worf org headers")
@@ -3643,6 +3647,7 @@ _q_: quit
       ("d"   org-agenda-deadline      "deadline task ")
       ("p"   org-agenda-date-prompt      "prompt date ")
       ("M"   cfw:org-open-agenda-day      "month view ")
+      ("z"  cfw:open-org-calendar "month calander" )
        ("q"     nil                          "cancel" )
   ))
 
@@ -4261,7 +4266,7 @@ org-catch-invisible-edits 'show-and-error
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
 ;max days to show in agenda view
-(setq org-agenda-ndays 10)
+(setq org-agenda-ndays 7)
 ;start agenda from today-  don't show listings from earlier in the week
 (setq org-agenda-start-on-weekday nil)
 ;Items that have deadlines are displayed 10 days in advance
@@ -4769,53 +4774,6 @@ With prefix argument, also display headlines without a TODO keyword."
 
 
 ;;;;---------------------------------------------------------------------------
-
-;;;;; food
-;; define food group
-
-("f" "Food")
-
-;;;; new recipe Inbox
-("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
-"* COOK %^{Recipe Name} %^g     
-    :PROPERTIES:
-    :ID: %(org-id-uuid)
-    :Time: %^{minutes|-|10|15|30|60}
-    :Rating: %^{rating?|-|1|2|3|4|5}
-    :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
-    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
-    :Serves: %^{Type?|-|1|2|4|6|8}
-    :Fav: %^{}
-    :END:
-%^{prompt|** Ingredients}
-%?
-%^{prompt|** Preparation}
-"
-"Capture Template for food recipe")
-
-
-
-;; add to shopping cart
-("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
-"* SHOP %^{Description} " )
-
-
-;;;;---------------------------------------------------------------------------
-;;;; travel  simple template
-  ("v" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
-  "*  %^{Description}   %^g 
-  %t 
-  %^{address}p
-  %^{Rating}p
-  %^{URL}p
-  %^{map}p
-  %^{Fav}p
-  %?
-  "
-   )
-
-;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
  ("m" "meeting" entry (file+headline "~/org/files/agenda/meetings.org" "2016")
@@ -4835,13 +4793,13 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;;;---------------------------------------------------------------------------
 ;;;; Home Todos
 
-  ("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
+("h" "Home_TD" entry (file+headline "~/org/files/agenda/home.org" "HomeTD")
    "* TODO  %?\n%T" )
 
 ;;;;---------------------------------------------------------------------------
 ;;; Uni todos
 
-  ("u" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
+  ("v" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
    "* TODO  %?\n%T" )
 
   ;;;BGU todos 
@@ -4918,7 +4876,60 @@ With prefix argument, also display headlines without a TODO keyword."
 "Capture Template for papers")
 
 
-    )))
+;;;;---------------------------------------------------------------------------
+
+;;;;; food
+;; define food group
+
+("f" "Food")
+
+;;;; new recipe Inbox
+("ff" "new recipe" entry (file+headline "/home/zeltak/org/files/agenda/food.org" "Inbox")
+"* COOK %^{Recipe Name} %^g     
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Time: %^{minutes|-|10|15|30|60}
+    :Rating: %^{rating?|-|1|2|3|4|5}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian}
+    :Type: %^{Type?|-|ain|side|starter|sweets|drinks|sauce|breakfast}
+    :Serves: %^{Type?|-|1|2|4|6|8}
+    :Fav: %^{}
+    :END:
+%^{prompt|** Ingredients}
+%?
+%^{prompt|** Preparation}
+"
+"Capture Template for food recipe")
+
+
+
+;; add to shopping cart
+("fs" "todo_shopping" entry (file+headline "~/org/files/agenda/food.org" "shopping")
+"* SHOP %^{Description} " )
+
+
+;;;;---------------------------------------------------------------------------
+;;;; travel  simple template
+  ("u" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+  "* %^{Description}   
+  %t 
+:PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Rating: %^{rating?|-|1|2|3|4|5}
+    :price: %^{price?|-|1-5|5-10|10-20|20-50|50+}
+    :Source: %^{Source?}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian|Jewish}
+    :Fav: %^{}
+    :END:
+
+%^{prompt|** My Review}
+ %?
+   "
+    )
+
+
+     )))
 
 ;;For agenda files locations, each location you add within " "
 (require 'org-mobile)
