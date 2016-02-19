@@ -1,1 +1,0 @@
-(define-package "xah-find" "20151214.1057" "find replace in pure emacs lisp. Purpose similar to unix grep/sed." 'nil :url "http://ergoemacs.org/emacs/elisp-xah-find-text.html" :keywords '("convenience" "extensions" "files" "tools" "unix"))

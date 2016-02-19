@@ -4177,9 +4177,9 @@ quick switch other windw
 #+BEGIN_SRC emacs-lisp :results none
 (key-chord-define-global "3e" 'hydra-editing/body)
 (key-chord-define-global "9o" 'hydra-org-edit/body)
-(key-chord-define-global "yy"     'z/copy-line)
-(key-chord-define-global "dd"     'kill-whole-line)
-(key-chord-define-global "pp"     'yank)
+(key-chord-define-global "8yy"     'z/copy-line)
+(key-chord-define-global "8dd"     'kill-whole-line)
+(key-chord-define-global "8pp"     'yank)
 
 #+END_SRC
 ** Ess/org tangle
@@ -4267,7 +4267,9 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
 ("x"  z/buffer-close-andmove-other  "close window")
 
-("b"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
+("bb"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
+("bg"  (find-file "/home/zeltak/org/files/agenda/grants.org") "grants"  :face 'hydra-face-cyan )
+("br"  (find-file "/home/zeltak/org/files/agenda/Research.org") "reserach"  :face 'hydra-face-cyan )
 ("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
 ("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
 ("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
@@ -5805,7 +5807,9 @@ this will make org-store-link use id when creating a link.
 ;max days to show in agenda view
 (setq org-agenda-ndays 7)
 ;start agenda from today-  don't show listings from earlier in the week
-(setq org-agenda-start-on-weekday nil)
+;(setq org-agenda-start-on-weekday nil)
+;;;constant agenda start on sunday always (0)
+(setq org-agenda-start-on-weekday 0)
 ;Items that have deadlines are displayed 10 days in advance
 (setq org-deadline-warning-days 10)
 ;don’t display items that are done in my agenda.
@@ -6296,12 +6300,12 @@ With prefix argument, also display headlines without a TODO keyword."
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)"  "|" "DONE(d)")
               (sequence "TASK(f)" "|" "DONE(d)")
-              (sequence "STUD(s)" "|" "DONE(d)")
+              (sequence "ACTION(a)" "|" "DONE(d)")
 )))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("TASK" :foreground "magenta" :weight bold)
-              ("STUD" :foreground "orchid" :weight bold)
+              ("ACTION" :foreground "Mediumpurple1" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
               ("PAUSED" :foreground "gray" :weight bold)
               ("SUBMITTED" :foreground "#FFC612" :weight bold)
@@ -6464,8 +6468,7 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 
 ;;;;---------------------------------------------------------------------------
 ;;; email
-
-
+;;;;;;;;; this works when in mu4e header view
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
 
@@ -6616,13 +6619,13 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 ;;;; travel  simple template
   ("u" "travel" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
   "* %^{Description}   
-  %t 
+  %u
 :PROPERTIES:
     :ID: %(org-id-uuid)
     :Rating: %^{rating?|-|1|2|3|4|5}
     :price: %^{price?|-|1-5|5-10|10-20|20-50|50+}
     :Source: %^{Source?}
-    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian|Jewish}
+    :Cuisine: %^{Cuisine?|-|Indian|Thai|Vietnamese|Asian|Chinese|Israeli|Italian|American|EastEuro|Mexican|French|Persian|Austrian|Jewish|Japan}
     :Fav: %^{}
     :END:
 
@@ -6630,6 +6633,24 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
  %?
    "
     )
+
+;;; non food places
+
+  ("U" "travel-nonfood" entry (file+headline "/home/zeltak/org/files/agenda/travel.org" "Inbox")
+  "* %^{Description}   
+  %u
+:PROPERTIES:
+    :ID: %(org-id-uuid)
+    :Rating: %^{rating?|-|1|2|3|4|5}
+    :price: %^{price?|-|1-5|5-10|10-20|20-50|50+}
+    :Source: %^{Source?}
+    :Fav: %^{}
+    :END:
+
+%^{prompt|** My Review}
+ %?
+   "
+)
 
 
      )))
@@ -8194,6 +8215,7 @@ change dir only in dir mode hook?
 
 "
 "
+("\\" z/ivy-dired-recent-dirs "recent dirs" )
 ("a" (find-file "~/AUR/") "AUR" )
 ("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
 ("3" (find-file "/home/zeltak/mounts/lraid/r/") "P2P" )
@@ -8316,6 +8338,28 @@ Filter by:
  (dired-do-delete)
  )
  #+END_SRC
+**** recent dirs
+#+BEGIN_SRC emacs-lisp  :results none
+;; open recent directory, requires ivy (part of swiper)
+;; borrows from http://stackoverflow.com/questions/23328037/in-emacs-how-to-maintain-a-list-of-recent-directories
+(defun z/ivy-dired-recent-dirs ()
+  "Present a list of recently used directories and open the selected one in dired"
+  (interactive)
+  (let ((recent-dirs
+         (delete-dups
+          (mapcar (lambda (file)
+                    (if (file-directory-p file) file (file-name-directory file)))
+                  recentf-list))))
+
+    (let ((dir (ivy-read "Directory: "
+                         recent-dirs
+                         :re-builder #'ivy--regex
+                         :sort nil
+                         :initial-input nil)))
+      (dired dir))))
+
+(global-set-key (kbd "C-x C-d") 'z/ivy-dired-recent-dirs)
+#+END_SRC
 **** open in external (default) app
  http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html
 
