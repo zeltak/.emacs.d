@@ -9683,3 +9683,12 @@ $Note-if you see starnge behivour this maybe a culprit$
 
 
 
+* Emacs 25 ready stuff
+You can save the cursor position for every file you opened. So, next time you open the file, the cursor will be at the position you last opened it.
+
+Put this code in your emacs init file:
+
+#+BEGIN_SRC emacs-lisp  :results none
+;; remember cursor position, for emacs 25.1 or later
+;;(save-place-mode 1)
+#+END_SRC
