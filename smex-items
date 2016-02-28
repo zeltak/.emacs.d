@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ org-archive-subtree
+ org-calendar-goto-agenda
+ helm-quickrun
+ iedit-mode
+ ansi-term
  eyebrowse-mode
  cfw:org-from-calendar
- cfw:org-open-agenda-day
- mu4e-view-mark-for-unflag
- calculator
- crux-smart-open-line
- crux-open-with
 )
 
 ;; ----- smex-data -----
@@ -47,7 +47,7 @@
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
  (eshell . 2)
- (ansi-term . 4)
+ (ansi-term . 11)
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
  (customize-group . 5)
@@ -280,4 +280,10 @@
  (mu4e-view-mark-for-unflag . 2)
  (cfw:org-open-agenda-day . 1)
  (cfw:org-from-calendar . 1)
+ (iedit-mode . 7)
+ (hydra-mark/body . 1)
+ (helm-quickrun . 2)
+ (hydra-mark-er/body . 2)
+ (org-calendar-goto-agenda . 1)
+ (org-archive-subtree . 2)
 )

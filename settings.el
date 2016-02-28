@@ -994,10 +994,7 @@
 (use-package expand-region
  :ensure t
  :config
- :bind (
-       ("M-2" . er/expand-region )
  )
-)
 
 (use-package find-file-in-project
  :ensure t
@@ -1266,6 +1263,11 @@
  :config
  )
 
+(use-package iedit
+ :ensure t
+ :config
+ )
+
 (setq ivy-re-builders-alist
       '((t . ivy--regex-fuzzy)))
 
@@ -1316,6 +1318,19 @@
 (setq key-chord-two-keys-delay 0.16)
 (setq key-chord-one-key-delay 0.20)
 )
+
+(use-package keyfreq
+ :ensure t
+ :config
+ (require 'keyfreq)
+(setq keyfreq-excluded-commands
+      '(self-insert-command
+        abort-recursive-edit
+        previous-line
+        next-line))
+(keyfreq-mode 1)
+(keyfreq-autosave-mode 1)
+ )
 
 (use-package link-hint
  :ensure t
@@ -1966,6 +1981,13 @@
  :config
   )
 
+(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
+(load  "/home/zeltak/.emacs.g/org-reveal/ox-reveal.el")
+;;where the root reveal folder is
+(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+
+(require 'org-velocity)
+
 (use-package yasnippet
 :ensure t
  :config 
@@ -2001,12 +2023,16 @@
           (cdr (assoc result rmap))))
     nil))
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
-(load  "/home/zeltak/.emacs.g/org-reveal/ox-reveal.el")
-;;where the root reveal folder is
-(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+(use-package quickrun
+ :ensure t
+ :config
 
-(require 'org-velocity)
+(quickrun-add-command "html"
+                      '((:command . "firefox")
+                        (:exec    . "%c %s"))
+                      :mode 'html-mode) 
+
+ )
 
 (defun z-fix-characters 
 (start end) 
@@ -3002,11 +3028,11 @@ With a prefix argument P, isearch for the symbol at point."
   (define-key isearch-mode-map (kbd "<right>") 'isearch-repeat-forward) ; single key, useful
  )
 
-(key-chord-define-global "3e" 'hydra-editing/body)
-(key-chord-define-global "9o" 'hydra-org-edit/body)
-(key-chord-define-global "yy"     'z/copy-line)
-(key-chord-define-global "dd"     'kill-whole-line)
-(key-chord-define-global "pp"     'yank)
+;; (key-chord-define-global "3e" 'hydra-editing/body)
+;; (key-chord-define-global "9o" 'hydra-org-edit/body)
+;; (key-chord-define-global "8yy"     'z/copy-line)
+;; (key-chord-define-global "8dd"     'kill-whole-line)
+;; (key-chord-define-global "8pp"     'yank)
 
 (global-set-key (kbd "C-c x") 'org-babel-execute-subtree)
 
@@ -3086,12 +3112,12 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("g"  nil )
 ("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
 ("j"  nil )
+("r"  iedit-mode  "iedit" )
 ("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
 ("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
 ("n"  nil )
 ("o"  nil )
 ("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
-("r"  (find-file "/home/zeltak/org/files/agenda/Research.org") "research" :face 'hydra-face-cyan )
 ("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
 ("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
 ("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
@@ -3731,7 +3757,8 @@ FORUMLAS: 【C-c =】 insert formula 【C-c *】 recalculate formula  vmean/vsum
    ;("<left>" drag-stuff-left  "marked left" :color red)
    ;("<right>" drag-stuff-right "marked right" :color red)
    ("p" duplicate-current-line-or-region  "duplicate" :color red)
-   ("o" crux-smart-open-line  "open line" )
+    ("o"
+     crux-smart-open-line  "open line" )
    (";"  hydra-commenting/body  "comment!" )
    ("i"  hydra-editing-insert/body  "insert" )   
    ("f" flush-blank-line  "flush blank" )
@@ -3905,6 +3932,26 @@ comment _e_macs function  // copy-paste-comment-function _r_
   ("<SPC>"    ace-jump-mode                 "ace jump")
   ;; exit points
   ("q"        hydra-vi/post                 "cancel" :color blue))
+
+(global-set-key
+ (kbd "M-2")
+(defhydra hydra-mark-er (:body-pre (call-interactively 'set-mark-command) :hint nil :columns 4
+                               :exit t )
+  "hydra for mark commands"
+  ("2" er/expand-region "expand region")
+  ("P" er/mark-inside-pairs)
+  ("Q" er/mark-inside-quotes)
+  ("p" er/mark-outside-pairs)
+  ("q" er/mark-outside-quotes)
+  ("d" er/mark-defun)
+  ("c" er/mark-comment)
+  ("." er/mark-text-sentence)
+  ("h" er/mark-text-paragraph)
+  ("w" er/mark-word)
+  ("u" er/mark-url)
+  ("m" er/mark-email)
+  ("s" er/mark-symbol)
+  ("j" (funcall 'set-mark-command t) :exit nil)))
 
 (global-set-key
  (kbd "C-S-s")
@@ -4766,7 +4813,6 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;;;---------------------------------------------------------------------------
 ;;; email
 ;;;;;;;;; this works when in mu4e header view
-
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
 
@@ -6716,6 +6762,38 @@ The formatting is the same as is used with `format' function."
      (shell-command (concat "surfraw yubnub allmusic  " (directory-file-name (file-relative-name (dired-file-name-at-point))) 
 )))
 
+;;;###autoload
+(defun ora-dired-rsync (dest)
+  (interactive
+   (list
+    (expand-file-name
+     (read-file-name
+      "Rsync to:"
+      (dired-dwim-target-directory)))))
+  ;; store all selected files into "files" list
+  (let ((files (dired-get-marked-files
+                nil current-prefix-arg))
+        ;; the rsync command
+        (tmtxt/rsync-command
+         "rsync -arvz --progress "))
+    ;; add all selected file names as arguments
+    ;; to the rsync command
+    (dolist (file files)
+      (setq tmtxt/rsync-command
+            (concat tmtxt/rsync-command
+                    (shell-quote-argument file)
+                    " ")))
+    ;; append the destination
+    (setq tmtxt/rsync-command
+          (concat tmtxt/rsync-command
+                  (shell-quote-argument dest)))
+    ;; run the async shell command
+    (async-shell-command tmtxt/rsync-command "*rsync*")
+    ;; finally, switch to that window
+    (other-window 1)))
+
+(define-key dired-mode-map "Y" 'ora-dired-rsync)
+
 (fset 'z/dired-macro-beetimp
    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
 
@@ -7290,3 +7368,6 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
              ))
     (message "rlt=%s" rlt)
     rlt))
+
+;; remember cursor position, for emacs 25.1 or later
+;;(save-place-mode 1)

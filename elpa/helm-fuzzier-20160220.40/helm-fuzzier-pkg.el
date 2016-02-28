@@ -1,0 +1,1 @@
+(define-package "helm-fuzzier" "20160220.40" "Better fuzzy matching for Helm" '((emacs "24.3") (helm "1.7.0")) :url "http://github.com/EphramPerdition/helm-fuzzier" :keywords '("convenience" "helm" "fuzzy"))
