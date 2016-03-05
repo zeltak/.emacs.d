@@ -299,7 +299,17 @@ https://github.com/abo-abo/ace-link
  :config
 (ace-link-setup-default)
  )
+#+END_SRC
+** TODO alert
+https://github.com/jwiegley/alert
+#+BEGIN_SRC emacs-lisp :results none
+(use-package alert
+ :ensure t
+ :config
+ 
+ )
 #+END_SRC 
+
 
 ** anzu
 https://github.com/syohex/emacs-anzu
@@ -1319,6 +1329,16 @@ this is saved in file:/home/zeltak/.emacs.d/custom.el
  :config 
  )
 #+END_SRC
+** ess-view
+https://github.com/GioBo/ess-view
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package ess-view
+ :ensure t
+ :config
+(require 'ess-view) 
+ )
+#+END_SRC 
 
 ** EVIL
 
@@ -1405,7 +1425,7 @@ https://github.com/technomancy/find-file-in-project
 :config
 )
 #+END_SRC
-
+qq
 ** Gnus related
 *** gnus-desktop-notify
 http://www.thregr.org/~wavexx/software/gnus-desktop-notify.el/
@@ -4286,6 +4306,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("RET" avy-goto-line "goto line" )
 ("1"   hydra-org-tags/body "tags")
 ("8"   helm-mark-ring "HELM mark ")
+("t"   z/visit-ansi-term "ansi term")
 ("T"   helm-top "top")
 (";"   comment-or-uncomment-region )
 ("5"   duplicate-current-line-or-region  "duplicate" :color red)
@@ -4304,6 +4325,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
 ("v"  helm-bm "helm-bm" )
+("r"  iedit-mode  "iedit" )
 ("V"  bm-toggle "add bm")
 ("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
 ("x"  z/buffer-close-andmove-other  "close window")
@@ -4311,21 +4333,20 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("bb"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
 ("bg"  (find-file "/home/zeltak/org/files/agenda/grants.org") "grants"  :face 'hydra-face-cyan )
 ("br"  (find-file "/home/zeltak/org/files/agenda/Research.org") "reserach"  :face 'hydra-face-cyan )
-("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
+("hd"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
 ("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
-("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
+("hf"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
 ("g"  nil )
-("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
+("hh"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
 ("j"  nil )
-("r"  iedit-mode  "iedit" )
-("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
-("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
+("hl"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
+("bm"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
 ("n"  nil )
 ("o"  nil )
-("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
-("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
-("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
-("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
+("bp"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
+("hs"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
+("ht"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
+("hu"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
 ("y"  nil )
 ("q"  nil  )
 
@@ -4868,12 +4889,14 @@ _q_: quit
 "
 ☚+1w☛ implies that this event will repeat every week at the same time & date  ☚--☛ multi day
 【.】 Go to today 【r】rebuild agenda 
+【Ctrl+c .】 fri 【Return】// If you want an inactive date use 【Ctrl+c !】 fri 【Return】
 "
     ("s"  org-time-stamp "agenda date")
     ("X" org-time-stamp-inactive  "stamp date" )
     ("Y" z-insert-date "insert current data")  
     ("d" org-deadline  "set deadline")  
     ("f" org-schedule  "set schedule")  
+    ("w" org-clone-subtree-with-time-shift   "clone and time shift")  
     ("q" nil "cancel")
  )
  #+END_SRC
@@ -8239,6 +8262,7 @@ $Note-if you see starnge behivour this maybe a culprit$
    【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
    【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
    【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
+【/】 filter 【g】 clear filter 
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
     ("1" hydra-dired-operations/body "dired operations" )
@@ -9664,7 +9688,48 @@ $Note-if you see starnge behivour this maybe a culprit$
 
 (advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
 #+END_SRC
+**** remind about attachments 
+#+BEGIN_SRC emacs-lisp  :results none
+(defun mbork/message-attachment-present-p ()
+  "Return t if an attachment is found in the current message."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (when (search-forward "<#part" nil t) t))))
 
+(defcustom mbork/message-attachment-intent-re
+  (regexp-opt '("I attach"
+		"I have attached"
+		"I've attached"
+		"I have included"
+		"I've included"
+		"see the attached"
+		"see the attachment"
+		"attached file"))
+  "A regex which - if found in the message, and if there is no
+attachment - should launch the no-attachment warning.")
+
+(defcustom mbork/message-attachment-reminder
+  "Are you sure you want to send this message without any attachment? "
+  "The default question asked when trying to send a message
+containing `mbork/message-attachment-intent-re' without an
+actual attachment.")
+
+(defun mbork/message-warn-if-no-attachments ()
+  "Ask the user if s?he wants to send the message even though
+there are no attachments."
+  (when (and (save-excursion
+	       (save-restriction
+		 (widen)
+		 (goto-char (point-min))
+		 (re-search-forward mbork/message-attachment-intent-re nil t)))
+	     (not (mbork/message-attachment-present-p)))
+    (unless (y-or-n-p mbork/message-attachment-reminder)
+      (keyboard-quit))))
+
+(add-hook 'message-send-hook #'mbork/message-warn-if-no-attachments)
+#+END_SRC
 *** Bookmarks
 #+BEGIN_SRC emacs-lisp :results none
 (add-to-list 'mu4e-bookmarks
@@ -9777,10 +9842,11 @@ $Note-if you see starnge behivour this maybe a culprit$
     (message "rlt=%s" rlt)
     rlt))
 #+END_SRC
-
-
-
-
+* gnus for mailing lists
+** config 
+#+BEGIN_SRC emacs-lisp  :results none
+(setq gnus-select-method '(nntp "news.gmane.org"))
+#+END_SRC
 * Emacs 25 ready stuff
 You can save the cursor position for every file you opened. So, next time you open the file, the cursor will be at the position you last opened it.
 

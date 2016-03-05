@@ -221,6 +221,12 @@
 (ace-link-setup-default)
  )
 
+(use-package alert
+ :ensure t
+ :config
+ 
+ )
+
 (use-package anzu
  :ensure t
  :config
@@ -958,6 +964,12 @@
 (use-package engine-mode
  :ensure t
  :config 
+ )
+
+(use-package ess-view
+ :ensure t
+ :config
+(require 'ess-view) 
  )
 
 (use-package evil
@@ -3081,6 +3093,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("RET" avy-goto-line "goto line" )
 ("1"   hydra-org-tags/body "tags")
 ("8"   helm-mark-ring "HELM mark ")
+("t"   z/visit-ansi-term "ansi term")
 ("T"   helm-top "top")
 (";"   comment-or-uncomment-region )
 ("5"   duplicate-current-line-or-region  "duplicate" :color red)
@@ -3099,6 +3112,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
 ("v"  helm-bm "helm-bm" )
+("r"  iedit-mode  "iedit" )
 ("V"  bm-toggle "add bm")
 ("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
 ("x"  z/buffer-close-andmove-other  "close window")
@@ -3106,21 +3120,20 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("bb"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
 ("bg"  (find-file "/home/zeltak/org/files/agenda/grants.org") "grants"  :face 'hydra-face-cyan )
 ("br"  (find-file "/home/zeltak/org/files/agenda/Research.org") "reserach"  :face 'hydra-face-cyan )
-("d"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
+("hd"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
 ("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
-("f"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
+("hf"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
 ("g"  nil )
-("h"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
+("hh"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
 ("j"  nil )
-("r"  iedit-mode  "iedit" )
-("l"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
-("m"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
+("hl"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
+("bm"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
 ("n"  nil )
 ("o"  nil )
-("p"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
-("s"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
-("t"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
-("u"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
+("bp"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
+("hs"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
+("ht"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
+("hu"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
 ("y"  nil )
 ("q"  nil  )
 
@@ -3581,12 +3594,14 @@ _q_: quit
 "
 ☚+1w☛ implies that this event will repeat every week at the same time & date  ☚--☛ multi day
 【.】 Go to today 【r】rebuild agenda 
+【Ctrl+c .】 fri 【Return】// If you want an inactive date use 【Ctrl+c !】 fri 【Return】
 "
     ("s"  org-time-stamp "agenda date")
     ("X" org-time-stamp-inactive  "stamp date" )
     ("Y" z-insert-date "insert current data")  
     ("d" org-deadline  "set deadline")  
     ("f" org-schedule  "set schedule")  
+    ("w" org-clone-subtree-with-time-shift   "clone and time shift")  
     ("q" nil "cancel")
  )
 
@@ -6138,45 +6153,46 @@ scroll-step 1)
  (define-key dired-mode-map (kbd  "S-<f9>") 'hydra-org/body  )
 
 (global-set-key
-    (kbd "")
- (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
- "
-【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
-【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
-【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
-【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
-【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
- "
- ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
- ("1" hydra-dired-operations/body "dired operations" )
- ("2" hydra-dired-searches/body "dired searches" )
- ("a" dired-mark-subdir-files "mark all" )
- ("c" z/dired-copy-setdirs "copy to dirs"  :face 'hydra-face-red )
- ("C" z/dired-copy-setdirs-recurs "copy to dirs-RECURSE"   :face 'hydra-face-red  )
- ("m" z/dired-move-setdirs  "move to dirs-RECURSE"   :face 'hydra-face-red  )            
- ("M" z/dired-move-setdirs-recurs   "move to dirs-RECURSE"   :face 'hydra-face-red  )            
- ("z" dired-filter-load-saved-filters "load filter")
- ("Z" hydra-dired-filter/body "filter menu")
- ("h"  nil )
- ("o" z/dired-open-in-desktop "open with FM" )
- ("s"  z/dired-sort-menu "sort menu" )
- ("n"  z/dired-get-size "get size" )
- ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
- ("u"  diredfd-do-unpack "unpack"   :face 'hydra-face-brown  )
- ("U"  z/dired-archive-unrar "unrar" :face 'hydra-face-brown )
- ("p"  diredfd-do-pack  "pack" :face 'hydra-face-brown )
- ("Y"  dired-ranger-copy "copy2clip" )
- ("P"  dired-ranger-paste "paste_F_clip")
- ("D" dired-ranger-move "move2clip")
- ("f" z/dired-shell-fb "fb" )
- ("x"  z/dired-shell-chmodx "+x" )
- ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
- (";"  nil )
- ("q"  nil )
+       (kbd "")
+    (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
+    "
+   【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
+   【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+   【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
+   【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+   【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
+   【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
+   【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
+【/】 filter 【g】 clear filter 
+    "
+    ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
+    ("1" hydra-dired-operations/body "dired operations" )
+    ("2" hydra-dired-searches/body "dired searches" )
+    ("a" dired-mark-subdir-files "mark all" )
+    ("c" z/dired-copy-setdirs "copy to dirs"  :face 'hydra-face-red )
+    ("C" z/dired-copy-setdirs-recurs "copy to dirs-RECURSE"   :face 'hydra-face-red  )
+    ("m" z/dired-move-setdirs  "move to dirs-RECURSE"   :face 'hydra-face-red  )            
+    ("M" z/dired-move-setdirs-recurs   "move to dirs-RECURSE"   :face 'hydra-face-red  )            
+    ("z" dired-filter-load-saved-filters "load filter")
+    ("Z" hydra-dired-filter/body "filter menu")
+    ("h"  nil )
+    ("o" z/dired-open-in-desktop "open with FM" )
+    ("s"  z/dired-sort-menu "sort menu" )
+    ("n"  z/dired-get-size "get size" )
+    ("r" wdired-change-to-wdired-mode "wdired (bath rename)" )
+    ("u"  diredfd-do-unpack "unpack"   :face 'hydra-face-brown  )
+    ("U"  z/dired-archive-unrar "unrar" :face 'hydra-face-brown )
+    ("p"  diredfd-do-pack  "pack" :face 'hydra-face-brown )
+    ("Y"  dired-ranger-copy "copy2clip" )
+    ("P"  dired-ranger-paste "paste_F_clip")
+    ("D" dired-ranger-move "move2clip")
+    ("f" z/dired-shell-fb "fb" )
+    ("x"  z/dired-shell-chmodx "+x" )
+    ("r"  wdired-change-to-wdired-mode "wdired (bath rename)" )
+    (";"  nil )
+    ("q"  nil )
 
- ))
+    ))
 
 (global-set-key
    (kbd "")
@@ -7269,6 +7285,46 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 
 (advice-add 'mml-attach-file :around #'mml-attach-file--go-to-eob)
 
+(defun mbork/message-attachment-present-p ()
+  "Return t if an attachment is found in the current message."
+  (save-excursion
+    (save-restriction
+      (widen)
+      (goto-char (point-min))
+      (when (search-forward "<#part" nil t) t))))
+
+(defcustom mbork/message-attachment-intent-re
+  (regexp-opt '("I attach"
+                "I have attached"
+                "I've attached"
+                "I have included"
+                "I've included"
+                "see the attached"
+                "see the attachment"
+                "attached file"))
+  "A regex which - if found in the message, and if there is no
+attachment - should launch the no-attachment warning.")
+
+(defcustom mbork/message-attachment-reminder
+  "Are you sure you want to send this message without any attachment? "
+  "The default question asked when trying to send a message
+containing `mbork/message-attachment-intent-re' without an
+actual attachment.")
+
+(defun mbork/message-warn-if-no-attachments ()
+  "Ask the user if s?he wants to send the message even though
+there are no attachments."
+  (when (and (save-excursion
+               (save-restriction
+                 (widen)
+                 (goto-char (point-min))
+                 (re-search-forward mbork/message-attachment-intent-re nil t)))
+             (not (mbork/message-attachment-present-p)))
+    (unless (y-or-n-p mbork/message-attachment-reminder)
+      (keyboard-quit))))
+
+(add-hook 'message-send-hook #'mbork/message-warn-if-no-attachments)
+
 (add-to-list 'mu4e-bookmarks
   '("flag:flagged"       "flagged"     ?b))
 
@@ -7368,6 +7424,8 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
              ))
     (message "rlt=%s" rlt)
     rlt))
+
+(setq gnus-select-method '(nntp "news.gmane.org"))
 
 ;; remember cursor position, for emacs 25.1 or later
 ;;(save-place-mode 1)
