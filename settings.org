@@ -9847,6 +9847,61 @@ there are no attachments."
 #+BEGIN_SRC emacs-lisp  :results none
 (setq gnus-select-method '(nntp "news.gmane.org"))
 #+END_SRC
+** Set the prefix when using jump to select a newsgroup.
+
+#+BEGIN_SRC emacs-lisp  :results none
+  ;; ;; needs a newer gnus
+  ;; (setq gnus-group-jump-to-group-prompt '((0 . "nnml:mail.") (1 .  "gmane.")
+  ;;                                          (2 . "nnshimbun+")
+  ;;                                          (3 .  "nnfolder+archive:")))
+  ;; ;(setq gnus-group-jump-to-group-prompt "nnml:mail.")
+
+#+END_SRC
+** scoring
+#+BEGIN_SRC emacs-lisp  :results none
+;;The scoring system sorts articles and authors you read often to the beginning of the available mails.
+;;Less interesting stuff is located at the end.
+
+(setq gnus-use-adaptive-scoring t)
+(setq gnus-score-expiry-days 14)
+(setq gnus-default-adaptive-score-alist
+  '((gnus-unread-mark)
+    (gnus-ticked-mark (from 4))
+    (gnus-dormant-mark (from 5))
+    (gnus-saved-mark (from 20) (subject 5))
+    (gnus-del-mark (from -2) (subject -5))
+    (gnus-read-mark (from 2) (subject 1))
+    (gnus-killed-mark (from 0) (subject -3))))
+    ;(gnus-killed-mark (from -1) (subject -3))))
+    ;(gnus-kill-file-mark (from -9999)))
+    ;(gnus-expirable-mark (from -1) (subject -1))
+    ;(gnus-ancient-mark (subject -1))
+    ;(gnus-low-score-mark (subject -1))
+    ;(gnus-catchup-mark (subject -1))))
+
+(setq gnus-score-decay-constant 1) ;default = 3
+(setq gnus-score-decay-scale 0.03) ;default = 0.05
+
+(setq gnus-decay-scores t) ;(gnus-decay-score 1000)
+
+#+END_SRC
+** look and feel
+#+BEGIN_SRC emacs-lisp  :results none
+;;Summary line format strings
+
+(setq gnus-summary-line-format "%O%U%R%z%d %B%(%[%4L: %-22,22f%]%) %s\n")
+(setq gnus-summary-mode-line-format "Gnus: %p [%A / Sc:%4z] %Z")
+
+
+;;Threading visual appearance
+
+(setq gnus-summary-same-subject "")
+(setq gnus-sum-thread-tree-root "")
+(setq gnus-sum-thread-tree-single-indent "")
+(setq gnus-sum-thread-tree-leaf-with-other "+-> ")
+(setq gnus-sum-thread-tree-vertical "|")
+(setq gnus-sum-thread-tree-single-leaf "`-> ")
+#+END_SRC
 * Emacs 25 ready stuff
 You can save the cursor position for every file you opened. So, next time you open the file, the cursor will be at the position you last opened it.
 
