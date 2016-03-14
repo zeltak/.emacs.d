@@ -111,7 +111,11 @@
 
 (define-abbrev-table 'eshell-mode-abbrev-table '())
 
+(define-abbrev-table 'ess-julia-mode-abbrev-table '())
+
 (define-abbrev-table 'evil-command-window-mode-abbrev-table '())
+
+(define-abbrev-table 'evil-list-view-mode-abbrev-table '())
 
 (define-abbrev-table 'eww-bookmark-mode-abbrev-table '())
 
@@ -133,7 +137,7 @@
     ("8emu" "ikloog@bgu.ac.il" nil 0)
     ("8emz" "zeltak@gmail.com" nil 0)
     ("8fl" "file:~/" nil 0)
-    ("8rs" "#+REVEAL: split" nil 0)
+    ("8rs" "#+REVEAL: split" nil 20)
     ("8rt" "*lets try it on your computer!*" nil 0)
     ("8tp" "*lets try it on your computer!*" nil 0)
     ("8tst" "this is a mfm test" nil 0)
@@ -545,7 +549,7 @@
     ("ehr" "her" nil 0)
     ("eligable" "eligible" nil 0)
     ("elissa" "elisa" nil 2)
-    ("emacs" "Emacs" nil 2)
+    ("emacs" "Emacs" nil 4)
     ("embarass" "embarrass" nil 0)
     ("emigre" "emigre" nil 0)
     ("enahancements" "enhancements" nil 0)
@@ -617,6 +621,7 @@
     ("fromt he" "from the" nil 0)
     ("fromthe" "from the" nil 0)
     ("funcionality" "functionality" nil 0)
+    ("functioanlity" "functionality" nil 0)
     ("furneral" "funeral" nil 0)
     ("fwe" "few" nil 0)
     ("garantee" "guarantee" nil 0)
@@ -685,7 +690,7 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 25)
+    ("i" "I" nil 26)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
@@ -782,7 +787,7 @@
     ("lieutenent" "lieutenant" nil 0)
     ("liev" "live" nil 0)
     ("likly" "likely" nil 0)
-    ("lisense" "license" nil 0)
+    ("lisense" "license" nil 1)
     ("lisure" "leisure" nil 0)
     ("litreture" "literature" nil 0)
     ("littel" "little" nil 0)
@@ -907,6 +912,7 @@
     ("perlimanary" "preliminary" nil 0)
     ("perlimnary" "preliminary" nil 1)
     ("permanant" "permanent" nil 0)
+    ("permemnantly" "permanently" nil 0)
     ("perminent" "permanent" nil 0)
     ("perscriptions" "prescriptions" nil 0)
     ("personalyl" "personally" nil 0)
@@ -1125,6 +1131,7 @@
     ("sufficiant" "sufficient" nil 0)
     ("suposed" "supposed" nil 0)
     ("suppossed" "supposed" nil 0)
+    ("supress" "suppress" nil 0)
     ("suprise" "surprise" nil 0)
     ("suprised" "surprised" nil 0)
     ("suprisingly" "surprisingly" nil 0)
@@ -1314,6 +1321,8 @@
 
 (define-abbrev-table 'helm-grep-mode-abbrev-table '())
 
+(define-abbrev-table 'helm-major-mode-abbrev-table '())
+
 (define-abbrev-table 'helm-moccur-mode-abbrev-table '())
 
 (define-abbrev-table 'help-mode-abbrev-table '())
@@ -1328,6 +1337,8 @@
 
 (define-abbrev-table 'image-dired-thumbnail-mode-abbrev-table '())
 
+(define-abbrev-table 'inferior-julia-mode-abbrev-table '())
+
 (define-abbrev-table 'inferior-python-mode-abbrev-table '())
 
 (define-abbrev-table 'ivy-occur-grep-mode-abbrev-table '())
@@ -1335,6 +1346,8 @@
 (define-abbrev-table 'ivy-occur-mode-abbrev-table '())
 
 (define-abbrev-table 'java-mode-abbrev-table '())
+
+(define-abbrev-table 'julia-mode-abbrev-table '())
 
 (define-abbrev-table 'latex-mode-abbrev-table '())
 
@@ -1410,6 +1423,8 @@
 
 (define-abbrev-table 'plstore-mode-abbrev-table '())
 
+(define-abbrev-table 'poly-head-tail-mode-abbrev-table '())
+
 (define-abbrev-table 'process-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'prog-mode-abbrev-table '())
@@ -1420,7 +1435,11 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
+
+(define-abbrev-table 'quickrun/mode-abbrev-table '())
 
 (define-abbrev-table 'ranger-mode-abbrev-table '())
 

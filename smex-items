@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ xah-open-in-external-app
+ mu4e
+ diredp-breadcrumbs-in-header-line-mode
+ sunrise
  org-archive-subtree
  org-calendar-goto-agenda
  helm-quickrun
- iedit-mode
- ansi-term
- eyebrowse-mode
- cfw:org-from-calendar
 )
 
 ;; ----- smex-data -----
@@ -73,12 +73,12 @@
  (pandoc-mode . 3)
  (zc-hebrew . 7)
  (wl-summary-sort . 1)
- (mu4e . 4)
+ (mu4e . 5)
  (mu4e-alert-enable-notifications . 2)
  (mu4e-alert-enable-mode-line-display . 1)
  (helm-mu . 2)
  (sunrise-cd . 3)
- (sunrise . 2)
+ (sunrise . 3)
  (helm-grepint-grep-root . 1)
  (swiper-mc . 1)
  (helm-swoop . 4)
@@ -286,4 +286,6 @@
  (hydra-mark-er/body . 2)
  (org-calendar-goto-agenda . 1)
  (org-archive-subtree . 2)
+ (diredp-breadcrumbs-in-header-line-mode . 2)
+ (xah-open-in-external-app . 1)
 )

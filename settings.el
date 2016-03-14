@@ -627,26 +627,26 @@
 (setq dired-narrow-exit-action 'dired-narrow-find-file)
   )
 
-(use-package dired-open
- :ensure t
- :config
- (setq dired-open-extensions
-      '(("pdf" . "okular")
-        ("mkv" . "vlc")
-        ("mp4" . "vlc")
-        ("avi" . "vlc")
-        ("html" . "firefox")
-        ("mp3" . "vlc")
-        ("doc" . "libreoffice")
-        ("docx" . "libreoffice")
-        ("odt" . "libreoffice")
-        ("odf" . "libreoffice")
-        ("xls" . "libreoffice")
-        ("xlsx" . "libreoffice")
-        ("ppt" . "libreoffice")
-        ("pptx" . "libreoffice")
-))
- )
+;; (use-package dired-open
+;;  :ensure t
+;;  :config
+;;  (setq dired-open-extensions
+;;       '(("pdf" . "okular")
+;;         ("mkv" . "vlc")
+;;         ("mp4" . "vlc")
+;;         ("avi" . "vlc")
+;;         ("html" . "firefox")
+;;         ("mp3" . "vlc")
+;;         ("doc" . "libreoffice")
+;;         ("docx" . "libreoffice")
+;;         ("odt" . "libreoffice")
+;;         ("odf" . "libreoffice")
+;;         ("xls" . "libreoffice")
+;;         ("xlsx" . "libreoffice")
+;;         ("ppt" . "libreoffice")
+;;         ("pptx" . "libreoffice")
+;; ))
+;;  )
 
 (use-package dired-subtree
  :ensure t
@@ -1406,22 +1406,6 @@
  :config
 
  )
-
-;; (use-package openwith 
-;; :ensure t
-;; :config
-;; (require 'openwith)
-;; (setq openwith-associations '(("\\.pdf\\'" "okular" (file))))
-;; (setq openwith-associations '(("\\.mkv\\'" "mplayer" (file))))
-;; (setq openwith-associations '(("\\.html\\'" "chromium" (file))))
-;; (setq openwith-associations '(("\\.html\\'" "eww" (file))))
-;; (setq openwith-associations '(("\\.mp4\\'" "vlc" (file))))
-;; (setq openwith-associations '(("\\.ogm\\'" "vlc" (file))))
-;; (setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
-;; (setq openwith-associations '(("\\.mpeg\\'" "vlc" (file))))
-;; (setq openwith-associations '(("\\.mkv\\'" "vlc" (file))))
-;; (openwith-mode t)
-;; )
 
 (use-package org-ref 
    :ensure t
@@ -4125,6 +4109,8 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
+(add-to-list 'display-buffer-alist '("*Async Shell Command*"  display-buffer-no-window))
+
 (fset 'orgstyle-tnote
    [?! home ?!])
 (define-key org-mode-map (kbd "C-1") 'orgstyle-tnote)
@@ -5259,15 +5245,23 @@ With prefix argument, also display headlines without a TODO keyword."
               :publishing-directory "~/org/files/export/"
               :section-numbers nil
               :table-of-contents nil
-              :publishing-function org-ascii-publish-to-ascii
-                     )
+              :publishing-function org-ascii-publish-to-ascii)
+
               ("econf"
               :base-directory "~/org/files/agenda/"
               :publishing-directory "~/org/files/export/"
               :section-numbers nil
               :table-of-contents nil
-              :publishing-function org-html-publish-to-html
-                     )
+              :publishing-function org-html-publish-to-html)
+
+              ("qgis"
+           ;; Directory for source files in org format
+              :base-directory "/home/zeltak/org/files/Uni/Courses/BGU.Qgis/"
+              :base-extension "org"
+              :publishing-directory "/home/zeltak/org/files/Uni/Courses/BGU.Qgis/"
+              :publishing-function org-reveal-export-to-html)
+
+
 ))
 
 (setq org-export-html-validation-link nil)
@@ -6143,7 +6137,7 @@ scroll-step 1)
  (define-key dired-mode-map (kbd  "<f9>") 'eshell  )
  (define-key dired-mode-map (kbd  "y") 'tda/rsync-multiple-mark-file )
  (define-key dired-mode-map (kbd  "p") 'tda/rsync-multiple )
- (define-key dired-mode-map (kbd  "<C-return>") 'dired-open-file )
+ (define-key dired-mode-map (kbd  "<C-return>") 'z/dired-xdg-open )
  (define-key dired-mode-map (kbd  "<C-a>") 'dired-mark-subdir-files )
  (define-key dired-mode-map (kbd  "S-<f1>") 'hydra-toggles/body  )
  (define-key dired-mode-map (kbd  "S-<f3>") 'hydra-spell/body  )
@@ -6158,7 +6152,8 @@ scroll-step 1)
     "
    【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
    【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-   【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
+   【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【C-space】start visual mark
+   【g】 refresh
    【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
    【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
    【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
@@ -6205,6 +6200,7 @@ scroll-step 1)
 ("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
 ("3" (find-file "/home/zeltak/mounts/lraid/r/") "P2P" )
 ("b"  (find-file "~/bin/") "bin" )
+("B"  (dired "~/bin/") "bin" )
 ("c"  (find-file "~/.config/") "config")
 ("d" (find-file "~/Downloads/")    "Downloads" )
 ("e"  (find-file "~/.emacs.d/") "Emacs.d")
@@ -6810,11 +6806,42 @@ The formatting is the same as is used with `format' function."
 
 (define-key dired-mode-map "Y" 'ora-dired-rsync)
 
+(defun z/dired-xdg-open ()
+  "Open the current file or dired marked files in external app.
+The app is chosen from your OS's preference.
+
+URL `http://ergoemacs.org/emacs/emacs_dired_open_file_in_ext_apps.html'
+Version 2015-01-26"
+  (interactive)
+  (let* (
+         (ξfile-list
+          (if (string-equal major-mode "dired-mode")
+              (dired-get-marked-files)
+            (list (buffer-file-name))))
+         (ξdo-it-p (if (<= (length ξfile-list) 5)
+                       t
+                     (y-or-n-p "Open more than 5 files? "))))
+
+    (when ξdo-it-p
+      (cond
+       ((string-equal system-type "windows-nt")
+        (mapc
+         (lambda (fPath)
+           (w32-shell-execute "open" (replace-regexp-in-string "/" "\\" fPath t t))) ξfile-list))
+       ((string-equal system-type "darwin")
+        (mapc
+         (lambda (fPath) (shell-command (format "open \"%s\"" fPath)))  ξfile-list))
+       ((string-equal system-type "gnu/linux")
+        (mapc
+         (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+
 (fset 'z/dired-macro-beetimp
    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
 
 (fset 'z/dired-macro-beetimp-single
    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ?- ?s ])
+
+;(add-hook 'dired-before-readin-hook 'diredp-breadcrumbs-in-header-line-mode)
 
 ;; Always hilight the current agenda line
 (add-hook 'dired-mode-hook
