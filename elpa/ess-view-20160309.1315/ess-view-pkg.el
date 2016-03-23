@@ -1,0 +1,1 @@
+(define-package "ess-view" "20160309.1315" "View R dataframes in a spreadsheet software" '((ess "15") (s "1.8.0") (f "0.16.0")) :url "https://github.com/GioBo/ess-view" :keywords '("extensions" "ess"))

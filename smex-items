@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
- xah-open-in-external-app
+ isearch-repeat-forward
+ dired-isearch-filenames
+ dired-do-isearch
+ isearch-forward
  mu4e
- diredp-breadcrumbs-in-header-line-mode
- sunrise
- org-archive-subtree
- org-calendar-goto-agenda
- helm-quickrun
+ wl
+ ranger
 )
 
 ;; ----- smex-data -----
@@ -26,7 +26,7 @@
  (tiny-expand . 5)
  (find-file-other-window . 2)
  (rainbow-delimiters-mode . 1)
- (isearch-forward . 8)
+ (isearch-forward . 9)
  (rgrep . 2)
  (byte-compile-file . 2)
  (gnus-mouse-pick-group . 1)
@@ -288,4 +288,10 @@
  (org-archive-subtree . 2)
  (diredp-breadcrumbs-in-header-line-mode . 2)
  (xah-open-in-external-app . 1)
+ (my/set-dired-dir-to-other . 1)
+ (dired-do-isearch . 2)
+ (dired-isearch-filenames . 2)
+ (isearch-repeat-forward . 3)
+ (quick-view-file-at-point . 4)
+ (my/dired-find-file-other-window-until-key . 1)
 )

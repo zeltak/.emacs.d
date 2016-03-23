@@ -556,6 +556,7 @@
     ("english" "English" nil 5)
     ("enought" "enough" nil 0)
     ("entree" "entree" nil 0)
+    ("epidemilogist" "epidemiologist" nil 0)
     ("epxeirence" "experience" nil 0)
     ("equippment" "equipment" nil 0)
     ("equivalant" "equivalent" nil 0)
@@ -1179,6 +1180,7 @@
     ("thnig" "thing" nil 0)
     ("thnigs" "things" nil 0)
     ("threatend" "threatened" nil 0)
+    ("throught" "throughout" nil 0)
     ("thsi" "this" nil 0)
     ("thsoe" "those" nil 0)
     ("thta" "that" nil 0)
@@ -1435,9 +1437,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'quickrun/mode-abbrev-table '())
 

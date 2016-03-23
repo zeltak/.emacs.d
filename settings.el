@@ -752,6 +752,30 @@
  (dired-atool-setup)
  )
 
+(use-package deft
+ :ensure t
+ :config
+(require 'deft)
+(setq deft-extension "org")
+(setq deft-text-mode 'org-mode)
+(setq deft-directory "~/org/files/agenda/")
+(setq deft-use-filename-as-title t)
+(setq deft-recursive t)
+;;strip org mode stuff
+(setq deft-strip-title-regexp "#\\+TITLE: ")
+;;ignore these dirs
+(setq deft-recursive-ignore-dir-regexp
+          (concat "\\(?:"
+                  "\\."
+                  "\\|\\.\\."
+                  "#\\mypapers"
+                  "\\|code"
+                  "\\|auto"
+                  "\\|_minted.*"
+                  "\\)$"))
+
+ )
+
 (use-package drag-stuff
  :ensure t
  :config
@@ -1399,6 +1423,12 @@
  (require 'multiple-cursors)
 (global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
 
+ )
+
+(use-package multi-term
+ :ensure t
+ :config
+ 
  )
 
 (use-package nlinum
@@ -4851,11 +4881,10 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;; Uni todos
 
   ("v" "research_TD" entry (file+headline "~/org/files/agenda/research.org" "scheduled mail/calls/meetings")
-   "* TODO  %?\n%T" )
-
+   "* TODO  %?\n%^T" )
   ;;;BGU todos 
   ("b" "BGU_TD" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
-   "* TODO  %?\n%T" )
+  "* TODO  %?\n%^T" )
 
 
 ;;;;---------------------------------------------------------------------------
@@ -6112,18 +6141,10 @@ scroll-step 1)
            (not isearch-mode-end-hook-quit))
       (dired-find-file))))
 
-
-
-(add-hook 'isearch-mode-end-hook 
-  (lambda ()
-    (when (and (eq major-mode 'sunrise-mode)
-           (not isearch-mode-end-hook-quit))
-      (dired-find-file))))
-
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
  (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
  (define-key dired-mode-map (kbd "S-RET") 'dired-open-in-external-app )
-;; (define-key dired-mode-map (kbd "/") 'isearch-forward )
+;; (define-key dired-mode-map (kbd "/") 'isearch-repeat-forward )
  (define-key dired-mode-map (kbd "/") 'dired-narrow )
  (define-key dired-mode-map (kbd "S-.") 'helm-dired-recent-dirs-view )
  (define-key dired-mode-map (kbd  "\\") 'hydra-dired-chd/body )
@@ -6152,7 +6173,7 @@ scroll-step 1)
     "
    【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
    【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-   【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【C-space】start visual mark
+   【*s】 mark all 【t】 toggle mark (mark all) 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【C-space】start visual mark
    【g】 refresh
    【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
    【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
@@ -6498,6 +6519,7 @@ Version 2015-07-30"
 (puthash "dotfiles" "/home/zeltak/dotfiles/" my-target-dirs)
 (puthash "config" "/home/zeltak/.config/" my-target-dirs)
 (puthash "conv" "/home/zeltak/ZH_tmp/$CONV" my-target-dirs)
+(puthash "mvid" "/home/zeltak/mounts/lraid/raid/Videos/1_Video/michal/" my-target-dirs)
 
 (defun z/dired-copy-setdirs-recurs ()
   (interactive)
