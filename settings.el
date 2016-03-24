@@ -1445,11 +1445,11 @@
  (require 'org-ref-pdf)
 (require 'org-ref-url-utils)
   ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
 
   ;; see org-ref for use of these variables
   (setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
-        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib")
         org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
   (setq bibtex-autokey-year-length 4
@@ -1716,6 +1716,12 @@
  '(shell-pop-window-size 30)
  '(shell-pop-full-span t)
  '(shell-pop-window-position "bottom"))
+ )
+
+(use-package smart-comment
+ :ensure t
+ :config
+ :bind ("M-;" . smart-comment) 
  )
 
 (use-package smooth-scrolling
@@ -3125,6 +3131,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
+("l"  hydra-org-links/body  "org links")
 ("v"  helm-bm "helm-bm" )
 ("r"  iedit-mode  "iedit" )
 ("V"  bm-toggle "add bm")
@@ -3293,7 +3300,7 @@ _q_:
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
-("w"  nil )
+("w"  z/dired-copy-buffer-file-path "buffer path to clip" )
 ("x"  nil )
 ("y"  nil )
 ("z"   hydra-dired-filter/body  "filter" )
@@ -3544,12 +3551,13 @@ link menus
      ("k" org-link-edit-backward-barf  "backward edit")
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
      ("d" org-id-create "just create Id")
-     ("p" org-cliplink "org-cliplick")
+     ("w"  z/org-link-paste-file-path "paste file link")
+     ("p" org-cliplink "org-cliplink")
      ("o"  link-hint-open-link "open link" )
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
-     ("w" worf-copy-heading-id  "worf copy id of killring" ) 
+     ("k" worf-copy-heading-id  "worf copy id of killring" ) 
      ("q" nil "cancel" nil)
  )
 
@@ -5406,6 +5414,13 @@ org-use-sub-superscripts nil        ;; don't use `_' for subscript
               ("Insert id link to this heading" .
                helm-org-insert-id-link-to-heading-at-marker))))
 
+(defun  z/org-link-paste-file-path ()
+   "paste file path in killring"
+  (interactive)
+  (insert "file:")
+  (yank)
+  )
+
 (defadvice org-babel-execute:sh (around sacha activate)
   (if (assoc-default :term (ad-get-arg 1) nil)
     (let ((buffer (make-term "babel" "/bin/zsh")))
@@ -6856,6 +6871,29 @@ Version 2015-01-26"
        ((string-equal system-type "gnu/linux")
         (mapc
          (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+
+(defun z/dired-copy-buffer-file-path (&optional φdir-path-only-p)
+  "Copy the current buffer's file path or dired path to `kill-ring'.
+Result is full path.
+If `universal-argument' is called first, copy only the dir path.
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Version 2015-12-02"
+  (interactive "P")
+  (let ((ξfpath
+         (if (equal major-mode 'dired-mode)
+             (expand-file-name default-directory)
+           (if (null (buffer-file-name))
+               (user-error "Current buffer is not associated with a file.")
+             (buffer-file-name)))))
+    (kill-new
+     (if (null φdir-path-only-p)
+         (progn
+           (message "File path copied: 「%s」" ξfpath)
+           ξfpath
+           )
+       (progn
+         (message "Directory path copied: 「%s」" (file-name-directory ξfpath))
+         (file-name-directory ξfpath))))))
 
 (fset 'z/dired-macro-beetimp
    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])

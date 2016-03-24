@@ -2101,11 +2101,11 @@ also: https://iloveemacs.wordpress.com/2014/09/10/emacs-as-an-advanced-terminal-
  (require 'org-ref-pdf)
 (require 'org-ref-url-utils)
   ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
 
   ;; see org-ref for use of these variables
   (setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
-        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib")
+        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib")
         org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
   (setq bibtex-autokey-year-length 4
@@ -2497,6 +2497,18 @@ https://github.com/kyagi/shell-pop-el
  '(shell-pop-window-position "bottom"))
  )
 #+END_SRC 
+** smart comment
+https://github.com/paldepind/smart-comment
+
+#+BEGIN_SRC emacs-lisp :results none
+(use-package smart-comment
+ :ensure t
+ :config
+ :bind ("M-;" . smart-comment) 
+ )
+#+END_SRC 
+
+
 ** smooth-scrolling
 https://github.com/aspiers/smooth-scrolling
 
@@ -4342,6 +4354,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
 ("k"  helm-show-kill-ring "kill ring")
+("l"  hydra-org-links/body  "org links")
 ("v"  helm-bm "helm-bm" )
 ("r"  iedit-mode  "iedit" )
 ("V"  bm-toggle "add bm")
@@ -4525,7 +4538,7 @@ _q_:
 ("t"  nil )
 ("u"  nil )
 ("v"  nil)
-("w"  nil )
+("w"  z/dired-copy-buffer-file-path "buffer path to clip" )
 ("x"  nil )
 ("y"  nil )
 ("z"   hydra-dired-filter/body  "filter" )
@@ -4825,12 +4838,13 @@ link menus
      ("k" org-link-edit-backward-barf  "backward edit")
      ("i" org-insert-link   "insert (or edit if on link)//also 【C-c C-l】" ) 
      ("d" org-id-create "just create Id")
-     ("p" org-cliplink "org-cliplick")
+     ("w"  z/org-link-paste-file-path "paste file link")
+     ("p" org-cliplink "org-cliplink")
      ("o"  link-hint-open-link "open link" )
      ("c" org-id-copy  "copy(and create) to killring" ) 
      ("s" org-id-store-link  "store org-id" ) 
      ("f" z/org-link-file  "link to file (via helm)" ) 
-     ("w" worf-copy-heading-id  "worf copy id of killring" ) 
+     ("k" worf-copy-heading-id  "worf copy id of killring" ) 
      ("q" nil "cancel" nil)
  )
  #+END_SRC
@@ -7235,65 +7249,74 @@ add all todo states to sparse tree
 (org-capture nil "m")
 )
 #+END_SRC
-*** link to file
-#+BEGIN_SRC emacs-lisp :results none
-(defun z/org-link-file  ()
-                     (interactive)                                
-                     (let ((current-prefix-arg '(4)))             
-                       (call-interactively #'org-insert-link)))
+*** Links
+**** link to file
+ #+BEGIN_SRC emacs-lisp :results none
+ (defun z/org-link-file  ()
+                      (interactive)                                
+                      (let ((current-prefix-arg '(4)))             
+			(call-interactively #'org-insert-link)))
 
+ #+END_SRC
+**** TODO link to any header
+     :PROPERTIES:
+     :ID:       b9436f8a-478b-4f98-8bc8-65697ffb8c78
+     :END:
+ First we define the base function
+
+ #+BEGIN_SRC emacs-lisp
+ (defun insert-heading-link (dir)
+   "select a headline from org-files in dir and insert a link to it."
+   (interactive  (list (read-directory-name "Directory: ")))
+   (let ((org-agenda-files (f-entries
+                            dir
+                            (lambda (f)
+                              (string=
+                               "org"
+                               (file-name-extension f)))
+                            t)))
+     (helm-org-agenda-files-headings)))
+ #+END_SRC
+
+ gives helm buffer to select headlines from org-files in the directory I select and when I press f3 (for the third action), it inserts a link to the selected headline. 
+ It does the file finding recursively, so big folders can be slow
+
+ to add the org id component to the above script eval this as well
+
+ #+BEGIN_SRC emacs-lisp
+ (defun helm-org-insert-id-link-to-heading-at-marker (marker)
+   (with-current-buffer (marker-buffer marker)
+     (let ((file-name (buffer-file-name))
+           (id (save-excursion (goto-char (marker-position marker))
+                               (org-id-get-create)
+                               (org-id-store-link))))
+
+       (with-helm-current-buffer
+         (org-insert-link
+          file-name id)))))
+
+
+ (cl-defun helm-source-org-headings-for-files (filenames
+                                               &optional (min-depth 1) (max-depth 8))
+   (helm-build-sync-source "Org Headings"
+     :candidates (helm-org-get-candidates filenames min-depth max-depth)
+     :action '(("Go to line" . helm-org-goto-marker)
+               ("Refile to this heading" . helm-org-heading-refile)
+               ("Insert link to this heading"
+		. helm-org-insert-link-to-heading-at-marker)
+               ("Insert id link to this heading" .
+		helm-org-insert-id-link-to-heading-at-marker))))
+
+ #+END_SRC
+**** paste file:/ link
+#+BEGIN_SRC emacs-lisp  :results none
+(defun  z/org-link-paste-file-path ()
+   "paste file path in killring"
+  (interactive)
+  (insert "file:")
+  (yank)
+  )
 #+END_SRC
-*** TODO link to any header
-    :PROPERTIES:
-    :ID:       b9436f8a-478b-4f98-8bc8-65697ffb8c78
-    :END:
-First we define the base function
-
-#+BEGIN_SRC emacs-lisp
-(defun insert-heading-link (dir)
-  "select a headline from org-files in dir and insert a link to it."
-  (interactive  (list (read-directory-name "Directory: ")))
-  (let ((org-agenda-files (f-entries
-                           dir
-                           (lambda (f)
-                             (string=
-                              "org"
-                              (file-name-extension f)))
-                           t)))
-    (helm-org-agenda-files-headings)))
-#+END_SRC
-
-gives helm buffer to select headlines from org-files in the directory I select and when I press f3 (for the third action), it inserts a link to the selected headline. 
-It does the file finding recursively, so big folders can be slow
-
-to add the org id component to the above script eval this as well
-
-#+BEGIN_SRC emacs-lisp
-(defun helm-org-insert-id-link-to-heading-at-marker (marker)
-  (with-current-buffer (marker-buffer marker)
-    (let ((file-name (buffer-file-name))
-          (id (save-excursion (goto-char (marker-position marker))
-                              (org-id-get-create)
-                              (org-id-store-link))))
-
-      (with-helm-current-buffer
-        (org-insert-link
-         file-name id)))))
-
-
-(cl-defun helm-source-org-headings-for-files (filenames
-                                              &optional (min-depth 1) (max-depth 8))
-  (helm-build-sync-source "Org Headings"
-    :candidates (helm-org-get-candidates filenames min-depth max-depth)
-    :action '(("Go to line" . helm-org-goto-marker)
-              ("Refile to this heading" . helm-org-heading-refile)
-              ("Insert link to this heading"
-               . helm-org-insert-link-to-heading-at-marker)
-              ("Insert id link to this heading" .
-               helm-org-insert-id-link-to-heading-at-marker))))
-
-#+END_SRC
-
 
 *** terminal
 **** org evaluate to term
@@ -9074,6 +9097,31 @@ Version 2015-01-26"
        ((string-equal system-type "gnu/linux")
         (mapc
          (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
+#+END_SRC
+**** copy current open buffer path to killrinf
+#+BEGIN_SRC emacs-lisp  :results none
+(defun z/dired-copy-buffer-file-path (&optional φdir-path-only-p)
+  "Copy the current buffer's file path or dired path to `kill-ring'.
+Result is full path.
+If `universal-argument' is called first, copy only the dir path.
+URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
+Version 2015-12-02"
+  (interactive "P")
+  (let ((ξfpath
+         (if (equal major-mode 'dired-mode)
+             (expand-file-name default-directory)
+           (if (null (buffer-file-name))
+               (user-error "Current buffer is not associated with a file.")
+             (buffer-file-name)))))
+    (kill-new
+     (if (null φdir-path-only-p)
+         (progn
+           (message "File path copied: 「%s」" ξfpath)
+           ξfpath
+           )
+       (progn
+         (message "Directory path copied: 「%s」" (file-name-directory ξfpath))
+         (file-name-directory ξfpath))))))
 #+END_SRC
 *** dired macro
 **** beet import 
