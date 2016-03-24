@@ -428,96 +428,96 @@
  :config
  )
 
-(use-package company
-   :ensure t
-   :config
-;; companymode
-  (require 'company)
+;;   (use-package company
+;;    :ensure t
+;;    :config
+;; ;; companymode
+;;   (require 'company)
 
-; Company-mode backends
-(eval-after-load "company"
-  '(progn
-     (add-to-list 'company-backends 'company-dabbrev)
-     (add-to-list 'company-backends 'company-ispell)
-     (add-to-list 'company-backends 'company-abbrev)
-     (add-to-list 'company-backends 'company-files)
+;; ; Company-mode backends
+;; (eval-after-load "company"
+;;   '(progn
+;;      (add-to-list 'company-backends 'company-dabbrev)
+;;      (add-to-list 'company-backends 'company-ispell)
+;;      (add-to-list 'company-backends 'company-abbrev)
+;;      (add-to-list 'company-backends 'company-files)
 
-;; @see https://github.com/company-mode/company-mode/issues/348
-     (require 'company-statistics)
-     (company-statistics-mode)
+;; ;; @see https://github.com/company-mode/company-mode/issues/348
+;;      (require 'company-statistics)
+;;      (company-statistics-mode)
 
-;; yasnippet backend shadows other completions, see https://github.com/company-mode/company-mode/blob/master/company-yasnippet.el for solutions
-;;better to leave disabled and use the ido mode for yasnippets
-;;     (add-to-list 'company-backends 'company-yasnippet)
-;; using the delete command disables specific modes 
-    (setq company-backends (delete 'company-capf company-backends))
-    (setq company-backends (delete 'company-ropemacs company-backends))
-    (setq company-backends (delete 'company-clang company-backends))
-    (setq company-backends (delete 'company-cmake company-backends))
-    (setq company-backends (delete 'company-css company-backends))
-    (setq company-backends (delete 'company-eclim company-backends))
-    (setq company-backends (delete 'company-elisp company-backends))
-    (setq company-backends (delete 'company-etags company-backends))
-    (setq company-backends (delete 'company-gtags company-backends))
-    (setq company-backends (delete 'company-keywords company-backends))
-    (setq company-backends (delete 'company-nxml company-backends))
-    (setq company-backends (delete 'company-oddmuse company-backends))
-    (setq company-backends (delete 'company-semantic company-backends))
-    (setq company-backends (delete 'company-template company-backends))
-    (setq company-backends (delete 'company-tempo company-backends))
-    (setq company-backends (delete 'company-tests company-backends))
-    (setq company-backends (delete 'company-xcode company-backends))
-    (setq company-backends (delete 'company-tempo company-backends))
-    (setq company-backends (delete 'company-yasnippet company-backends))
-;; capf is for all modes and all languges so its better to turn it off to not pollute completions.
-;;     (add-to-list 'company-backends 'company-capf)
-     ))
+;; ;; yasnippet backend shadows other completions, see https://github.com/company-mode/company-mode/blob/master/company-yasnippet.el for solutions
+;; ;;better to leave disabled and use the ido mode for yasnippets
+;; ;;     (add-to-list 'company-backends 'company-yasnippet)
+;; ;; using the delete command disables specific modes 
+;;     (setq company-backends (delete 'company-capf company-backends))
+;;     (setq company-backends (delete 'company-ropemacs company-backends))
+;;     (setq company-backends (delete 'company-clang company-backends))
+;;     (setq company-backends (delete 'company-cmake company-backends))
+;;     (setq company-backends (delete 'company-css company-backends))
+;;     (setq company-backends (delete 'company-eclim company-backends))
+;;     (setq company-backends (delete 'company-elisp company-backends))
+;;     (setq company-backends (delete 'company-etags company-backends))
+;;     (setq company-backends (delete 'company-gtags company-backends))
+;;     (setq company-backends (delete 'company-keywords company-backends))
+;;     (setq company-backends (delete 'company-nxml company-backends))
+;;     (setq company-backends (delete 'company-oddmuse company-backends))
+;;     (setq company-backends (delete 'company-semantic company-backends))
+;;     (setq company-backends (delete 'company-template company-backends))
+;;     (setq company-backends (delete 'company-tempo company-backends))
+;;     (setq company-backends (delete 'company-tests company-backends))
+;;     (setq company-backends (delete 'company-xcode company-backends))
+;;     (setq company-backends (delete 'company-tempo company-backends))
+;;     (setq company-backends (delete 'company-yasnippet company-backends))
+;; ;; capf is for all modes and all languges so its better to turn it off to not pollute completions.
+;; ;;     (add-to-list 'company-backends 'company-capf)
+;;      ))
 
-;;make it global
-(add-hook 'after-init-hook 'global-company-mode)
-
-
-;; company delay until suggestions are shown
-(setq company-idle-delay 0.2)
-;; whats the minimum to start completion 
-(setq company-minimum-prefix-length 2)
-(setq company-dabbrev-minimum-length 2)
-;; weight by frequency
-(setq company-transformers '(company-sort-by-occurrence))
-;;dabbrev options 
-(setq company-dabbrev-downcase nil)
-(setq company-dabbrev-ignore-case nil)
-(setq company-dabbrev-other-buffers t)
-  ;; show numbers in popup?
-(setq company-show-numbers t)
-(setq company-require-match nil)
-;; company dabbrev config
-;; search all buffers 
-(setq company-dabbrev-other-buffers t)
+;; ;;make it global
+;; (add-hook 'after-init-hook 'global-company-mode)
 
 
-;; Don't enable company-mode in below major modes, OPTIONAL
-(setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
+;; ;; company delay until suggestions are shown
+;; (setq company-idle-delay 0.2)
+;; ;; whats the minimum to start completion 
+;; (setq company-minimum-prefix-length 2)
+;; (setq company-dabbrev-minimum-length 2)
+;; ;; weight by frequency
+;; (setq company-transformers '(company-sort-by-occurrence))
+;; ;;dabbrev options 
+;; (setq company-dabbrev-downcase nil)
+;; (setq company-dabbrev-ignore-case nil)
+;; (setq company-dabbrev-other-buffers t)
+;;   ;; show numbers in popup?
+;; (setq company-show-numbers t)
+;; (setq company-require-match nil)
+;; ;; company dabbrev config
+;; ;; search all buffers 
+;; (setq company-dabbrev-other-buffers t)
+
+
+;; ;; Don't enable company-mode in below major modes, OPTIONAL
+;; (setq company-global-modes '(not eshell-mode comint-mode erc-mode rcirc-mode))
 
 
 
-(defun org-mode-hook-setup ()
-  ;; make `company-backends' local is critcal
-  ;; or else, you will have completion in every major mode, that's very annoying!
-  (make-local-variable 'company-backends)
+;; (defun org-mode-hook-setup ()
+;;   ;; make `company-backends' local is critcal
+;;   ;; or else, you will have completion in every major mode, that's very annoying!
+;;   (make-local-variable 'company-backends)
 
-  ;; OPTIONAL, if `company-ispell-dictionary' is nil, `ispell-complete-word-dict' is used
-  ;;  but I prefer hard code the dictionary path. That's more portable.
-  (setq company-ispell-dictionary (file-truename "~/.emacs.d/abbrv/english-words.txt")))
+;;   ;; OPTIONAL, if `company-ispell-dictionary' is nil, `ispell-complete-word-dict' is used
+;;   ;;  but I prefer hard code the dictionary path. That's more portable.
+;;   (setq company-ispell-dictionary (file-truename "~/.emacs.d/abbrv/english-words.txt")))
 
-(add-hook 'org-mode-hook 'org-mode-hook-setup)
+;; (add-hook 'org-mode-hook 'org-mode-hook-setup)
 
 
-;;;keybinds
-(global-set-key (kbd "M-.") 'company-complete)
-(global-set-key (kbd "M-/") 'company-dabbrev)
+;; ;;;keybinds
+;; (global-set-key (kbd "M-.") 'company-complete)
+;; (global-set-key (kbd "M-/") 'company-dabbrev)
 
-   )
+;;    )
 
 (use-package company-emoji
  :ensure t
@@ -1158,7 +1158,7 @@
 ;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
 
 ;;; telling helm-bibtex where your bibliographies can be found:
-(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.2015.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.2015.misc.bib" ))
+(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.papers.misc.bib" ))
 
 ;;Specify where PDFs can be found:
 (setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
@@ -1194,7 +1194,7 @@
 (defun helm-bibtex-ikloog-publications ()
    "Search BibTeX entries authored by me"
    (interactive)
-(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.2015.bib"))
+(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
    (helm :sources '(helm-source-bibtex)
          :full-frame t
          :input "kloog !kprep !ktalk !kconf !unpublished"
@@ -1587,6 +1587,14 @@
  :config
   )
 
+(use-package  pabbrev
+ :ensure t
+ :config
+(require 'pabbrev)
+(global-pabbrev-mode)
+
+ )
+
 ;; (use-package pdf-tools
 ;;  :ensure t
 ;;  :config
@@ -1716,6 +1724,30 @@
  '(shell-pop-window-size 30)
  '(shell-pop-full-span t)
  '(shell-pop-window-position "bottom"))
+ )
+
+(use-package  smart-tab 
+ :ensure t
+ :config
+(require 'smart-tab)
+(global-smart-tab-mode 1)
+
+
+(setq smart-tab-disabled-major-modes
+      (list 'term-mode
+            'inferior-python-mode 'rcirc-mode  'mu4e-view-mode
+            'mu4e-main-mode 'mu4e-headers-mode 
+            'mu4e-about-mode))
+
+(setq hippie-expand-try-functions-list
+      '(try-expand-dabbrev
+        try-expand-dabbrev-all-buffers
+        try-expand-dabbrev-from-kill
+        try-complete-file-name
+        try-complete-lisp-symbol))
+
+(setq smart-tab-using-hippie-expand t)
+
  )
 
 (use-package smart-comment
@@ -2744,6 +2776,13 @@ Repeated invocations toggle between the two most recently open buffers."
       (delete-window)
 )
 
+(defun z/buffers-restore-refwork   ()
+     (interactive)    
+     (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org")
+     (split-window-right)
+     (find-file "/home/zeltak/org/files/Uni/papers/kloog.papers.bib")
+     )
+
 (defun z/toggle-window-split ()
   (interactive)
   (if (= (count-windows) 2)
@@ -3104,7 +3143,6 @@ With a prefix argument P, isearch for the symbol at point."
  "
 LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
  "
-
 ("\]" z/insert-slsh "insert \\")
 ("<backspace>" helm-all-mark-rings "all mark rings")
 ;;("\\"  avy-goto-char-timer  "avy jump")
@@ -3113,8 +3151,8 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("RET" avy-goto-line "goto line" )
 ("1"   hydra-org-tags/body "tags")
 ("8"   helm-mark-ring "HELM mark ")
-("t"   z/visit-ansi-term "ansi term")
-("T"   helm-top "top")
+
+
 (";"   comment-or-uncomment-region )
 ("5"   duplicate-current-line-or-region  "duplicate" :color red)
 ("6"   z/copy-comment-paste  "duplicate-comment")
@@ -3127,37 +3165,56 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("<down>" drag-stuff-down  "marked down" :color red)
 
 ("a"  z/org-agenda-calendar "org agenda" )
-("c"  z/org-move-top-collapse "collapse headers" )
-("I"  char-menu "insert symbol" )
-("i"  hydra-editing-insert/body "insert symbol" )
-("k"  helm-show-kill-ring "kill ring")
-("l"  hydra-org-links/body  "org links")
-("v"  helm-bm "helm-bm" )
-("r"  iedit-mode  "iedit" )
-("V"  bm-toggle "add bm")
-("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
-("x"  z/buffer-close-andmove-other  "close window")
 
+;;; bgu/work related quick access
 ("bb"  (find-file "/home/zeltak/org/files/agenda/bgu.org") "bgu"  :face 'hydra-face-cyan )
 ("bg"  (find-file "/home/zeltak/org/files/agenda/grants.org") "grants"  :face 'hydra-face-cyan )
 ("br"  (find-file "/home/zeltak/org/files/agenda/Research.org") "reserach"  :face 'hydra-face-cyan )
-("hd"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
-("e"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
-("hf"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
-("g"  nil )
-("hh"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
-("j"  nil )
-("hl"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
+("bs"   z/buffers-restore-refwork  "refwork" :face 'hydra-face-cyan)
 ("bm"  (find-file "/home/zeltak/org/files/agenda/meetings.org") "meetings" :face 'hydra-face-cyan )
-("n"  nil )
-("o"  nil )
 ("bp"  (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "papers" :face 'hydra-face-cyan )
+("bw"  (find-file "/home/zeltak/org/files/help/workflows.org") "work workflows" :face 'hydra-face-cyan )
+
+("c"  z/org-move-top-collapse "collapse headers" )
+
+("d"  nil )
+
+;;; tech related quick access
+("ee"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
+("el"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
+
+("f"  nil )
+("g"  nil )
+
+;;; home related quick access
+("hd"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
+("hf"  (find-file "/home/zeltak/org/files/agenda/food.org") "food" :face 'hydra-face-cyan)
+("hh"  (find-file "/home/zeltak/org/files/agenda/home.org") "home"  :face 'hydra-face-cyan)
 ("hs"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
 ("ht"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
 ("hu"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
-("y"  nil )
-("q"  nil  )
 
+("I"  char-menu "insert symbol" )
+("i"  hydra-editing-insert/body "insert symbol" )
+("j"  nil )
+("k"  helm-show-kill-ring "kill ring")
+("l"  hydra-org-links/body  "org links")
+("m"  nil )
+("n"  nil )
+("o"  nil )
+("p"  nil )
+("q" nil "cancel")
+("r"  iedit-mode  "iedit" )
+("s"  nil )
+("t"   z/visit-ansi-term "ansi term")
+("T"   helm-top "top")
+("v"  helm-bm "helm-bm" )
+("V"  bm-toggle "add bm")
+("u"  nil )
+("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
+("x"  z/buffer-close-andmove-other  "close window")
+("y"  nil )
+("z"  nil )
 ))
 
 (global-set-key
@@ -3387,15 +3444,14 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
 (defhydra hydra-bib  (:color blue :hint nil :columns 4)
 
 "
-Bib:
+Reference management
 "
-
 ("<f6>" helm-bibtex "helm-bibtex")
+
 ("a" nil )
-("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.2015.bib") "ikloog-bitex file"   :face 'hydra-face-brown )
-("m" (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "ikloog-bitex file"  :face 'hydra-face-brown )
-("c"  org-ref-clean-bibtex-entry "clean bib" )
-("d"  doi-utils-insert-bibtex-entry-from-doi "add by doi" )
+("b" (find-file "/home/zeltak/org/files/Uni/papers/kloog.papers.bib") "ikloog-bitex file"   :face 'hydra-face-purple )
+("c"  org-ref-clean-bibtex-entry "clean bib"  :face 'hydra-face-red )
+("d"  doi-utils-add-bibtex-entry-from-doi "add by doi"  :face 'hydra-face-brown)
 ("e"  ebib )
 ("f"  nil )
 ("g"  nil )
@@ -3405,15 +3461,16 @@ Bib:
 ("k"  helm-bibtex-ikloog-publications "kloog papers"  :face 'hydra-face-green )
 ("K"  helm-bibtex-ikloog-publications-all "kloog ALL"  :face 'hydra-face-green )
 ("l"  nil )
+("m" (find-file "/home/zeltak/org/files/Uni/papers/paper.meta.org") "ikloog-meta file"  :face 'hydra-face-purple )
 ("n"  org-bibtex-create "new bib entry")
 ("o"  nil )
 ("p"  helm-bibtex-ikloog-prep "kloog prep"  :face 'hydra-face-green )
 ("r"  helm-resume "helm resume")
-("s"  bibtex-sort-buffer "sort buffer")
+("s"  bibtex-sort-buffer "sort buffer"  :face 'hydra-face-red)
 ("t"  nil )
 ("u"  nil )
-("v"  bibtex-validate "validtae" )
-("V"  bibtex-validate-globally "validate-check for dups") ; check for dup keys
+("v"  bibtex-validate "validtae"  :face 'hydra-face-red )
+("V"  bibtex-validate-globally "validate-check for dups"  :face 'hydra-face-red)
 ("w"  nil )
 ("x"  crossref-add-bibtex-entry "free search" )
 ("y"  org-bibtex-yank "yank bibtex")
@@ -4953,7 +5010,7 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ("p" "papers")
 
-;;;; new recipe Inbox
+;;;; new recipe Inbox working paper
 ("pp" "new working paper" entry (file+headline "/home/zeltak/org/files/Uni/papers/paper.meta.org" "Kloog working papers")
 "* working %^{title}     
     :PROPERTIES:
@@ -4961,7 +5018,17 @@ With prefix argument, also display headlines without a TODO keyword."
     :lead: %^{lead?}
     :END:
 "
-"Capture Template for papers")
+"Capture Template for new working papers")
+
+;;;; new abstract
+("pa" "new abstract" entry (file+headline "/home/zeltak/org/files/Uni/papers/paper.meta.org" "abstracts")
+"* working %^{title}     
+    :PROPERTIES:
+    :ID: %(org-id-uuid)
+    :lead: %^{lead?}
+    :END:
+"
+"Capture Template for new abstract")
 
 
 ;;;;---------------------------------------------------------------------------

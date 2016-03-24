@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ pabbrev-mode
+ smart-tab
  isearch-repeat-forward
  dired-isearch-filenames
  dired-do-isearch
  isearch-forward
  mu4e
- wl
- ranger
 )
 
 ;; ----- smex-data -----
@@ -294,4 +294,7 @@
  (isearch-repeat-forward . 3)
  (quick-view-file-at-point . 4)
  (my/dired-find-file-other-window-until-key . 1)
+ (zbufref . 1)
+ (pabbrev-mode . 12)
+ (smart-tab . 1)
 )
