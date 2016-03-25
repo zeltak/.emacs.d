@@ -1150,74 +1150,6 @@
 
  )
 
-(use-package helm-bibtex
- :ensure t
- :config
-
-;;;if not installing through MELPA
-;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
-
-;;; telling helm-bibtex where your bibliographies can be found:
-(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib" "/home/zeltak/org/files/Uni/papers/library.2015.bib" "/home/zeltak/org/files/Uni/papers/kloog.papers.misc.bib" ))
-
-;;Specify where PDFs can be found:
-(setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
-
-;;;If the BibTeX entries have a field that specifies the full path to the PDFs, that field can also be used
-(setq helm-bibtex-pdf-field "File")
-
-;;;; Note files
-(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes")
-(setq helm-bibtex-notes-extension ".org")
-
-(setq helm-bibtex-format-citation-functions
-  '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
-    (latex-mode    . helm-bibtex-format-citation-cite)
-    (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
-    (default       . helm-bibtex-format-citation-default)))
-
-;;Fields used for searching
-(setq helm-bibtex-additional-search-fields '(tags))
-
-;;;Symbols used for indicating the availability of notes and PDF files
-(setq helm-bibtex-pdf-symbol "𝍌")
-(setq helm-bibtex-notes-symbol "✎")
-
-;;set default browser
-(setq helm-bibtex-browser-function
-  (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
-;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
-
-
- )
-
-(defun helm-bibtex-ikloog-publications ()
-   "Search BibTeX entries authored by me"
-   (interactive)
-(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
-   (helm :sources '(helm-source-bibtex)
-         :full-frame t
-         :input "kloog !kprep !ktalk !kconf !unpublished"
-         :candidate-number-limit 500)))
-
-;; Define helm-search with predefined search expression:
-(defun helm-bibtex-ikloog-publications-all ()
-  "Search BibTeX entries authored by me (ALL including prep)"
-  (interactive)
-  (helm :sources '(helm-source-bibtex)
-        :full-frame t
-        :input "kloog !unpublished"
-        :candidate-number-limit 500))
-
-;; Define helm-search with predefined search expression:
-(defun helm-bibtex-ikloog-prep         ()
-  "Search BibTeX entries in preperation with me"
-  (interactive)
-  (helm :sources '(helm-source-bibtex)
-        :full-frame t
-        :input "kloog kprep !unpublished"
-        :candidate-number-limit 500))
-
 (use-package helm-grepint
  :ensure t
  :config
@@ -1277,6 +1209,83 @@
  :config
  
  )
+
+(use-package helm-bibtex
+ :ensure t
+ :config
+
+;;;if not installing through MELPA
+;;;(autoload 'helm-bibtex "helm-bibtex" "" t)
+
+;;; telling helm-bibtex where your bibliographies can be found:
+(setq helm-bibtex-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib" "/home/zeltak/org/files/Uni/papers/library.bib" "/home/zeltak/org/files/Uni/papers/kloog.papers.misc.bib" ))
+
+;;Specify where PDFs can be found:
+(setq helm-bibtex-library-path (list "/home/zeltak/Sync/Uni/pdf_lib/" "/home/zeltak/Sync/Uni/pdf_lib_gen/") ) 
+
+;;;If the BibTeX entries have a field that specifies the full path to the PDFs, that field can also be used
+(setq helm-bibtex-pdf-field "File")
+
+;;;; Note files
+(setq helm-bibtex-notes-path "/home/zeltak/org/files/Uni/papers/notes")
+(setq helm-bibtex-notes-extension ".org")
+
+(setq helm-bibtex-format-citation-functions
+  '((org-mode      . helm-bibtex-format-citation-org-link-to-PDF)
+    (latex-mode    . helm-bibtex-format-citation-cite)
+    (markdown-mode . helm-bibtex-format-citation-pandoc-citeproc)
+    (default       . helm-bibtex-format-citation-default)))
+
+;;Fields used for searching
+(setq helm-bibtex-additional-search-fields '(tags))
+
+;;;Symbols used for indicating the availability of notes and PDF files
+(setq helm-bibtex-pdf-symbol "𝍌")
+(setq helm-bibtex-notes-symbol "✎")
+
+;;set default browser
+(setq helm-bibtex-browser-function
+  (lambda (url _) (start-process "firefox" "*firefox*" "firefox" url)))
+;;  (lambda (url _) (start-process "chromium" "*chromium*" "chromium" url)))
+
+
+ )
+
+(defun helm-bibtex-ikloog-publications ()
+   "Search BibTeX entries authored by me"
+   (interactive)
+(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "kloog !kprep !ktalk !kconf !unpublished"
+         :candidate-number-limit 500)))
+
+(defun helm-bibtex-papers-rtodo ()
+   "Search BibTeX entries authored by me"
+   (interactive)
+(let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/library.bib"))
+   (helm :sources '(helm-source-bibtex)
+         :full-frame t
+         :input "rtodo"
+         :candidate-number-limit 500)))
+
+;; Define helm-search with predefined search expression:
+(defun helm-bibtex-ikloog-publications-all ()
+  "Search BibTeX entries authored by me (ALL including prep)"
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "kloog !unpublished"
+        :candidate-number-limit 500))
+
+;; Define helm-search with predefined search expression:
+(defun helm-bibtex-ikloog-prep         ()
+  "Search BibTeX entries in preperation with me"
+  (interactive)
+  (helm :sources '(helm-source-bibtex)
+        :full-frame t
+        :input "kloog kprep !unpublished"
+        :candidate-number-limit 500))
 
 (use-package mu4e-alert
  :ensure t
@@ -1444,12 +1453,16 @@
   ;; for pdf support  
  (require 'org-ref-pdf)
 (require 'org-ref-url-utils)
-  ;(org-babel-load-file "/home/zeltak/.emacs.g/extra/org-ref/org-ref.org")
-  (setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
+
+;;(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
+
+(setq reftex-default-bibliography
+      (quote
+       ("/home/zeltak/org/files/Uni/papers/library.bib" "/home/zeltak/org/files/Uni/papers/kloog.papers.bib")))
 
   ;; see org-ref for use of these variables
   (setq org-ref-bibliography-notes "/home/zeltak/org/files/Uni/papers/notes/"
-        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib")
+        org-ref-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib" "/home/zeltak/org/files/Uni/papers/library.bib" )
         org-ref-pdf-directory "/home/zeltak/Sync/Uni/pdf_lib/")
 
   (setq bibtex-autokey-year-length 4
@@ -1591,6 +1604,7 @@
  :ensure t
  :config
 (require 'pabbrev)
+;; to autoload
 (global-pabbrev-mode)
 
  )
@@ -3467,12 +3481,12 @@ Reference management
 ("p"  helm-bibtex-ikloog-prep "kloog prep"  :face 'hydra-face-green )
 ("r"  helm-resume "helm resume")
 ("s"  bibtex-sort-buffer "sort buffer"  :face 'hydra-face-red)
-("t"  nil )
+("t"  helm-bibtex-papers-rtodo  "toread papers"  :face 'hydra-face-green )
 ("u"  nil )
 ("v"  bibtex-validate "validtae"  :face 'hydra-face-red )
 ("V"  bibtex-validate-globally "validate-check for dups"  :face 'hydra-face-red)
 ("w"  nil )
-("x"  crossref-add-bibtex-entry "free search" )
+("x"  crossref-add-bibtex-entry "search crossref" )
 ("y"  org-bibtex-yank "yank bibtex")
 ("z"  nil )
 ("q"  nil )
