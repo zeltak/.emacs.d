@@ -912,21 +912,31 @@ http://www.gnu.org/software/emacs/manual/html_node/dired-x/Shell-Command-Guessin
 
 $Note-no need to install its a internal dired package$ 
 #+BEGIN_SRC emacs-lisp :results none
-  (require 'dired-x)
-    (add-hook 'dired-load-hook
+(require 'dired-x)
+
+(add-hook 'dired-load-hook
               (function (lambda () (load "dired-x"))))
 
-  ;; (setq dired-guess-shell-alist-user
-  ;;       (list
-  ;;        (list "//.chm$" "xchm")
-  ;;        (list "//.rm$" "gmplayer")
-  ;;        (list "//.rmvb$" "gmplayer")
-  ;;        (list "//.avi$" "gmplayer")
-  ;;        (list "//.asf$" "gmplayer")
-  ;;        (list "//.wmv$" "gmplayer")
-  ;;        (list "//.htm$" "w3m")
-  ;;        (list "//.html$" "firefox")
-  ;;        (list "//.mpg$" "gmplayer")))
+(setq dired-guess-shell-alist-user
+      '(("\\.e?ps$" "gv" "xloadimage" "lpr")
+        ("\\.chm$" "xchm")
+        ("\\.rar$" "unrar x")
+        ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
+        ("\\.pdf$" "zathura")
+        ("\\.mkv$" "mpv")
+        ("\\.ogm$" "mpv")
+        ("\\.avi$" "mpv")
+        ("\\.png$" "feh")
+        ("\\.jpg$" "feh")
+        ("\\.JPG$" "feh")
+        ("\\.doc$" "libreoffice")
+        ("\\.docx$" "libreoffice")
+        ("\\.xls$" "libreoffice")
+        ("\\.xlsx$" "libreoffice")
+        ("\\.ppt$" "libreoffice")
+        ("\\.pptx$" "libreoffice")
+
+))
 #+END_SRC 
 
 *** dired sort
@@ -946,6 +956,7 @@ $Note-no need to install its a internal dired package$
  )
 #+END_SRC 
 
+and the plus addon:
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package dired-sort-menu+
@@ -1049,6 +1060,19 @@ https://github.com/HKey/dired-atool
  (dired-atool-setup)
  )
 #+END_SRC
+*** TODO make-it-so
+https://github.com/abo-abo/make-it-so
+#+BEGIN_SRC emacs-lisp :results none
+(use-package  make-it-so 
+ :ensure t
+ :config
+(require 'make-it-so)
+(setq mis-recipes-directory "/home/zeltak/.emacs.d/mis")
+(mis-config-default)
+ )
+#+END_SRC 
+
+
 ** TODO Deft
 http://jblevins.org/projects/deft/
 
@@ -2086,7 +2110,24 @@ also: https://iloveemacs.wordpress.com/2014/09/10/emacs-as-an-advanced-terminal-
  :config
  
  )
-#+END_SRC 
+#+END_SRC
+
+** TODO mouse copy
+
+#+BEGIN_SRC emacs-lisp  :results none
+  ;; ;;; Mouse Copy
+  ;; (use-package mouse-copy
+  ;;  :ensure t
+  ;;   :bind (:map modi-mode-map
+  ;;          ;; Mouse drag secondary pasting
+  ;;          ;; Put the point at one place, then click-drag using the below binding,
+  ;;          ;; and the selected region will be COPIED at the point location.
+  ;;          ("<s-down-mouse-1>" . mouse-drag-secondary-pasting)
+  ;;          ;; Mouse drag secondary moving
+  ;;          ;; Put the point at one place, then click-drag using the below binding,
+  ;;          ;; and the selected region will be MOVED to the point location.
+  ;;          ("<S-s-down-mouse-1>" . mouse-drag-secondary-moving)))
+#+END_SRC
 
 
 ** nlinum
@@ -2817,7 +2858,62 @@ Do you know how I generated that numbered list of four elements? I used m1\n\n4|
 
 4.
 This demonstrates that you can have multiple separator characters; here I use two \n’s for the extra space. But there is that |%d. at the end. Tiny lets you use Emacs Lisp format strings, which you write at the end of your expression and delimit with a vertical bar. The formatting string %d. prints each number as a digit (%d) with a period after it. Used in conjunction with the newline separators it gives me exactly the output I want for a numbered list in Markdown.
+** tabbar
+https://www.emacswiki.org/emacs/TabBarMode
 
+#+BEGIN_SRC emacs-lisp :results none
+(use-package tabbar
+ :ensure t
+ :config
+(require 'tabbar)
+; turn on the tabbar
+(tabbar-mode t)
+; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
+;“User Buffer”.
+
+(defun tabbar-buffer-groups ()
+  "Return the list of group names the current buffer belongs to.
+This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+This function group all buffers into 3 groups:
+Those Dired, those user buffer, and those emacs buffer.
+Emacs buffer are those starting with “*”."
+  (list
+   (cond
+    ((string-equal "*" (substring (buffer-name) 0 1))
+     "Emacs Buffer"
+     )
+    ((eq major-mode 'dired-mode)
+     "Dired"
+     )
+((memq major-mode
+       '(org-mode text-mode rst-mode))
+ "org"
+ )
+
+   (t
+     "General"
+     )
+    ))) 
+
+(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+
+;;Sort tabbar buffers by name
+
+(defun tabbar-add-tab (tabset object &optional append_ignored)
+  "Add to TABSET a tab with value OBJECT if there isn't one there yet.
+If the tab is added, it is added at the beginning of the tab list,
+unless the optional argument APPEND is non-nil, in which case it is
+added at the end."
+  (let ((tabs (tabbar-tabs tabset)))
+    (if (tabbar-get-tab object tabset)
+        tabs
+      (let ((tab (tabbar-make-tab object tabset)))
+        (tabbar-set-template tabset nil)
+        (set tabset (sort (cons tab tabs)
+                          (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
+
+ )
+#+END_SRC 
 ** transmission
 need to install let-alist and seq packages from melpa
 https://github.com/holomorph/transmission/issues/1
@@ -8229,20 +8325,15 @@ Always recursively delete directory
 
 #+END_SRC
 
-**** TODO Allow running multiple async commands simultaneously
-#+BEGIN_SRC emacs-lisp :results none
-  ;; ;; Allow running multiple async commands simultaneously
-  ;; (defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
-  ;;   (when (get-buffer "*Async Shell Command*")
-  ;;     (with-current-buffer "*Async Shell Command*"
-  ;;       (rename-uniquely))))
-  ;; (ad-activate 'shell-command)
-#+END_SRC
-
 **** dired find
 #+BEGIN_SRC emacs-lisp :results none
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+#+END_SRC
+**** Auto-refresh dired on file change
+#+BEGIN_SRC emacs-lisp  :results none
+;; Auto-refresh dired on file change
+(add-hook 'dired-mode-hook 'auto-revert-mode)
 #+END_SRC
 **** dired sync for external commands
 #+BEGIN_SRC emacs-lisp  :results none
@@ -8351,11 +8442,11 @@ $Note-if you see starnge behivour this maybe a culprit$
 *** navigate
 **** TODO auto open/enter file/dir in isearch
 #+BEGIN_SRC emacs-lisp :results none
-(add-hook 'isearch-mode-end-hook 
-  (lambda ()
-    (when (and (eq major-mode 'dired-mode)
-           (not isearch-mode-end-hook-quit))
-      (dired-find-file))))
+  ;; (add-hook 'isearch-mode-end-hook 
+  ;;   (lambda ()
+  ;;     (when (and (eq major-mode 'dired-mode)
+  ;;            (not isearch-mode-end-hook-quit))
+  ;;       (dired-find-file))))
 #+END_SRC
 
 *** keybinds
@@ -8405,6 +8496,7 @@ $Note-if you see starnge behivour this maybe a culprit$
 【/】 filter 【g】 clear filter 
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
+    ("<f1>" diredp-toggle-find-file-reuse-dir  "toggle resue dired" ) 
     ("1" hydra-dired-operations/body "dired operations" )
     ("2" hydra-dired-searches/body "dired searches" )
     ("a" dired-mark-subdir-files "mark all" )
@@ -8458,7 +8550,8 @@ change dir only in dir mode hook?
 ("g"  nil )
 ("h"  (find-file "~/") "HOME" )
 ("i"  nil )
-("j"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
+("j"  bmkp-dired-jump  "jump BK+" )
+("J"  bmkp-dired-jump-current  "jump BK+ CURRENT" )
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
@@ -8473,8 +8566,9 @@ change dir only in dir mode hook?
 ("v"  nil)
 ("w"  (find-file "~/dotfiles/") "dotfiles" )
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
+;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("z"  (bmkp-dired-jump "d_zh_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 

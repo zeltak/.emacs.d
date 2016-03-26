@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ tabbar-mode
+ tabbar-backward-group
+ tabbar-forward-tab
+ tabbar-local-mode
+ tabbar-forward
  pabbrev-mode
  smart-tab
- isearch-repeat-forward
- dired-isearch-filenames
- dired-do-isearch
- isearch-forward
- mu4e
 )
 
 ;; ----- smex-data -----
@@ -297,4 +297,9 @@
  (zbufref . 1)
  (pabbrev-mode . 12)
  (smart-tab . 1)
+ (tabbar-mode . 3)
+ (tabbar-forward . 1)
+ (tabbar-local-mode . 2)
+ (tabbar-forward-tab . 1)
+ (tabbar-backward-group . 1)
 )

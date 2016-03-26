@@ -661,20 +661,30 @@
  )
 
 (require 'dired-x)
-  (add-hook 'dired-load-hook
-            (function (lambda () (load "dired-x"))))
 
-;; (setq dired-guess-shell-alist-user
-;;       (list
-;;        (list "//.chm$" "xchm")
-;;        (list "//.rm$" "gmplayer")
-;;        (list "//.rmvb$" "gmplayer")
-;;        (list "//.avi$" "gmplayer")
-;;        (list "//.asf$" "gmplayer")
-;;        (list "//.wmv$" "gmplayer")
-;;        (list "//.htm$" "w3m")
-;;        (list "//.html$" "firefox")
-;;        (list "//.mpg$" "gmplayer")))
+(add-hook 'dired-load-hook
+              (function (lambda () (load "dired-x"))))
+
+(setq dired-guess-shell-alist-user
+      '(("\\.e?ps$" "gv" "xloadimage" "lpr")
+        ("\\.chm$" "xchm")
+        ("\\.rar$" "unrar x")
+        ("\\.e?ps\\.g?z$" "gunzip -qc * | gv -")
+        ("\\.pdf$" "zathura")
+        ("\\.mkv$" "mpv")
+        ("\\.ogm$" "mpv")
+        ("\\.avi$" "mpv")
+        ("\\.png$" "feh")
+        ("\\.jpg$" "feh")
+        ("\\.JPG$" "feh")
+        ("\\.doc$" "libreoffice")
+        ("\\.docx$" "libreoffice")
+        ("\\.xls$" "libreoffice")
+        ("\\.xlsx$" "libreoffice")
+        ("\\.ppt$" "libreoffice")
+        ("\\.pptx$" "libreoffice")
+
+))
 
 (use-package dired-sort
  :ensure t
@@ -750,6 +760,14 @@
  :ensure t
  :config
  (dired-atool-setup)
+ )
+
+(use-package  make-it-so 
+ :ensure t
+ :config
+(require 'make-it-so)
+(setq mis-recipes-directory "/home/zeltak/.emacs.d/mis")
+(mis-config-default)
  )
 
 (use-package deft
@@ -1440,6 +1458,19 @@
  
  )
 
+;; ;;; Mouse Copy
+;; (use-package mouse-copy
+;;  :ensure t
+;;   :bind (:map modi-mode-map
+;;          ;; Mouse drag secondary pasting
+;;          ;; Put the point at one place, then click-drag using the below binding,
+;;          ;; and the selected region will be COPIED at the point location.
+;;          ("<s-down-mouse-1>" . mouse-drag-secondary-pasting)
+;;          ;; Mouse drag secondary moving
+;;          ;; Put the point at one place, then click-drag using the below binding,
+;;          ;; and the selected region will be MOVED to the point location.
+;;          ("<S-s-down-mouse-1>" . mouse-drag-secondary-moving)))
+
 (use-package nlinum
  :ensure t
  :config
@@ -1930,6 +1961,58 @@
   :config
 ;  (global-set-key (kbd "C-s-t") 'tiny-expand)
 )
+
+(use-package tabbar
+ :ensure t
+ :config
+(require 'tabbar)
+; turn on the tabbar
+(tabbar-mode t)
+; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
+;“User Buffer”.
+
+(defun tabbar-buffer-groups ()
+  "Return the list of group names the current buffer belongs to.
+This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+This function group all buffers into 3 groups:
+Those Dired, those user buffer, and those emacs buffer.
+Emacs buffer are those starting with “*”."
+  (list
+   (cond
+    ((string-equal "*" (substring (buffer-name) 0 1))
+     "Emacs Buffer"
+     )
+    ((eq major-mode 'dired-mode)
+     "Dired"
+     )
+((memq major-mode
+       '(org-mode text-mode rst-mode))
+ "org"
+ )
+
+   (t
+     "General"
+     )
+    ))) 
+
+(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+
+;;Sort tabbar buffers by name
+
+(defun tabbar-add-tab (tabset object &optional append_ignored)
+  "Add to TABSET a tab with value OBJECT if there isn't one there yet.
+If the tab is added, it is added at the beginning of the tab list,
+unless the optional argument APPEND is non-nil, in which case it is
+added at the end."
+  (let ((tabs (tabbar-tabs tabset)))
+    (if (tabbar-get-tab object tabset)
+        tabs
+      (let ((tab (tabbar-make-tab object tabset)))
+        (tabbar-set-template tabset nil)
+        (set tabset (sort (cons tab tabs)
+                          (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
+
+ )
 
 ;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 (require 'transmission)
@@ -6153,15 +6236,11 @@ scroll-step 1)
 ;(setq dired-recursive-copies 'top) ; “top” means ask once
 (setq dired-recursive-copies 'always) ; never ask
 
-;; ;; Allow running multiple async commands simultaneously
-;; (defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
-;;   (when (get-buffer "*Async Shell Command*")
-;;     (with-current-buffer "*Async Shell Command*"
-;;       (rename-uniquely))))
-;; (ad-activate 'shell-command)
-
 (require 'find-dired)
 (setq find-ls-option '("-print0 | xargs -0 ls -ld" . "-ld"))
+
+;; Auto-refresh dired on file change
+(add-hook 'dired-mode-hook 'auto-revert-mode)
 
 ;; Allow running multiple async commands simultaneously
 (defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
@@ -6231,11 +6310,11 @@ scroll-step 1)
   '(add-to-list 'dired-compress-file-suffixes
                 '("\\.zip\\'" ".zip" "unzip")))
 
-(add-hook 'isearch-mode-end-hook 
-  (lambda ()
-    (when (and (eq major-mode 'dired-mode)
-           (not isearch-mode-end-hook-quit))
-      (dired-find-file))))
+;; (add-hook 'isearch-mode-end-hook 
+;;   (lambda ()
+;;     (when (and (eq major-mode 'dired-mode)
+;;            (not isearch-mode-end-hook-quit))
+;;       (dired-find-file))))
 
 (define-key dired-mode-map (kbd "<left>") 'diredp-up-directory-reuse-dir-buffer )
  (define-key dired-mode-map (kbd "<right>") 'diredp-find-file-reuse-dir-buffer )
@@ -6278,6 +6357,7 @@ scroll-step 1)
 【/】 filter 【g】 clear filter 
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
+    ("<f1>" diredp-toggle-find-file-reuse-dir  "toggle resue dired" ) 
     ("1" hydra-dired-operations/body "dired operations" )
     ("2" hydra-dired-searches/body "dired searches" )
     ("a" dired-mark-subdir-files "mark all" )
@@ -6326,7 +6406,8 @@ scroll-step 1)
 ("g"  nil )
 ("h"  (find-file "~/") "HOME" )
 ("i"  nil )
-("j"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
+("j"  bmkp-dired-jump  "jump BK+" )
+("J"  bmkp-dired-jump-current  "jump BK+ CURRENT" )
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
@@ -6341,8 +6422,9 @@ scroll-step 1)
 ("v"  nil)
 ("w"  (find-file "~/dotfiles/") "dotfiles" )
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
-("y"  nil )
-("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
+;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+("z"  (bmkp-dired-jump "d_zh_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 
