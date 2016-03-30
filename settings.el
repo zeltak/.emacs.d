@@ -1135,6 +1135,21 @@
 
 (global-set-key (kbd "C-x b") 'helm-mini)
 
+(defun sort-dired-buffers (buffers)
+  "Sort BUFFERS by moving all Dired buffers to the end."
+  (let (dired-buffers other-buffers)
+    (dolist (buf buffers)
+      (if (with-current-buffer buf
+            (eq major-mode 'dired-mode))
+          (push buf dired-buffers)
+        (push buf other-buffers)))
+    (nreverse (append dired-buffers other-buffers))))
+
+(defun helm-buffers-sort-dired-buffers (orig-fun &rest args)
+  (sort-dired-buffers (apply orig-fun args)))
+
+(advice-add 'helm-buffers-sort-transformer :around #'helm-buffers-sort-dired-buffers)
+
 (use-package helm-cmd-t
 :ensure t
 :config
@@ -1304,6 +1319,11 @@
         :full-frame t
         :input "kloog kprep !unpublished"
         :candidate-number-limit 500))
+
+(use-package helm-org-rifle
+ :ensure t
+ :config
+ )
 
 (use-package mu4e-alert
  :ensure t
@@ -1550,8 +1570,6 @@
 ;; (setq org-download-method 'attach
 ;;        org-download-screenshot-method "scrot -s %s"
 ;;        org-download-backend (if (executable-find "curl") "curl \"%s\" -o \"%s\"" t)))
-
-;(if (string= system-name "voices") (setq-default org-download-image-dir "/home/zeltak/org/attach/images_2014/") (setq-default org-download-image-dir "/media/NAS/Uni/org/attach/images_2013/"))
 
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
 (require 'org-dp-lib)
@@ -3280,7 +3298,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("ee"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
 ("el"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
 
-("f"  nil )
+("f"  helm-org-rifle "org-search (rifle) )")
 ("g"  nil )
 
 ;;; home related quick access
@@ -3792,6 +3810,7 @@ _q_: quit
    ("e" z/org-email-heading  "email header" )
    ("z" z/org-email-heading-me  "email header ikloog" )
    ("r" org-copy  "copy via refile" )
+   ("m" org-teleport  "teleport header " )
    ("h" org-set-line-headline "line to headline" )
    ("c" org-set-line-checkbox  "line to checkbox" )
    (";" z/org-cblock-comment  "line to checkbox" )
@@ -6035,6 +6054,58 @@ charset=UTF-8\">\n"
        "</HTML>")
       (write-file (concat (file-name-sans-extension file) 
 "-bookmarks.html"))))))
+
+(defun org-teleport (&optional arg)
+  "Teleport the current heading to after a headline selected with avy.
+With a prefix ARG move the headline to before the selected
+headline. With a numeric prefix, set the headline level. If ARG
+is positive, move after, and if negative, move before."
+  (interactive "P")
+  ;; Kill current headline
+  (org-mark-subtree)
+  (kill-region (region-beginning) (region-end))
+  ;; Jump to a visible headline
+  (avy-with avy-goto-line (avy--generic-jump "^\\*+" nil avy-style))
+  (cond
+   ;; Move before  and change headline level
+   ((and (numberp arg) (> 0 arg))
+    (save-excursion
+      (yank))
+    ;; arg is what we want, second is what we have
+    ;; if n is positive, we need to demote (increase level)
+    (let ((n (- (abs arg) (car (org-heading-components)))))
+      (cl-loop for i from 1 to (abs n)
+               do
+               (if (> 0 n)
+                   (org-promote-subtree)
+                 (org-demote-subtree)))))
+   ;; Move after and change level
+   ((and (numberp arg) (< 0 arg))
+    (org-mark-subtree)
+    (goto-char (region-end))
+    (when (eobp) (insert "\n"))
+    (save-excursion
+      (yank))
+    ;; n is what we want and second is what we have
+    ;; if n is positive, we need to demote
+    (let ((n (- (abs arg) (car (org-heading-components)))))
+      (cl-loop for i from 1 to (abs n)
+               do
+               (if (> 0 n) (org-promote-subtree)
+                 (org-demote-subtree)))))
+
+   ;; move to before selection
+   ((equal arg '(4))
+    (save-excursion
+      (yank)))
+   ;; move to after selection
+   (t
+    (org-mark-subtree)
+    (goto-char (region-end))
+    (when (eobp) (insert "\n"))
+    (save-excursion
+      (yank))))
+  (outline-hide-leaves))
 
 (defun z/org-move-top-collapse  ()
      (interactive)            

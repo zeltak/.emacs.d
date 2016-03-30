@@ -3,8 +3,8 @@
 ;;; Code:
 (add-to-list 'load-path (or (file-name-directory #$) (car load-path)))
 
-;;;### (autoloads nil "org-download" "org-download.el" (22248 3562
-;;;;;;  942762 396000))
+;;;### (autoloads nil "org-download" "org-download.el" (22265 14931
+;;;;;;  688160 297000))
 ;;; Generated autoloads from org-download.el
 
 (autoload 'org-download-enable "org-download" "\

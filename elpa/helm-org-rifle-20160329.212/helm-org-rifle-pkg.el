@@ -1,0 +1,1 @@
+(define-package "helm-org-rifle" "20160329.212" "Rifle through your Org files" '((emacs "24.4") (helm "1.9.3") (s "1.10.0")) :url "http://github.com/alphapapa/helm-org-rifle" :keywords '("hypermedia" "outlines"))

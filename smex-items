@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ org-teleport
  tabbar-mode
  tabbar-backward-group
  tabbar-forward-tab
  tabbar-local-mode
  tabbar-forward
  pabbrev-mode
- smart-tab
 )
 
 ;; ----- smex-data -----
@@ -302,4 +302,5 @@
  (tabbar-local-mode . 2)
  (tabbar-forward-tab . 1)
  (tabbar-backward-group . 1)
+ (org-teleport . 3)
 )
