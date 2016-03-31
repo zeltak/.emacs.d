@@ -8652,7 +8652,7 @@ change dir only in dir mode hook?
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
 ("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
 ;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("z"  (bmkp-dired-jump "d_zh_tmp") "ZH_tmp" )
+("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 

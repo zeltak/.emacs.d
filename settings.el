@@ -3298,8 +3298,8 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("ee"  (find-file "/home/zeltak/org/files/Tech/Emacs.org") "Emacs" :face 'hydra-face-cyan)
 ("el"  (find-file "/home/zeltak/org/files/Tech/linux.org") "linux"  :face 'hydra-face-cyan)
 
-("f"  helm-org-rifle "org-search (rifle) )")
 ("g"  nil )
+("f"  helm-org-rifle "org-search (rifle) )")
 
 ;;; home related quick access
 ("hd"  (find-file "/home/zeltak/org/files/agenda/dl.org")    "Downloads"  :face 'hydra-face-cyan)
