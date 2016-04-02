@@ -3352,9 +3352,9 @@ Term: 【C-c C-j】-activate Emacs mode 【C-c C-k】 back to normal term mode
 ("i"  nil )
 ("j"  helm-colors "color pallete" )
 ("k" key-chord-mode "key-chord"  )
-("l" lentic-mode  "lentic")
+("l" nlinum-mode  "line num")
 ("L" linum-mode  "linium")
-("t" nlinum-mode  "line num")
+("t" lentic-mode  "lentic")
 ("m" hydra-toggles-macro/body "macro menu")
 ("n" start-kbd-macro "start macro" :face 'hydra-face-green)
 ("o" end-kbd-macro "end macro" :face 'hydra-face-red)
@@ -6495,7 +6495,7 @@ scroll-step 1)
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
 ("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
 ;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("z"  (bmkp-dired-jump "d_zh_tmp") "ZH_tmp" )
+("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 
@@ -7455,40 +7455,40 @@ Version 2015-12-02"
 
 (require 'mu4e)
 
-;; default
-;; (setq mu4e-maildir "~/Maildir")
+   ;; default
+   ;; (setq mu4e-maildir "~/Maildir")
 
-(setq mu4e-drafts-folder "/[Gmail].Drafts")
-(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
-(setq mu4e-trash-folder  "/[Gmail].Trash")
+ ;;location of my maildir
+ (setq mu4e-maildir (expand-file-name "~/Maildir"))
+ (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+(setq mu4e-trash-folder  "/[Gmail].Bin")
+(setq mu4e-drafts-folder  "/[Gmail].Drafts")
 
-;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
+   ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+   (setq mu4e-sent-messages-behavior 'delete)
 
-;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-;; additional non-Gmail addresses and want assign them different
-;; behavior.)
+   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+   ;; additional non-Gmail addresses and want assign them different
+   ;; behavior.)
 
-;; setup some handy shortcuts
-;; you can quickly switch to your Inbox -- press ``ji''
-;; then, when you want archive some messages, move them to
-;; the 'All Mail' folder by pressing ``ma''.
+   ;; allow for updating mail using 'U' in the main view:
+   ;(setq mu4e-get-mail-command "offlineimap")
 
-(setq mu4e-maildir-shortcuts
-    '( ("/INBOX"               . ?i)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
+   ;; sending mail -- replace USERNAME with your gmail username
+   ;; also, make sure the gnutls command line utils are installed
+   ;; package 'gnutls-bin' in Debian/Ubuntu
 
-;; allow for updating mail using 'U' in the main view:
-;(setq mu4e-get-mail-command "offlineimap")
+   ;; don't keep message buffers around
+   (setq message-kill-buffer-on-exit t)
 
-;; sending mail -- replace USERNAME with your gmail username
-;; also, make sure the gnutls command line utils are installed
-;; package 'gnutls-bin' in Debian/Ubuntu
+;;rename files when moving
+;;NEEDED FOR MBSYNC
+(setq mu4e-change-filenames-when-moving t)
 
-;; don't keep message buffers around
-(setq message-kill-buffer-on-exit t)
+;;set up queue for offline email
+;;use mu mkdir  ~/Maildir/queue to set up first
+(setq smtpmail-queue-mail nil  ;; start in normal mode
+      smtpmail-queue-dir   "~/Maildir/queue/cur")
 
 (require 'smtpmail)
 (setq message-send-mail-function 'smtpmail-send-it
@@ -7505,12 +7505,13 @@ Version 2015-12-02"
 ;; then, when you want archive some messages, move them to
 ;; the 'All Mail' folder by pressing ``ma''.
 
-(setq mu4e-maildir-shortcuts
-    '( ("INBOX"               . ?i)
-       ("Starred"   . ?r)
-       ("/[Gmail].Sent Mail"   . ?s)
-       ("/[Gmail].Trash"       . ?t)
-       ("/[Gmail].All Mail"    . ?a)))
+
+    (setq mu4e-maildir-shortcuts
+        '( ("/INBOX"               . ?i)
+           ("/[Gmail].Sent Mail"   . ?s)
+           ("/[Gmail].Bin"       . ?t)
+           ("/[Gmail].Starred"       . ?1)
+           ("/[Gmail].All Mail"    . ?a)))
 
 (define-key mu4e-headers-mode-map (kbd "w") 'z/mu4e-del-exe-func )
 (define-key mu4e-headers-mode-map (kbd "f") 'z/mu4e-flag-exe-func )

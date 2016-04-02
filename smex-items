@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ python-mode
  org-teleport
  tabbar-mode
  tabbar-backward-group
  tabbar-forward-tab
  tabbar-local-mode
  tabbar-forward
- pabbrev-mode
 )
 
 ;; ----- smex-data -----
@@ -303,4 +303,5 @@
  (tabbar-forward-tab . 1)
  (tabbar-backward-group . 1)
  (org-teleport . 3)
+ (python-mode . 1)
 )
