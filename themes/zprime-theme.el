@@ -382,6 +382,8 @@
      `(wl-highlight-summary-refiled-face ((,class (:foreground "#000000"))))
      `(wl-highlight-summary-displaying-face ((,class (:underline t :weight bold))))
 
+;;mu4e
+     '(mu4e-flagged-face ((t (:inherit font-lock-constant-face :foreground "purple" :weight bold))))
 ;; Diff
    `(diff-added ((,class ,diff-added)))
    `(diff-changed ((,class ,diff-changed)))

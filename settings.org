@@ -1070,9 +1070,17 @@ https://github.com/abo-abo/make-it-so
 (setq mis-recipes-directory "/home/zeltak/.emacs.d/mis")
 (mis-config-default)
  )
-#+END_SRC 
-
-
+#+END_SRC
+*** peep dired
+ https://github.com/asok/peep-dired
+ #+BEGIN_SRC emacs-lisp  :results none
+ ;;preview files in dired
+ (use-package peep-dired
+   :ensure t
+   :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+   :bind (:map dired-mode-map
+               ("P" . peep-dired)))
+ #+END_SRC
 ** TODO Deft
 http://jblevins.org/projects/deft/
 
@@ -1515,6 +1523,8 @@ https://github.com/cute-jumper/gscholar-bibtex
  :ensure t
  :config
  (require 'goto-chg)
+ :bind (("C-." . goto-last-change)
+         ("C-," . goto-last-change-reverse))
  )
 #+END_SRC 
 
@@ -2887,6 +2897,8 @@ Do you know how I generated that numbered list of four elements? I used m1\n\n4|
 This demonstrates that you can have multiple separator characters; here I use two \n’s for the extra space. But there is that |%d. at the end. Tiny lets you use Emacs Lisp format strings, which you write at the end of your expression and delimit with a vertical bar. The formatting string %d. prints each number as a digit (%d) with a period after it. Used in conjunction with the newline separators it gives me exactly the output I want for a numbered list in Markdown.
 ** tabbar
 https://www.emacswiki.org/emacs/TabBarMode
+
+http://emacs.stackexchange.com/questions/10081/browser-style-tabs-for-Emacs
 
 #+BEGIN_SRC emacs-lisp :results none
 (use-package tabbar
@@ -5255,6 +5267,8 @@ _q_: quit
 【S-left//right】 change deadline 【k】 launch capture with date/task
 【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
 【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 【v】 view mode                             
+mark items +【B s】-Reschedule multiple items
+
 "
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
       ("<f9>" cfw:open-org-calendarz  "month calendar"  )
@@ -6805,8 +6819,6 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 ;;;;;;;;; this works when in mu4e header view
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
-
-
 
 ("E" "Etodo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
          "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"
@@ -8418,6 +8430,9 @@ Always recursively delete directory
 #+BEGIN_SRC emacs-lisp  :results none
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
+;; Auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
 #+END_SRC
 **** dired sync for external commands
 #+BEGIN_SRC emacs-lisp  :results none
@@ -9370,7 +9385,7 @@ Version 2015-01-26"
         (mapc
          (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
 #+END_SRC
-**** copy current open buffer path to killrinf
+**** copy current open buffer path to killring
 #+BEGIN_SRC emacs-lisp  :results none
 (defun z/dired-copy-buffer-file-path (&optional φdir-path-only-p)
   "Copy the current buffer's file path or dired path to `kill-ring'.
@@ -9394,6 +9409,33 @@ Version 2015-12-02"
        (progn
          (message "Directory path copied: 「%s」" (file-name-directory ξfpath))
          (file-name-directory ξfpath))))))
+#+END_SRC\N
+**** get-other-dired-directory
+http://emacs.stackexchange.com/questions/20935/synchronize-current-dired-path-to-next-dired-dir-shown-in-a-split-window
+
+#+BEGIN_SRC emacs-lisp  :results none
+(defun z/dired-get-other-dired-directory ()
+  "find name and directory of another dired buffer"
+  (let ((bs (buffer-list))
+        (here (current-buffer))
+        this)
+    (mapc (lambda (b) (unless (equal b here)
+            (with-current-buffer b
+              (if dired-directory
+                  (setq this (cons (buffer-name) dired-directory)))))) bs)
+    this))
+
+(defun my/set-dired-dir-to-other ()
+  "Change the dired directory to the one of another existing dired buffer"
+  (interactive)
+  (let ((d (my/get-other-dired-directory)))
+    (if d
+        (progn
+          (setq dired-directory (cdr d)
+                default-directory (cdr d))
+          (revert-buffer)
+          (rename-buffer (generate-new-buffer-name (car d))))
+      (message "No other dired buffer"))))
 #+END_SRC
 *** dired macro
 **** beet import 
@@ -9856,6 +9898,12 @@ for ubuntu work machine
    #+END_SRC
 *** fetching and indexing
 #+BEGIN_SRC emacs-lisp :results none
+
+; get mail
+(setq mu4e-get-mail-command "mbsync gmail"
+      mu4e-html2text-command "w3m -T text/html"
+)
+
 (setq mu4e-update-interval 60)
 (setq mu4e-headers-auto-update t)
 (setq mu4e-index-update-error-warning  t)
@@ -10297,3 +10345,4 @@ Put this code in your emacs init file:
 ;; remember cursor position, for emacs 25.1 or later
 ;;(save-place-mode 1)
 #+END_SRC
+

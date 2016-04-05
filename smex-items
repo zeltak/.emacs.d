@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ my/set-dired-dir-to-other
  python-mode
  org-teleport
  tabbar-mode
  tabbar-backward-group
  tabbar-forward-tab
  tabbar-local-mode
- tabbar-forward
 )
 
 ;; ----- smex-data -----
@@ -288,7 +288,7 @@
  (org-archive-subtree . 2)
  (diredp-breadcrumbs-in-header-line-mode . 2)
  (xah-open-in-external-app . 1)
- (my/set-dired-dir-to-other . 1)
+ (my/set-dired-dir-to-other . 3)
  (dired-do-isearch . 2)
  (dired-isearch-filenames . 2)
  (isearch-repeat-forward . 3)
@@ -304,4 +304,5 @@
  (tabbar-backward-group . 1)
  (org-teleport . 3)
  (python-mode . 1)
+ (ora-dired-start-process . 2)
 )

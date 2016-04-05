@@ -15,7 +15,7 @@
  '(anzu-mode-lighter "")
  '(anzu-replace-to-string-separator " => ")
  '(anzu-search-threshold 1000)
- '(bmkp-last-as-first-bookmark-file "/home/zeltak/.emacs.d/bookmarks")
+ '(bmkp-last-as-first-bookmark-file "~/.emacs.d/bookmarks")
  '(custom-safe-themes
    (quote
     ("6a37be365d1d95fad2f4d185e51928c789ef7a4ccf17e7ca13ad63a8bf5b922f" . t)))
@@ -74,6 +74,7 @@
  '(ivy-minibuffer-match-face-2 ((t :background "#bbbbbb" :weight bold)))
  '(ivy-minibuffer-match-face-3 ((t :background "#bbbbff" :weight bold)))
  '(ivy-minibuffer-match-face-4 ((t :background "#ffbbff" :weight bold)))
+ '(mu4e-flagged-face ((t (:inherit font-lock-constant-face :foreground "light sky blue" :weight bold))))
  '(org-mode-line-clock ((t (:background "grey75" :foreground "red" :box (:line-width -1 :style released-button)))))
  '(sr-active-path-face ((t (:background "DodgerBlue4" :foreground "deep sky blue" :weight bold))))
  '(sr-symlink-face ((t (:foreground "dim gray" :slant italic))))

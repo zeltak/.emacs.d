@@ -770,6 +770,13 @@
 (mis-config-default)
  )
 
+;;preview files in dired
+(use-package peep-dired
+  :ensure t
+  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+  :bind (:map dired-mode-map
+              ("P" . peep-dired)))
+
 (use-package deft
  :ensure t
  :config
@@ -1093,6 +1100,8 @@
  :ensure t
  :config
  (require 'goto-chg)
+ :bind (("C-." . goto-last-change)
+         ("C-," . goto-last-change-reverse))
  )
 
 (add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
@@ -3869,6 +3878,8 @@ _q_: quit
 【S-left//right】 change deadline 【k】 launch capture with date/task
 【:】 set tags 【,】set priority (then choose) 【S-U/D/L/R】 change todo/pri 
 【m,u,U...】 dired marking 【M-m】toggle marking 【B】 execute on marks via dispatcher 【v】 view mode                             
+mark items +【B s】-Reschedule multiple items
+
 "
       ("<f10>" z/org-agenda-calendar  "org agenda"  )
       ("<f9>" cfw:open-org-calendarz  "month calendar"  )
@@ -5027,8 +5038,6 @@ With prefix argument, also display headlines without a TODO keyword."
 ;;;;;;;;; this works when in mu4e header view
 ("e" "Email Todo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
                             "* TODO Read Message%? (%:fromname about %:subject)\nAdded:%U\n%a\nDEADLINE: %^t")
-
-
 
 ("E" "Etodo" entry (file+headline "~/org/files/agenda/bgu.org" "TD")
          "* TODO [#A] %?\nSCHEDULED: %(org-insert-time-stamp (org-read-date nil t \"+0d\"))\n%a\n"
@@ -6312,6 +6321,9 @@ scroll-step 1)
 
 ;; Auto-refresh dired on file change
 (add-hook 'dired-mode-hook 'auto-revert-mode)
+;; Auto refresh dired, but be quiet about it
+(setq global-auto-revert-non-file-buffers t)
+(setq auto-revert-verbose nil)
 
 ;; Allow running multiple async commands simultaneously
 (defadvice shell-command (after shell-in-new-buffer (command &optional output-buffer error-buffer))
@@ -7106,28 +7118,28 @@ Version 2015-01-26"
         (mapc
          (lambda (fPath) (let ((process-connection-type nil)) (start-process "" nil "xdg-open" fPath))) ξfile-list))))))
 
-(defun z/dired-copy-buffer-file-path (&optional φdir-path-only-p)
-  "Copy the current buffer's file path or dired path to `kill-ring'.
-Result is full path.
-If `universal-argument' is called first, copy only the dir path.
-URL `http://ergoemacs.org/emacs/emacs_copy_file_path.html'
-Version 2015-12-02"
-  (interactive "P")
-  (let ((ξfpath
-         (if (equal major-mode 'dired-mode)
-             (expand-file-name default-directory)
-           (if (null (buffer-file-name))
-               (user-error "Current buffer is not associated with a file.")
-             (buffer-file-name)))))
-    (kill-new
-     (if (null φdir-path-only-p)
-         (progn
-           (message "File path copied: 「%s」" ξfpath)
-           ξfpath
-           )
-       (progn
-         (message "Directory path copied: 「%s」" (file-name-directory ξfpath))
-         (file-name-directory ξfpath))))))
+(defun z/dired-get-other-dired-directory ()
+  "find name and directory of another dired buffer"
+  (let ((bs (buffer-list))
+        (here (current-buffer))
+        this)
+    (mapc (lambda (b) (unless (equal b here)
+            (with-current-buffer b
+              (if dired-directory
+                  (setq this (cons (buffer-name) dired-directory)))))) bs)
+    this))
+
+(defun my/set-dired-dir-to-other ()
+  "Change the dired directory to the one of another existing dired buffer"
+  (interactive)
+  (let ((d (my/get-other-dired-directory)))
+    (if d
+        (progn
+          (setq dired-directory (cdr d)
+                default-directory (cdr d))
+          (revert-buffer)
+          (rename-buffer (generate-new-buffer-name (car d))))
+      (message "No other dired buffer"))))
 
 (fset 'z/dired-macro-beetimp
    [?& ?b ?e ?e ?t ?  ?i ?m ?p ?o ?r ?t ])
@@ -7436,6 +7448,11 @@ Version 2015-12-02"
   (interactive)
 (execute-kbd-macro (symbol-function 'z/mu4e-unflag-exe)) 
     )
+
+; get mail
+(setq mu4e-get-mail-command "mbsync gmail"
+      mu4e-html2text-command "w3m -T text/html"
+)
 
 (setq mu4e-update-interval 60)
 (setq mu4e-headers-auto-update t)
