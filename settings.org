@@ -6825,6 +6825,7 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
 )
 
 
+
 ;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
@@ -7006,6 +7007,13 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
  %?
    "
 )
+
+("G" "Generic-ask which file" entry (file+headline (expand-file-name (read-string "Name of file: ")) "Generic")
+                 "|%f| %U|%A|" :prepend t)
+
+ ("j" "journal" entry
+   (file+datetree+prompt "/home/zeltak/ZH_tmp/XDsettings.org")
+   "* %(format-time-string \"%H:%M\") %^{Entry} %^G\n%i%?")
 
 
      )))

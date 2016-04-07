@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ spook
  my/set-dired-dir-to-other
  python-mode
  org-teleport
  tabbar-mode
  tabbar-backward-group
  tabbar-forward-tab
- tabbar-local-mode
 )
 
 ;; ----- smex-data -----
@@ -305,4 +305,5 @@
  (org-teleport . 3)
  (python-mode . 1)
  (ora-dired-start-process . 2)
+ (spook . 2)
 )

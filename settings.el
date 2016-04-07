@@ -5044,6 +5044,7 @@ With prefix argument, also display headlines without a TODO keyword."
 )
 
 
+
 ;;;;---------------------------------------------------------------------------
 ;;;; meetings
 
@@ -5225,6 +5226,9 @@ With prefix argument, also display headlines without a TODO keyword."
  %?
    "
 )
+
+("G" "Generic-ask which file" entry (file+headline (expand-file-name (read-string "Name of file: ")) "Generic")
+                 "|%f| %U|%A|" :prepend t)
 
 
      )))
