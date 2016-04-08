@@ -1561,6 +1561,12 @@
     ))
  )
 
+(use-package org-bookmark-heading
+ :ensure t
+ :config
+(require 'org-bookmark-heading) 
+ )
+
 (use-package org-cliplink
  :ensure t
  :config
@@ -1803,7 +1809,6 @@
  :config
 (require 'smart-tab)
 (global-smart-tab-mode 1)
-
 
 (setq smart-tab-disabled-major-modes
       (list 'term-mode
@@ -2932,6 +2937,25 @@ Repeated invocations toggle between the two most recently open buffers."
           (select-window first-win)
           (if this-win-2nd (other-window 1))))))
 
+(defun z/delete-current-file ()
+  "Delete the file associated with the current buffer and close the buffer.
+Also push file content to `kill-ring'.
+If buffer is not file, just close it, and push file content to `kill-ring'.
+
+URL `http://ergoemacs.org/emacs/elisp_delete-current-file.html'
+Version 2015-08-12"
+  (interactive)
+  (progn
+    (kill-new (buffer-string))
+    (when (buffer-file-name)
+      (when (file-exists-p (buffer-file-name))
+        (progn
+          (delete-file (buffer-file-name))
+          (message "Deleted: 「%s」." (buffer-file-name)))))
+    (let ((buffer-offer-save nil))
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer)))))
+
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
 (defun create-scratch-buffer nil
@@ -3453,7 +3477,7 @@ _q_:
 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
 【*s】 mark all 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【g】 refresh
 【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-【b】preview file 【v】 viewer
+【b】preview file 【v】 viewer 【P】 peep-dir (image view)
 "
 ("<f2>" dired "dired")
 ("<f1>" sunrise "sunrise")
@@ -3541,27 +3565,6 @@ to wrap by symbol mark region and then issue symbol, like: 【*】
     ("pq" z/org-cblock-paste-QUOTE "paste QUOTE" )
     ("e" z/org-cblock-nowrap-example "insert Example block" )
     ("q" nil "cancel")))
-
-(global-set-key
-   (kbd "<f5>")
-(defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
-  "
-【M-Enter】 open link 【R】 Reply to sender 
-【+】flag (star)
-"
-  ("<f5>"     z/mu4e-inbox            "mu4e inbox")
-  ("7"     z/mu4e-flagged            "mu4e flagged")
-;;  ("<f5>"     mu4e            "start mu4e")
-  ("<f6>"     helm-mu            "helm mu4e")
-  ("<f4>"    elfeed            "elfeed")
-  ("ez" z/org-email-heading-me "email myslef the tree")
-  ("ex" z/org-email-heading "email other the tree")
-  ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
-  ("f"    (execute-kbd-macro (symbol-function 'mu4e-flag-exe))         "flag")
-  ("F"    (execute-kbd-macro (symbol-function 'mu4e-unflag-exe))          "unflag")
-  ("o"     mu4e-headers-change-sorting            "sort")
-    ("q"     nil                          "cancel" )
-))
 
 (global-set-key
    (kbd "<f6>")
@@ -4533,7 +4536,7 @@ org-catch-invisible-edits 'show-and-error
 (setq org-agenda-window-setup "current-window")
 (setq org-agenda-restore-windows-after-quit t)
 
-(run-with-idle-timer 30 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
+(run-with-idle-timer 600 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -5229,6 +5232,10 @@ With prefix argument, also display headlines without a TODO keyword."
 
 ("G" "Generic-ask which file" entry (file+headline (expand-file-name (read-string "Name of file: ")) "Generic")
                  "|%f| %U|%A|" :prepend t)
+
+ ("j" "journal" entry
+   (file+datetree+prompt "/home/zeltak/ZH_tmp/XDsettings.org")
+   "* %(format-time-string \"%H:%M\") %^{Entry} %^G\n%i%?")
 
 
      )))
@@ -6428,20 +6435,24 @@ scroll-step 1)
  (define-key dired-mode-map (kbd  "S-<f5>") 'hydra-mu4e/body  )
  (define-key dired-mode-map (kbd  "S-<f6>") 'hydra-bib/body  )
  (define-key dired-mode-map (kbd  "S-<f9>") 'hydra-org/body  )
+;;; for image dired to delete photos using 'd'
+ (define-key image-mode-map (kbd  "d") 'z/delete-current-file  )
 
 (global-set-key
        (kbd "")
     (defhydra hydra-dired-leader  (:color blue  :columns 4 :hints nil)
     "
-   【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
-   【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
-   【*s】 mark all 【t】 toggle mark (mark all) 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 【C-space】start visual mark
-   【g】 refresh
-   【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
-   【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
-   【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
-   【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
+【s】sort 【+】 add dir 【&/!】 open with 【M-n】 cycle diredx guesses 【(】 toggle dired details 
+【C/R/D/S】 copy/move(rename)/delete/symlink 【S-5-m】 mark by string // ^test(start with) txtDOLLAR (end with) 
+【*s】 mark all 【t】 toggle mark (mark all) 【*t】 invert mark 【*d】 mark for deletion 【k】 hide marked 【g】unhide mark 【*.】 mark by extension 
+【C-space】start visual mark
+【g】 refresh
+【Q】query replace marked files 【o】open file new window 【V】open file read only 【i】open dir-view below
+【b】preview file 【v】 viewer for ranger-copies using 【C-u】 saves the content of the clip after the paste
+【C-enter】 open via dired-open 【a】 replaces the current (dired) buffer with the selected file/directory
+【C-u C-u】 prefix to work on all files 【C-x E//D】add//union arbitrary files to an existing Dired buffer
 【/】 filter 【g】 clear filter 
+【P】 peep-dir (image view) >> image mode:  【p/n】next/prev images 【d】del image 
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
     ("<f1>" diredp-toggle-find-file-reuse-dir  "toggle resue dired" ) 
@@ -7426,39 +7437,13 @@ Version 2015-01-26"
                                     "ikloog@bgu.ac.il"
                                     "ekloog@hsph.harvard.edu"))
 
-(fset 'z/mu4e-del-exe
-    [?d ?x ?y ])
-
-;;for the function
-(defun z/mu4e-del-exe-func ()
-  (interactive)
-(execute-kbd-macro (symbol-function 'z/mu4e-del-exe)) 
-    )
-
-(fset 'z/mu4e-flag-exe
-    [?+ ?x ?y ])
-
-;;for the function
-(defun z/mu4e-flag-exe-func ()
-  (interactive)
-(execute-kbd-macro (symbol-function 'z/mu4e-flag-exe)) 
-    )
-
-(fset 'z/mu4e-unflag-exe
-    [?- ?x ?y ])
-
-;;for the function
-(defun z/mu4e-unflag-exe-func ()
-  (interactive)
-(execute-kbd-macro (symbol-function 'z/mu4e-unflag-exe)) 
-    )
-
-; get mail
-(setq mu4e-get-mail-command "mbsync gmail"
-      mu4e-html2text-command "w3m -T text/html"
-)
-
+; get mail automatically
+;;
+(setq mu4e-get-mail-command "/usr/bin/mbsync -a")
+;;how often to launch it 
 (setq mu4e-update-interval 60)
+
+
 (setq mu4e-headers-auto-update t)
 (setq mu4e-index-update-error-warning  t)
 (setq mu4e-index-update-error-continue   t)
@@ -7476,31 +7461,31 @@ Version 2015-01-26"
 
 (require 'mu4e)
 
-   ;; default
-   ;; (setq mu4e-maildir "~/Maildir")
+;; default
+;; (setq mu4e-maildir "~/Maildir")
 
- ;;location of my maildir
- (setq mu4e-maildir (expand-file-name "~/Maildir"))
- (setq mu4e-sent-folder   "/[Gmail].Sent Mail")
+;;location of my maildir
+(setq mu4e-maildir (expand-file-name "~/Maildir"))
+(setq mu4e-sent-folder   "/[Gmail].Sent Mail")
 (setq mu4e-trash-folder  "/[Gmail].Bin")
 (setq mu4e-drafts-folder  "/[Gmail].Drafts")
 
-   ;; don't save message to Sent Messages, Gmail/IMAP takes care of this
-   (setq mu4e-sent-messages-behavior 'delete)
+;; don't save message to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
 
-   ;; (See the documentation for `mu4e-sent-messages-behavior' if you have
-   ;; additional non-Gmail addresses and want assign them different
-   ;; behavior.)
+;; (See the documentation for `mu4e-sent-messages-behavior' if you have
+;; additional non-Gmail addresses and want assign them different
+;; behavior.)
 
-   ;; allow for updating mail using 'U' in the main view:
-   ;(setq mu4e-get-mail-command "offlineimap")
+;; allow for updating mail using 'U' in the main view:
+;(setq mu4e-get-mail-command "offlineimap")
 
-   ;; sending mail -- replace USERNAME with your gmail username
-   ;; also, make sure the gnutls command line utils are installed
-   ;; package 'gnutls-bin' in Debian/Ubuntu
+;; sending mail -- replace USERNAME with your gmail username
+;; also, make sure the gnutls command line utils are installed
+;; package 'gnutls-bin' in Debian/Ubuntu
 
-   ;; don't keep message buffers around
-   (setq message-kill-buffer-on-exit t)
+;; don't keep message buffers around
+(setq message-kill-buffer-on-exit t)
 
 ;;rename files when moving
 ;;NEEDED FOR MBSYNC
@@ -7521,22 +7506,44 @@ Version 2015-01-26"
    smtpmail-smtp-server "smtp.gmail.com"
    smtpmail-smtp-service 587)
 
+;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
+(setq mu4e-sent-messages-behavior 'delete)
+
 ;; setup some handy shortcuts
 ;; you can quickly switch to your Inbox -- press ``ji''
 ;; then, when you want archive some messages, move them to
 ;; the 'All Mail' folder by pressing ``ma''.
-
-
-    (setq mu4e-maildir-shortcuts
-        '( ("/INBOX"               . ?i)
-           ("/[Gmail].Sent Mail"   . ?s)
-           ("/[Gmail].Bin"       . ?t)
-           ("/[Gmail].Starred"       . ?1)
-           ("/[Gmail].All Mail"    . ?a)))
+ (setq mu4e-maildir-shortcuts
+     '( ("/INBOX"               . ?i)
+        ("/[Gmail].Sent Mail"   . ?s)
+        ("/[Gmail].Bin"       . ?t)
+        ("/[Gmail].Starred"       . ?1)
+        ("/[Gmail].All Mail"    . ?a)))
 
 (define-key mu4e-headers-mode-map (kbd "w") 'z/mu4e-del-exe-func )
 (define-key mu4e-headers-mode-map (kbd "f") 'z/mu4e-flag-exe-func )
 (define-key mu4e-headers-mode-map (kbd "F") 'z/mu4e-unflag-exe-func )
+
+(global-set-key
+   (kbd "<f5>")
+(defhydra hydra-mu4e (:color blue  :columns 2 :hints nil)
+  "
+【M-Enter】 open link 【R】 Reply to sender 
+【+】flag (star)
+"
+  ("<f5>"     z/mu4e-inbox            "mu4e inbox")
+  ("7"     z/mu4e-flagged            "mu4e flagged")
+;;  ("<f5>"     mu4e            "start mu4e")
+  ("<f6>"     helm-mu            "helm mu4e")
+  ("<f4>"    elfeed            "elfeed")
+  ("ez" z/org-email-heading-me "email myslef the tree")
+  ("ex" z/org-email-heading "email other the tree")
+  ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
+  ("f"    (execute-kbd-macro (symbol-function 'mu4e-flag-exe))         "flag")
+  ("F"    (execute-kbd-macro (symbol-function 'mu4e-unflag-exe))          "unflag")
+  ("o"     mu4e-headers-change-sorting            "sort")
+    ("q"     nil                          "cancel" )
+))
 
 mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 
@@ -7544,16 +7551,6 @@ mu4e-compose-dont-reply-to-self t                  ; don't reply to myself
 (require 'org-mu4e)
 ;;store link to message if in header view, not to header query
 (setq org-mu4e-link-query-in-headers-mode nil)
-
-;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
-(setq mu4e-sent-messages-behavior 'delete)
-
-;; alternatively, for emacs-24 you can use:
-;;(setq message-send-mail-function 'smtpmail-send-it
-;;     smtpmail-stream-type 'starttls
-;;     smtpmail-default-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-server "smtp.gmail.com"
-;;     smtpmail-smtp-service 587)
 
 (setq mu4e-date-format-long "%d/%m/%Y (%H:%M:%S)")
 (setq mu4e-headers-date-format "%d/%m/%Y (%H:%M:%S)")
@@ -7671,12 +7668,6 @@ there are no attachments."
 (add-to-list 'mu4e-bookmarks
   '("flag:flagged"       "flagged"     ?b))
 
-;; (setq mu4e-headers-fields
-;;     '( (:date          .  25)
-;;        (:flags         .   6)
-;;        (:from          .  22)
-;;        (:subject       .  nil)))
-
 (defgroup mu4e-faces nil 
   "Type faces (fonts) used in mu4e." 
   :group 'mu4e 
@@ -7767,6 +7758,58 @@ there are no attachments."
              ))
     (message "rlt=%s" rlt)
     rlt))
+
+(defvar bulk-saved-attachments-dir (expand-file-name "~/Documents/mu4e"))
+
+(defun cleanse-subject (sub)
+  (replace-regexp-in-string
+   "[^A-Z0-9]+"
+   "-"
+   (downcase sub)))
+
+(defun z/mu4e-view-attachments-dired (&optional msg)
+  "Saves all of the attachments in `msg' to a directory under
+`bulk-saved-attachments-dir' which is derived from the subject
+beloning to `msg'. Existing filenames will be overwritten without
+prompt. The directories are not cleaned up in any way."
+  (interactive)
+  (let* ((msg (or msg (mu4e-message-at-point)))
+         (id (cleanse-subject (mu4e-message-field msg :subject)))
+         (attachdir (concat bulk-saved-attachments-dir "/" id))
+         (count (hash-table-count mu4e~view-attach-map)))
+    (if (> count 0)
+        (progn
+          (mkdir attachdir t)
+          (dolist (num (number-sequence 1 count))
+            (let* ((att (mu4e~view-get-attach msg num))
+                   (fname (plist-get att :name))
+                   (index (plist-get att :index))
+                   fpath)
+              (setq fpath (concat attachdir "/" fname))
+              (mu4e~proc-extract
+               'save (mu4e-message-field msg :docid)
+               index mu4e-decryption-policy fpath)))
+          (dired attachdir)
+          (revert-buffer))
+      (message "Nothing to extract."))))
+
+(fset 'z/mu4e-del-exe
+    [?d ?x ?y ])
+
+;;for the function
+(defun z/mu4e-del-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-del-exe)) 
+    )
+
+(fset 'z/mu4e-flag-exe
+    [?+ ?x ?y ])
+
+;;for the function
+(defun z/mu4e-flag-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-flag-exe)) 
+    )
 
 (setq gnus-select-method '(nntp "news.gmane.org"))
 

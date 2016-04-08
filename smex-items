@@ -7,7 +7,7 @@
  org-teleport
  tabbar-mode
  tabbar-backward-group
- tabbar-forward-tab
+ wl
 )
 
 ;; ----- smex-data -----
@@ -306,4 +306,5 @@
  (python-mode . 1)
  (ora-dired-start-process . 2)
  (spook . 2)
+ (view-attachments-dired . 2)
 )
