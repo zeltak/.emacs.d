@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ helm-dired-buf
  transmission
- customize-variable
- password-store-edit
+ customize-group
  pass
+ hanoi-unix-64
+ helm-recentf
  ibuffer
- ivy-switch-buffer
- eval-region
 )
 
 ;; ----- smex-data -----
@@ -42,7 +42,7 @@
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 12)
+ (customize-variable . 11)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
@@ -50,7 +50,7 @@
  (ansi-term . 11)
  (shrink-whitespace . 5)
  (bbdb-csv-import-file . 1)
- (customize-group . 5)
+ (customize-group . 6)
  (wl . 25)
  (dired-k . 3)
  (xah-cycle-hyphen-underscore-space . 6)
@@ -65,7 +65,7 @@
  (yank-rectangle . 1)
  (string-rectangle . 1)
  (org-gcal-sync . 1)
- (eval-region . 18)
+ (eval-region . 17)
  (org-caldav-sync . 2)
  (org-mode . 2)
  (load-library . 4)
@@ -184,7 +184,7 @@
  (runner-add-extension . 1)
  (dired-sort-name . 1)
  (dired-sort-time . 1)
- (ibuffer . 6)
+ (ibuffer . 13)
  (z/dired-ssh-qnap . 1)
  (z/dired-media-info . 3)
  (z/dired-sort-menu . 2)
@@ -199,7 +199,7 @@
  (helm-projectile . 2)
  (helm-org-capture-templates . 1)
  (find-name-dired . 6)
- (peep-dired . 10)
+ (peep-dired . 11)
  (z/insert-black-lenticular-angle . 1)
  (z/insert-black-arrows . 1)
  (dired-filter-group-mode . 1)
@@ -242,7 +242,7 @@
  (imenu . 2)
  (dired-toggle-sudo . 2)
  (helm-dired-recent-dirs-view . 5)
- (image-dired . 4)
+ (image-dired . 5)
  (image-diredx-adjust-mode . 1)
  (find-grep-dired . 1)
  (shell-instead-dired . 4)
@@ -296,7 +296,7 @@
  (my/dired-find-file-other-window-until-key . 1)
  (zbufref . 1)
  (pabbrev-mode . 12)
- (smart-tab . 1)
+ (smart-tab . 3)
  (tabbar-mode . 3)
  (tabbar-forward . 1)
  (tabbar-local-mode . 2)
@@ -307,8 +307,25 @@
  (ora-dired-start-process . 2)
  (spook . 2)
  (view-attachments-dired . 2)
- (my-search-or-browse . 3)
+ (mu4e-msgv-action-view-in-browser . 1)
+ (helm-top . 1)
+ (smart-tab-mode . 1)
+ (cooking-sparse-tree-breakfeast . 1)
+ (cooking-sparse-tree-main . 1)
+ (cooking-sparse-tree-fav . 1)
+ (image-dired-thumbnail-mode . 4)
+ (helm-buffers-list . 7)
+ (iswitchb-mode . 1)
+ (buffer-menu . 1)
+ (bs-show . 2)
+ (z/transpose-buffers . 1)
+ (dired . 1)
+ (describe-variable . 1)
+ (bs-show-sorted . 2)
+ (helm-dired-buf . 11)
+ (er/mark-org-code-block . 1)
+ (helm-recentf . 1)
+ (hanoi-unix-64 . 1)
  (pass . 1)
- (password-store-edit . 1)
- (transmission . 7)
+ (transmission . 3)
 )

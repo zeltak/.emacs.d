@@ -973,7 +973,7 @@ and the plus addon:
    :ensure t
    :config
   ;;; don't create a buffer for every dir I visit (use 1 to not create and -1 to creare)
-  (toggle-diredp-find-file-reuse-dir 1)
+  (toggle-diredp-find-file-reuse-dir -1)
     )
 #+END_SRC 
 *** dired-efap (rename file at point)
@@ -1680,7 +1680,7 @@ http://emacs.stackexchange.com/questions/17169/change-order-of-buffers-in-helm-b
  (setq helm-locate-fuzzy-match t)	    
  #+END_SRC
 **** helm occur
-no config needed
+no config needed$
 *** helm-ag
  https://github.com/syohex/emacs-helm-ag
  #+BEGIN_SRC emacs-lisp :results none
@@ -1788,8 +1788,25 @@ no config needed
  :config
  
  )
-#+END_SRC 
+#+END_SRC
+*** helm-buffers-list
+#+BEGIN_SRC emacs-lisp  :results none
+ (defun z/helm-buffers-dired ()
+   "show dired buffers"
+   (interactive)
+   (helm :sources '(helm-source-buffers-list)
+         :full-frame t
+         :input "*dired "
+        ))
 
+ (defun z/helm-buffers-org ()
+   "show dired buffers"
+   (interactive)
+   (helm :sources '(helm-source-buffers-list)
+         :full-frame t
+         :input "*org "
+        ))
+#+END_SRC
 
 ** help-fns+
 http://www.emacswiki.org/emacs/help-fns+.el
@@ -1862,7 +1879,7 @@ this example below also restricts to a specific bib file
 (let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog !kprep !ktalk !kconf !unpublished"
+         :input "kloog !kprep !ktalk !kconf !unpublished "
          :candidate-number-limit 500)))
 
 #+END_SRC
@@ -1876,7 +1893,7 @@ this example below also restricts to a specific bib file
 (let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/library.bib"))
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "rtodo"
+         :input "rtodo "
          :candidate-number-limit 500)))
 
 #+END_SRC
@@ -1891,7 +1908,7 @@ this example below also restricts to a specific bib file
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog !unpublished"
+         :input "kloog !unpublished "
          :candidate-number-limit 500))
 #+END_SRC
 
@@ -1904,7 +1921,7 @@ this example below also restricts to a specific bib file
    (interactive)
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog kprep !unpublished"
+         :input "kloog kprep !unpublished "
          :candidate-number-limit 500))
 
  #+END_SRC
@@ -2971,57 +2988,57 @@ https://www.emacswiki.org/emacs/TabBarMode
 http://emacs.stackexchange.com/questions/10081/browser-style-tabs-for-Emacs
 
 #+BEGIN_SRC emacs-lisp :results none
-(use-package tabbar
- :ensure t
- :config
-(require 'tabbar)
-; turn on the tabbar
-(tabbar-mode t)
-; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
-;“User Buffer”.
+  ;; (use-package tabbar
+  ;;  :ensure t
+  ;;  :config
+  ;; (require 'tabbar)
+  ;; ; turn on the tabbar
+  ;; (tabbar-mode t)
+  ;; ; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
+  ;; ;“User Buffer”.
 
-(defun tabbar-buffer-groups ()
-  "Return the list of group names the current buffer belongs to.
-This function is a custom function for tabbar-mode's tabbar-buffer-groups.
-This function group all buffers into 3 groups:
-Those Dired, those user buffer, and those emacs buffer.
-Emacs buffer are those starting with “*”."
-  (list
-   (cond
-    ((string-equal "*" (substring (buffer-name) 0 1))
-     "Emacs Buffer"
-     )
-    ((eq major-mode 'dired-mode)
-     "Dired"
-     )
-((memq major-mode
-       '(org-mode text-mode rst-mode))
- "org"
- )
+  ;; (defun tabbar-buffer-groups ()
+  ;;   "Return the list of group names the current buffer belongs to.
+  ;; This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+  ;; This function group all buffers into 3 groups:
+  ;; Those Dired, those user buffer, and those emacs buffer.
+  ;; Emacs buffer are those starting with “*”."
+  ;;   (list
+  ;;    (cond
+  ;;     ((string-equal "*" (substring (buffer-name) 0 1))
+  ;;      "Emacs Buffer"
+  ;;      )
+  ;;     ((eq major-mode 'dired-mode)
+  ;;      "Dired"
+  ;;      )
+  ;; ((memq major-mode
+  ;;        '(org-mode text-mode rst-mode))
+  ;;  "org"
+  ;;  )
 
-   (t
-     "General"
-     )
-    ))) 
+  ;;    (t
+  ;;      "General"
+  ;;      )
+  ;;     ))) 
 
-(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+  ;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 
-;;Sort tabbar buffers by name
+  ;; ;;Sort tabbar buffers by name
 
-(defun tabbar-add-tab (tabset object &optional append_ignored)
-  "Add to TABSET a tab with value OBJECT if there isn't one there yet.
-If the tab is added, it is added at the beginning of the tab list,
-unless the optional argument APPEND is non-nil, in which case it is
-added at the end."
-  (let ((tabs (tabbar-tabs tabset)))
-    (if (tabbar-get-tab object tabset)
-        tabs
-      (let ((tab (tabbar-make-tab object tabset)))
-        (tabbar-set-template tabset nil)
-        (set tabset (sort (cons tab tabs)
-                          (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
+  ;; (defun tabbar-add-tab (tabset object &optional append_ignored)
+  ;;   "Add to TABSET a tab with value OBJECT if there isn't one there yet.
+  ;; If the tab is added, it is added at the beginning of the tab list,
+  ;; unless the optional argument APPEND is non-nil, in which case it is
+  ;; added at the end."
+  ;;   (let ((tabs (tabbar-tabs tabset)))
+  ;;     (if (tabbar-get-tab object tabset)
+  ;;         tabs
+  ;;       (let ((tab (tabbar-make-tab object tabset)))
+  ;;         (tabbar-set-template tabset nil)
+  ;;         (set tabset (sort (cons tab tabs)
+  ;;                           (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
 
- )
+  ;;  )
 #+END_SRC 
 ** transmission
 need to install let-alist and seq packages from melpa
@@ -5038,18 +5055,18 @@ Reference management
 ("a" nil )
 ("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
 ("c"  helm-chrome-bookmarks "Chorme BKMK")
-("d"  nil )
+("d"  z/helm-buffers-dired "dired buffers" )
 ("e"  nil )
 ("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
 ("h"  nil )
-("i"  nil )
+("i"  helm-projectile "Helm Projectile")
 ("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
 ("l"  nil )
 ("m"  bookmark-bmenu-list "BKMK menu")
 ("n"  nil )
-("o"  helm-projectile "Helm Projectile")
+("o"  z/helm-buffers-org "org buffers")
 ("p"  projectile-find-file "projectile find file")
 ("r"  helm-recentf "Helm Recents" )
 ("s"  bookmark-save "BKMK Save" )
@@ -10550,4 +10567,5 @@ Put this code in your emacs init file:
 ;; remember cursor position, for emacs 25.1 or later
 ;;(save-place-mode 1)
 #+END_SRC
+
 

@@ -1257,6 +1257,22 @@
  
  )
 
+(defun z/helm-buffers-dired ()
+  "show dired buffers"
+  (interactive)
+  (helm :sources '(helm-source-buffers-list)
+        :full-frame t
+        :input "*dired "
+       ))
+
+(defun z/helm-buffers-org ()
+  "show dired buffers"
+  (interactive)
+  (helm :sources '(helm-source-buffers-list)
+        :full-frame t
+        :input "*org "
+       ))
+
 (use-package help-fns+
  :ensure t
  :config
@@ -1310,7 +1326,7 @@
 (let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "kloog !kprep !ktalk !kconf !unpublished"
+         :input "kloog !kprep !ktalk !kconf !unpublished "
          :candidate-number-limit 500)))
 
 (defun helm-bibtex-papers-rtodo ()
@@ -1319,7 +1335,7 @@
 (let ((helm-bibtex-bibliography "/home/zeltak/org/files/Uni/papers/library.bib"))
    (helm :sources '(helm-source-bibtex)
          :full-frame t
-         :input "rtodo"
+         :input "rtodo "
          :candidate-number-limit 500)))
 
 ;; Define helm-search with predefined search expression:
@@ -1328,7 +1344,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog !unpublished"
+        :input "kloog !unpublished "
         :candidate-number-limit 500))
 
 ;; Define helm-search with predefined search expression:
@@ -1337,7 +1353,7 @@
   (interactive)
   (helm :sources '(helm-source-bibtex)
         :full-frame t
-        :input "kloog kprep !unpublished"
+        :input "kloog kprep !unpublished "
         :candidate-number-limit 500))
 
 (use-package helm-org-rifle
@@ -2036,57 +2052,57 @@
 ;  (global-set-key (kbd "C-s-t") 'tiny-expand)
 )
 
-(use-package tabbar
- :ensure t
- :config
-(require 'tabbar)
-; turn on the tabbar
-(tabbar-mode t)
-; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
-;“User Buffer”.
+;; (use-package tabbar
+;;  :ensure t
+;;  :config
+;; (require 'tabbar)
+;; ; turn on the tabbar
+;; (tabbar-mode t)
+;; ; define all tabs to be one of 3 possible groups: “Emacs Buffer”, “Dired”,
+;; ;“User Buffer”.
 
-(defun tabbar-buffer-groups ()
-  "Return the list of group names the current buffer belongs to.
-This function is a custom function for tabbar-mode's tabbar-buffer-groups.
-This function group all buffers into 3 groups:
-Those Dired, those user buffer, and those emacs buffer.
-Emacs buffer are those starting with “*”."
-  (list
-   (cond
-    ((string-equal "*" (substring (buffer-name) 0 1))
-     "Emacs Buffer"
-     )
-    ((eq major-mode 'dired-mode)
-     "Dired"
-     )
-((memq major-mode
-       '(org-mode text-mode rst-mode))
- "org"
- )
+;; (defun tabbar-buffer-groups ()
+;;   "Return the list of group names the current buffer belongs to.
+;; This function is a custom function for tabbar-mode's tabbar-buffer-groups.
+;; This function group all buffers into 3 groups:
+;; Those Dired, those user buffer, and those emacs buffer.
+;; Emacs buffer are those starting with “*”."
+;;   (list
+;;    (cond
+;;     ((string-equal "*" (substring (buffer-name) 0 1))
+;;      "Emacs Buffer"
+;;      )
+;;     ((eq major-mode 'dired-mode)
+;;      "Dired"
+;;      )
+;; ((memq major-mode
+;;        '(org-mode text-mode rst-mode))
+;;  "org"
+;;  )
 
-   (t
-     "General"
-     )
-    ))) 
+;;    (t
+;;      "General"
+;;      )
+;;     ))) 
 
-(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+;; (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 
-;;Sort tabbar buffers by name
+;; ;;Sort tabbar buffers by name
 
-(defun tabbar-add-tab (tabset object &optional append_ignored)
-  "Add to TABSET a tab with value OBJECT if there isn't one there yet.
-If the tab is added, it is added at the beginning of the tab list,
-unless the optional argument APPEND is non-nil, in which case it is
-added at the end."
-  (let ((tabs (tabbar-tabs tabset)))
-    (if (tabbar-get-tab object tabset)
-        tabs
-      (let ((tab (tabbar-make-tab object tabset)))
-        (tabbar-set-template tabset nil)
-        (set tabset (sort (cons tab tabs)
-                          (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
+;; (defun tabbar-add-tab (tabset object &optional append_ignored)
+;;   "Add to TABSET a tab with value OBJECT if there isn't one there yet.
+;; If the tab is added, it is added at the beginning of the tab list,
+;; unless the optional argument APPEND is non-nil, in which case it is
+;; added at the end."
+;;   (let ((tabs (tabbar-tabs tabset)))
+;;     (if (tabbar-get-tab object tabset)
+;;         tabs
+;;       (let ((tab (tabbar-make-tab object tabset)))
+;;         (tabbar-set-template tabset nil)
+;;         (set tabset (sort (cons tab tabs)
+;;                           (lambda (a b) (string< (buffer-name (car a)) (buffer-name (car b))))))))))
 
- )
+;;  )
 
 (use-package transmission
  :ensure t
@@ -3704,18 +3720,18 @@ Reference management
 ("a" nil )
 ("b"  bmkp-bookmark-set-confirm-overwrite "add BKMK" )
 ("c"  helm-chrome-bookmarks "Chorme BKMK")
-("d"  nil )
+("d"  z/helm-buffers-dired "dired buffers" )
 ("e"  nil )
 ("f"  bmkp-bmenu-filter-tags-incrementally "BKMK menu filter")
 ("g"  nil )
 ("h"  nil )
-("i"  nil )
+("i"  helm-projectile "Helm Projectile")
 ("j"  helm-projectile-switch-to-buffer "Helm projectile switch" )
 ("k"  nil )
 ("l"  nil )
 ("m"  bookmark-bmenu-list "BKMK menu")
 ("n"  nil )
-("o"  helm-projectile "Helm Projectile")
+("o"  z/helm-buffers-org "org buffers")
 ("p"  projectile-find-file "projectile find file")
 ("r"  helm-recentf "Helm Recents" )
 ("s"  bookmark-save "BKMK Save" )
