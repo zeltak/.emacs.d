@@ -1018,6 +1018,11 @@
  :config 
  )
 
+(use-package ess 
+ :ensure t
+ :config
+ )
+
 (use-package ess-view
  :ensure t
  :config
@@ -1107,8 +1112,11 @@
          ("C-," . goto-last-change-reverse))
  )
 
-(add-to-list 'load-path "~/.emacs.g/gmail2bbdb/")
-(autoload 'gmail2bbdb-import-file "gmail2bbdb")
+(use-package gmail2bbdb
+ :ensure t
+ :config
+
+ )
 
 (use-package gnorb
  :ensure t
@@ -1532,9 +1540,9 @@
 (use-package org-ref 
    :ensure t
    :config
-  (require 'org-ref)
-  ;; for pdf support  
- (require 'org-ref-pdf)
+(require 'org-ref)
+;; for pdf support  
+(require 'org-ref-pdf)
 (require 'org-ref-url-utils)
 
 ;;(setq reftex-default-bibliography '("/home/zeltak/org/files/Uni/papers/kloog.papers.bib"))
@@ -1609,8 +1617,11 @@
 ;;        org-download-screenshot-method "scrot -s %s"
 ;;        org-download-backend (if (executable-find "curl") "curl \"%s\" -o \"%s\"" t)))
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/org-dp/")
-(require 'org-dp-lib)
+(use-package org-dp
+ :ensure t
+ :config
+ (require 'org-dp-lib)
+ )
 
 (when (require 'org-dp-lib nil t)
 
@@ -1679,8 +1690,16 @@
 ;;  :config
 ;;  )
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/password-store/")
+(use-package pass
+ :ensure t
+ :config
+  )
+
+(use-package password-store
+ :ensure t
+ :config
 (require 'password-store)
+ )
 
 (use-package pandoc-mode
  :ensure t
@@ -2069,8 +2088,15 @@ added at the end."
 
  )
 
-;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
+(use-package transmission
+ :ensure t
+ :config
 (require 'transmission)
+(setq transmission-host "10.0.0.2")
+(setq transmission-rpc-auth '(:username "zeltak" :password "salar" ) )
+ )
+
+;(add-to-list 'load-path "/home/zeltak/.emacs.g/transmission/")
 ;(setq transmission-host "10.0.0.2")
 
 (use-package undo-tree 
@@ -2197,10 +2223,12 @@ added at the end."
  :config
   )
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/org-reveal")
-(load  "/home/zeltak/.emacs.g/org-reveal/ox-reveal.el")
+(use-package ox-reveal
+ :ensure t
+ :config
 ;;where the root reveal folder is
-(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js")
+(setq org-reveal-root  "file:///home/zeltak/apps/reveal.js") 
+ )
 
 (require 'org-velocity)
 
@@ -4593,6 +4621,60 @@ org-catch-invisible-edits 'show-and-error
 (setq org-agenda-skip-scheduled-if-done t)
 (setq org-agenda-span 14)
 
+(define-key org-agenda-mode-map
+    "v" 'hydra-org-agenda-view/body)
+
+(defun org-agenda-cts ()
+  (let ((args (get-text-property
+               (min (1- (point-max)) (point))
+               'org-last-args)))
+    (nth 2 args)))
+
+(defhydra hydra-org-agenda-view (:hint nil)
+  "
+_d_: ?d? day        _g_: time grid=?g? _a_: arch-trees
+_w_: ?w? week       _[_: inactive      _A_: arch-files
+_t_: ?t? fortnight  _f_: follow=?f?    _r_: report=?r?
+_m_: ?m? month      _e_: entry =?e?    _D_: diary=?D?
+_y_: ?y? year       _q_: quit          _L__l__c_: ?l?"
+
+  ("SPC" org-agenda-reset-view)
+  ("d" org-agenda-day-view
+       (if (eq 'day (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("w" org-agenda-week-view
+       (if (eq 'week (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("t" org-agenda-fortnight-view
+       (if (eq 'fortnight (org-agenda-cts))
+           "[x]" "[ ]"))
+  ("m" org-agenda-month-view
+       (if (eq 'month (org-agenda-cts)) "[x]" "[ ]"))
+  ("y" org-agenda-year-view
+       (if (eq 'year (org-agenda-cts)) "[x]" "[ ]"))
+  ("l" org-agenda-log-mode
+       (format "% -3S" org-agenda-show-log))
+  ("L" (org-agenda-log-mode '(4)))
+  ("c" (org-agenda-log-mode 'clockcheck))
+  ("f" org-agenda-follow-mode
+       (format "% -3S" org-agenda-follow-mode))
+  ("a" org-agenda-archives-mode)
+  ("A" (org-agenda-archives-mode 'files))
+  ("r" org-agenda-clockreport-mode
+       (format "% -3S" org-agenda-clockreport-mode))
+  ("e" org-agenda-entry-text-mode
+       (format "% -3S" org-agenda-entry-text-mode))
+  ("g" org-agenda-toggle-time-grid
+       (format "% -3S" org-agenda-use-time-grid))
+  ("D" org-agenda-toggle-diary
+       (format "% -3S" org-agenda-include-diary))
+  ("!" org-agenda-toggle-deadlines)
+  ("["
+   (let ((org-agenda-include-inactive-timestamps t))
+     (org-agenda-check-type t 'timeline 'agenda)
+     (org-agenda-redo)))
+  ("q" (message "Abort") :exit t))
+
 (setq org-agenda-weekend-days '(5 6))
 
 ;; Do not dim blocked tasks
@@ -6557,8 +6639,8 @@ scroll-step 1)
 ("s"  (find-file "~/Sync/") "Sync" )
 ("S"  (find-file "~/scripts/" "scripts") )
 ("t"  (find-file "~/mounts/" "mounts") )
-("u"  (find-file "~/Uni//") "Uni" )
-("v"  nil)
+("u"  (find-file "~/Uni/") "Uni" )
+("v"  (find-file "/home/zeltak/.password-store") "password-store" )
 ("w"  (find-file "~/dotfiles/") "dotfiles" )
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
 ("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
@@ -7404,9 +7486,6 @@ Version 2015-01-26"
 (add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
 (require 'edit-server)
 (edit-server-start)
-
-(add-to-list 'load-path "/home/zeltak/.emacs.g/ESS/lisp/")
-(load "ess-site")
 
 (setq comint-scroll-to-bottom-on-input t)
 (setq comint-scroll-to-bottom-on-output t)

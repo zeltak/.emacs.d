@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ transmission
+ customize-variable
+ password-store-edit
+ pass
  ibuffer
  ivy-switch-buffer
  eval-region
- spook
- my/set-dired-dir-to-other
- python-mode
- org-teleport
 )
 
 ;; ----- smex-data -----
@@ -42,7 +42,7 @@
  (helm-mt . 2)
  (org-forward-heading-same-level . 1)
  (z/edit-copy-all-or-region . 1)
- (customize-variable . 11)
+ (customize-variable . 12)
  (bbdb . 5)
  (bbdb-menu . 1)
  (worf-copy-heading-id . 1)
@@ -308,4 +308,7 @@
  (spook . 2)
  (view-attachments-dired . 2)
  (my-search-or-browse . 3)
+ (pass . 1)
+ (password-store-edit . 1)
+ (transmission . 7)
 )
