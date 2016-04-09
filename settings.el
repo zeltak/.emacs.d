@@ -771,11 +771,14 @@
  )
 
 ;;preview files in dired
-(use-package peep-dired
-  :ensure t
-  :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
-  :bind (:map dired-mode-map
-              ("P" . peep-dired)))
+ (use-package peep-dired
+   :ensure t
+   :defer t ; don't access `dired-mode-map' until `peep-dired' is loaded
+   :bind (:map dired-mode-map
+               ("P" . peep-dired))
+   :config 
+(setq peep-dired-ignored-extensions '("mkv" "iso" "mp4"))
+)
 
 (use-package deft
  :ensure t
@@ -1376,6 +1379,26 @@
    ((t :background "#ffbbff" :weight bold))))
 
 (setq ivy-count-format "(%d/%d) ")
+
+;; Use human readable Size column instead of original one
+(define-ibuffer-column size-h
+  (:name "Size" :inline t)
+  (cond
+   ((> (buffer-size) 1000000) (format "%7.1fM" (/ (buffer-size) 1000000.0)))
+   ((> (buffer-size) 100000) (format "%7.0fk" (/ (buffer-size) 1000.0)))
+   ((> (buffer-size) 1000) (format "%7.1fk" (/ (buffer-size) 1000.0)))
+   (t (format "%8d" (buffer-size)))))
+
+;; Modify the default ibuffer-formats
+  (setq ibuffer-formats
+        '((mark modified read-only " "
+                (name 18 18 :left :elide)
+                " "
+                (size-h 9 -1 :right)
+                " "
+                (mode 16 16 :left :elide)
+                " "
+                filename-and-process)))
 
 (use-package org-grep
  :ensure t
@@ -2956,6 +2979,18 @@ Version 2015-08-12"
       (set-buffer-modified-p nil)
       (kill-buffer (current-buffer)))))
 
+(defun z/transpose-buffers (arg)
+  "Transpose the buffers shown in two windows."
+  (interactive "p")
+  (let ((selector (if (>= arg 0) 'next-window 'previous-window)))
+    (while (/= arg 0)
+      (let ((this-win (window-buffer))
+            (next-win (window-buffer (funcall selector))))
+        (set-window-buffer (selected-window) next-win)
+        (set-window-buffer (funcall selector) this-win)
+        (select-window (funcall selector)))
+      (setq arg (if (plusp arg) (1- arg) (1+ arg))))))
+
 (defun ood () (interactive) (dired "/home/zeltak/org"))
 
 (defun create-scratch-buffer nil
@@ -3008,14 +3043,17 @@ Version 2015-08-12"
 (require 'thingatpt)
 
 (defun google-search ()
-  "Googles a query or region if any."
+ "If selected region, or thing at point, is a url, go there. Otherwise,
+use region/thing as a keyword for a google search."
   (interactive)
-  (browse-url
-   (concat
-    "http://www.google.com/search?ie=utf-8&oe=utf-8&q="
-    (if mark-active
-        (buffer-substring (region-beginning) (region-end))
-      (read-string "Google: ")))))
+  (let ((target
+         (if (use-region-p)
+             (buffer-substring (region-beginning) (region-end))
+           (thing-at-point 'symbol))))
+    (if (ffap-url-p target)
+        (browse-url target)
+      (browse-url (concat "http://www.google.com/search?q="
+                          (url-hexify-string target))))))
 
 (defun helm-swish-e-candidates (query)
   "Generate a list of cons cells (swish-e result . path)."
@@ -3291,7 +3329,8 @@ With a prefix argument P, isearch for the symbol at point."
  "
 LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
  "
-("\]" z/insert-slsh "insert \\")
+("\]" helm-buffers-list "helm buffer")
+("\[" z/insert-slsh "insert \\")
 ("<backspace>" helm-all-mark-rings "all mark rings")
 ;;("\\"  avy-goto-char-timer  "avy jump")
 ("\\"  avy-goto-char-timer  "avy jump")
@@ -3624,7 +3663,8 @@ Reference management
    (kbd "<f8>")
 (defhydra  hydra-open  (:color blue :hint nil :columns 4)
 "
-【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【C-z】persistant select 【C-l】up dir 【C-r】back dir 
+【C-c h】helm-prefix 【*】to select mode 【@】to select regex 【,】to select multiple (modes,regex) 【!】exclude 
+【C-z】persistant select 【C-l】up dir 【C-r】back dir 
 【~/】add to go back to home 【./】 default-directory  【C-c h】history (C-u before to auto go to history)
 【C-s】grep Helm  【C-u】recursively grep Helm 【C-c h b】 helm res
 【C-f/b】 helm frwd/back 1 char
@@ -6456,6 +6496,7 @@ scroll-step 1)
     "
     ("/" dired-toggle-sudo  "dired toggle sudo" :face 'hydra-face-red ) 
     ("<f1>" diredp-toggle-find-file-reuse-dir  "toggle resue dired" ) 
+    ("+" z/transpose-buffers  "transpose-buffers" ) 
     ("1" hydra-dired-operations/body "dired operations" )
     ("2" hydra-dired-searches/body "dired searches" )
     ("a" dired-mark-subdir-files "mark all" )
@@ -6493,7 +6534,7 @@ scroll-step 1)
 ("\\" z/ivy-dired-recent-dirs "recent dirs" )
 ("a" (find-file "~/AUR/") "AUR" )
 ("2" (find-file "/home/zeltak/mounts/lraid/Download/transmission/completed/") "P2P" )
-("3" (find-file "/home/zeltak/mounts/lraid/r/") "P2P" )
+("3" (find-file "/home/zeltak/mounts/lraid/raid") "P2P" )
 ("b"  (find-file "~/bin/") "bin" )
 ("B"  (dired "~/bin/") "bin" )
 ("c"  (find-file "~/.config/") "config")

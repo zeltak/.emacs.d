@@ -31,6 +31,8 @@
 
 (define-abbrev-table 'browse-kill-ring-mode-abbrev-table '())
 
+(define-abbrev-table 'bs-mode-abbrev-table '())
+
 (define-abbrev-table 'c++-mode-abbrev-table '())
 
 (define-abbrev-table 'c-mode-abbrev-table '())
@@ -691,12 +693,12 @@
     ("hvae" "have" nil 0)
     ("hvaing" "having" nil 0)
     ("hwich" "which" nil 0)
-    ("i" "I" nil 26)
+    ("i" "I" nil 27)
     ("idae" "idea" nil 0)
     ("idaes" "ideas" nil 0)
     ("identifiy" "identify" nil 0)
     ("identofy" "identify" nil 0)
-    ("ie" "₆In example₆" nil 29)
+    ("ie" "₆In example₆" nil 30)
     ("ihs" "his" nil 0)
     ("imediate" "immediate" nil 0)
     ("imediatly" "immediately" nil 0)
@@ -883,7 +885,7 @@
     ("orginized" "organized" nil 0)
     ("originial" "original" nil 0)
     ("orignal" "original" nil 0)
-    ("otehr" "other" nil 0)
+    ("otehr" "other" nil 1)
     ("otu" "out" nil 0)
     ("outof" "out of" nil 0)
     ("overthe" "over the" nil 0)
@@ -1072,6 +1074,7 @@
     ("shesaid" "she said" nil 0)
     ("shineing" "shining" nil 0)
     ("shiped" "shipped" nil 0)
+    ("shoppoing" "shopping" nil 0)
     ("shoudl" "should" nil 1)
     ("shouldent" "shouldn't" nil 0)
     ("shouldnt" "shouldn't" nil 0)
@@ -1188,7 +1191,7 @@
     ("timne" "time" nil 0)
     ("tiogether" "together" nil 0)
     ("tip" "%Tip%" nil 9)
-    ("tje" "the" nil 0)
+    ("tje" "the" nil 1)
     ("tjhe" "the" nil 0)
     ("tkae" "take" nil 0)
     ("tkaes" "takes" nil 0)
@@ -1238,7 +1241,7 @@
     ("vrey" "very" nil 1)
     ("vulnerible" "vulnerable" nil 0)
     ("waht" "what" nil 0)
-    ("warning" "@Warning@" nil 2)
+    ("warning" "@Warning@" nil 3)
     ("warrent" "warrant" nil 0)
     ("wasnt" "wasn't" nil 2)
     ("watn" "want" nil 0)
@@ -1387,6 +1390,18 @@
 
 (define-abbrev-table 'magit-status-mode-abbrev-table '())
 
+(define-abbrev-table 'makefile-automake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-bsdmake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-gmake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-imake-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-makepp-mode-abbrev-table '())
+
+(define-abbrev-table 'makefile-mode-abbrev-table '())
+
 (define-abbrev-table 'message-mode-abbrev-table '())
 
 (define-abbrev-table 'messages-buffer-mode-abbrev-table '())
@@ -1413,6 +1428,8 @@
 
 (define-abbrev-table 'outline-mode-abbrev-table '())
 
+(define-abbrev-table 'pabbrev-select-mode-abbrev-table '())
+
 (define-abbrev-table 'package-menu-mode-abbrev-table '())
 
 (define-abbrev-table 'pandoc-@-mode-abbrev-table '())
@@ -1424,6 +1441,8 @@
 (define-abbrev-table 'plain-tex-mode-abbrev-table '())
 
 (define-abbrev-table 'plstore-mode-abbrev-table '())
+
+(define-abbrev-table 'poly-fallback-mode-abbrev-table '())
 
 (define-abbrev-table 'poly-head-tail-mode-abbrev-table '())
 
@@ -1437,7 +1456,9 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
+(define-abbrev-table 'python-mode-skeleton-abbrev-table
+  '(
+   ))
 
 (define-abbrev-table 'quickrun/mode-abbrev-table '())
 

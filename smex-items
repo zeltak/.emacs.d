@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ ibuffer
+ ivy-switch-buffer
+ eval-region
  spook
  my/set-dired-dir-to-other
  python-mode
  org-teleport
- tabbar-mode
- tabbar-backward-group
- wl
 )
 
 ;; ----- smex-data -----
@@ -19,7 +19,7 @@
  (z/org-email-heading-me . 3)
  (gnus . 8)
  (z/org-email-heading . 2)
- (ivy-switch-buffer . 3)
+ (ivy-switch-buffer . 4)
  (counsel-ag . 2)
  (transpose-lines . 1)
  (org-goto . 1)
@@ -65,7 +65,7 @@
  (yank-rectangle . 1)
  (string-rectangle . 1)
  (org-gcal-sync . 1)
- (eval-region . 17)
+ (eval-region . 18)
  (org-caldav-sync . 2)
  (org-mode . 2)
  (load-library . 4)
@@ -184,7 +184,7 @@
  (runner-add-extension . 1)
  (dired-sort-name . 1)
  (dired-sort-time . 1)
- (ibuffer . 2)
+ (ibuffer . 6)
  (z/dired-ssh-qnap . 1)
  (z/dired-media-info . 3)
  (z/dired-sort-menu . 2)
@@ -307,4 +307,5 @@
  (ora-dired-start-process . 2)
  (spook . 2)
  (view-attachments-dired . 2)
+ (my-search-or-browse . 3)
 )
