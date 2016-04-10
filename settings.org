@@ -1,5 +1,5 @@
 #+Title: settings.org
-
+ 
 
 * 1info
   :PROPERTIES:
@@ -6255,7 +6255,7 @@ this will make org-store-link use id when creating a link.
 #+END_SRC
 *** keep refreshing org agenda
 #+BEGIN_SRC emacs-lisp  :results none
-(run-with-idle-timer 600 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
+(run-with-idle-timer 600 t #'org-agenda-redo) ;; to rebuild it every 600 seconds
 #+END_SRC
 *** agenda view
 #+BEGIN_SRC emacs-lisp :results none
@@ -8835,7 +8835,9 @@ change dir only in dir mode hook?
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
-("n"  nil )
+("n n " (find-file "/media/NAS/Uni/") "NAS home" )
+("n p" (find-file "/media/NAS/Uni/Projects/") "NAS home" )
+("n d " (find-file "/media/NAS/Uni/data/") "NAS home" )
 ("o"  (find-file "~/org/files/") "Org" )
 ("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
 ("r"  (find-file "~/mreview/") "mreview" )
@@ -8847,8 +8849,8 @@ change dir only in dir mode hook?
 ("w"  (find-file "~/dotfiles/") "dotfiles" )
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
 ("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
-;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+;;("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 
@@ -9645,7 +9647,7 @@ this will add it permanently for each dired buffer. I currently disable it
           'append)
 
 #+END_SRC
-*** TASK archive files
+*** TASK compress files
 **** TASK compress to tar in dired
 this will only work on Emacs 25..keep track!
 http://oremacs.com/2015/10/23/dired-compress/

@@ -13,6 +13,8 @@
 
 (define-abbrev-table 'bbdb-mode-abbrev-table '())
 
+(define-abbrev-table 'biblio-selection-mode-abbrev-table '())
+
 (define-abbrev-table 'bibtex-mode-abbrev-table '())
 
 (define-abbrev-table 'bmkp-edit-bookmark-record-mode-abbrev-table '())
@@ -216,6 +218,7 @@
     ("andt he" "and the" nil 0)
     ("andteh" "and the" nil 0)
     ("andthe" "and the" nil 0)
+    ("anniversaty" "anniversary" nil 0)
     ("anothe" "another" nil 0)
     ("anual" "annual" nil 0)
     ("apache" "Apache" nil 0)
@@ -1456,9 +1459,7 @@
 
 (define-abbrev-table 'python-mode-abbrev-table '())
 
-(define-abbrev-table 'python-mode-skeleton-abbrev-table
-  '(
-   ))
+(define-abbrev-table 'python-mode-skeleton-abbrev-table '())
 
 (define-abbrev-table 'quickrun/mode-abbrev-table '())
 
