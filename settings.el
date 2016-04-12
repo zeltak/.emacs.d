@@ -707,7 +707,7 @@
  :ensure t
  :config
 ;;; don't create a buffer for every dir I visit (use 1 to not create and -1 to creare)
-(toggle-diredp-find-file-reuse-dir 1)
+(toggle-diredp-find-file-reuse-dir -1)
   )
 
 (use-package dired-efap
@@ -4620,7 +4620,7 @@ org-catch-invisible-edits 'show-and-error
 (setq org-agenda-window-setup "current-window")
 (setq org-agenda-restore-windows-after-quit t)
 
-(run-with-idle-timer 600 t #'org-agenda-redo) ;; to rebuild it every 30 seconds
+(run-with-idle-timer 600 t #'org-agenda-redo) ;; to rebuild it every 600 seconds
 
 ;change agenda colors
 ;(setq org-upcoming-deadline '(:foreground "blue" :weight bold))
@@ -6648,7 +6648,9 @@ scroll-step 1)
 ("k"  (find-file "~/BK/") "BK" )
 ("l"  (find-file "~/MLT/") "MLT")
 ("m"  (find-file "~/music/") "music" )
-("n"  nil )
+("n n " (find-file "/media/NAS/Uni/") "NAS home" )
+("n p" (find-file "/media/NAS/Uni/Projects/") "NAS home" )
+("n d " (find-file "/media/NAS/Uni/data/") "NAS home" )
 ("o"  (find-file "~/org/files/") "Org" )
 ("p"  (find-file "/home/zeltak/Sync/Uni/pdf_lib") "pdf lib" )
 ("r"  (find-file "~/mreview/") "mreview" )
@@ -6660,8 +6662,8 @@ scroll-step 1)
 ("w"  (find-file "~/dotfiles/") "dotfiles" )
 ("x"  z/buffer-close-andmove-other  "close window" :face 'hydra-face-red  )
 ("y"  (find-file "/home/zeltak/org/files/Uni/Projects/code") "code" )
-;;("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
-("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
+("z"  (find-file "~/ZH_tmp//") "ZH_tmp" )
+;;("z"  (bmkp-dired-jump "d.ZH_tmp") "ZH_tmp" )
 ("/"  (find-file "/") "Root")
 ("q" nil  )
 
@@ -7645,6 +7647,60 @@ Version 2015-01-26"
 ;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
 
+;;; helm-goobook.el
+;; Copyright 2016 Shivam Kalra
+;;
+;; Author: Shivam Kalra <skalra@gmx.ca>
+
+;;; Code:
+(defun goobook-search (search-term)
+  (message search-term)
+  (process-lines "goosearch" search-term))
+
+
+(defun helm-goobook-search ()
+  (mapcar (lambda (entry)
+            (let* ((vals (split-string entry "\t"))
+                   (email (car vals))
+                   (name (car (cdr vals)))
+                   (key (format "%s <%s>" name email)))
+              `(,key
+                (name . ,name)
+                (email . ,email)
+                (val . ,key)))) (goobook-search helm-pattern)))
+
+
+(defun helm-goobook-insert-key (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'val entry)))))
+
+
+(defun helm-goobook-insert-name (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'name entry)))))
+
+
+(defun helm-goobook-insert-email (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'email entry)))))
+
+
+(defvar helm-source-goobook
+  '((name . "Goobook Search")
+    (volatile)
+    (delayed)
+    (requires-pattern . 3)
+    (candidates .  helm-goobook-search)
+    (action . (("Insert key" . helm-goobook-insert-key)
+               ("Insert email" . helm-goobook-insert-email)
+               ("Insert name" . helm-goobook-insert-name)))))
+
+
+(defun helm-goobook ()
+  (interactive)
+  (helm :sources '(helm-source-goobook)
+        :buffer "*helm-goobook*"))
+
 ;; setup some handy shortcuts
 ;; you can quickly switch to your Inbox -- press ``ji''
 ;; then, when you want archive some messages, move them to
@@ -7671,7 +7727,8 @@ Version 2015-01-26"
   ("7"     z/mu4e-flagged            "mu4e flagged")
 ;;  ("<f5>"     mu4e            "start mu4e")
   ("<f6>"     helm-mu            "helm mu4e")
-  ("<f4>"    elfeed            "elfeed")
+  ("<f4>"    helm-mu-contacts            "helm-mu-contacts")
+  ("l"    elfeed            "elfeed")
   ("ez" z/org-email-heading-me "email myslef the tree")
   ("ex" z/org-email-heading "email other the tree")
   ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
@@ -7928,6 +7985,32 @@ prompt. The directories are not cleaned up in any way."
           (dired attachdir)
           (revert-buffer))
       (message "Nothing to extract."))))
+
+;; (add-to-list 'mu4e-headers-actions
+;;                '("Archive email" . archive-email) t)
+;;   (add-to-list 'mu4e-headers-actions
+;;                '("in browser" . mu4e-action-view-in-browser) t)
+
+(defun search-for-sender (msg)
+  "Search for messages sent by the sender of the message at point."
+  (mu4e-headers-search
+    (concat "from:" (cdar (mu4e-message-field msg :from)))))
+
+;; define 'x' as the shortcut
+(add-to-list 'mu4e-view-actions
+  '("search for sender" . search-for-sender) t)
+
+(defun my-mu4e-inboxes-query ()
+  "Return query string for all maildirs ending with \"/Inbox\"."
+  (interactive)
+  (let* ((maildirs (mu4e-get-maildirs))
+     (inboxes (cl-remove-if-not
+           (lambda (md) (string-suffix-p "/Inbox" md t))
+           maildirs)))
+    (mapconcat (lambda (md) (concat "m:\"" md "\"")) inboxes " OR ")))
+
+(add-to-list 'mu4e-bookmarks
+         '((my-mu4e-inboxes-query) "All Inboxes" ?i))
 
 (fset 'z/mu4e-del-exe
     [?d ?x ?y ])

@@ -1,7 +1,7 @@
 
 ;; ----- smex-history -----
 (
- helm-dired-buf
+ helm-goobook
  transmission
  customize-group
  pass
@@ -328,4 +328,5 @@
  (hanoi-unix-64 . 1)
  (pass . 1)
  (transmission . 3)
+ (helm-goobook . 3)
 )

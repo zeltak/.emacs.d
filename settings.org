@@ -10124,6 +10124,68 @@ OLD:
 ;; don't save messages to Sent Messages, Gmail/IMAP takes care of this
 (setq mu4e-sent-messages-behavior 'delete)
 #+END_SRC
+*** goobook
+this requires that goobook 
+https://gitlab.com/groups/goobook
+is installed and that you have a executable script in PATH named goosearch:
+file:/home/zeltak/bin/goosearch
+
+#+BEGIN_SRC emacs-lisp  :results none
+;;; helm-goobook.el
+;; Copyright 2016 Shivam Kalra
+;;
+;; Author: Shivam Kalra <skalra@gmx.ca>
+
+;;; Code:
+(defun goobook-search (search-term)
+  (message search-term)
+  (process-lines "goosearch" search-term))
+
+
+(defun helm-goobook-search ()
+  (mapcar (lambda (entry)
+            (let* ((vals (split-string entry "\t"))
+                   (email (car vals))
+                   (name (car (cdr vals)))
+                   (key (format "%s <%s>" name email)))
+              `(,key
+                (name . ,name)
+                (email . ,email)
+                (val . ,key)))) (goobook-search helm-pattern)))
+
+
+(defun helm-goobook-insert-key (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'val entry)))))
+
+
+(defun helm-goobook-insert-name (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'name entry)))))
+
+
+(defun helm-goobook-insert-email (entry)
+  (with-helm-current-buffer
+    (insert (cdr (assoc 'email entry)))))
+
+
+(defvar helm-source-goobook
+  '((name . "Goobook Search")
+    (volatile)
+    (delayed)
+    (requires-pattern . 3)
+    (candidates .  helm-goobook-search)
+    (action . (("Insert key" . helm-goobook-insert-key)
+               ("Insert email" . helm-goobook-insert-email)
+               ("Insert name" . helm-goobook-insert-name)))))
+
+
+(defun helm-goobook ()
+  (interactive)
+  (helm :sources '(helm-source-goobook)
+	:buffer "*helm-goobook*"))
+#+END_SRC
+
 *** keybinds
 **** shortcuts 
 #+BEGIN_SRC emacs-lisp :results none
@@ -10158,7 +10220,8 @@ OLD:
    ("7"     z/mu4e-flagged            "mu4e flagged")
  ;;  ("<f5>"     mu4e            "start mu4e")
    ("<f6>"     helm-mu            "helm mu4e")
-   ("<f4>"    elfeed            "elfeed")
+   ("<f4>"    helm-mu-contacts            "helm-mu-contacts")
+   ("l"    elfeed            "elfeed")
    ("ez" z/org-email-heading-me "email myslef the tree")
    ("ex" z/org-email-heading "email other the tree")
    ("d"    (execute-kbd-macro (symbol-function 'z/del_exe_mu4e))            "delete")
@@ -10462,6 +10525,41 @@ prompt. The directories are not cleaned up in any way."
           (dired attachdir)
           (revert-buffer))
       (message "Nothing to extract."))))
+#+END_SRC
+*** actions
+**** base
+#+BEGIN_SRC emacs-lisp  :results none
+  ;; (add-to-list 'mu4e-headers-actions
+  ;;                '("Archive email" . archive-email) t)
+  ;;   (add-to-list 'mu4e-headers-actions
+  ;;                '("in browser" . mu4e-action-view-in-browser) t)
+#+END_SRC
+**** search for messages by the sender of the message at point:
+
+#+BEGIN_SRC emacs-lisp  :results none
+(defun search-for-sender (msg)
+  "Search for messages sent by the sender of the message at point."
+  (mu4e-headers-search
+    (concat "from:" (cdar (mu4e-message-field msg :from)))))
+
+;; define 'x' as the shortcut
+(add-to-list 'mu4e-view-actions
+  '("search for sender" . search-for-sender) t)
+
+#+END_SRC
+**** search all inboxes
+#+BEGIN_SRC emacs-lisp  :results none
+(defun my-mu4e-inboxes-query ()
+  "Return query string for all maildirs ending with \"/Inbox\"."
+  (interactive)
+  (let* ((maildirs (mu4e-get-maildirs))
+     (inboxes (cl-remove-if-not
+           (lambda (md) (string-suffix-p "/Inbox" md t))
+           maildirs)))
+    (mapconcat (lambda (md) (concat "m:\"" md "\"")) inboxes " OR ")))
+
+(add-to-list 'mu4e-bookmarks
+         '((my-mu4e-inboxes-query) "All Inboxes" ?i))
 #+END_SRC
 *** mu4e macros
 **** delete and exe
