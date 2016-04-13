@@ -1488,6 +1488,12 @@
     (link-hint-open-all-links)))
  )
 
+(use-package latex-preview-pane
+ :ensure t
+ :config
+ 
+ )
+
 (use-package lentic
  :ensure t
  :config
@@ -2199,7 +2205,7 @@
  :ensure t
  :config
 (which-key-mode)
-
+(which-key-setup-minibuffer)
 ;;Popup side window on right. For defaults use
 ;;(which-key-setup-side-window-right)
 
@@ -8028,6 +8034,15 @@ prompt. The directories are not cleaned up in any way."
 (defun z/mu4e-flag-exe-func ()
   (interactive)
 (execute-kbd-macro (symbol-function 'z/mu4e-flag-exe)) 
+    )
+
+(fset 'z/mu4e-flag-exe
+    [?- ?x ?y ])
+
+;;for the function
+(defun z/mu4e-uflag-exe-func ()
+  (interactive)
+(execute-kbd-macro (symbol-function 'z/mu4e-suflag-exe)) 
     )
 
 (setq gnus-select-method '(nntp "news.gmane.org"))

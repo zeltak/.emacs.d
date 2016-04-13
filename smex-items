@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ helm-org-rifle-directories
  helm-goobook
  transmission
  customize-group
  pass
  hanoi-unix-64
  helm-recentf
- ibuffer
 )
 
 ;; ----- smex-data -----
@@ -329,4 +329,5 @@
  (pass . 1)
  (transmission . 3)
  (helm-goobook . 3)
+ (helm-org-rifle-directories . 2)
 )

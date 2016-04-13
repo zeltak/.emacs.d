@@ -1,1 +1,0 @@
-(define-package "company-emoji" "20151107.2220" "company-mode backend for emoji" '((cl-lib "0.5") (company "0.8.0")) :url "https://github.com/dunn/company-emoji.git" :keywords '("emoji" "company" "honk"))
