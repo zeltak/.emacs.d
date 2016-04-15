@@ -3442,7 +3442,8 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("p"  nil )
 ("q" nil "cancel")
 ("r"  iedit-mode  "iedit" )
-("s"  nil )
+("ss"  helm-org-rifle-directories "search org" )
+("so"  helm-org-rifle "search open org" )
 ("t"   z/visit-ansi-term "ansi term")
 ("T"   helm-top "top")
 ("v"  helm-bm "helm-bm" )
@@ -4424,7 +4425,20 @@ comment _e_macs function  // copy-paste-comment-function _r_
 ;; warn when opening files bigger than 100MB
 (setq large-file-warning-threshold 100000000)
 
-(add-to-list 'display-buffer-alist '("*Async Shell Command*"  display-buffer-no-window))
+;;;(add-to-list 'display-buffer-alist '("*Async Shell Command*"  display-buffer-no-window))
+
+(add-to-list 'display-buffer-alist '("^*Async Shell Command*" . (display-buffer-no-window)))
+
+(defun async-shell-dispatch (orig-fun command &optional output-buffer error-buffer)
+  "If OUTPUT-BUFFER is '(4) (i.e., C-u), temporarily turn off
+blocking of displaying the output-buffer."
+  (if (equal output-buffer '(4))
+      (let ((display-buffer-alist
+             (remove '("^*Async Shell Command*" . (display-buffer-no-window)) display-buffer-alist)))
+        (funcall orig-fun command nil error-buffer))
+    (funcall orig-fun command output-buffer error-buffer)))
+
+(advice-add 'async-shell-command :around 'async-shell-dispatch)
 
 (fset 'orgstyle-tnote
    [?! home ?!])
@@ -5278,6 +5292,12 @@ With prefix argument, also display headlines without a TODO keyword."
    "*  %:description
     %t
  \nLink: %a\n\n"  :immediate-finish t)
+
+
+;;;;---------------------------------------------------------------------------
+
+("w" "Web site" entry (file+olp "TODO.org" "Web")
+ "* %c :website:\n%U %?%:initial")
 
 ;;;;---------------------------------------------------------------------------
 
@@ -7507,9 +7527,9 @@ Version 2015-01-26"
    )
   (find-file (cdr (assoc openCode xah-filelist)) ) )
 
-(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
-(require 'edit-server)
-(edit-server-start)
+;(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
+;(require 'edit-server)
+;(edit-server-start)
 
 (setq comint-scroll-to-bottom-on-input t)
 (setq comint-scroll-to-bottom-on-output t)

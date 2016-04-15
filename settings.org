@@ -5979,9 +5979,25 @@ set currently to 100mb
 #+END_SRC
 ** suppress specific windows from popping up
 
+http://mbork.pl/2016-04-12_Showing_some_of_those_Async_Shell_Command_buffers
+
 #+BEGIN_SRC emacs-lisp  :results none
-(add-to-list 'display-buffer-alist '("*Async Shell Command*"  display-buffer-no-window))
+;;;(add-to-list 'display-buffer-alist '("*Async Shell Command*"  display-buffer-no-window))
+
+(add-to-list 'display-buffer-alist '("^*Async Shell Command*" . (display-buffer-no-window)))
+
+(defun async-shell-dispatch (orig-fun command &optional output-buffer error-buffer)
+  "If OUTPUT-BUFFER is '(4) (i.e., C-u), temporarily turn off
+blocking of displaying the output-buffer."
+  (if (equal output-buffer '(4))
+      (let ((display-buffer-alist
+	     (remove '("^*Async Shell Command*" . (display-buffer-no-window)) display-buffer-alist)))
+	(funcall orig-fun command nil error-buffer))
+    (funcall orig-fun command output-buffer error-buffer)))
+
+(advice-add 'async-shell-command :around 'async-shell-dispatch)
 #+END_SRC
+
 
 * Org
 ** org faces
@@ -7093,6 +7109,12 @@ http://www.glassberg-powell.com/blog/20140709/emacs-org-mode-capture-anywhere
    "*  %:description
     %t
  \nLink: %a\n\n"  :immediate-finish t)
+
+
+;;;;---------------------------------------------------------------------------
+
+("w" "Web site" entry (file+olp "TODO.org" "Web")
+ "* %c :website:\n%U %?%:initial")
 
 ;;;;---------------------------------------------------------------------------
 
@@ -9935,9 +9957,9 @@ COMMAND2
 #+END_EXAMPLE
 ** edit webpages with emacs
 #+BEGIN_SRC emacs-lisp :results none
-(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
-(require 'edit-server)
-(edit-server-start)
+;(add-to-list 'load-path "/home/zeltak/.emacs.g/extra/edit-server/")
+;(require 'edit-server)
+;(edit-server-start)
 #+END_SRC
 * R/ESS
 ** output
