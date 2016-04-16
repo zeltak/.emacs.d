@@ -1,13 +1,13 @@
 
 ;; ----- smex-history -----
 (
+ my-helm-terminal-buffers
+ multi-term
  helm-org-rifle-directories
  helm-goobook
  transmission
  customize-group
  pass
- hanoi-unix-64
- helm-recentf
 )
 
 ;; ----- smex-data -----
@@ -330,4 +330,6 @@
  (transmission . 3)
  (helm-goobook . 3)
  (helm-org-rifle-directories . 2)
+ (multi-term . 3)
+ (my-helm-terminal-buffers . 3)
 )

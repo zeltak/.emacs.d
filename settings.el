@@ -1587,6 +1587,9 @@
         bibtex-autokey-titleword-length 5)
    )
 
+;;(add-to-list 'load-path "/home/zeltak/.emacs.g/org-protocol-capture-html/")
+;;(require 'org-protocol-capture-html)
+
 (add-to-list 'load-path "/home/zeltak/.emacs.g/org-link-edit/")
 (require 'org-link-edit)
 
@@ -3430,6 +3433,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("hs"  (find-file "/home/zeltak/.emacs.d/settings.org") "research"  :face 'hydra-face-cyan )
 ("ht"  (find-file "/home/zeltak/org/files/agenda/TODO.org") "TODO"   :face 'hydra-face-cyan )
 ("hu"  (find-file "/home/zeltak/org/files/agenda/travel.org") "travel"  :face 'hydra-face-cyan )
+("hb"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks"  :face 'hydra-face-cyan )
 
 ("I"  char-menu "insert symbol" )
 ("i"  hydra-editing-insert/body "insert symbol" )
@@ -3438,7 +3442,8 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("l"  hydra-org-links/body  "org links")
 ("m"  nil )
 ("n"  nil )
-("o"  nil )
+("o" worf-goto  "worf heading")
+
 ("p"  nil )
 ("q" nil "cancel")
 ("r"  iedit-mode  "iedit" )
@@ -3449,7 +3454,7 @@ LEADER:【C-A-W】-append to killring helm-projectile-recentf 【C-c p e】
 ("v"  helm-bm "helm-bm" )
 ("V"  bm-toggle "add bm")
 ("u"  nil )
-("w"  (find-file "/home/zeltak/org/files/web/wbookmarks.org")  "bookmarks" )
+("w" nil )
 ("x"  z/buffer-close-andmove-other  "close window")
 ("y"  nil )
 ("z"  nil )
